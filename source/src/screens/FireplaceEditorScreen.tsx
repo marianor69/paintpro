@@ -102,7 +102,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Save to store FIRST before any state changes
+    // Mark as saved FIRST to prevent cleanup effect from running
+    setIsSaved(true);
+    setHasUnsavedChanges(false);
+
+    // Save to store
     updateFireplace(projectId, fireplaceId!, {
       width: parseFloat(width) || 0,
       height: parseFloat(height) || 0,
@@ -112,13 +116,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       coats: fireplace?.coats || 2, // Preserve existing coats setting
     });
 
-    // Mark as saved AFTER the store update to prevent cleanup effect from deleting
-    setIsSaved(true);
-    // Disable unsaved changes tracking to prevent modal from showing
-    setHasUnsavedChanges(false);
-
-    // Navigate back immediately - state is already marked as saved
-    navigation.goBack();
+    // Add small delay to ensure state has propagated before navigation
+    setTimeout(() => {
+      navigation.goBack();
+    }, 100);
   };
 
   const handleDiscardAndLeave = () => {

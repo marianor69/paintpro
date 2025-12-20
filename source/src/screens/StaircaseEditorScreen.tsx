@@ -123,7 +123,11 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Save to store FIRST before any state changes
+    // Mark as saved FIRST to prevent cleanup effect from running
+    setIsSaved(true);
+    setHasUnsavedChanges(false);
+
+    // Save to store
     updateStaircase(projectId, staircaseId!, {
       riserCount: parseInt(riserCount) || 0,
       riserHeight: 7.5, // Standard riser height
@@ -137,13 +141,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       doubleSidedWalls,
     });
 
-    // Mark as saved AFTER the store update to prevent cleanup effect from deleting
-    setIsSaved(true);
-    // Disable unsaved changes tracking to prevent modal from showing
-    setHasUnsavedChanges(false);
-
-    // Navigate back immediately - state is already marked as saved
-    navigation.goBack();
+    // Add small delay to ensure state has propagated before navigation
+    setTimeout(() => {
+      navigation.goBack();
+    }, 100);
   };
 
   const handleDiscardAndLeave = () => {
