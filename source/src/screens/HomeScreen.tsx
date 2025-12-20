@@ -87,7 +87,7 @@ export default function HomeScreen({ navigation }: Props) {
           <View style={{ alignItems: "center", marginBottom: Spacing.lg }}>
             <Ionicons name="color-palette" size={56} color={Colors.primaryBlue} />
             <Text style={{ fontSize: 28, fontWeight: "700", color: Colors.darkCharcoal, marginTop: Spacing.md, textAlign: "center" }}>
-              Paint Estimate Pro
+              Paint Pro
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
