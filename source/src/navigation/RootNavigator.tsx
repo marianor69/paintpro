@@ -155,7 +155,9 @@ export default function RootNavigator() {
             fontWeight: "600",
           },
           gestureEnabled: true,
-          fullScreenGestureEnabled: true,
+          // FIX #8: Disable full screen gesture to reduce swipe sensitivity
+          // This makes swipe-back only work from the edge, not the entire screen
+          fullScreenGestureEnabled: false,
           animation: "slide_from_right",
         }}
       >

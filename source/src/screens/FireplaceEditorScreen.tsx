@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -43,25 +43,36 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
-  const [isSaved, setIsSaved] = useState(false); // Track if item was explicitly saved
+  
+  // FIX #4: Use useRef instead of useState for isSaved
+  // Refs are mutable and always reflect the current value in cleanup effects
+  // This fixes the race condition where useState's closure captures stale values
+  const isSavedRef = useRef(false);
 
   // Cleanup on unmount - delete if never saved and no data entered
   useEffect(() => {
     return () => {
-      if (!isSaved && fireplace) {
-        const hasAnyData =
-          (fireplace.width && fireplace.width > 0) ||
-          (fireplace.height && fireplace.height > 0) ||
-          (fireplace.depth && fireplace.depth > 0) ||
-          (fireplace.hasTrim && fireplace.trimLinearFeet && fireplace.trimLinearFeet > 0);
+      // FIX #4: Use ref.current which always has the latest value
+      if (!isSavedRef.current && fireplaceId) {
+        // Read fresh data from store to check if it has any values
+        const currentProject = useProjectStore.getState().projects.find((p) => p.id === projectId);
+        const currentFireplace = currentProject?.fireplaces.find((f) => f.id === fireplaceId);
+        
+        if (currentFireplace) {
+          const hasAnyData =
+            (currentFireplace.width && currentFireplace.width > 0) ||
+            (currentFireplace.height && currentFireplace.height > 0) ||
+            (currentFireplace.depth && currentFireplace.depth > 0) ||
+            (currentFireplace.hasTrim && currentFireplace.trimLinearFeet && currentFireplace.trimLinearFeet > 0);
 
-        if (!hasAnyData) {
-          const deleteFireplaceFn = useProjectStore.getState().deleteFireplace;
-          deleteFireplaceFn(projectId, fireplaceId!);
+          if (!hasAnyData) {
+            const deleteFireplaceFn = useProjectStore.getState().deleteFireplace;
+            deleteFireplaceFn(projectId, fireplaceId);
+          }
         }
       }
     };
-  }, [isSaved, projectId, fireplaceId, fireplace]);
+  }, [projectId, fireplaceId]);
 
   // Track unsaved changes
   useEffect(() => {
@@ -102,8 +113,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Mark as saved FIRST to prevent cleanup effect from running
-    setIsSaved(true);
+    // FIX #4: Set ref FIRST (synchronous, immediate)
+    isSavedRef.current = true;
     setHasUnsavedChanges(false);
 
     // Save to store
@@ -116,10 +127,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       coats: fireplace?.coats || 2, // Preserve existing coats setting
     });
 
-    // Add small delay to ensure state has propagated before navigation
-    setTimeout(() => {
-      navigation.goBack();
-    }, 100);
+    // Navigate back immediately - ref is already set
+    navigation.goBack();
   };
 
   const handleDiscardAndLeave = () => {
@@ -130,14 +139,14 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       depth !== "" ||
       (hasTrim && trimLinearFeet !== "");
 
-    // Mark as saved FIRST to prevent cleanup from running
-    setIsSaved(true);
+    // FIX #4: Set ref FIRST to prevent cleanup from running
+    isSavedRef.current = true;
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
 
-    if (!hasAnyData && fireplace) {
+    if (!hasAnyData && fireplaceId) {
       const deleteFireplaceFn = useProjectStore.getState().deleteFireplace;
-      deleteFireplaceFn(projectId, fireplaceId!);
+      deleteFireplaceFn(projectId, fireplaceId);
     }
 
     navigation.goBack();
@@ -167,17 +176,16 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     : null;
 
   // If fireplace not found BUT we just saved, don't show error (we're navigating away)
-  if (!fireplace && !isSaved) {
+  if (!fireplace && isSavedRef.current) {
+    return null;
+  }
+
+  if (!fireplace) {
     return (
       <View className="flex-1 items-center justify-center">
         <Text className="text-lg text-gray-600">Fireplace not found</Text>
       </View>
     );
-  }
-
-  // If we saved and fireplace is gone, just return null while navigating
-  if (!fireplace) {
-    return null;
   }
 
   return (

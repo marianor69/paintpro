@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -58,27 +58,38 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
-  const [isSaved, setIsSaved] = useState(false); // Track if item was explicitly saved
+  
+  // FIX #4: Use useRef instead of useState for isSaved
+  // Refs are mutable and always reflect the current value in cleanup effects
+  // This fixes the race condition where useState's closure captures stale values
+  const isSavedRef = useRef(false);
 
   // Cleanup on unmount - delete if never saved and no data entered
   useEffect(() => {
     return () => {
-      if (!isSaved && staircase) {
-        const hasAnyData =
-          (staircase.riserCount && staircase.riserCount > 0) ||
-          (staircase.handrailLength && staircase.handrailLength > 0) ||
-          (staircase.spindleCount && staircase.spindleCount > 0) ||
-          (staircase.hasSecondaryStairwell &&
-            ((staircase.tallWallHeight && staircase.tallWallHeight > 0) ||
-             (staircase.shortWallHeight && staircase.shortWallHeight > 0)));
+      // FIX #4: Use ref.current which always has the latest value
+      if (!isSavedRef.current && staircaseId) {
+        // Read fresh data from store to check if it has any values
+        const currentProject = useProjectStore.getState().projects.find((p) => p.id === projectId);
+        const currentStaircase = currentProject?.staircases.find((s) => s.id === staircaseId);
+        
+        if (currentStaircase) {
+          const hasAnyData =
+            (currentStaircase.riserCount && currentStaircase.riserCount > 0) ||
+            (currentStaircase.handrailLength && currentStaircase.handrailLength > 0) ||
+            (currentStaircase.spindleCount && currentStaircase.spindleCount > 0) ||
+            (currentStaircase.hasSecondaryStairwell &&
+              ((currentStaircase.tallWallHeight && currentStaircase.tallWallHeight > 0) ||
+               (currentStaircase.shortWallHeight && currentStaircase.shortWallHeight > 0)));
 
-        if (!hasAnyData) {
-          const deleteStaircaseFn = useProjectStore.getState().deleteStaircase;
-          deleteStaircaseFn(projectId, staircaseId!);
+          if (!hasAnyData) {
+            const deleteStaircaseFn = useProjectStore.getState().deleteStaircase;
+            deleteStaircaseFn(projectId, staircaseId);
+          }
         }
       }
     };
-  }, [isSaved, projectId, staircaseId, staircase]);
+  }, [projectId, staircaseId]);
 
   // Track unsaved changes
   useEffect(() => {
@@ -123,8 +134,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Mark as saved FIRST to prevent cleanup effect from running
-    setIsSaved(true);
+    // FIX #4: Set ref FIRST (synchronous, immediate)
+    isSavedRef.current = true;
     setHasUnsavedChanges(false);
 
     // Save to store
@@ -141,10 +152,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       doubleSidedWalls,
     });
 
-    // Add small delay to ensure state has propagated before navigation
-    setTimeout(() => {
-      navigation.goBack();
-    }, 100);
+    // Navigate back immediately - ref is already set
+    navigation.goBack();
   };
 
   const handleDiscardAndLeave = () => {
@@ -155,14 +164,14 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       spindleCount !== "" ||
       (hasSecondaryStairwell && (tallWallHeight !== "" || shortWallHeight !== ""));
 
-    // Mark as saved FIRST to prevent cleanup from running
-    setIsSaved(true);
+    // FIX #4: Set ref FIRST to prevent cleanup from running
+    isSavedRef.current = true;
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
 
-    if (!hasAnyData && staircase) {
+    if (!hasAnyData && staircaseId) {
       const deleteStaircaseFn = useProjectStore.getState().deleteStaircase;
-      deleteStaircaseFn(projectId, staircaseId!);
+      deleteStaircaseFn(projectId, staircaseId);
     }
 
     navigation.goBack();
@@ -181,9 +190,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     ? calculateStaircaseMetrics(
         {
           ...staircase,
-          riserCount: parseInt(riserCount) || 14,
-          riserHeight: 7.5, // Standard riser height
-          treadDepth: 0, // Not used
+          riserCount: parseInt(riserCount) || 0,
           handrailLength: parseFloat(handrailLength) || 0,
           spindleCount: parseInt(spindleCount) || 0,
           hasSecondaryStairwell,
@@ -195,22 +202,17 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       )
     : null;
 
-  // Only show preview if at least riser count is entered
-  const hasDataEntered = riserCount !== "" || handrailLength !== "" || spindleCount !== "" ||
-    (hasSecondaryStairwell && (tallWallHeight !== "" || shortWallHeight !== ""));
+  // If staircase not found BUT we just saved, don't show error
+  if (!staircase && isSavedRef.current) {
+    return null;
+  }
 
-  // If staircase not found BUT we just saved, don't show error (we're navigating away)
-  if (!staircase && !isSaved) {
+  if (!staircase) {
     return (
       <View className="flex-1 items-center justify-center">
         <Text className="text-lg text-gray-600">Staircase not found</Text>
       </View>
     );
-  }
-
-  // If we saved and staircase is gone, just return null while navigating
-  if (!staircase) {
-    return null;
   }
 
   return (
@@ -234,64 +236,78 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         )}
 
         <View className="p-6">
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Number of Risers
+          {/* Staircase Components Section */}
+          <View className="bg-white rounded-xl p-4 border border-gray-200 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-4">
+              Staircase Components
             </Text>
-            <TextInput
-              value={riserCount}
-              onChangeText={setRiserCount}
-              keyboardType="number-pad"
-              returnKeyType="done"
-              onSubmitEditing={() => {}}
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-            <Text className="text-xs text-gray-500 mt-1">
-              Standard riser height of 7.5 inches assumed
-            </Text>
-          </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Handrail Length (ft)
-            </Text>
-            <TextInput
-              value={handrailLength}
-              onChangeText={setHandrailLength}
-              keyboardType="decimal-pad"
-              returnKeyType="done"
-              onSubmitEditing={() => {}}
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Number of Risers
+              </Text>
+              <TextInput
+                value={riserCount}
+                onChangeText={setRiserCount}
+                keyboardType="number-pad"
+                returnKeyType="done"
+                placeholder="0"
+                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
+              />
+            </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Number of Spindles
-            </Text>
-            <TextInput
-              value={spindleCount}
-              onChangeText={setSpindleCount}
-              keyboardType="number-pad"
-              returnKeyType="done"
-              onSubmitEditing={() => {}}
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Number of Spindles
+              </Text>
+              <TextInput
+                value={spindleCount}
+                onChangeText={setSpindleCount}
+                keyboardType="number-pad"
+                returnKeyType="done"
+                placeholder="0"
+                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
+              />
+            </View>
+
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Handrail Length (linear feet)
+              </Text>
+              <TextInput
+                value={handrailLength}
+                onChangeText={setHandrailLength}
+                keyboardType="decimal-pad"
+                returnKeyType="done"
+                placeholder="0"
+                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
+              />
+            </View>
           </View>
 
           {/* Secondary Stairwell Section */}
-          <View className="mb-4 bg-white rounded-xl p-4 border border-gray-300">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-base font-semibold text-gray-900">
-                Has Secondary Stairwell
-              </Text>
-              <Switch
-                value={hasSecondaryStairwell}
-                onValueChange={setHasSecondaryStairwell}
-                trackColor={{ false: "#D1D5DB", true: "#3B82F6" }}
-                thumbColor="#FFFFFF"
-              />
-            </View>
+          <View className="bg-white rounded-xl p-4 border border-gray-200 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-4">
+              Secondary Stairwell (Open Wall Area)
+            </Text>
+
+            <Pressable
+              onPress={() => setHasSecondaryStairwell(!hasSecondaryStairwell)}
+              className="flex-row items-center justify-between mb-4"
+            >
+              <Text className="text-base text-gray-700">Include Stairwell Walls</Text>
+              <View
+                className={`w-12 h-7 rounded-full ${
+                  hasSecondaryStairwell ? "bg-blue-600" : "bg-gray-300"
+                }`}
+              >
+                <View
+                  className={`w-5 h-5 rounded-full bg-white mt-1 ${
+                    hasSecondaryStairwell ? "ml-6" : "ml-1"
+                  }`}
+                />
+              </View>
+            </Pressable>
 
             {hasSecondaryStairwell && (
               <>
@@ -304,8 +320,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     onChangeText={setTallWallHeight}
                     keyboardType="decimal-pad"
                     returnKeyType="done"
-                    onSubmitEditing={() => {}}
-                    className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-base"
+                    placeholder="0"
+                    className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
                   />
                 </View>
 
@@ -318,28 +334,34 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     onChangeText={setShortWallHeight}
                     keyboardType="decimal-pad"
                     returnKeyType="done"
-                    onSubmitEditing={() => {}}
-                    className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-base"
+                    placeholder="0"
+                    className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
                   />
                 </View>
 
-                <View className="flex-row justify-between items-center">
-                  <Text className="text-sm font-medium text-gray-700">
-                    Double-Sided Stair Walls?
-                  </Text>
-                  <Switch
-                    value={doubleSidedWalls}
-                    onValueChange={setDoubleSidedWalls}
-                    trackColor={{ false: "#D1D5DB", true: "#3B82F6" }}
-                    thumbColor="#FFFFFF"
-                  />
-                </View>
+                <Pressable
+                  onPress={() => setDoubleSidedWalls(!doubleSidedWalls)}
+                  className="flex-row items-center justify-between"
+                >
+                  <Text className="text-base text-gray-700">Double-Sided Walls</Text>
+                  <View
+                    className={`w-12 h-7 rounded-full ${
+                      doubleSidedWalls ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                  >
+                    <View
+                      className={`w-5 h-5 rounded-full bg-white mt-1 ${
+                        doubleSidedWalls ? "ml-6" : "ml-1"
+                      }`}
+                    />
+                  </View>
+                </Pressable>
               </>
             )}
           </View>
 
           {/* Calculations Preview */}
-          {calculations && hasDataEntered && (
+          {calculations && (
             <View className="bg-white rounded-xl p-4 border border-gray-200 mb-4">
               <Text className="text-lg font-bold text-gray-900 mb-3">
                 Estimate Preview
@@ -350,24 +372,14 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 <Text className="text-xs font-semibold text-gray-700 mb-2">
                   PAINTABLE AREA CALCULATION:
                 </Text>
-
-                {/* Original staircase area */}
                 {parseFloat(riserCount) > 0 && (
-                  <>
-                    <View className="flex-row justify-between mb-1">
-                      <Text className="text-xs text-gray-600">Riser Area:</Text>
-                      <Text className="text-xs text-gray-900">
-                        {parseFloat(riserCount)} risers × 7.5&quot; height × 3 ft width = {(parseFloat(riserCount) * (7.5/12) * 3).toFixed(0)} sq ft
-                      </Text>
-                    </View>
-                    <View className="flex-row justify-between mb-1">
-                      <Text className="text-xs text-gray-600">Tread Area:</Text>
-                      <Text className="text-xs text-gray-900">0 sq ft (not used)</Text>
-                    </View>
-                  </>
+                  <View className="flex-row justify-between mb-1">
+                    <Text className="text-xs text-gray-600">Risers area:</Text>
+                    <Text className="text-xs text-gray-900">
+                      {parseFloat(riserCount)} risers × 7.5" × 3 ft = {(parseFloat(riserCount) * 7.5 * 3 / 12).toFixed(1)} sq ft
+                    </Text>
+                  </View>
                 )}
-
-                {/* Secondary stairwell area */}
                 {hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 && (
                   <>
                     <View className="border-t border-gray-300 mt-2 pt-2">
