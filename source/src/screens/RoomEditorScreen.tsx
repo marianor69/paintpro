@@ -23,11 +23,12 @@ import { computeRoomPricingSummary } from "../utils/pricingSummary";
 import * as ImagePicker from "expo-image-picker";
 import { v4 as uuidv4 } from "uuid";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
+import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { NumericInput } from "../components/NumericInput";
 import { DimensionInput } from "../components/DimensionInput";
+import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto } from "../types/painting";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RoomEditor">;
@@ -51,6 +52,8 @@ function serializeRoomState(
   paintWalls: boolean,
   paintCeilings: boolean,
   paintTrim: boolean,
+  paintWindowFrames: boolean,
+  paintDoorFrames: boolean,
   paintWindows: boolean,
   paintDoors: boolean,
   paintJambs: boolean,
@@ -74,6 +77,8 @@ function serializeRoomState(
     paintWalls,
     paintCeilings,
     paintTrim,
+    paintWindowFrames,
+    paintDoorFrames,
     paintWindows,
     paintDoors,
     paintJambs,
@@ -85,13 +90,16 @@ function serializeRoomState(
 }
 
 export default function RoomEditorScreen({ route, navigation }: Props) {
-  const { projectId, roomId } = route.params;
+  const { projectId, roomId, floor: initialFloor } = route.params;
+  const isNewRoom = !roomId;
 
   const project = useProjectStore((s) =>
     s.projects.find((p) => p.id === projectId)
   );
-  const room = project?.rooms.find((r) => r.id === roomId);
+  const room = isNewRoom ? null : project?.rooms.find((r) => r.id === roomId);
+  const addRoom = useProjectStore((s) => s.addRoom);
   const updateRoom = useProjectStore((s) => s.updateRoom);
+  const deleteRoom = useProjectStore((s) => s.deleteRoom);
   const pricing = usePricingStore();
   const calcSettings = useCalculationSettings((s) => s.settings);
 
@@ -101,7 +109,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [name, setName] = useState(room?.name || "");
   const [length, setLength] = useState(room?.length && room.length > 0 ? room.length.toString() : "");
   const [width, setWidth] = useState(room?.width && room.width > 0 ? room.width.toString() : "");
-  const floor = room?.floor || 1;
+  const floor = room?.floor || initialFloor || 1;
   const [manualArea, setManualArea] = useState(
     room?.manualArea && room.manualArea > 0 ? room.manualArea.toString() : ""
   );
@@ -127,13 +135,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [paintWalls, setPaintWalls] = useState(room?.paintWalls ?? project?.globalPaintDefaults?.paintWalls ?? true);
   const [paintCeilings, setPaintCeilings] = useState(room?.paintCeilings ?? project?.globalPaintDefaults?.paintCeilings ?? true);
   const [paintTrim, setPaintTrim] = useState(room?.paintTrim ?? project?.globalPaintDefaults?.paintTrim ?? true);
-  const [paintWindows, setPaintWindows] = useState(room?.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? false);
-  const [paintDoors, setPaintDoors] = useState(room?.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? false);
-  const [paintJambs, setPaintJambs] = useState(room?.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? false);
+  const [paintWindowFrames, setPaintWindowFrames] = useState(room?.paintWindowFrames ?? project?.globalPaintDefaults?.paintWindowFrames ?? true);
+  const [paintDoorFrames, setPaintDoorFrames] = useState(room?.paintDoorFrames ?? project?.globalPaintDefaults?.paintDoorFrames ?? true);
+  const [paintWindows, setPaintWindows] = useState(room?.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? true);
+  const [paintDoors, setPaintDoors] = useState(room?.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? true);
+  const [paintJambs, setPaintJambs] = useState(room?.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? true);
   const [paintBaseboard, setPaintBaseboard] = useState(
     room?.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true
   );
-  const [hasCrownMoulding, setHasCrownMoulding] = useState(room?.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? false);
+  const [hasCrownMoulding, setHasCrownMoulding] = useState(room?.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true);
   const [hasAccentWall, setHasAccentWall] = useState(room?.hasAccentWall ?? false);
   const [cathedralPeakHeight, setCathedralPeakHeight] = useState(
     room?.cathedralPeakHeight && room.cathedralPeakHeight > 0 ? room.cathedralPeakHeight.toString() : ""
@@ -144,12 +154,82 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
 
+  // Openings state
+  const [openings, setOpenings] = useState<Array<{id: string; width: string; height: string; hasInteriorTrim: boolean; hasExteriorTrim: boolean}>>(
+    room?.openings?.map(o => ({
+      id: o.id,
+      width: o.width.toString(),
+      height: o.height.toString(),
+      hasInteriorTrim: o.hasInteriorTrim,
+      hasExteriorTrim: o.hasExteriorTrim,
+    })) || []
+  );
+
+  // Standalone notes field (available without photos)
+  const [notes, setNotes] = useState(room?.notes || "");
+
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  // Use ref to track saved state for cleanup - avoids stale closure issues
+  const isSavedRef = useRef(false);
+
+  // Update header title dynamically when room name changes
+  useEffect(() => {
+    const displayName = name || "Unnamed Room";
+    navigation.setOptions({
+      title: `Edit Room: ${displayName}`,
+    });
+  }, [name, navigation]);
+
+  // Cleanup on unmount - delete if never saved and name is empty
+  useEffect(() => {
+    return () => {
+      if (!isSavedRef.current && roomId) {
+        // Check if room was never named
+        if (!name || name.trim() === "") {
+          const deleteRoomFn = useProjectStore.getState().deleteRoom;
+          deleteRoomFn(projectId, roomId);
+        }
+      }
+    };
+  }, []);
 
   // Capture initial state snapshot when room data is first available
   useEffect(() => {
+    if (room && initialStateRef.current !== null) return;
+
+    // For new rooms, create initial snapshot immediately with empty state
+    // For existing rooms, wait until room data is available
+    if (isNewRoom) {
+      initialStateRef.current = serializeRoomState(
+        "",
+        "",
+        "",
+        "",
+        "flat",
+        "",
+        "",
+        "",
+        false,
+        "",
+        "",
+        project?.globalPaintDefaults?.paintWalls ?? true,
+        project?.globalPaintDefaults?.paintCeilings ?? true,
+        project?.globalPaintDefaults?.paintTrim ?? true,
+        project?.globalPaintDefaults?.paintWindowFrames ?? true,
+        project?.globalPaintDefaults?.paintDoorFrames ?? true,
+        project?.globalPaintDefaults?.paintWindows ?? true,
+        project?.globalPaintDefaults?.paintDoors ?? true,
+        project?.globalPaintDefaults?.paintDoorJambs ?? true,
+        project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
+        project?.globalPaintDefaults?.paintCrownMoulding ?? true,
+        false,
+        project?.projectIncludeClosetInteriorInQuote ?? true
+      );
+      return;
+    }
+
     if (!room || initialStateRef.current !== null) return;
 
     // Create initial snapshot of all editable fields
@@ -168,11 +248,13 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       room.paintWalls ?? project?.globalPaintDefaults?.paintWalls ?? true,
       room.paintCeilings ?? project?.globalPaintDefaults?.paintCeilings ?? true,
       room.paintTrim ?? project?.globalPaintDefaults?.paintTrim ?? true,
-      room.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? false,
-      room.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? false,
-      room.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? false,
+      room.paintWindowFrames ?? project?.globalPaintDefaults?.paintWindowFrames ?? true,
+      room.paintDoorFrames ?? project?.globalPaintDefaults?.paintDoorFrames ?? true,
+      room.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? true,
+      room.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? true,
+      room.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? true,
       room.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
-      room.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? false,
+      room.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true,
       room.hasAccentWall ?? false,
       room.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
     );
@@ -180,7 +262,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   // Check for changes by comparing current state to initial snapshot
   useEffect(() => {
-    if (!room || initialStateRef.current === null) return;
+    if (initialStateRef.current === null) return;
 
     const currentState = serializeRoomState(
       name,
@@ -197,6 +279,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintWalls,
       paintCeilings,
       paintTrim,
+      paintWindowFrames,
+      paintDoorFrames,
       paintWindows,
       paintDoors,
       paintJambs,
@@ -209,7 +293,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     const hasChanges = currentState !== initialStateRef.current;
     setHasUnsavedChanges(hasChanges);
   }, [
-    room,
     name,
     length,
     width,
@@ -224,13 +307,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     paintWalls,
     paintCeilings,
     paintTrim,
+    paintWindowFrames,
+    paintDoorFrames,
     paintWindows,
     paintDoors,
     paintJambs,
     paintBaseboard,
     hasCrownMoulding,
     hasAccentWall,
-    hasCrownMoulding,
     includeClosetInteriorInQuote,
   ]);
 
@@ -326,16 +410,23 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   };
 
   const handleSave = () => {
-    if (!room) return;
-
     const trimmedName = name.trim();
     if (!trimmedName) {
       Alert.alert("Room Name Required", "Please enter a name for this room before saving.");
       return;
     }
 
+    // If this is a new room, create it first
+    let currentRoomId = roomId;
+    if (isNewRoom) {
+      currentRoomId = addRoom(projectId, floor);
+    }
+
+    if (!currentRoomId) return;
+
     setHasUnsavedChanges(false);
     setIsSaved(true);
+    isSavedRef.current = true;
 
     let height = 8;
     if (project?.floorHeights && project.floorHeights[floor - 1]) {
@@ -347,7 +438,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     }
 
     const updatedRoom = {
-      ...room,
+      id: currentRoomId,
       name: trimmedName,
       length: parseFloat(length) || 0,
       width: parseFloat(width) || 0,
@@ -364,6 +455,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintWalls,
       paintCeilings,
       paintTrim,
+      paintWindowFrames,
+      paintDoorFrames,
       paintWindows,
       paintDoors,
       paintJambs,
@@ -374,17 +467,27 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       includeDoors: true,
       includeTrim: true,
       includeClosetInteriorInQuote,
+      // Openings
+      openings: openings.map(o => ({
+        id: o.id,
+        width: parseInt(o.width) || 0,
+        height: parseInt(o.height) || 0,
+        hasInteriorTrim: o.hasInteriorTrim,
+        hasExteriorTrim: o.hasExteriorTrim,
+      })),
       // Update photos with current file names based on final room name
       photos: photos.map((p, idx) => ({
         ...p,
         fileName: generatePhotoFileName(trimmedName, idx + 1),
       })),
+      // Standalone notes field
+      notes: notes.trim() || undefined,
     };
 
     // Use the SAME calculation engine that the UI preview uses
     // This ensures saved totals match displayed totals
     const pricingSummaryForSave = computeRoomPricingSummary(
-      updatedRoom,
+      updatedRoom as any,
       quoteBuilder,
       pricing,
       project?.projectCoats,
@@ -418,7 +521,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       grandTotal: finalRoom.grandTotal,
     });
 
-    updateRoom(projectId, roomId!, finalRoom);
+    updateRoom(projectId, currentRoomId, finalRoom as any);
 
     // Update initial snapshot to the newly saved state
     initialStateRef.current = serializeRoomState(
@@ -436,6 +539,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintWalls,
       paintCeilings,
       paintTrim,
+      paintWindowFrames,
+      paintDoorFrames,
       paintWindows,
       paintDoors,
       paintJambs,
@@ -451,10 +556,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   };
 
   const handleDiscardAndLeave = () => {
+    // For new rooms with no name, nothing was created so just navigate back
+    // For existing rooms with no name, delete them
     const trimmedName = name.trim();
-    if (!trimmedName && room) {
-      const deleteRoomFn = useProjectStore.getState().deleteRoom;
-      deleteRoomFn(projectId, roomId!);
+    if (!trimmedName && !isNewRoom && roomId) {
+      deleteRoom(projectId, roomId);
     }
 
     setIsSaved(true);
@@ -491,48 +597,61 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   // Calculate room pricing using CENTRALIZED PRICING SUMMARY (SINGLE SOURCE OF TRUTH)
   // This ensures preview totals match what will be shown in all other views
-  const pricingSummary = room
-    ? computeRoomPricingSummary(
-        {
-          ...room,
-          name: name.trim() || "Unnamed Room",
-          length: parseFloat(length) || 0,
-          width: parseFloat(width) || 0,
-          height: currentHeight,
-          floor,
-          manualArea: parseFloat(manualArea) || undefined,
-          ceilingType,
-          cathedralPeakHeight: parseFloat(cathedralPeakHeight) || undefined,
-          windowCount: parseInt(windowCount) || 0,
-          doorCount: parseInt(doorCount) || 0,
-          hasCloset,
-          singleDoorClosets: parseInt(singleDoorClosets) || 0,
-          doubleDoorClosets: parseInt(doubleDoorClosets) || 0,
-          paintWalls,
-          paintCeilings,
-          paintTrim,
-          paintWindows,
-          paintDoors,
-          paintJambs,
-          paintBaseboard,
-          hasCrownMoulding,
-          hasAccentWall,
-          includeWindows: true,
-          includeDoors: true,
-          includeTrim: true,
-          includeClosetInteriorInQuote,
-        },
-        quoteBuilder,
-        pricing,
-        project?.projectCoats,
-        project?.projectIncludeClosetInteriorInQuote
-      )
-    : null;
+  // For new rooms, calculate with temp data; for existing rooms, use the saved room data
+  const pricingSummary = computeRoomPricingSummary(
+    {
+      id: roomId || "temp-new-room",
+      name: name.trim() || "Unnamed Room",
+      length: parseFloat(length) || 0,
+      width: parseFloat(width) || 0,
+      height: currentHeight,
+      floor,
+      manualArea: parseFloat(manualArea) || undefined,
+      ceilingType,
+      cathedralPeakHeight: parseFloat(cathedralPeakHeight) || undefined,
+      windowCount: parseInt(windowCount) || 0,
+      doorCount: parseInt(doorCount) || 0,
+      hasCloset,
+      singleDoorClosets: parseInt(singleDoorClosets) || 0,
+      doubleDoorClosets: parseInt(doubleDoorClosets) || 0,
+      paintWalls,
+      paintCeilings,
+      paintTrim,
+      paintWindowFrames,
+      paintDoorFrames,
+      paintWindows,
+      paintDoors,
+      paintJambs,
+      paintBaseboard,
+      hasCrownMoulding,
+      hasAccentWall,
+      includeWindows: true,
+      includeDoors: true,
+      includeTrim: true,
+      includeClosetInteriorInQuote,
+      openings: openings.map(o => ({
+        id: o.id,
+        width: parseInt(o.width) || 0,
+        height: parseInt(o.height) || 0,
+        hasInteriorTrim: o.hasInteriorTrim,
+        hasExteriorTrim: o.hasExteriorTrim,
+      })),
+      photos: photos.map((p, idx) => ({
+        ...p,
+        fileName: generatePhotoFileName(name || "room", idx + 1),
+      })),
+      notes: notes.trim() || undefined,
+    } as any,
+    quoteBuilder,
+    pricing,
+    project?.projectCoats,
+    project?.projectIncludeClosetInteriorInQuote
+  );
 
-  if (!room) {
+  if (!project) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: Colors.backgroundWarmGray }}>
-        <Text style={{ fontSize: Typography.h2.fontSize, color: Colors.mediumGray }}>Room not found</Text>
+        <Text style={{ fontSize: Typography.h2.fontSize, color: Colors.mediumGray }}>Project not found</Text>
       </View>
     );
   }
@@ -558,27 +677,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
               Room Name
             </Text>
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              placeholder="Enter room name"
-              placeholderTextColor={Colors.mediumGray}
-              returnKeyType="done"
-              cursorColor={Colors.primaryBlue}
-              selectionColor={Colors.primaryBlue}
-              style={{
-                backgroundColor: Colors.white,
-                borderRadius: BorderRadius.default,
-                borderWidth: 1,
-                borderColor: Colors.neutralGray,
-                paddingHorizontal: Spacing.md,
-                paddingVertical: Spacing.sm,
-                fontSize: Typography.body.fontSize,
-                color: Colors.darkCharcoal,
-              }}
-              accessibilityLabel="Room name input"
-              accessibilityHint="Enter a name for this room"
-            />
+            <View style={TextInputStyles.container}>
+              <TextInput
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter room name"
+                placeholderTextColor={Colors.mediumGray}
+                returnKeyType="done"
+                selectTextOnFocus={false}
+                style={TextInputStyles.base}
+                accessibilityLabel="Room name input"
+                accessibilityHint="Enter a name for this room"
+              />
+            </View>
           </View>
         </Card>
 
@@ -595,27 +706,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Length (ft)
               </Text>
-              <TextInput
-                value={length}
-                onChangeText={setLength}
-                keyboardType="decimal-pad"
-                placeholder="0"
-                placeholderTextColor={Colors.mediumGray}
-                returnKeyType="done"
-                cursorColor={Colors.primaryBlue}
-                selectionColor={Colors.primaryBlue}
-                style={{
-                  backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.default,
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  paddingHorizontal: Spacing.md,
-                  paddingVertical: Spacing.sm,
-                  fontSize: Typography.body.fontSize,
-                  color: Colors.darkCharcoal,
-                }}
-                accessibilityLabel="Room length input"
-              />
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={length}
+                  onChangeText={setLength}
+                  keyboardType="decimal-pad"
+                  placeholder="0"
+                  placeholderTextColor={Colors.mediumGray}
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                  accessibilityLabel="Room length input"
+                />
+              </View>
             </View>
 
             {/* Width */}
@@ -623,27 +725,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Width (ft)
               </Text>
-              <TextInput
-                value={width}
-                onChangeText={setWidth}
-                keyboardType="decimal-pad"
-                placeholder="0"
-                placeholderTextColor={Colors.mediumGray}
-                returnKeyType="done"
-                cursorColor={Colors.primaryBlue}
-                selectionColor={Colors.primaryBlue}
-                style={{
-                  backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.default,
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  paddingHorizontal: Spacing.md,
-                  paddingVertical: Spacing.sm,
-                  fontSize: Typography.body.fontSize,
-                  color: Colors.darkCharcoal,
-                }}
-                accessibilityLabel="Room width input"
-              />
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={width}
+                  onChangeText={setWidth}
+                  keyboardType="decimal-pad"
+                  placeholder="0"
+                  placeholderTextColor={Colors.mediumGray}
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                  accessibilityLabel="Room width input"
+                />
+              </View>
             </View>
           </View>
 
@@ -652,27 +745,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
               Manual Area (sq ft) - Optional
             </Text>
-            <TextInput
-              value={manualArea}
-              onChangeText={setManualArea}
-              keyboardType="decimal-pad"
-              placeholder="0"
-              placeholderTextColor={Colors.mediumGray}
-              returnKeyType="done"
-              cursorColor={Colors.primaryBlue}
-              selectionColor={Colors.primaryBlue}
-              style={{
-                backgroundColor: Colors.white,
-                borderRadius: BorderRadius.default,
-                borderWidth: 1,
-                borderColor: Colors.neutralGray,
-                paddingHorizontal: Spacing.md,
-                paddingVertical: Spacing.sm,
-                fontSize: Typography.body.fontSize,
-                color: Colors.darkCharcoal,
-              }}
-              accessibilityLabel="Manual area input"
-            />
+            <View style={TextInputStyles.container}>
+              <TextInput
+                value={manualArea}
+                onChangeText={setManualArea}
+                keyboardType="decimal-pad"
+                placeholder="0"
+                placeholderTextColor={Colors.mediumGray}
+                returnKeyType="done"
+                style={TextInputStyles.base}
+                accessibilityLabel="Manual area input"
+              />
+            </View>
             <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
               If entered, this will override Length × Width for ceiling area
             </Text>
@@ -753,27 +837,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Peak Height (ft)
               </Text>
-              <TextInput
-                value={cathedralPeakHeight}
-                onChangeText={setCathedralPeakHeight}
-                keyboardType="decimal-pad"
-                placeholder="0"
-                placeholderTextColor={Colors.mediumGray}
-                returnKeyType="done"
-                cursorColor={Colors.primaryBlue}
-                selectionColor={Colors.primaryBlue}
-                style={{
-                  backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.default,
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  paddingHorizontal: Spacing.md,
-                  paddingVertical: Spacing.sm,
-                  fontSize: Typography.body.fontSize,
-                  color: Colors.darkCharcoal,
-                }}
-                accessibilityLabel="Cathedral peak height input"
-              />
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={cathedralPeakHeight}
+                  onChangeText={setCathedralPeakHeight}
+                  keyboardType="decimal-pad"
+                  placeholder="0"
+                  placeholderTextColor={Colors.mediumGray}
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                  accessibilityLabel="Cathedral peak height input"
+                />
+              </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Height at the highest point of the cathedral ceiling
               </Text>
@@ -781,69 +856,195 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
-        {/* Paint Options Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-            Paint Options
-          </Text>
-          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md, lineHeight: 18 }}>
-            Customize what to paint in this room. These override the project defaults.
-          </Text>
-
-          <Toggle
-            label="Paint Walls"
-            value={paintWalls}
-            onValueChange={setPaintWalls}
-          />
-          <Toggle
-            label="Paint Ceilings"
-            value={paintCeilings}
-            onValueChange={setPaintCeilings}
-          />
-          <Toggle
-            label="Paint Trim (Door/Window Frames)"
-            value={paintTrim}
-            onValueChange={setPaintTrim}
-            description="Includes door frames, window frames, and closet frames"
-          />
-          <Toggle
-            label="Paint Baseboard"
-            value={paintBaseboard}
-            onValueChange={setPaintBaseboard}
-          />
-          <Toggle
-            label="Paint Doors"
-            value={paintDoors}
-            onValueChange={setPaintDoors}
-            description="Paint the door faces (both sides)"
-          />
-          {paintDoors && (
-            <Toggle
-              label="Paint Door Jambs"
-              value={paintJambs}
-              onValueChange={setPaintJambs}
-              description="Paint the inside of door frames"
-            />
-          )}
-          <Toggle
-            label="Crown Moulding"
-            value={hasCrownMoulding}
-            onValueChange={setHasCrownMoulding}
-          />
-          <Toggle
-            label="Multiple Colors / Accent Wall"
-            value={hasAccentWall}
-            onValueChange={setHasAccentWall}
-            description="Adds extra labor for cutting in different colors"
-            className="mb-0"
-          />
-        </Card>
-
         {/* Openings & Closets Section */}
         <Card style={{ marginBottom: Spacing.md }}>
           <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
             Openings & Closets
           </Text>
+
+          {/* Pass-Through Openings */}
+          <View style={{ marginBottom: Spacing.md }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+              <View>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                  Pass-Through Openings
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                  Without doors (subtracts wall area)
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+                <Pressable
+                  onPress={() => {
+                    const current = openings.length;
+                    if (current > 0) {
+                      setOpenings(openings.slice(0, -1));
+                    }
+                  }}
+                  style={{
+                    backgroundColor: Colors.neutralGray,
+                    borderRadius: 8,
+                    width: 32,
+                    height: 32,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 20, color: Colors.darkCharcoal }}>−</Text>
+                </Pressable>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, width: 30, textAlign: "center" }}>
+                  {openings.length}
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    const newOpening = {
+                      id: `opening-${Date.now()}`,
+                      width: "36",
+                      height: "80",
+                      hasInteriorTrim: true,
+                      hasExteriorTrim: true,
+                    };
+                    setOpenings([...openings, newOpening]);
+                  }}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    width: 32,
+                    height: 32,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 20, color: Colors.white, fontWeight: "bold" }}>+</Text>
+                </Pressable>
+              </View>
+            </View>
+
+            {openings.length > 0 && (
+              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.md }}>
+                {openings.map((opening, index) => (
+                  <View key={opening.id} style={{ marginBottom: index < openings.length - 1 ? Spacing.md : 0, paddingBottom: index < openings.length - 1 ? Spacing.md : 0, borderBottomWidth: index < openings.length - 1 ? 1 : 0, borderBottomColor: Colors.neutralGray }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray }}>
+                        Opening {index + 1}
+                      </Text>
+                      <Pressable
+                        onPress={() => setOpenings(openings.filter((_, i) => i !== index))}
+                        style={{ padding: Spacing.xs }}
+                      >
+                        <Ionicons name="close-circle-outline" size={18} color={Colors.error} />
+                      </Pressable>
+                    </View>
+
+                    <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.sm }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                          Width (in)
+                        </Text>
+                        <View style={TextInputStyles.container}>
+                          <TextInput
+                            value={opening.width}
+                            onChangeText={(text) => {
+                              const updated = [...openings];
+                              updated[index].width = text;
+                              setOpenings(updated);
+                            }}
+                            placeholder="36"
+                            placeholderTextColor={Colors.mediumGray}
+                            keyboardType="decimal-pad"
+                            style={TextInputStyles.base}
+                          />
+                        </View>
+                      </View>
+
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                          Height (in)
+                        </Text>
+                        <View style={TextInputStyles.container}>
+                          <TextInput
+                            value={opening.height}
+                            onChangeText={(text) => {
+                              const updated = [...openings];
+                              updated[index].height = text;
+                              setOpenings(updated);
+                            }}
+                            placeholder="80"
+                            placeholderTextColor={Colors.mediumGray}
+                            keyboardType="decimal-pad"
+                            style={TextInputStyles.base}
+                          />
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                      <Pressable
+                        onPress={() => {
+                          const updated = [...openings];
+                          updated[index].hasInteriorTrim = !updated[index].hasInteriorTrim;
+                          setOpenings(updated);
+                        }}
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingVertical: Spacing.xs,
+                          paddingHorizontal: Spacing.sm,
+                          backgroundColor: opening.hasInteriorTrim ? Colors.primaryBlueLight : Colors.white,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          borderRadius: BorderRadius.default,
+                        }}
+                      >
+                        <Ionicons
+                          name={opening.hasInteriorTrim ? "checkbox" : "checkbox-outline"}
+                          size={16}
+                          color={opening.hasInteriorTrim ? Colors.primaryBlue : Colors.mediumGray}
+                          style={{ marginRight: Spacing.xs }}
+                        />
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
+                          Interior Trim
+                        </Text>
+                      </Pressable>
+
+                      <Pressable
+                        onPress={() => {
+                          const updated = [...openings];
+                          updated[index].hasExteriorTrim = !updated[index].hasExteriorTrim;
+                          setOpenings(updated);
+                        }}
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingVertical: Spacing.xs,
+                          paddingHorizontal: Spacing.sm,
+                          backgroundColor: opening.hasExteriorTrim ? Colors.primaryBlueLight : Colors.white,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          borderRadius: BorderRadius.default,
+                        }}
+                      >
+                        <Ionicons
+                          name={opening.hasExteriorTrim ? "checkbox" : "checkbox-outline"}
+                          size={16}
+                          color={opening.hasExteriorTrim ? Colors.primaryBlue : Colors.mediumGray}
+                          style={{ marginRight: Spacing.xs }}
+                        />
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
+                          Exterior Trim
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
+
+          {/* Divider */}
+          <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
           {/* Windows Counter */}
           <View style={{ marginBottom: Spacing.md }}>
@@ -1085,6 +1286,89 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
+        {/* Paint Options Section */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+            Paint Options
+          </Text>
+          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md, lineHeight: 18 }}>
+            Customize what to paint in this room. These override the project defaults.
+          </Text>
+
+          <Toggle
+            label="Paint Walls"
+            value={paintWalls}
+            onValueChange={setPaintWalls}
+          />
+          <Toggle
+            label="Paint Ceilings"
+            value={paintCeilings}
+            onValueChange={setPaintCeilings}
+          />
+          <Toggle
+            label="Paint Window Frames"
+            value={paintWindowFrames}
+            onValueChange={setPaintWindowFrames}
+            description="Paint window trim and frames"
+          />
+          <Toggle
+            label="Paint Door Frames"
+            value={paintDoorFrames}
+            onValueChange={setPaintDoorFrames}
+            description="Paint door frames and closet door frames"
+          />
+          <Toggle
+            label="Paint Baseboard"
+            value={paintBaseboard}
+            onValueChange={setPaintBaseboard}
+          />
+          <Toggle
+            label="Paint Doors"
+            value={paintDoors}
+            onValueChange={setPaintDoors}
+            description="Paint the door faces (both sides)"
+          />
+          {paintDoors && (
+            <Toggle
+              label="Paint Door Jambs"
+              value={paintJambs}
+              onValueChange={setPaintJambs}
+              description="Paint the inside of door frames"
+            />
+          )}
+          <Toggle
+            label="Crown Moulding"
+            value={hasCrownMoulding}
+            onValueChange={setHasCrownMoulding}
+          />
+          <Toggle
+            label="Multiple Colors / Accent Wall"
+            value={hasAccentWall}
+            onValueChange={setHasAccentWall}
+            description="Adds extra labor for cutting in different colors"
+            className="mb-0"
+          />
+        </Card>
+
+        {/* Notes Section */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+            Notes
+          </Text>
+          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+            Add any observations about this room
+          </Text>
+          <TextInput
+            value={notes}
+            onChangeText={setNotes}
+            placeholder="Add notes about this room..."
+            placeholderTextColor={Colors.mediumGray}
+            multiline
+            numberOfLines={3}
+            style={TextInputStyles.multiline}
+          />
+        </Card>
+
         {/* Room Photos Section */}
         <Card style={{ marginBottom: Spacing.md }}>
           <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
@@ -1304,85 +1588,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       </ScrollView>
 
       {/* Save Confirmation Modal */}
-      {showSavePrompt && (
-        <View style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          <View style={{
-            backgroundColor: Colors.white,
-            borderRadius: BorderRadius.default,
-            marginHorizontal: Spacing.lg,
-            padding: Spacing.lg,
-            width: "90%",
-            maxWidth: 400,
-            ...Shadows.card,
-          }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Save Changes?
-            </Text>
-            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
-              You have unsaved changes. Do you want to save them before leaving?
-            </Text>
-
-            <View style={{ gap: Spacing.sm }}>
-              <Pressable
-                onPress={handleSaveAndLeave}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.md,
-                  alignItems: "center",
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Save changes and leave"
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Save Changes
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={handleDiscardAndLeave}
-                style={{
-                  backgroundColor: Colors.error,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.md,
-                  alignItems: "center",
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Discard changes and leave"
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Discard Changes
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={handleCancelExit}
-                style={{
-                  backgroundColor: Colors.neutralGray,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.md,
-                  alignItems: "center",
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Cancel and return to editing"
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  Cancel
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      )}
+      <SavePromptModal
+        visible={showSavePrompt}
+        onSave={handleSaveAndLeave}
+        onDiscard={handleDiscardAndLeave}
+        onCancel={handleCancelExit}
+      />
 
       {/* Edit Photo Note Modal */}
       <Modal
@@ -1432,16 +1643,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               placeholderTextColor={Colors.mediumGray}
               multiline
               numberOfLines={4}
-              style={{
-                backgroundColor: Colors.backgroundWarmGray,
-                borderRadius: BorderRadius.default,
-                padding: Spacing.md,
-                fontSize: Typography.body.fontSize,
-                color: Colors.darkCharcoal,
-                minHeight: 100,
-                textAlignVertical: "top",
-                marginBottom: Spacing.md,
-              }}
+              style={[
+                TextInputStyles.multiline,
+                {
+                  backgroundColor: Colors.backgroundWarmGray,
+                  marginBottom: Spacing.md,
+                  minHeight: 100,
+                }
+              ]}
               autoFocus
             />
 

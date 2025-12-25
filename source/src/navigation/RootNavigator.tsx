@@ -11,27 +11,33 @@ import { useAppSettings } from "../state/appSettings";
 // Import screens
 import HomeScreen from "../screens/HomeScreen";
 import ProjectDetailScreen from "../screens/ProjectDetailScreen";
+import ProjectSetupScreen from "../screens/ProjectSetupScreen";
+import ProjectActionsScreen from "../screens/ProjectActionsScreen";
+import ProjectsListScreen from "../screens/ProjectsListScreen";
 import RoomEditorScreen from "../screens/RoomEditorScreen";
 import StaircaseEditorScreen from "../screens/StaircaseEditorScreen";
 import FireplaceEditorScreen from "../screens/FireplaceEditorScreen";
+import BuiltInEditorScreen from "../screens/BuiltInEditorScreen";
 import PricingSettingsScreen from "../screens/PricingSettingsScreen";
 import CalculationSettingsScreen from "../screens/CalculationSettingsScreen";
 import MaterialsSummaryScreen from "../screens/MaterialsSummaryScreen";
 import ClientProposalScreen from "../screens/ClientProposalScreen";
-import NewProjectScreen from "../screens/NewProjectScreen";
 import QuoteBuilderScreen from "../screens/QuoteBuilderScreen";
 import QuoteManagerScreen from "../screens/QuoteManagerScreen";
 import SettingsGateScreen from "../screens/SettingsGateScreen";
 
 // Type definitions
 export type RootStackParamList = {
-  MainTabs: undefined;
-  Home: undefined; // Keep for backward compatibility
-  NewProject: undefined;
+  Home: undefined;
+  MainTabs: undefined; // Keep for backward compatibility
+  ProjectsList: undefined;
   ProjectDetail: { projectId: string };
-  RoomEditor: { projectId: string; roomId?: string };
+  ProjectSetup: { projectId?: string; isNew?: boolean };
+  ProjectActions: { projectId: string };
+  RoomEditor: { projectId: string; roomId?: string; roomName?: string; floor?: number };
   StaircaseEditor: { projectId: string; staircaseId?: string };
   FireplaceEditor: { projectId: string; fireplaceId?: string };
+  BuiltInEditor: { projectId: string; builtInId?: string };
   PricingSettings: undefined;
   CalculationSettings: undefined;
   MaterialsSummary: { projectId: string };
@@ -57,11 +63,11 @@ function ScreenNameDebug() {
   const routeName = useNavigationState((state) => {
     if (!state || !state.routes) return "";
     const currentRoute = state.routes[state.index];
-    // If it's MainTabs, get the nested tab name
-    if (currentRoute.name === "MainTabs" && currentRoute.state) {
+    // If it's Home, get the nested tab name
+    if (currentRoute.name === "Home" && currentRoute.state) {
       const tabState = currentRoute.state;
       const tabRoute = tabState.routes?.[tabState.index ?? 0];
-      return tabRoute?.name || "MainTabs";
+      return tabRoute?.name || "Home";
     }
     return currentRoute.name;
   });
@@ -145,7 +151,7 @@ export default function RootNavigator() {
   return (
     <View style={{ flex: 1 }}>
       <Stack.Navigator
-        initialRouteName="MainTabs"
+        initialRouteName="Home"
         screenOptions={{
           headerStyle: {
             backgroundColor: Colors.white,
@@ -155,21 +161,19 @@ export default function RootNavigator() {
             fontWeight: "600",
           },
           gestureEnabled: true,
-          // FIX #8: Disable full screen gesture to reduce swipe sensitivity
-          // This makes swipe-back only work from the edge, not the entire screen
           fullScreenGestureEnabled: false,
           animation: "slide_from_right",
         }}
       >
         <Stack.Screen
-          name="MainTabs"
+          name="Home"
           component={MainTabs}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="NewProject"
-          component={NewProjectScreen}
-          options={{ title: "New Project", presentation: "modal" }}
+          name="ProjectsList"
+          component={ProjectsListScreen}
+          options={{ title: "Projects" }}
         />
         <Stack.Screen
           name="ProjectDetail"
@@ -177,12 +181,25 @@ export default function RootNavigator() {
           options={{ title: "Project" }}
         />
         <Stack.Screen
+          name="ProjectSetup"
+          component={ProjectSetupScreen}
+          options={{ title: "Project Setup" }}
+        />
+        <Stack.Screen
+          name="ProjectActions"
+          component={ProjectActionsScreen}
+          options={{ title: "Project Actions" }}
+        />
+        <Stack.Screen
           name="RoomEditor"
           component={RoomEditorScreen}
-          options={{
-            title: "Edit Room",
-            headerShown: true,
-            gestureEnabled: true,
+          options={({ route }) => {
+            const roomName = route.params?.roomName || "Edit Room";
+            return {
+              title: `Edit Room: ${roomName}`,
+              headerShown: true,
+              gestureEnabled: true,
+            };
           }}
         />
         <Stack.Screen
@@ -196,14 +213,19 @@ export default function RootNavigator() {
           options={{ title: "Fireplace" }}
         />
         <Stack.Screen
+          name="BuiltInEditor"
+          component={BuiltInEditorScreen}
+          options={{ title: "Built-In" }}
+        />
+        <Stack.Screen
           name="PricingSettings"
           component={PricingSettingsScreen}
-          options={{ title: "Pricing Settings" }}
+          options={{ title: "Pricing Settings", headerBackTitle: "Settings" }}
         />
         <Stack.Screen
           name="CalculationSettings"
           component={CalculationSettingsScreen}
-          options={{ title: "Calculation Settings" }}
+          options={{ title: "Calculation Settings", headerBackTitle: "Settings" }}
         />
         <Stack.Screen
           name="MaterialsSummary"

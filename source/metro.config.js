@@ -1,6 +1,6 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
-const { withVibecodeMetro } = require("@vibecodeapp/sdk/metro");
+// const { withVibecodeMetro } = require("@vibecodeapp/sdk/metro");
 
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
@@ -50,4 +50,4 @@ config.resolver = {
 };
 
 // Integrate NativeWind with the Metro configuration.
-module.exports = withNativeWind(withVibecodeMetro(config), { input: "./global.css" });
+module.exports = withNativeWind(config, { input: "./global.css" });

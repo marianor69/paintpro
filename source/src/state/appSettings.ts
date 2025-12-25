@@ -2,6 +2,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+export type Language = 'en' | 'es' | 'fr';
+export type UnitSystem = 'imperial' | 'metric';
+
 export interface AppSettings {
   // App Behavior
   testMode: boolean; // Show/hide debugging utilities
@@ -19,6 +22,15 @@ export interface AppSettings {
 
   // Closet settings
   closetCavityDepth: number; // in feet, default 2
+
+  // Internationalization
+  currentLanguage: Language; // User's preferred language
+
+  // Unit System
+  unitSystem: UnitSystem; // User's preferred measurement system (imperial or metric)
+
+  // Onboarding
+  hasSeenOnboarding: boolean; // Whether user has completed the first-time onboarding tutorial
 }
 
 interface AppSettingsStore extends AppSettings {
@@ -42,6 +54,15 @@ const defaultAppSettings: AppSettings = {
 
   // Closet
   closetCavityDepth: 2, // 2 feet = 24 inches
+
+  // Internationalization - defaults to English
+  currentLanguage: 'en' as Language,
+
+  // Unit System - defaults to imperial for US market
+  unitSystem: 'imperial' as UnitSystem,
+
+  // Onboarding - first-time users need to see tutorial
+  hasSeenOnboarding: false,
 };
 
 export const useAppSettings = create<AppSettingsStore>()(

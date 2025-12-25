@@ -57,6 +57,8 @@ export function NumericInput({
           keyboardType="numeric"
           returnKeyType="done"
           onSubmitEditing={() => Keyboard.dismiss()}
+          cursorColor={Colors.primaryBlue}
+          selectionColor={Colors.primaryBlue}
           style={{
             flex: 1,
             fontSize: Typography.body.fontSize,

@@ -9,11 +9,13 @@ import { useAppSettings } from "../state/appSettings";
 import { useCalculationSettings } from "../state/calculationStore";
 import { calculateFilteredProjectSummary, formatCurrency, safeNumber, getDefaultQuoteBuilder } from "../utils/calculations";
 import { computeRoomPricingSummary, computeStaircasePricingSummary, computeFireplacePricingSummary } from "../utils/pricingSummary";
+import { formatPhoneNumber } from "../utils/phoneFormatter";
+import { Staircase, Fireplace } from "../types/painting";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
+import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 
@@ -28,40 +30,31 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const addRoom = useProjectStore((s) => s.addRoom);
   const addStaircase = useProjectStore((s) => s.addStaircase);
   const addFireplace = useProjectStore((s) => s.addFireplace);
+  const addBuiltIn = useProjectStore((s) => s.addBuiltIn);
   const deleteRoom = useProjectStore((s) => s.deleteRoom);
   const deleteStaircase = useProjectStore((s) => s.deleteStaircase);
   const deleteFireplace = useProjectStore((s) => s.deleteFireplace);
-  const updateProjectFloors = useProjectStore((s) => s.updateProjectFloors);
-  const updateProjectBaseboard = useProjectStore((s) => s.updateProjectBaseboard);
-  const updateProjectCoats = useProjectStore((s) => s.updateProjectCoats);
-  const updateRoom = useProjectStore((s) => s.updateRoom);
-  const updateGlobalPaintDefaults = useProjectStore((s) => s.updateGlobalPaintDefaults);
-  const updateProjectCoverPhoto = useProjectStore((s) => s.updateProjectCoverPhoto);
+  const deleteBuiltIn = useProjectStore((s) => s.deleteBuiltIn);
+  const updateClientInfo = useProjectStore((s) => s.updateClientInfo);
   const pricing = usePricingStore();
   const appSettings = useAppSettings();
   const calculationSettings = useCalculationSettings((s) => s.settings);
 
+  // State for editing client info
+  const [isEditingClient, setIsEditingClient] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editAddress, setEditAddress] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editCountry, setEditCountry] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+
   // Wrap project loading and preprocessing
-  let effectiveFloorCount = 1;
-  let effectiveFloorHeights: number[] = [8];
   let summary: ReturnType<typeof calculateFilteredProjectSummary> | null = null;
   let loadError: string | null = null;
 
   try {
     if (project) {
-      // Normalize floor count
-      effectiveFloorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
-
-      // Normalize floor heights
-      if (project.floorHeights && Array.isArray(project.floorHeights)) {
-        effectiveFloorHeights = project.floorHeights.map((h) => safeNumber(h, 8));
-      } else {
-        effectiveFloorHeights = [
-          safeNumber(project.firstFloorHeight, 8),
-          ...(project.secondFloorHeight != null ? [safeNumber(project.secondFloorHeight, 8)] : [])
-        ];
-      }
-
       // Calculate summary using ACTIVE QUOTE's QuoteBuilder (single source of truth)
       // This ensures consistency with RoomEditorScreen which also uses activeQuote
       const activeQuote = project.quotes?.find(q => q.id === project.activeQuoteId);
@@ -73,12 +66,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     loadError = `PROJECT LOAD ERROR: ${error.message}`;
     console.log("PROJECT LOAD ERROR:", error.message);
   }
-
-  // Local state for floor configuration - MUST be before any early returns
-  const [localFloorCount, setLocalFloorCount] = useState(effectiveFloorCount);
-  const [localFloorHeights, setLocalFloorHeights] = useState<string[]>(
-    effectiveFloorHeights.map(h => safeNumber(h, 8).toString())
-  );
 
   if (!project) {
     return (
@@ -125,101 +112,38 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     totalDoorSqFt: 0,
   };
 
-  const handleFloorCountChange = (newCount: number) => {
-    if (newCount < 1 || newCount > 5) return;
-
-    setLocalFloorCount(newCount);
-
-    const newHeights = [...localFloorHeights];
-    if (newCount > localFloorHeights.length) {
-      while (newHeights.length < newCount) {
-        newHeights.push("8");
-      }
-    } else {
-      newHeights.length = newCount;
-    }
-    setLocalFloorHeights(newHeights);
-
-    // Update the project immediately
-    updateProjectFloors(projectId, newCount, newHeights.map(h => parseFloat(h) || 8));
-  };
-
-  const handleFloorHeightChange = (index: number, value: string) => {
-    const newHeights = [...localFloorHeights];
-    newHeights[index] = value;
-    setLocalFloorHeights(newHeights);
-
-    // Update the project immediately
-    updateProjectFloors(projectId, localFloorCount, newHeights.map(h => parseFloat(h) || 8));
-  };
-
   const handleAddRoom = (floorNumber?: number) => {
-    const roomId = addRoom(projectId, floorNumber);
-    navigation.navigate("RoomEditor", { projectId, roomId });
+    // Don't create room here - let RoomEditor create it on Save
+    navigation.navigate("RoomEditor", { projectId, floor: floorNumber });
+  };
+
+  // Helper functions to check if items have actual data
+  const hasStaircaseData = (staircase: Staircase): boolean => {
+    return !!(
+      staircase.riserCount > 0 ||
+      staircase.handrailLength > 0 ||
+      staircase.spindleCount > 0 ||
+      (staircase.hasSecondaryStairwell && (staircase.tallWallHeight || staircase.shortWallHeight))
+    );
+  };
+
+  const hasFireplaceData = (fireplace: Fireplace): boolean => {
+    return !!(fireplace.width > 0 || fireplace.height > 0 || fireplace.depth > 0 || fireplace.trimLinearFeet);
   };
 
   const handleAddStaircase = () => {
-    const staircaseId = addStaircase(projectId);
-    navigation.navigate("StaircaseEditor", { projectId, staircaseId });
+    // Don't create staircase here - let StaircaseEditor create it on Save
+    navigation.navigate("StaircaseEditor", { projectId });
   };
 
   const handleAddFireplace = () => {
-    const fireplaceId = addFireplace(projectId);
-    navigation.navigate("FireplaceEditor", { projectId, fireplaceId });
+    // Don't create fireplace here - let FireplaceEditor create it on Save
+    navigation.navigate("FireplaceEditor", { projectId });
   };
 
-  const handleCoverPhoto = async (useCamera: boolean) => {
-    try {
-      // Request appropriate permission
-      if (useCamera) {
-        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-        if (!cameraPermission.granted) {
-          Alert.alert("Permission Required", "Camera permission is needed to take photos.");
-          return;
-        }
-      } else {
-        const mediaPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!mediaPermission.granted) {
-          Alert.alert("Permission Required", "Photo library permission is needed to select photos.");
-          return;
-        }
-      }
-
-      const result = useCamera
-        ? await ImagePicker.launchCameraAsync({
-            mediaTypes: ["images"],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8,
-          })
-        : await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images"],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8,
-          });
-
-      if (!result.canceled && result.assets[0]) {
-        updateProjectCoverPhoto(projectId, result.assets[0].uri);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to select cover photo.");
-    }
-  };
-
-  const handleRemoveCoverPhoto = () => {
-    Alert.alert(
-      "Remove Cover Photo",
-      "Are you sure you want to remove the project cover photo?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Remove",
-          style: "destructive",
-          onPress: () => updateProjectCoverPhoto(projectId, undefined),
-        },
-      ]
-    );
+  const handleAddBuiltIn = () => {
+    // Don't create built-in here - let BuiltInEditor create it on Save
+    navigation.navigate("BuiltInEditor", { projectId });
   };
 
   // Room Details (Test Export) handler
@@ -351,11 +275,12 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
           // Closet settings
           singleClosetWidth: calculationSettings.singleClosetWidth,
-          singleClosetHeight: calculationSettings.singleClosetHeight,
           singleClosetTrimWidth: calculationSettings.singleClosetTrimWidth,
+          singleClosetBaseboardPerimeter: calculationSettings.singleClosetBaseboardPerimeter || 88,
           doubleClosetWidth: calculationSettings.doubleClosetWidth,
-          doubleClosetHeight: calculationSettings.doubleClosetHeight,
           doubleClosetTrimWidth: calculationSettings.doubleClosetTrimWidth,
+          doubleClosetBaseboardPerimeter: calculationSettings.doubleClosetBaseboardPerimeter || 112,
+          closetCavityDepth: calculationSettings.closetCavityDepth || 2,
 
           // Other trim settings
           baseboardWidth: calculationSettings.baseboardWidth,
@@ -494,12 +419,14 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             windowWidth: calculationSettings.windowWidth,
             windowHeight: calculationSettings.windowHeight,
             singleClosetWidth: calculationSettings.singleClosetWidth,
-            singleClosetHeight: calculationSettings.singleClosetHeight,
+            singleClosetTrimWidth: calculationSettings.singleClosetTrimWidth,
+            singleClosetBaseboardPerimeter: calculationSettings.singleClosetBaseboardPerimeter || 88,
             doubleClosetWidth: calculationSettings.doubleClosetWidth,
-            doubleClosetHeight: calculationSettings.doubleClosetHeight,
+            doubleClosetTrimWidth: calculationSettings.doubleClosetTrimWidth,
+            doubleClosetBaseboardPerimeter: calculationSettings.doubleClosetBaseboardPerimeter || 112,
             baseboardWidth: calculationSettings.baseboardWidth,
             crownMouldingWidth: calculationSettings.crownMouldingWidth,
-            closetCavityDepth: appSettings.closetCavityDepth,
+            closetCavityDepth: calculationSettings.closetCavityDepth || 2,
           },
 
           // COMBINED RULE FLAGS - What's actually included
@@ -751,663 +678,462 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
         >
           {/* Project Info */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h1.fontSize, fontWeight: Typography.h1.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              {project.clientInfo.name}
-            </Text>
-            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-              {project.clientInfo.address}
-            </Text>
-            {project.clientInfo.phone && (
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                {project.clientInfo.phone}
-              </Text>
-            )}
+            {isEditingClient ? (
+              <>
+                {/* Edit Mode */}
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                  Edit Client Details
+                </Text>
 
-            {/* Total Estimate */}
-            <View style={{ marginTop: Spacing.md, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.neutralGray }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                Total Estimate
-              </Text>
-              <Text style={{ fontSize: 32, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                {formatCurrency(displaySummary.grandTotal)}
-              </Text>
-            </View>
-          </Card>
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Client Name
+                  </Text>
+                  <View style={TextInputStyles.container}>
+                    <TextInput
+                      value={editName}
+                      onChangeText={setEditName}
+                      placeholder="Client name"
+                      placeholderTextColor={Colors.mediumGray}
+                      style={TextInputStyles.base}
+                    />
+                  </View>
+                </View>
 
-          {/* Project Cover Photo */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Project Cover Photo
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              This photo appears as the project thumbnail on the home screen
-            </Text>
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Address
+                  </Text>
+                  <View style={TextInputStyles.container}>
+                    <TextInput
+                      value={editAddress}
+                      onChangeText={setEditAddress}
+                      placeholder="Address"
+                      placeholderTextColor={Colors.mediumGray}
+                      style={TextInputStyles.base}
+                    />
+                  </View>
+                </View>
 
-            {project.coverPhotoUri ? (
-              <View>
-                <Image
-                  source={{ uri: project.coverPhotoUri }}
-                  style={{
-                    width: "100%",
-                    height: 200,
-                    borderRadius: BorderRadius.default,
-                    backgroundColor: Colors.neutralGray,
-                    marginBottom: Spacing.md,
-                  }}
-                  resizeMode="cover"
-                />
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    City
+                  </Text>
+                  <View style={TextInputStyles.container}>
+                    <TextInput
+                      value={editCity}
+                      onChangeText={setEditCity}
+                      placeholder="City"
+                      placeholderTextColor={Colors.mediumGray}
+                      style={TextInputStyles.base}
+                    />
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Country
+                  </Text>
+                  <View style={TextInputStyles.container}>
+                    <TextInput
+                      value={editCountry}
+                      onChangeText={setEditCountry}
+                      placeholder="Country"
+                      placeholderTextColor={Colors.mediumGray}
+                      style={TextInputStyles.base}
+                    />
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Phone
+                  </Text>
+                  <View style={TextInputStyles.container}>
+                    <TextInput
+                      value={editPhone}
+                      onChangeText={setEditPhone}
+                      placeholder="Phone number"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="phone-pad"
+                      style={TextInputStyles.base}
+                    />
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Email
+                  </Text>
+                  <View style={TextInputStyles.container}>
+                    <TextInput
+                      value={editEmail}
+                      onChangeText={setEditEmail}
+                      placeholder="Email address"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      style={TextInputStyles.base}
+                    />
+                  </View>
+                </View>
+
                 <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                   <Pressable
-                    onPress={() => handleCoverPhoto(true)}
+                    onPress={() => setIsEditingClient(false)}
+                    style={{
+                      flex: 1,
+                      backgroundColor: Colors.white,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      borderRadius: BorderRadius.default,
+                      paddingVertical: Spacing.sm,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      Cancel
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      updateClientInfo(projectId, {
+                        name: editName.trim() || "Unnamed Client",
+                        address: editAddress.trim(),
+                        city: editCity.trim(),
+                        country: editCountry.trim(),
+                        phone: editPhone.trim(),
+                        email: editEmail.trim(),
+                      });
+                      setIsEditingClient(false);
+                    }}
                     style={{
                       flex: 1,
                       backgroundColor: Colors.primaryBlue,
                       borderRadius: BorderRadius.default,
                       paddingVertical: Spacing.sm,
-                      flexDirection: "row",
                       alignItems: "center",
-                      justifyContent: "center",
                     }}
                   >
-                    <Ionicons name="camera-outline" size={18} color={Colors.white} />
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.xs }}>
-                      Retake
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                      Save
                     </Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={() => handleCoverPhoto(false)}
-                    style={{
-                      flex: 1,
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      paddingVertical: Spacing.sm,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                    }}
-                  >
-                    <Ionicons name="images-outline" size={18} color={Colors.darkCharcoal} />
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginLeft: Spacing.xs }}>
-                      Choose
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={handleRemoveCoverPhoto}
-                    style={{
-                      backgroundColor: Colors.error + "10",
-                      borderRadius: BorderRadius.default,
-                      paddingVertical: Spacing.sm,
-                      paddingHorizontal: Spacing.md,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Ionicons name="trash-outline" size={18} color={Colors.error} />
                   </Pressable>
                 </View>
-              </View>
+              </>
             ) : (
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                <Pressable
-                  onPress={() => handleCoverPhoto(true)}
-                  style={{
-                    flex: 1,
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Ionicons name="camera-outline" size={20} color={Colors.white} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.sm }}>
-                    Take Photo
+              <>
+                {/* View Mode */}
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.h1.fontSize, fontWeight: Typography.h1.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      {project.clientInfo.name}
+                    </Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                      {project.clientInfo.address}
+                    </Text>
+                    {project.clientInfo.phone && (
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        {formatPhoneNumber(project.clientInfo.phone, project.clientInfo.country)}
+                      </Text>
+                    )}
+                    {project.clientInfo.email && (
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        {project.clientInfo.email}
+                      </Text>
+                    )}
+                  </View>
+                  <Pressable
+                    onPress={() => {
+                      setEditName(project.clientInfo.name);
+                      setEditAddress(project.clientInfo.address);
+                      setEditCity(project.clientInfo.city || "");
+                      setEditCountry(project.clientInfo.country || "");
+                      setEditPhone(project.clientInfo.phone || "");
+                      setEditEmail(project.clientInfo.email || "");
+                      setIsEditingClient(true);
+                    }}
+                    style={{
+                      padding: Spacing.sm,
+                    }}
+                  >
+                    <Ionicons name="pencil" size={20} color={Colors.primaryBlue} />
+                  </Pressable>
+                </View>
+
+                {/* Total Estimate */}
+                <View style={{ marginTop: Spacing.md, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.neutralGray }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Total Estimate
                   </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => handleCoverPhoto(false)}
-                  style={{
-                    flex: 1,
-                    backgroundColor: Colors.white,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 1,
-                    borderColor: Colors.neutralGray,
-                  }}
-                >
-                  <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginLeft: Spacing.sm }}>
-                    Choose
+                  <Text style={{ fontSize: 32, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                    {formatCurrency(displaySummary.grandTotal)}
                   </Text>
-                </Pressable>
-              </View>
+                </View>
+              </>
             )}
           </Card>
 
-          {/* Floors & Heights - Ultra Compact */}
+          {/* Floors & Heights - Navigate to ProjectSetup */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Floors & Heights
-            </Text>
-
-            {/* Number of Floors - Inline */}
-            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginRight: Spacing.sm }}>
-                Floors:
-              </Text>
-              <Pressable
-                onPress={() => handleFloorCountChange(localFloorCount - 1)}
-                disabled={localFloorCount <= 1}
-                style={{
-                  backgroundColor: localFloorCount <= 1 ? Colors.neutralGray : Colors.white,
-                  borderRadius: 8,
-                  padding: Spacing.xs,
-                  width: 32,
-                  height: 32,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  marginRight: Spacing.xs,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Decrease floor count"
-              >
-                <Ionicons name="remove" size={18} color={localFloorCount <= 1 ? Colors.mediumGray : Colors.darkCharcoal} />
-              </Pressable>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, minWidth: 24, textAlign: "center" }}>
-                {localFloorCount}
-              </Text>
-              <Pressable
-                onPress={() => handleFloorCountChange(localFloorCount + 1)}
-                disabled={localFloorCount >= 5}
-                style={{
-                  backgroundColor: localFloorCount >= 5 ? Colors.neutralGray : Colors.white,
-                  borderRadius: 8,
-                  padding: Spacing.xs,
-                  width: 32,
-                  height: 32,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  marginLeft: Spacing.xs,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Increase floor count"
-              >
-                <Ionicons name="add" size={18} color={localFloorCount >= 5 ? Colors.mediumGray : Colors.darkCharcoal} />
-              </Pressable>
-            </View>
-
-            {/* Floor Heights - Compact Inline */}
-            {localFloorHeights.map((height, index) => (
-              <View key={index} style={{ flexDirection: "row", alignItems: "center", marginBottom: index < localFloorHeights.length - 1 ? Spacing.sm : 0 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, width: 120 }}>
-                  {getOrdinal(index + 1)} floor height:
+            <Pressable
+              onPress={() => navigation.navigate("ProjectSetup", { projectId })}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingVertical: Spacing.sm,
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Configure project setup"
+              accessibilityHint="Opens floor heights and paint defaults configuration"
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Project Setup
                 </Text>
-                <TextInput
-                  value={height}
-                  onChangeText={(value) => handleFloorHeightChange(index, value)}
-                  keyboardType="decimal-pad"
-                  placeholder="8"
-                  placeholderTextColor={Colors.mediumGray}
-                  cursorColor={Colors.primaryBlue}
-                  selectionColor={Colors.primaryBlue}
-                  returnKeyType="done"
-                  style={{
-                    backgroundColor: Colors.white,
-                    borderRadius: BorderRadius.default,
-                    borderWidth: 1,
-                    borderColor: Colors.neutralGray,
-                    paddingHorizontal: Spacing.sm,
-                    paddingVertical: Spacing.xs,
-                    fontSize: Typography.body.fontSize,
-                    color: Colors.darkCharcoal,
-                    width: 60,
-                    marginRight: Spacing.xs,
-                  }}
-                  accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
-                />
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>ft</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                  Configure floors, heights & paint defaults
+                </Text>
               </View>
-            ))}
-
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm }}>
-              Used as default ceiling height when adding rooms
-            </Text>
+              <Ionicons name="chevron-forward" size={24} color={Colors.primaryBlue} />
+            </Pressable>
           </Card>
 
-          {/* Global Paint Defaults */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Global Paint Defaults
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md, lineHeight: 18 }}>
-              Define which elements to paint by default when creating new rooms. These can be overridden per room.
-            </Text>
-
-            <View>
-              <Toggle
-                label="Paint Walls"
-                value={project.globalPaintDefaults?.paintWalls ?? true}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintWalls: value })}
-              />
-              <Toggle
-                label="Paint Ceilings"
-                value={project.globalPaintDefaults?.paintCeilings ?? true}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintCeilings: value })}
-              />
-              <Toggle
-                label="Paint Trim (Door/Window Frames)"
-                value={project.globalPaintDefaults?.paintTrim ?? true}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintTrim: value })}
-                description="Includes door frames and window frames"
-              />
-              <Toggle
-                label="Paint Baseboards"
-                value={project.globalPaintDefaults?.paintBaseboards ?? true}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintBaseboards: value })}
-              />
-              <Toggle
-                label="Paint Doors"
-                value={project.globalPaintDefaults?.paintDoors ?? false}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintDoors: value })}
-              />
-              <Toggle
-                label="Paint Door Jambs"
-                value={project.globalPaintDefaults?.paintDoorJambs ?? false}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintDoorJambs: value })}
-              />
-              <Toggle
-                label="Paint Crown Moulding"
-                value={project.globalPaintDefaults?.paintCrownMoulding ?? false}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintCrownMoulding: value })}
-              />
-              <Toggle
-                label="Paint Closet Interiors"
-                value={project.globalPaintDefaults?.paintClosetInteriors ?? true}
-                onValueChange={(value) => updateGlobalPaintDefaults(projectId, { paintClosetInteriors: value })}
-              />
-            </View>
-
-            {/* Default Coats Section */}
-            <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
-
-            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Default Coats for New Rooms
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-              Toggle ON for 2 coats, OFF for 1 coat. Affects paint material calculations.
-            </Text>
-
-            <Toggle
-              label="Wall Coats"
-              value={(project.globalPaintDefaults?.defaultWallCoats ?? 2) === 2}
-              onValueChange={(value) =>
-                updateGlobalPaintDefaults(projectId, {
-                  defaultWallCoats: value ? 2 : 1,
-                })
-              }
-              description={`Currently: ${project.globalPaintDefaults?.defaultWallCoats ?? 2} coat(s)`}
-            />
-
-            <Toggle
-              label="Ceiling Coats"
-              value={(project.globalPaintDefaults?.defaultCeilingCoats ?? 2) === 2}
-              onValueChange={(value) =>
-                updateGlobalPaintDefaults(projectId, {
-                  defaultCeilingCoats: value ? 2 : 1,
-                })
-              }
-              description={`Currently: ${project.globalPaintDefaults?.defaultCeilingCoats ?? 2} coat(s)`}
-            />
-
-            <Toggle
-              label="Trim Coats"
-              value={(project.globalPaintDefaults?.defaultTrimCoats ?? 2) === 2}
-              onValueChange={(value) =>
-                updateGlobalPaintDefaults(projectId, {
-                  defaultTrimCoats: value ? 2 : 1,
-                })
-              }
-              description={`Currently: ${project.globalPaintDefaults?.defaultTrimCoats ?? 2} coat(s)`}
-            />
-
-            <Toggle
-              label="Door Coats"
-              value={(project.globalPaintDefaults?.defaultDoorCoats ?? 2) === 2}
-              onValueChange={(value) =>
-                updateGlobalPaintDefaults(projectId, {
-                  defaultDoorCoats: value ? 2 : 1,
-                })
-              }
-              description={`Currently: ${project.globalPaintDefaults?.defaultDoorCoats ?? 2} coat(s)`}
-            />
-
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, fontStyle: "italic" }}>
-              Note: These defaults set initial coat values for new rooms. Paint material costs scale with coats. Labor costs are not affected by coats.
-            </Text>
-          </Card>
-
-          {/* Rooms Overview */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Rooms Overview
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.sm, lineHeight: 18 }}>
-              Tap a room to edit dimensions and paint options
-            </Text>
-            <View style={{ backgroundColor: "#FFF9E6", borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.md, borderLeftWidth: 4, borderLeftColor: "#F59E0B" }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: "#92400E", lineHeight: 18 }}>
-                Important: Rooms marked as Excluded are never included in any quote, regardless of quote filters.
-              </Text>
-            </View>
-
-            {/* Add Room Buttons */}
-            <View style={{ marginBottom: project.rooms.length > 0 ? Spacing.md : 0 }}>
-              {localFloorCount === 1 ? (
-                <Pressable
-                  onPress={() => handleAddRoom(1)}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    alignItems: "center",
-                    ...Shadows.card,
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Add room"
-                >
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Add Room
+          {/* Rooms & Structural Elements Section */}
+          {project.rooms.length > 0 && (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <View style={{ marginBottom: Spacing.md }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Rooms: {project.rooms.length}
                   </Text>
-                </Pressable>
-              ) : (
-                <View style={{ gap: Spacing.sm }}>
-                  {Array.from({ length: localFloorCount }, (_, i) => i + 1).map((floorNum) => (
+                  {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
                     <Pressable
-                      key={floorNum}
-                      onPress={() => handleAddRoom(floorNum)}
+                      onPress={() => handleAddRoom(1)}
                       style={{
                         backgroundColor: Colors.primaryBlue,
-                        borderRadius: BorderRadius.default,
-                        paddingVertical: Spacing.sm,
+                        borderRadius: 8,
                         paddingHorizontal: Spacing.md,
-                        alignItems: "center",
+                        paddingVertical: 6,
                       }}
                       accessibilityRole="button"
-                      accessibilityLabel={`Add room for ${getOrdinal(floorNum)} floor`}
+                      accessibilityLabel="Add room"
                     >
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                        Add Room for {getOrdinal(floorNum)} Floor
+                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                        Add
                       </Text>
                     </Pressable>
-                  ))}
+                  ) : (
+                    <Pressable
+                      onPress={() => {
+                        // Show floor selection modal or dropdown
+                        const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                        Alert.alert("Select Floor", "Choose which floor to add the room to:", [
+                          ...Array.from({ length: floorCount }, (_, i) => ({
+                            text: `${getOrdinal(i + 1)} Floor`,
+                            onPress: () => handleAddRoom(i + 1),
+                          })),
+                          { text: "Cancel", style: "cancel" },
+                        ]);
+                      }}
+                      style={{
+                        backgroundColor: Colors.primaryBlue,
+                        borderRadius: 8,
+                        paddingHorizontal: Spacing.md,
+                        paddingVertical: 6,
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Add room"
+                    >
+                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                        Add
+                      </Text>
+                    </Pressable>
+                  )}
                 </View>
-              )}
-            </View>
-
-            {/* Room List */}
-            {project.rooms.length === 0 ? (
-              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.lg, alignItems: "center" }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
-                  No rooms added yet
-                </Text>
-              </View>
-            ) : (
-              project.rooms.map((room, index) => (
-                <Pressable
-                  key={room.id}
-                  onPress={() =>
-                    navigation.navigate("RoomEditor", {
-                      projectId,
-                      roomId: room.id,
-                    })
-                  }
-                  onLongPress={() => {
-                    Alert.alert(
-                      "Delete Room",
-                      `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`,
-                      [
+                {project.rooms.map((room, idx) => (
+                  <Pressable
+                    key={room.id}
+                    onPress={() =>
+                      navigation.navigate("RoomEditor", {
+                        projectId,
+                        roomId: room.id,
+                        roomName: room.name || "Unnamed Room",
+                      })
+                    }
+                    onLongPress={() => {
+                      Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
                         { text: "Cancel", style: "cancel" },
                         {
                           text: "Delete",
                           style: "destructive",
                           onPress: () => deleteRoom(projectId, room.id),
                         },
-                      ]
-                    );
-                  }}
-                  style={{
-                    backgroundColor: Colors.white,
-                    borderRadius: BorderRadius.default,
-                    padding: Spacing.md,
-                    marginBottom: index < project.rooms.length - 1 ? Spacing.sm : 0,
-                    borderWidth: 1,
-                    borderColor: Colors.neutralGray,
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
-                >
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                        {room.name || "Unnamed Room"} — {getOrdinal(room.floor || 1)} floor
+                      ]);
+                    }}
+                    style={{
+                      backgroundColor: Colors.white,
+                      borderRadius: BorderRadius.default,
+                      padding: Spacing.sm,
+                      marginBottom: idx < project.rooms.length - 1 ? Spacing.xs : 0,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
+                  >
+                    <View>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                        {room.name || "Unnamed Room"}
                       </Text>
-                      <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4, flexWrap: "wrap", gap: 8 }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          {room.length} × {room.width} × {room.height} ft
-                        </Text>
-                        {room.included === false && (
-                          <View style={{ backgroundColor: Colors.neutralGray, borderRadius: 12, paddingHorizontal: 8, paddingVertical: 3 }}>
-                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                              Excluded
-                            </Text>
-                          </View>
-                        )}
-                        {room.hasCloset && (
-                          <View style={{ backgroundColor: "#E3F2FD", borderRadius: 12, paddingHorizontal: 8, paddingVertical: 3 }}>
-                            <Text style={{ fontSize: Typography.caption.fontSize, color: "#1565C0", fontWeight: "600" as any }}>
-                              Closet
-                            </Text>
-                          </View>
-                        )}
-                      </View>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
+                        {getOrdinal(room.floor || 1)} floor
+                      </Text>
                     </View>
-                    <Ionicons name="chevron-forward" size={20} color={Colors.mediumGray} />
-                  </View>
-
-                  {/* Include/Exclude Toggle */}
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: Spacing.sm, borderTopWidth: 1, borderTopColor: Colors.neutralGray }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      {room.included === false ? "Excluded from calculations" : "Included in calculations"}
-                    </Text>
-                    <Pressable
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        updateRoom(projectId, room.id, {
-                          included: room.included === false ? true : false,
-                        });
-                      }}
-                      style={{
-                        backgroundColor: room.included === false ? Colors.neutralGray : Colors.primaryBlue,
-                        borderRadius: 8,
-                        paddingHorizontal: Spacing.sm,
-                        paddingVertical: 6,
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel={room.included === false ? "Include room in calculations" : "Exclude room from calculations"}
-                    >
-                      <Text
-                        style={{
-                          fontSize: Typography.caption.fontSize,
-                          fontWeight: "600" as any,
-                          color: room.included === false ? Colors.darkCharcoal : Colors.white,
-                        }}
-                      >
-                        {room.included === false ? "Include" : "Exclude"}
-                      </Text>
-                    </Pressable>
-                  </View>
-                </Pressable>
-              ))
-            )}
-          </Card>
-
-          {/* Staircases & Fireplaces */}
-          {(project.staircases.length > 0 || project.fireplaces.length > 0) && (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Staircases & Fireplaces
-              </Text>
-
-              {/* Staircases */}
-              {project.staircases.length > 0 && (
-                <View style={{ marginBottom: project.fireplaces.length > 0 ? Spacing.md : 0 }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                      Staircases: {project.staircases.length}
-                    </Text>
-                    <Pressable
-                      onPress={handleAddStaircase}
-                      style={{
-                        backgroundColor: Colors.primaryBlue,
-                        borderRadius: 8,
-                        paddingHorizontal: Spacing.md,
-                        paddingVertical: 6,
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel="Add staircase"
-                    >
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                        Add
-                      </Text>
-                    </Pressable>
-                  </View>
-                  {project.staircases.map((staircase, idx) => (
-                    <Pressable
-                      key={staircase.id}
-                      onPress={() =>
-                        navigation.navigate("StaircaseEditor", {
-                          projectId,
-                          staircaseId: staircase.id,
-                        })
-                      }
-                      onLongPress={() => {
-                        Alert.alert("Delete Staircase", "Are you sure you want to delete this staircase?", [
-                          { text: "Cancel", style: "cancel" },
-                          {
-                            text: "Delete",
-                            style: "destructive",
-                            onPress: () => deleteStaircase(projectId, staircase.id),
-                          },
-                        ]);
-                      }}
-                      style={{
-                        backgroundColor: Colors.white,
-                        borderRadius: BorderRadius.default,
-                        padding: Spacing.sm,
-                        marginBottom: idx < project.staircases.length - 1 ? Spacing.xs : 0,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Edit staircase ${idx + 1}`}
-                    >
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Staircase {idx + 1}
-                      </Text>
-                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-
-              {/* Fireplaces */}
-              {project.fireplaces.length > 0 && (
-                <View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                      Fireplaces: {project.fireplaces.length}
-                    </Text>
-                    <Pressable
-                      onPress={handleAddFireplace}
-                      style={{
-                        backgroundColor: Colors.primaryBlue,
-                        borderRadius: 8,
-                        paddingHorizontal: Spacing.md,
-                        paddingVertical: 6,
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel="Add fireplace"
-                    >
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                        Add
-                      </Text>
-                    </Pressable>
-                  </View>
-                  {project.fireplaces.map((fireplace, idx) => (
-                    <Pressable
-                      key={fireplace.id}
-                      onPress={() =>
-                        navigation.navigate("FireplaceEditor", {
-                          projectId,
-                          fireplaceId: fireplace.id,
-                        })
-                      }
-                      onLongPress={() => {
-                        Alert.alert("Delete Fireplace", "Are you sure you want to delete this fireplace?", [
-                          { text: "Cancel", style: "cancel" },
-                          {
-                            text: "Delete",
-                            style: "destructive",
-                            onPress: () => deleteFireplace(projectId, fireplace.id),
-                          },
-                        ]);
-                      }}
-                      style={{
-                        backgroundColor: Colors.white,
-                        borderRadius: BorderRadius.default,
-                        padding: Spacing.sm,
-                        marginBottom: idx < project.fireplaces.length - 1 ? Spacing.xs : 0,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Edit fireplace ${idx + 1}`}
-                    >
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Fireplace {idx + 1}
-                      </Text>
-                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                    </Pressable>
-                  ))}
-                </View>
-              )}
+                    <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                  </Pressable>
+                ))}
+              </View>
             </Card>
           )}
 
-          {/* Add Staircase/Fireplace buttons if none exist */}
-          {(project.staircases.length === 0 || project.fireplaces.length === 0) && (
+          {/* Add Room button if none exist */}
+          {project.rooms.length === 0 && (
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Staircases & Fireplaces
+                Rooms
               </Text>
               <View style={{ gap: Spacing.sm }}>
-                {project.staircases.length === 0 && (
+                {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
+                  <Pressable
+                    onPress={() => handleAddRoom(1)}
+                    style={{
+                      backgroundColor: Colors.white,
+                      borderRadius: BorderRadius.default,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      paddingVertical: Spacing.md,
+                      alignItems: "center",
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Add room"
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                      Add Room
+                    </Text>
+                  </Pressable>
+                ) : (
+                  <Pressable
+                    onPress={() => {
+                      const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                      Alert.alert("Select Floor", "Choose which floor to add the room to:", [
+                        ...Array.from({ length: floorCount }, (_, i) => ({
+                          text: `${getOrdinal(i + 1)} Floor`,
+                          onPress: () => handleAddRoom(i + 1),
+                        })),
+                        { text: "Cancel", style: "cancel" },
+                      ]);
+                    }}
+                    style={{
+                      backgroundColor: Colors.white,
+                      borderRadius: BorderRadius.default,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      paddingVertical: Spacing.md,
+                      alignItems: "center",
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Add room"
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                      Add Room
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </Card>
+          )}
+
+          {/* Staircases & Fireplaces - CONSOLIDATED (no flicker) */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+              Staircases & Fireplaces
+            </Text>
+
+            <View style={{ gap: Spacing.md }}>
+              {/* STAIRCASES SECTION */}
+              <View>
+                {project.staircases && project.staircases.length > 0 ? (
+                  <>
+                    {/* Header with count and Add button */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Staircases: {project.staircases.length}
+                      </Text>
+                      <Pressable
+                        onPress={handleAddStaircase}
+                        style={{
+                          backgroundColor: Colors.primaryBlue,
+                          borderRadius: 8,
+                          paddingHorizontal: Spacing.md,
+                          paddingVertical: 6,
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Add staircase"
+                      >
+                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                          Add
+                        </Text>
+                      </Pressable>
+                    </View>
+
+                    {/* Staircases list */}
+                    {project.staircases.map((staircase, idx) => (
+                      <Pressable
+                        key={staircase.id}
+                        onPress={() =>
+                          navigation.navigate("StaircaseEditor", {
+                            projectId,
+                            staircaseId: staircase.id,
+                          })
+                        }
+                        onLongPress={() => {
+                          Alert.alert("Delete Staircase", "Are you sure you want to delete this staircase?", [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Delete",
+                              style: "destructive",
+                              onPress: () => deleteStaircase(projectId, staircase.id),
+                            },
+                          ]);
+                        }}
+                        style={{
+                          backgroundColor: Colors.white,
+                          borderRadius: BorderRadius.default,
+                          padding: Spacing.sm,
+                          marginBottom: idx < project.staircases.length - 1 ? Spacing.xs : 0,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Edit staircase ${idx + 1}`}
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          Staircase {idx + 1}
+                        </Text>
+                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                      </Pressable>
+                    ))}
+                  </>
+                ) : (
+                  /* Empty state: Show Add Staircase button */
                   <Pressable
                     onPress={handleAddStaircase}
                     style={{
@@ -1426,7 +1152,77 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     </Text>
                   </Pressable>
                 )}
-                {project.fireplaces.length === 0 && (
+              </View>
+
+              {/* FIREPLACES SECTION */}
+              <View>
+                {project.fireplaces && project.fireplaces.length > 0 ? (
+                  <>
+                    {/* Header with count and Add button */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Fireplaces: {project.fireplaces.length}
+                      </Text>
+                      <Pressable
+                        onPress={handleAddFireplace}
+                        style={{
+                          backgroundColor: Colors.primaryBlue,
+                          borderRadius: 8,
+                          paddingHorizontal: Spacing.md,
+                          paddingVertical: 6,
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Add fireplace"
+                      >
+                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                          Add
+                        </Text>
+                      </Pressable>
+                    </View>
+
+                    {/* Fireplaces list */}
+                    {project.fireplaces.map((fireplace, idx) => (
+                      <Pressable
+                        key={fireplace.id}
+                        onPress={() =>
+                          navigation.navigate("FireplaceEditor", {
+                            projectId,
+                            fireplaceId: fireplace.id,
+                          })
+                        }
+                        onLongPress={() => {
+                          Alert.alert("Delete Fireplace", "Are you sure you want to delete this fireplace?", [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Delete",
+                              style: "destructive",
+                              onPress: () => deleteFireplace(projectId, fireplace.id),
+                            },
+                          ]);
+                        }}
+                        style={{
+                          backgroundColor: Colors.white,
+                          borderRadius: BorderRadius.default,
+                          padding: Spacing.sm,
+                          marginBottom: idx < project.fireplaces.length - 1 ? Spacing.xs : 0,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Edit fireplace ${idx + 1}`}
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          Fireplace {idx + 1}
+                        </Text>
+                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                      </Pressable>
+                    ))}
+                  </>
+                ) : (
+                  /* Empty state: Show Add Fireplace button */
                   <Pressable
                     onPress={handleAddFireplace}
                     style={{
@@ -1446,164 +1242,122 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </Pressable>
                 )}
               </View>
+            </View>
+          </Card>
+
+          {/* Built-Ins Section */}
+          {(project.builtIns && project.builtIns.length > 0) && (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Built-Ins
+              </Text>
+
+              <View style={{ marginBottom: 0 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Built-Ins: {project.builtIns.length}
+                  </Text>
+                  <Pressable
+                    onPress={handleAddBuiltIn}
+                    style={{
+                      backgroundColor: Colors.primaryBlue,
+                      borderRadius: 8,
+                      paddingHorizontal: Spacing.md,
+                      paddingVertical: 6,
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Add built-in"
+                  >
+                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                      Add
+                    </Text>
+                  </Pressable>
+                </View>
+                {project.builtIns.map((builtIn, idx) => (
+                  <Pressable
+                    key={builtIn.id}
+                    onPress={handleAddBuiltIn}
+                    onLongPress={() => {
+                      Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Delete",
+                          style: "destructive",
+                          onPress: () => deleteBuiltIn(projectId, builtIn.id),
+                        },
+                      ]);
+                    }}
+                    style={{
+                      backgroundColor: Colors.white,
+                      borderRadius: BorderRadius.default,
+                      padding: Spacing.sm,
+                      marginBottom: idx < (project.builtIns?.length || 0) - 1 ? Spacing.xs : 0,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      {builtIn.name || "Unnamed Built-In"}
+                    </Text>
+                    <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                  </Pressable>
+                ))}
+              </View>
             </Card>
           )}
 
-          {/* Project Actions - Consolidated Tools */}
-          <Card>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Project Actions
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md, lineHeight: 18 }}>
-              Tools for quoting, materials, and client proposals
-            </Text>
-
-            <View style={{ gap: Spacing.md }}>
-              {/* Contractor View */}
+          {/* Add Built-In button if none exist */}
+          {(!project.builtIns || project.builtIns.length === 0) && (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Built-Ins
+              </Text>
               <Pressable
-                onPress={() => navigation.navigate("MaterialsSummary", { projectId })}
+                onPress={handleAddBuiltIn}
                 style={{
                   backgroundColor: Colors.white,
                   borderRadius: BorderRadius.default,
                   borderWidth: 1,
                   borderColor: Colors.neutralGray,
-                  padding: Spacing.md,
+                  paddingVertical: Spacing.md,
+                  alignItems: "center",
                 }}
                 accessibilityRole="button"
-                accessibilityLabel="Open contractor view"
+                accessibilityLabel="Add built-in"
               >
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                  <Ionicons name="hammer-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.xs }} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    Contractor View (Materials & Totals)
-                  </Text>
-                </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, lineHeight: 18 }}>
-                  Use this to see total gallons, 5-gallon vs single gallons, linear feet, and materials list.
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                  Add Built-In
                 </Text>
               </Pressable>
-
-              {/* Quote Builder */}
-              <Pressable
-                onPress={() => navigation.navigate("QuoteBuilder", { projectId })}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  ...Shadows.card,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Open Quote Builder"
-              >
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                  <Ionicons name="options-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Quote Builder
-                  </Text>
-                </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                  Control what is included in the quote (walls, ceilings, trim, floors, closets).
+            </Card>
+          )}
+          <Card>
+            <Pressable
+              onPress={() => navigation.navigate("ProjectActions", { projectId })}
+              style={{
+                backgroundColor: Colors.primaryBlue,
+                borderRadius: BorderRadius.default,
+                padding: Spacing.md,
+                ...Shadows.card,
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Open project actions"
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                <Ionicons name="settings-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Project Actions
                 </Text>
-              </Pressable>
-
-              {/* Client Proposal */}
-              <Pressable
-                onPress={() => navigation.navigate("ClientProposal", { projectId })}
-                style={{
-                  backgroundColor: "#10B981",
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  ...Shadows.card,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Generate client proposal"
-              >
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                  <Ionicons name="document-text-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Client Proposal
-                  </Text>
-                </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                  Create a client-facing proposal PDF or summary with selected items only.
-                </Text>
-              </Pressable>
-
-              {/* Room Details (Test Export) - Only visible in Test Mode */}
-              {appSettings.testMode && (
-                <Pressable
-                  onPress={handleExportRoomDetails}
-                  style={{
-                    backgroundColor: "#8B5CF6",
-                    borderRadius: BorderRadius.default,
-                    padding: Spacing.md,
-                    ...Shadows.card,
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Export room details JSON"
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="code-download-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                      Room Details (Test Export)
-                    </Text>
-                  </View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                    Export detailed pricing breakdown as JSON for debugging (Test Mode only).
-                  </Text>
-                </Pressable>
-              )}
-
-              {/* Export Pricing & Calculation Settings (Test Mode Only) */}
-              {appSettings.testMode && (
-                <Pressable
-                  onPress={handleExportSettings}
-                  style={{
-                    backgroundColor: "#10B981",
-                    borderRadius: BorderRadius.default,
-                    padding: Spacing.md,
-                    ...Shadows.card,
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Export pricing and calculation settings"
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="settings-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                      Export Pricing & Calculation Settings
-                    </Text>
-                  </View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                    Export all pricing rates, labor costs, coverage rules, and calculation settings used by the estimator (Test Mode only).
-                  </Text>
-                </Pressable>
-              )}
-
-              {/* Export Calculation Trace (Test Mode Only) */}
-              {appSettings.testMode && (
-                <Pressable
-                  onPress={handleExportCalculationTrace}
-                  style={{
-                    backgroundColor: "#F59E0B",
-                    borderRadius: BorderRadius.default,
-                    padding: Spacing.md,
-                    ...Shadows.card,
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Export calculation trace"
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="calculator-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                      Export Calculation Trace
-                    </Text>
-                  </View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                    Export complete step-by-step math for each room, staircase, and fireplace showing all inputs, rates, and intermediate calculations (Test Mode only).
-                  </Text>
-                </Pressable>
-              )}
-            </View>
+              </View>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
+                Tools for quoting, materials, and client proposals
+              </Text>
+            </Pressable>
           </Card>
         </ScrollView>
       </KeyboardAvoidingView>

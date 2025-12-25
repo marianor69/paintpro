@@ -234,14 +234,14 @@ export function computeRoomPricingSummary(
     doorDeduction = doorCount * (doorOpeningArea + doorTrimArea);
   }
 
-  // Deduct closet openings
-  const singleClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * (calcSettings.singleClosetHeight / 12);
-  const singleClosetPerimeterForWall = (2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12);
+  // Deduct closet openings - use room height for closet height
+  const singleClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * height;
+  const singleClosetPerimeterForWall = (2 * height) + (calcSettings.singleClosetWidth / 12);
   const singleClosetTrimArea = singleClosetPerimeterForWall * (calcSettings.singleClosetTrimWidth / 12);
   const singleClosetDeduction = singleClosets * (singleClosetOpeningArea + singleClosetTrimArea);
 
-  const doubleClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * (calcSettings.doubleClosetHeight / 12);
-  const doubleClosetPerimeterForWall = (2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12);
+  const doubleClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * height;
+  const doubleClosetPerimeterForWall = (2 * height) + (calcSettings.doubleClosetWidth / 12);
   const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
   const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
@@ -314,14 +314,16 @@ export function computeRoomPricingSummary(
   if (includedTrim && room.includeTrim !== false) {
     if (singleClosets > 0) {
       const trimWidthFt = calcSettings.singleClosetTrimWidth / 12;
-      const singleClosetPerimeter = (2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12);
+      // Use room height for closet perimeter
+      const singleClosetPerimeter = (2 * height) + (calcSettings.singleClosetWidth / 12);
       const trimAreaPerCloset = singleClosetPerimeter * trimWidthFt;
       windowDoorTrimSqFt += singleClosets * trimAreaPerCloset;
     }
 
     if (doubleClosets > 0) {
       const trimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
-      const doubleClosetPerimeter = (2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12);
+      // Use room height for closet perimeter
+      const doubleClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
       const trimAreaPerCloset = doubleClosetPerimeter * trimWidthFt;
       windowDoorTrimSqFt += doubleClosets * trimAreaPerCloset;
     }

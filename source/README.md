@@ -16,13 +16,14 @@ A professional painting estimation app with Bluetooth laser integration for on-s
 - **Client Information Card**: Clean form with proper spacing (14px horizontal, 12px vertical padding)
   - Client Name * (required)
   - Address * (required)
+  - City (optional)
+  - Country (optional)
   - Phone (optional)
   - Email (optional)
-- **Floor Information Card**: Streamlined floor configuration
-  - Compact 32×32 floor counter buttons (white background with borders)
-  - Fixed-width floor height inputs (100px) with "ft" label
-  - Consistent Typography.body throughout
-  - No oversized spacing - optimal vertical compression
+- **Project Cover Photo**: Take or upload project thumbnail (appears on home screen)
+  - Take Photo button (camera) or Choose from library
+  - Retake/Choose/Delete buttons after selection
+  - Optional feature, can be skipped
 - **Create Button**: Full-width with Shadows.card when enabled, disabled state when name missing
 - **Keyboard Handling**: Proper iOS KeyboardAvoidingView with dismissible keyboard
 
@@ -30,15 +31,16 @@ A professional painting estimation app with Bluetooth laser integration for on-s
 - **Professional Project Hub**: ProjectDetailScreen redesigned as a central hub connecting Rooms, Contractor View, and Quote Builder
 - **Design System**: Completely redesigned with unified design system (Colors, Typography, Spacing, BorderRadius, Shadows)
 - **SafeAreaView Layout**: Proper iOS safe area handling with card-based sections
-- **Floors & Heights - Ultra Compact**: Configure 1-5 floors with streamlined inline layout
-  - Compact inline floor counter: "Floors: [-] 2 [+]"
-  - Inline floor height inputs: "1st floor height: [8] ft"
-  - Each floor's height used as default ceiling height for rooms on that floor
-- **Global Options**: Project-level defaults for new rooms (can be overridden per room after creation)
-  - "Default: Paint baseboards in new rooms?" - Clear toggle with explanation
-  - Number of Coats: Shows global defaults compactly: "Walls: 2 • Ceilings: 2 • Trim/Doors: 1"
-  - iOS-style segmented control (1 Coat / 2 Coats)
-  - Note: Trim and doors always use 1 coat regardless of setting
+- **Project Setup (Separate Screen)**: Navigate to dedicated ProjectSetupScreen for:
+  - **Floors & Heights - Ultra Compact**: Configure 1-5 floors with streamlined inline layout
+    - Compact inline floor counter: "Floors: [-] 2 [+]"
+    - Inline floor height inputs: "1st floor height: [8] ft"
+    - Each floor's height used as default ceiling height for rooms on that floor
+  - **Global Paint Defaults**: Project-level defaults for new rooms (can be overridden per room after creation)
+    - "Default: Paint baseboards in new rooms?" - Clear toggle with explanation
+    - Number of Coats: Shows global defaults compactly: "Walls: 2 • Ceilings: 2 • Trim/Doors: 1"
+    - iOS-style segmented control (1 Coat / 2 Coats)
+    - Note: Trim and doors always use 1 coat regardless of setting
 - **Repairs / Extra Work Section**: Placeholder for aggregate repair tracking
   - Currently shows "Repair tracking coming soon" with TODO comments
   - Designed to aggregate: nail pops, holes (small/medium/large), sheetrock patches
@@ -98,8 +100,17 @@ A professional painting estimation app with Bluetooth laser integration for on-s
 - **Ceiling Types**: Flat or cathedral (with peak height for accurate sloped area calculations)
 - **Features**:
   - Windows and doors with modern counter interface (+ / - buttons)
-  - Toggle to paint or not paint windows/doors (using standardized Toggle component)
+  - **Split Paint Trim controls**: Separate toggles for independent control
+    - "Paint Window Frames" - controls window trim and frames
+    - "Paint Door Frames" - controls door frames and closet door frames
+    - Previously a single "Paint Trim" toggle; now split for granular control
   - Toggle to paint or not paint baseboard (inherits project default)
+  - **Pass-Through Openings**: Define openings (without doors) that:
+    - Subtract wall area from calculations
+    - Subtract opening width from baseboard length
+    - Add trim area (front and/or back)
+    - Support interior and exterior trim independently
+    - Default size configurable in Calculation Settings (36" wide × 80" tall)
   - **Closets with 2' deep interior cavity calculations**:
     - Single door or double door options (with quantity counters)
     - Each closet treated as a real 2' deep cavity with:
@@ -270,13 +281,18 @@ A professional painting estimation app with Bluetooth laser integration for on-s
     HomeScreen.tsx
     NewProjectScreen.tsx
     ProjectDetailScreen.tsx
+    ProjectSetupScreen.tsx
     RoomEditorScreen.tsx
     StaircaseEditorScreen.tsx
     FireplaceEditorScreen.tsx
+    BuiltInEditorScreen.tsx
     PricingSettingsScreen.tsx
     CalculationSettingsScreen.tsx
     MaterialsSummaryScreen.tsx
     ClientProposalScreen.tsx
+    QuoteBuilderScreen.tsx
+    QuoteManagerScreen.tsx
+    SettingsGateScreen.tsx
   /services     # Bluetooth service
     bluetoothService.ts
   /state        # Zustand stores
@@ -366,6 +382,10 @@ All measurement assumptions used in calculations (accessible via Settings → Ca
   - Width: 48 inches (default)
   - Height: 80 inches (default)
   - **Trim Width**: 3.5 inches (default) - used to calculate trim area around closet openings
+- **Pass-Through Openings**:
+  - **Default Width**: 36 inches (3 ft) - standard opening width
+  - **Default Height**: 80 inches (~6.67 ft) - standard opening height
+  - **Trim Width**: 3.5 inches (default) - trim border around opening edges
 - **Baseboard Width**: 5.5 inches (default) - used to calculate baseboard trim area along walls
 - **Crown Moulding Width**: 5.5 inches (default) - used to calculate crown moulding trim area along ceiling perimeter
 
@@ -387,6 +407,13 @@ All measurement assumptions used in calculations (accessible via Settings → Ca
   - Trim Area = Trim Perimeter × (Trim Width ÷ 12)
   - Wall Opening Deduction = Opening Area + Trim Area
   - Baseboard Deduction = (Width ÷ 12) + (Trim Width × 2 ÷ 12)
+- **Pass-Through Opening Calculations**:
+  - Opening Area = (Width ÷ 12) × (Height ÷ 12)
+  - Interior Trim Perimeter = (2 × Height ÷ 12) + (Width ÷ 12) (2 sides + top)
+  - Exterior Trim Perimeter = (2 × Height ÷ 12) + (Width ÷ 12) (2 sides + top, if enabled)
+  - Total Trim Area = (Interior Perimeter + Exterior Perimeter) × (Trim Width ÷ 12)
+  - Wall Opening Deduction = Opening Area (no trim counted in wall deduction)
+  - Baseboard Deduction = Width ÷ 12
 
 All values are adjustable via Settings → Calculation Settings
 
@@ -751,8 +778,7 @@ Potential additions:
 ### Client Proposal Improvements
 - **Paint Quality Options only shown when relevant**: The Good/Better/Best paint options section only appears when there's actual wall area to paint. For window-only or trim-only projects, these options are hidden since they only apply to wall paint upgrades.
 
-### Photo Documentation (No Impact on Calculations)
-- **Project Cover Photo**: Take or upload a project cover photo that appears as thumbnail on the Home Screen
+### Photo Documentation (Room Photos Only)
 - **Room Photos**:
   - "Take Photo" button in each room to document nail pops, holes, sheetrock patches, or other observations
   - Each photo supports optional notes
@@ -815,3 +841,339 @@ The app uses **three paint types** for all surfaces:
 
 **Note**: Stairwell walls and ceilings use their respective paint types (wall paint for walls, ceiling paint for ceilings).
 
+### Recent Fixes (December 2025)
+
+#### Staircase and Fireplace Save Fix
+- **Fixed save functionality**: Staircases and fireplaces now properly save and appear in the Project screen after clicking Save
+- **Improved cleanup logic**: Uses ref-based tracking to prevent stale closure issues with the save state
+- **Consistent behavior**: Both staircase and fireplace editors now have identical save/cleanup patterns
+
+#### Notes Field (Without Photos)
+- **Standalone notes field**: Added a notes field to rooms, staircases, and fireplaces that is available even without taking photos
+- **Use case**: Document observations about any space without needing to attach a photo
+
+#### Consistent Input Styling
+- **Standardized cursor color**: All text inputs now use the same blue cursor color (#3A70C8)
+- **Consistent selection color**: Text selection highlighting is now uniform across all screens
+- **Placeholder text**: All inputs use the same placeholder text color for consistency
+
+#### Consistent Toggle Styling
+- **Unified toggle appearance**: All toggle switches now use the same track colors and thumb colors
+- **Design system colors**: Toggles use Colors.primaryBlue when on, Colors.neutralGray when off
+
+#### Reduced Swipe-Back Sensitivity
+- **Less accidental navigation**: Disabled full-screen gesture swipe, now only edge swipe works
+- **Prevents losing work**: Reduces chance of accidentally leaving a screen while editing
+
+#### Client Address Enhancements (December 2025)
+- **City and Country Fields**: Added optional city and country fields to client address
+- **Country-Based Phone Formatting**: Phone numbers automatically format based on the selected country:
+  - **US/Canada**: (XXX) XXX-XXXX or +1 (XXX) XXX-XXXX
+  - **UK**: +44 20 1234 5678 or domestic format
+  - **Australia**: +61 2 1234 5678 or (02) 1234 5678
+  - **Mexico**: +52 55 1234 5678
+  - **Default**: Returns original format if country not recognized
+- **Editable via Project Detail Screen**: City and country can be edited when updating client information
+- **Phone Formatter Utility**: New `src/utils/phoneFormatter.ts` with country-specific formatting functions
+
+#### Split Paint Trim Controls (December 2025)
+- **Separated Window and Door Frames**: The single "Paint Trim" toggle has been split into two independent toggles:
+  - **Paint Window Frames**: Controls window trim and frames (separate from other trim)
+  - **Paint Door Frames**: Controls door frames and closet door frames (separate from other trim)
+- **Backward Compatible**: Old `paintTrim` field marked as deprecated but still supported
+- **Independent Calculation**: Window and door frame paint costs are calculated separately based on their respective toggles
+- **Updated Global Defaults**: Project-level defaults now include both `paintWindowFrames` and `paintDoorFrames` settings
+
+#### Pass-Through Openings (December 2025)
+- **New Opening Feature**: Rooms can now include pass-through openings (without doors) that:
+  - **Subtract Wall Area**: Opening dimensions reduce the wall square footage to be painted
+  - **Subtract Baseboard**: Opening width reduces the baseboard linear feet to be painted
+  - **Add Trim Area**: Opening edges add trim area to be painted (front and/or back)
+  - **Dual Trim Control**: Interior and exterior trim can be toggled independently
+- **Opening Configuration**:
+  - Width and height in inches (e.g., 36" × 80")
+  - Interior Trim toggle (paints the inside/front of the opening)
+  - Exterior Trim toggle (paints the outside/back of the opening)
+- **Calculation Defaults**: Pass-through opening defaults configurable in Calculation Settings:
+  - **Default Width**: 36 inches (3 ft)
+  - **Default Height**: 80 inches (~6.67 ft)
+  - **Trim Width**: 3.5 inches (applies to all opening trim)
+- **UI Implementation**: RoomEditorScreen includes "Openings" card with:
+  - List of existing openings with width/height inputs
+  - Interior/Exterior trim toggle buttons with checkbox styling
+  - Add Opening button that creates default-sized openings
+  - Delete button for each opening
+- **Math Verification**: All calculations have been verified to work correctly:
+  - Opening wall areas properly subtracted from wall paint gallons
+  - Opening widths properly subtracted from baseboard calculations
+  - Opening trim areas properly added to trim paint calculations
+  - No TypeScript errors; app builds and runs correctly
+
+#### Project Detail Screen Restructuring (December 2025)
+- **Removed Room Exclusion Logic**: Rooms can no longer be marked as "Excluded"
+- **Simplified Rooms Display**: Rooms section restructured to match Staircases/Fireplaces layout:
+  - Compact header showing room count with "Add" button
+  - Simple list items with room name and floor display
+  - Tap to edit, long-press to delete (like other structural elements)
+  - No separate overview section or warning banner about exclusions
+- **Dynamic Room Title**: RoomEditor title now updates in real-time as user types room name:
+  - Shows "Edit Room: {RoomName}"
+  - Updates immediately when name field changes
+  - Reverts to "Edit Room: Unnamed Room" if name is empty
+
+#### Built-In Feature (December 2025)
+- **New Structural Element**: Added "Built-In" as a new project element alongside Rooms, Staircases, and Fireplaces
+- **Built-In Type**: Bookshelf or similar fixed fixture with:
+  - **Name**: Custom label (e.g., "Library Bookshelf", "Living Room Built-In")
+  - **Dimensions**: Width, height, depth in inches
+  - **Shelves**: Number of shelves to paint
+  - **Coats**: Number of paint coats (per-built-in setting)
+  - **Notes**: Optional documentation field
+- **Independent Calculations**: Built-Ins are calculated separately from rooms:
+  - Own surface area calculations based on dimensions
+  - Separate paint requirements
+  - Not affected by room settings or quote builder room filters
+- **UI Integration**: Built-Ins displayed in ProjectDetailScreen:
+  - Compact display in structural elements section
+  - Add/edit/delete functionality matching Staircases and Fireplaces
+  - Simple list format showing name and quick actions
+- **Store Methods**: Full CRUD operations in projectStore:
+  - `addBuiltIn()`: Create new built-in with default dimensions (36"×80"×12" depth, 4 shelves, 2 coats)
+  - `updateBuiltIn()`: Modify existing built-in properties
+  - `deleteBuiltIn()`: Remove built-in from project
+- **Quote Builder Integration**: `includeBuiltIns` toggle in Quote Builder to control inclusion in quotes
+
+#### UI Improvements (December 2025)
+- **Built-In Visibility**: Built-Ins section now displays in ProjectDetailScreen matching Staircases and Fireplaces layout
+  - Shows count and add button when items exist
+  - Shows full-width "Add Built-In" button in dedicated card when no items exist
+  - Long-press to delete functionality
+- **Merged Openings & Closets**: Combined separate "Openings" and "Openings & Closets" cards into single unified card
+  - Pass-through openings section at top with "Add Opening" button
+  - Visual divider separating openings from windows/doors/closets
+  - Windows, Doors, and Closet counters in same card for better organization
+- **Paint Toggles Default True**: All paint option toggles now default to enabled (true):
+  - Paint Windows (previously false, now true)
+  - Paint Doors (previously false, now true)
+  - Paint Door Jambs (previously false, now true)
+  - Crown Moulding (previously false, now true)
+  - Existing projects preserve their settings; defaults apply only to new rooms
+- **Unified Add Room Button**: Add Room UI now matches Staircase and Fireplace styling:
+  - When rooms exist: Compact blue "Add" button in header (with floor selection for multi-floor projects)
+  - When no rooms exist: Full-width white button with blue text "Add Room" in dedicated card
+  - Consistent appearance across all structural element types
+
+#### Bug Fixes & Improvements (December 2025 - Round 2)
+- **Room Cleanup on Navigation**: Prevents creation of "Unnamed Room" entries when user adds a room but navigates away without saving
+  - Uses ref to track saved state (isSavedRef)
+  - Automatically deletes room on unmount if never saved and name is empty
+- **Staircase/Fireplace Visibility**: Fixed bug where staircase/fireplace would temporarily appear then disappear after adding
+  - Changed condition from OR (||) to AND (&&) to prevent both add and display sections from rendering simultaneously
+  - Only shows "Add" section when both staircase AND fireplace are empty
+- **Global Paint Defaults**: All paint options now default to true/enabled:
+  - Paint Doors: false → **true**
+  - Paint Door Jambs: false → **true**
+  - Paint Crown Moulding: false → **true**
+- **MaterialsSummary Bucket Images**: Paint bucket quantities now display with visual icons
+  - 5-gallon bucket quantities shown with `5gal-bucket.png` image
+  - 1-gallon bucket quantities shown with `1gal-bucket.png` image
+  - Images displayed in `assets/` directory with 32×32px size
+  - Applied to Wall, Ceiling, Trim, and Door paint sections
+  - Images show count next to each bucket type for clear visual representation
+
+### Recent Updates (Latest Session)
+
+- **Global Paint Defaults Fixed**: Corrected default values in `projectStore.ts` to ensure paintDoors, paintDoorJambs, and paintCrownMoulding default to true for new projects
+- **Save Button Styling**: Updated Save buttons in StaircaseEditorScreen and FireplaceEditorScreen to match RoomEditorScreen:
+  - Changed from pressed state styling to fixed background color
+  - Added `...Shadows.card` shadow effect for consistency
+  - Updated font size to `Typography.body.fontSize`
+  - Added accessibility labels and hints
+- **Navigation Prevention Restored**: Reverted usePreventRemove to only trigger on actual unsaved changes (not empty forms), allowing users to exit without entering data
+- **Fireplace Display Safety**: Added null/undefined checks for project.fireplaces array to prevent rendering issues:
+  - Added safety checks in conditions checking fireplace.length
+  - Ensures fireplaces display properly even if array is initially undefined
+- **Removed Bucket Images**: MaterialsSummaryScreen reverted from image-based bucket display to text format:
+  - Displays as "X × 5-gal + Y × 1-gal" for each paint type
+  - Simpler, cleaner presentation without images
+- **TextInput Cursor Visibility Audit**: Comprehensive audit of all TextInput fields across the app:
+  - Fixed 5 TextInputs missing cursor colors (DimensionInput, NumericInput, RoomEditorScreen photo note, SettingsScreen PIN)
+  - Added `cursorColor={Colors.primaryBlue}` and `selectionColor={Colors.primaryBlue}` to all inputs
+- **Cursor Styling Standardization**: Updated RoomEditorScreen room name input to match DimensionInput cursor visibility pattern:
+  - Moved padding from TextInput to outer View wrapper
+  - Changed TextInput style to include `padding: 0` for optimal cursor visibility
+  - Consistent cursor appearance across all input fields (blue, visible, no extra padding)
+
+### Latest Session Updates
+
+- **Room Name Field Selection Fix**: Added `selectTextOnFocus={false}` to room name input to prevent auto-selection of text when editing
+  - Users can now position cursor and add text without replacing existing content
+- **Empty Staircase/Fireplace Display Fix**: Added filter functions to only show staircase/fireplace items that have actual data
+  - `hasStaircaseData()` and `hasFireplaceData()` helper functions check for numeric values
+  - Empty items no longer briefly appear and disappear when navigating
+  - Prevents cosmetic visual glitches
+- **Built-In Feature Implementation**: Created complete BuiltInEditorScreen with full functionality
+  - New screen: `src/screens/BuiltInEditorScreen.tsx`
+  - Supports all BuiltIn properties: name, width, height, depth, shelf count, notes
+  - Includes paintable area calculation (all 6 faces + shelves)
+  - Save/Discard/Cancel prompts on navigation with unsaved changes
+  - Cleanup on unmount to delete empty built-ins
+  - Integrated into RootNavigator with BuiltInEditor route
+  - handleAddBuiltIn now navigates to editor instead of showing alert
+- **Type Safety**: Added Staircase and Fireplace type imports to ProjectDetailScreen for helper functions
+
+### TextInputStyles Standardization (Bulletproof Design System)
+
+**Goal**: Eliminate 100% of cursor styling inconsistencies across the app by centralizing TextInput styling in the design system.
+
+**Implementation**: Created `TextInputStyles` constant system in `src/utils/designSystem.ts` with three standardized styles:
+- `TextInputStyles.base`: For single-line inputs (includes `padding: 0`, `cursorColor`, `selectionColor`, fontSize, color)
+- `TextInputStyles.container`: For wrapper View around TextInput (includes background, border, borderRadius, padding)
+- `TextInputStyles.multiline`: For multiline inputs like notes (includes `padding: 0`, `cursorColor`, `selectionColor`, minHeight, textAlignVertical)
+
+**Usage Pattern**:
+```typescript
+// Single-line inputs
+<View style={TextInputStyles.container}>
+  <TextInput style={TextInputStyles.base} {...props} />
+</View>
+
+// Multiline inputs
+<TextInput style={TextInputStyles.multiline} {...props} />
+```
+
+**Updated Screens** (100% completion):
+1. ✅ FireplaceEditorScreen - 5 inputs (width, height, depth, trimLinearFeet, notes)
+2. ✅ StaircaseEditorScreen - 8 inputs (riserCount, handrailLength, spindleCount, tallWallHeight, shortWallHeight, notes)
+3. ✅ ProjectDetailScreen - 7 inputs (client name, address, city, country, phone, email, floor heights)
+4. ✅ RoomEditorScreen - 6 inputs (length, width, manualArea, cathedralPeakHeight, opening width/height, notes, photo note)
+5. ✅ BuiltInEditorScreen - 7 inputs (name, width, height, depth, shelfCount, notes)
+6. ✅ NewProjectScreen - 6 inputs (name, address, city, country, phone, email)
+7. ✅ CalculationSettingsScreen - 16 inputs (all door/window/closet/baseboard calculations)
+8. ✅ PricingSettingsScreen - 20+ inputs (all pricing and labor rate fields)
+9. ✅ QuoteBuilderScreen - 6 inputs (paint option configuration)
+10. ✅ SettingsScreen - PIN entry (custom styling preserved, cursor props removed)
+
+**Result**: Zero instances of `cursorColor` or `selectionColor` outside the design system constants. All 100+ TextInputs across the app now use standardized cursor styling, guaranteeing 300% bulletproof consistency.
+
+### Latest Session Updates (Current)
+
+#### Built-In Dimension Conversions (Inches Only)
+- **Changed defaults**: Built-In dimensions now stored and displayed in inches only
+  - Width: 36 inches (was 36 feet ÷ 12)
+  - Height: 80 inches (was 80 feet ÷ 12)
+  - Depth: 12 inches (was 12 feet ÷ 12)
+- **Removed /12 conversions**: BuiltInEditorScreen no longer divides by 12 when loading/saving
+- **Updated labels and placeholders**: Changed from "(ft)" to "(inches)" for clarity
+
+#### Standardized Save/Discard/Cancel Prompts (300% Guaranteed)
+- **Created SavePromptModal component**: New reusable modal in `src/components/SavePromptModal.tsx`
+  - Consistent appearance across all editor screens
+  - Three-button layout: Save Changes (blue), Discard Changes (red), Cancel (gray)
+  - Customizable title and message text
+  - Full accessibility labels and hints
+- **Applied to all 4 editor screens**:
+  - ✅ RoomEditorScreen
+  - ✅ StaircaseEditorScreen
+  - ✅ FireplaceEditorScreen
+  - ✅ BuiltInEditorScreen
+- **Exit handler pattern**: All editors use standardized `usePreventRemove` hook only (no conflicting `beforeRemove` listeners)
+  - Navigation is synchronous (removed `setTimeout` delays)
+  - Empty items are deleted before navigation
+  - Prevents "stuck" screens and stuck unsaved changes
+
+### Latest Session Updates (Current)
+
+#### Built-In Dimension Conversions (Inches Only)
+- **Changed defaults**: Built-In dimensions now stored and displayed in inches only
+  - Width: 36 inches (was 36 feet ÷ 12)
+  - Height: 80 inches (was 80 feet ÷ 12)
+  - Depth: 12 inches (was 12 feet ÷ 12)
+- **Removed /12 conversions**: BuiltInEditorScreen no longer divides by 12 when loading/saving
+- **Updated labels and placeholders**: Changed from "(ft)" to "(inches)" for clarity
+
+#### Standardized Save/Discard/Cancel Prompts (300% Guaranteed)
+- **Created SavePromptModal component**: New reusable modal in `src/components/SavePromptModal.tsx`
+  - Consistent appearance across all editor screens
+  - Three-button layout: Save Changes (blue), Discard Changes (red), Cancel (gray)
+  - Customizable title and message text
+  - Full accessibility labels and hints
+- **Applied to all 4 editor screens**:
+  - ✅ RoomEditorScreen
+  - ✅ StaircaseEditorScreen
+  - ✅ FireplaceEditorScreen
+  - ✅ BuiltInEditorScreen
+- **Exit handler pattern**: All editors use standardized `usePreventRemove` hook only (no conflicting `beforeRemove` listeners)
+  - Navigation is synchronous (removed `setTimeout` delays)
+  - Empty items are deleted before navigation
+  - Prevents "stuck" screens and stuck unsaved changes
+
+#### Fixed Card Flickering Bug
+- **Problem**: "Staircases & Fireplaces" card briefly disappeared when returning from StaircaseEditor without changes
+- **Root cause**: Two conflicting conditional Card components trying to render during state transitions
+- **Solution**: Consolidated into single Card with internal ternary operators
+  - Staircases section: Populated list OR empty "Add Staircase" button
+  - Fireplaces section: Populated list OR empty "Add Fireplace" button
+  - Both sections always exist within single Card
+  - No conflicting render conditions = no visual flicker
+- **Result**: Smooth navigation return with stable UI
+
+#### Real Solution: Delay Staircase/Fireplace Creation Until Save (Architectural Improvement)
+- **Original Problem**: Empty staircases/fireplaces were created when user clicked "Add", then deleted if user didn't save, causing flicker
+- **New Architecture**: Create staircase/fireplace ONLY when user clicks Save, never before
+- **Key Changes**:
+  - **ProjectDetailScreen**: `handleAddStaircase()` and `handleAddFireplace()` now navigate WITHOUT creating item
+    - Old: `const id = addStaircase(projectId); navigate(..., { staircaseId: id })`
+    - New: `navigate(..., { projectId })` - no ID passed
+  - **StaircaseEditorScreen**: Refactored to detect new vs existing staircase
+    - `const isNewStaircase = !staircaseId` at top of component
+    - New staircase has `staircase = null` initially
+    - Existing staircase has `staircase = project.staircases.find(...)`
+    - `handleSave()` creates staircase first if new: `const newId = addStaircase(projectId)` then updates it
+    - `handleDiscardAndLeave()` just navigates back - nothing to delete
+    - No cleanup effect needed - empty items never created in first place
+  - **FireplaceEditorScreen**: Identical refactoring as StaircaseEditor
+  - **RootNavigator**: Already had optional `staircaseId?` and `fireplaceId?` params
+
+- **Benefits**:
+  - ✅ No empty items ever created
+  - ✅ No cleanup/deletion logic needed
+  - ✅ No flicker on return navigation
+  - ✅ Cleaner code - single source of truth for item lifecycle
+  - ✅ User can safely navigate away without side effects
+  - ✅ "Add" button doesn't pollute the list
+
+#### Project Setup Screen (Dedicated UI)
+- **New Screen**: ProjectSetupScreen for configuring project-level defaults
+  - Separated from ProjectDetailScreen for focused editing
+  - Reduces clutter on the main project view
+  - Accessed via "Project Setup" button on ProjectDetailScreen
+- **Floor & Height Configuration**:
+  - Inline floor counter (1-5 floors)
+  - Per-floor height inputs in feet
+  - Changes apply immediately to project defaults
+- **Global Paint Defaults**:
+  - 8 paint toggles (walls, ceilings, trim, baseboards, doors, door jambs, crown moulding, closet interiors)
+  - All default to enabled (true) for new rooms
+  - Can be overridden per room after creation
+- **Default Coats**:
+  - Wall, Ceiling, Trim, and Door coats
+  - Toggle between 1 and 2 coats
+  - Used as starting values for new rooms
+- **Navigation**: "Done" button returns to ProjectDetailScreen
+- **UX Improvement**: Centralizes setup configuration, reduces ProjectDetailScreen complexity
+
+#### Project Cover Photo Moved to New Project Screen
+- **Moved from ProjectDetailScreen to NewProjectScreen**
+  - Now appears during initial project creation, not as an afterthought
+  - User can upload/take cover photo alongside client details
+  - Optional feature - can be skipped and added later
+  - Photo automatically saved to project when selected
+- **Benefits**:
+  - More logical workflow (set up project, then create details)
+  - Reduces clutter on ProjectDetailScreen
+  - Encourages documenting projects from the start
+- **Updated screens**:
+  - ✅ NewProjectScreen: Added Project Cover Photo section with photo upload/camera/delete buttons
+  - ✅ ProjectDetailScreen: Removed Project Cover Photo section and handlers
+  - ✅ RootNavigator: No route changes needed

@@ -28,7 +28,7 @@ export default function HomeScreen({ navigation }: Props) {
   };
 
   const handleNewProject = () => {
-    navigation.navigate("NewProject");
+    navigation.navigate("ProjectSetup", { isNew: true });
   };
 
   const handleDeleteProject = (projectId: string, projectName: string) => {
@@ -114,9 +114,7 @@ export default function HomeScreen({ navigation }: Props) {
 
             {projects.length > 0 && (
               <Pressable
-                onPress={() => {
-                  // Scroll to projects section below
-                }}
+                onPress={() => navigation.navigate("ProjectsList")}
                 style={{
                   backgroundColor: Colors.white,
                   borderRadius: BorderRadius.default,
@@ -158,118 +156,6 @@ export default function HomeScreen({ navigation }: Props) {
             </Pressable>
           )}
         </View>
-
-        {/* Recent Projects Panel */}
-        {projects.length > 0 && (
-          <View style={{ paddingHorizontal: Spacing.md, paddingTop: Spacing.lg, paddingBottom: Spacing.xl }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700", color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Recent Projects
-            </Text>
-            {projects.map((item) => (
-              <Card key={item.id} style={{ marginBottom: Spacing.md }}>
-                <Pressable onPress={() => handleProjectPress(item.id)}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    {/* Project Cover Photo Thumbnail */}
-                    {item.coverPhotoUri ? (
-                      <Image
-                        source={{ uri: item.coverPhotoUri }}
-                        style={{
-                          width: 60,
-                          height: 60,
-                          borderRadius: 8,
-                          marginRight: Spacing.md,
-                          backgroundColor: Colors.neutralGray,
-                        }}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          width: 60,
-                          height: 60,
-                          borderRadius: 8,
-                          marginRight: Spacing.md,
-                          backgroundColor: Colors.neutralGray,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Ionicons name="image-outline" size={24} color={Colors.mediumGray} />
-                      </View>
-                    )}
-                    <View style={{ flex: 1, marginRight: Spacing.md }}>
-                      <Text style={Typography.h3}>
-                        {item.clientInfo.name || "Unnamed Client"}
-                      </Text>
-                      <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                        {item.clientInfo.address || "No address"}
-                      </Text>
-                      <Text style={{ ...Typography.caption, marginTop: Spacing.sm }}>
-                        {format(item.updatedAt, "MMM d, yyyy")}
-                      </Text>
-                    </View>
-                    <View style={{ backgroundColor: Colors.primaryBlueLight, borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}>
-                      <Text style={{ ...Typography.caption, color: Colors.primaryBlue, fontWeight: "600" }}>
-                        {item.rooms.length} rooms
-                      </Text>
-                    </View>
-                  </View>
-                </Pressable>
-
-                {/* Action Buttons */}
-                <View style={{ flexDirection: "row", marginTop: Spacing.md, gap: Spacing.sm }}>
-                  {/* Test Mode: Show Share JSON */}
-                  {testMode && (
-                    <Pressable
-                      onPress={async () => {
-                        try {
-                          const projectJSON = JSON.stringify(item, null, 2);
-                          await Share.share({ message: projectJSON });
-                        } catch (error) {
-                          console.error("Error sharing:", error);
-                        }
-                      }}
-                      style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        paddingVertical: Spacing.sm,
-                        backgroundColor: Colors.primaryBlueLight,
-                        borderRadius: 8,
-                      }}
-                    >
-                      <Ionicons name="share-outline" size={16} color={Colors.primaryBlue} />
-                      <Text style={{ ...Typography.caption, color: Colors.primaryBlue, fontWeight: "600", marginLeft: Spacing.xs }}>
-                        Share JSON
-                      </Text>
-                    </Pressable>
-                  )}
-
-                  {/* Delete Button */}
-                  <Pressable
-                    onPress={() => handleDeleteProject(item.id, item.clientInfo.name || "Unnamed Client")}
-                    style={{
-                      flex: testMode ? 1 : undefined,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      paddingVertical: Spacing.sm,
-                      paddingHorizontal: Spacing.md,
-                      backgroundColor: Colors.error + "10",
-                      borderRadius: 8,
-                    }}
-                  >
-                    <Ionicons name="trash-outline" size={16} color={Colors.error} />
-                    <Text style={{ ...Typography.caption, color: Colors.error, fontWeight: "600", marginLeft: Spacing.xs }}>
-                      Delete
-                    </Text>
-                  </Pressable>
-                </View>
-              </Card>
-            ))}
-          </View>
-        )}
 
         {/* Empty State */}
         {projects.length === 0 && (

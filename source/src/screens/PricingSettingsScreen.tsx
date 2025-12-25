@@ -8,9 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { usePricingStore } from "../state/pricingStore";
+import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
+import { Card } from "../components/Card";
 
 type Props = NativeStackScreenProps<RootStackParamList, "PricingSettings">;
 
@@ -81,16 +84,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     (pricing.primerPer5Gallon || 150).toString()
   );
 
-  const [wallCoverage, setWallCoverage] = React.useState(
-    pricing.wallCoverageSqFtPerGallon.toString()
-  );
-  const [ceilingCoverage, setCeilingCoverage] = React.useState(
-    pricing.ceilingCoverageSqFtPerGallon.toString()
-  );
-  const [trimCoverage, setTrimCoverage] = React.useState(
-    pricing.trimCoverageSqFtPerGallon.toString()
-  );
-
   const handleSave = () => {
     pricing.updatePricing({
       wallLaborPerSqFt: parseFloat(wallLaborPerSqFt) || 0,
@@ -116,418 +109,470 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       trimPaintPer5Gallon: parseFloat(trimPaintPer5Gallon) || 225,
       doorPaintPer5Gallon: parseFloat(trimPaintPer5Gallon) || 225, // Door paint uses trim paint price
       primerPer5Gallon: parseFloat(primerPer5Gallon) || 150,
-      wallCoverageSqFtPerGallon: parseFloat(wallCoverage) || 350,
-      ceilingCoverageSqFtPerGallon: parseFloat(ceilingCoverage) || 350,
-      trimCoverageSqFtPerGallon: parseFloat(trimCoverage) || 350,
     });
     navigation.goBack();
   };
 
+
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-      className="flex-1 bg-gray-50"
+    <SafeAreaView
+      edges={["bottom"]}
+      style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
     >
-      <ScrollView
-        className="flex-1"
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={90}
       >
-        <View className="p-6">
-          {/* Link to Calculation Settings */}
-          <Pressable
-            onPress={() => navigation.navigate("CalculationSettings")}
-            className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 active:bg-blue-100"
-          >
-            <View className="flex-row items-center justify-between">
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-blue-900 mb-1">
-                  Calculation Settings
-                </Text>
-                <Text className="text-sm text-blue-700">
-                  Adjust default measurements for doors, windows, and closets
-                </Text>
-              </View>
-              <Text className="text-blue-600 text-2xl ml-3">›</Text>
-            </View>
-          </Pressable>
-
+        <ScrollView
+          contentContainerStyle={{ padding: Spacing.md }}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
           {/* Labor Rates */}
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            Labor Rates
-          </Text>
-
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Wall Labor ($/sq ft)
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Labor Rates
             </Text>
-            <TextInput
-              value={wallLaborPerSqFt}
-              onChangeText={setWallLaborPerSqFt}
-              placeholder="1.50"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Ceiling Labor ($/sq ft)
-            </Text>
-            <TextInput
-              value={ceilingLaborPerSqFt}
-              onChangeText={setCeilingLaborPerSqFt}
-              placeholder="1.75"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
-
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Baseboard Labor ($/LF)
-            </Text>
-            <TextInput
-              value={baseboardLaborPerLF}
-              onChangeText={setBaseboardLaborPerLF}
-              placeholder="1.25"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
-
-          <View className="flex-row gap-3 mb-4">
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Door Labor ($)
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Wall Labor ($/sq ft)
               </Text>
-              <TextInput
-                value={doorLabor}
-                onChangeText={setDoorLabor}
-                placeholder="50"
-                keyboardType="decimal-pad"
-                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={wallLaborPerSqFt}
+                  onChangeText={setWallLaborPerSqFt}
+                  placeholder="1.50"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
             </View>
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Window Labor ($)
-              </Text>
-              <TextInput
-                value={windowLabor}
-                onChangeText={setWindowLabor}
-                placeholder="35"
-                keyboardType="decimal-pad"
-                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
-            </View>
-          </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Closet Labor ($)
-            </Text>
-            <TextInput
-              value={closetLabor}
-              onChangeText={setClosetLabor}
-              placeholder="75"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Ceiling Labor ($/sq ft)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={ceilingLaborPerSqFt}
+                  onChangeText={setCeilingLaborPerSqFt}
+                  placeholder="1.75"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          <View className="flex-row gap-3 mb-4">
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Riser Labor ($)
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Baseboard Labor ($/LF)
               </Text>
-              <TextInput
-                value={riserLabor}
-                onChangeText={setRiserLabor}
-                placeholder="15"
-                keyboardType="decimal-pad"
-                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={baseboardLaborPerLF}
+                  onChangeText={setBaseboardLaborPerLF}
+                  placeholder="1.25"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
             </View>
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Spindle Labor ($)
-              </Text>
-              <TextInput
-                value={spindleLabor}
-                onChangeText={setSpindleLabor}
-                placeholder="8"
-                keyboardType="decimal-pad"
-                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
-            </View>
-          </View>
 
-          <View className="flex-row gap-3 mb-4">
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Handrail Labor ($/LF)
-              </Text>
-              <TextInput
-                value={handrailLaborPerLF}
-                onChangeText={setHandrailLaborPerLF}
-                placeholder="10"
-                keyboardType="decimal-pad"
-                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
+            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Door Labor ($)
+                </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    value={doorLabor}
+                    onChangeText={setDoorLabor}
+                    placeholder="50"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="decimal-pad"
+                    returnKeyType="done"
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Window Labor ($)
+                </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    value={windowLabor}
+                    onChangeText={setWindowLabor}
+                    placeholder="35"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="decimal-pad"
+                    returnKeyType="done"
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
             </View>
-            <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-700 mb-2">
-                Fireplace Labor ($)
-              </Text>
-              <TextInput
-                value={fireplaceLabor}
-                onChangeText={setFireplaceLabor}
-                placeholder="150"
-                keyboardType="decimal-pad"
-                className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
-            </View>
-          </View>
 
-          <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Crown Moulding Labor ($/LF)
-            </Text>
-            <TextInput
-              value={crownMouldingLaborPerLF}
-              onChangeText={setCrownMouldingLaborPerLF}
-              placeholder="1.50"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Closet Labor ($)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={closetLabor}
+                  onChangeText={setClosetLabor}
+                  placeholder="75"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+
+            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Riser Labor ($)
+                </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    value={riserLabor}
+                    onChangeText={setRiserLabor}
+                    placeholder="15"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="decimal-pad"
+                    returnKeyType="done"
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Spindle Labor ($)
+                </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    value={spindleLabor}
+                    onChangeText={setSpindleLabor}
+                    placeholder="8"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="decimal-pad"
+                    returnKeyType="done"
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+            </View>
+
+            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Handrail Labor ($/LF)
+                </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    value={handrailLaborPerLF}
+                    onChangeText={setHandrailLaborPerLF}
+                    placeholder="10"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="decimal-pad"
+                    returnKeyType="done"
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Fireplace Labor ($)
+                </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    value={fireplaceLabor}
+                    onChangeText={setFireplaceLabor}
+                    placeholder="150"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="decimal-pad"
+                    returnKeyType="done"
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+            </View>
+
+            <View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Crown Moulding Labor ($/LF)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={crownMouldingLaborPerLF}
+                  onChangeText={setCrownMouldingLaborPerLF}
+                  placeholder="1.50"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+          </Card>
 
           {/* Second Coat Labor Multiplier */}
-          <Text className="text-xl font-bold text-gray-900 mb-2">
-            2-Coat Labor Multiplier
-          </Text>
-          <Text className="text-sm text-gray-600 mb-4">
-            When 2 coats are selected, labor is multiplied by this value. Example: 1.5 means 2 coats costs 1.5x the labor of 1 coat.
-          </Text>
-
-          <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Labor Multiplier for 2 Coats
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
+              2-Coat Labor Multiplier
             </Text>
-            <TextInput
-              value={secondCoatLaborMultiplier}
-              onChangeText={setSecondCoatLaborMultiplier}
-              placeholder="2.0"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+              When 2 coats are selected, labor is multiplied by this value. Example: 1.5 means 2 coats costs 1.5x the labor of 1 coat.
+            </Text>
+
+            <View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Labor Multiplier for 2 Coats
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={secondCoatLaborMultiplier}
+                  onChangeText={setSecondCoatLaborMultiplier}
+                  placeholder="2.0"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+          </Card>
 
           {/* Accent Wall Labor Multiplier */}
-          <Text className="text-xl font-bold text-gray-900 mb-2">
-            Accent Wall Labor Multiplier
-          </Text>
-          <Text className="text-sm text-gray-600 mb-4">
-            When multiple colors or accent walls are selected, labor is multiplied by this value. Example: 1.25 means 25% more labor.
-          </Text>
-
-          <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Labor Multiplier for Accent Walls
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
+              Accent Wall Labor Multiplier
             </Text>
-            <TextInput
-              value={accentWallLaborMultiplier}
-              onChangeText={setAccentWallLaborMultiplier}
-              placeholder="1.25"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+              When multiple colors or accent walls are selected, labor is multiplied by this value. Example: 1.25 means 25% more labor.
+            </Text>
+
+            <View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Labor Multiplier for Accent Walls
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={accentWallLaborMultiplier}
+                  onChangeText={setAccentWallLaborMultiplier}
+                  placeholder="1.25"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+          </Card>
 
           {/* Material Prices */}
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            Material Prices
-          </Text>
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Material Prices
+            </Text>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Wall Paint ($/gallon)
-            </Text>
-            <TextInput
-              value={wallPaintPerGallon}
-              onChangeText={setWallPaintPerGallon}
-              placeholder="45"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Wall Paint ($/gallon)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={wallPaintPerGallon}
+                  onChangeText={setWallPaintPerGallon}
+                  placeholder="45"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Ceiling Paint ($/gallon)
-            </Text>
-            <TextInput
-              value={ceilingPaintPerGallon}
-              onChangeText={setCeilingPaintPerGallon}
-              placeholder="40"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Ceiling Paint ($/gallon)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={ceilingPaintPerGallon}
+                  onChangeText={setCeilingPaintPerGallon}
+                  placeholder="40"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Trim Paint ($/gallon)
-            </Text>
-            <Text className="text-xs text-gray-500 mb-2">
-              Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
-            </Text>
-            <TextInput
-              value={trimPaintPerGallon}
-              onChangeText={setTrimPaintPerGallon}
-              placeholder="50"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Trim Paint ($/gallon)
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={trimPaintPerGallon}
+                  onChangeText={setTrimPaintPerGallon}
+                  placeholder="50"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Primer ($/gallon)
-            </Text>
-            <TextInput
-              value={primerPerGallon}
-              onChangeText={setPrimerPerGallon}
-              placeholder="35"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Primer ($/gallon)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={primerPerGallon}
+                  onChangeText={setPrimerPerGallon}
+                  placeholder="35"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+          </Card>
 
           {/* 5-Gallon Bucket Prices */}
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            5-Gallon Bucket Prices
-          </Text>
-
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Wall Paint ($/5-gallon bucket)
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              5-Gallon Bucket Prices
             </Text>
-            <TextInput
-              value={wallPaintPer5Gallon}
-              onChangeText={setWallPaintPer5Gallon}
-              placeholder="200"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Ceiling Paint ($/5-gallon bucket)
-            </Text>
-            <TextInput
-              value={ceilingPaintPer5Gallon}
-              onChangeText={setCeilingPaintPer5Gallon}
-              placeholder="175"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Wall Paint ($/5-gallon bucket)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={wallPaintPer5Gallon}
+                  onChangeText={setWallPaintPer5Gallon}
+                  placeholder="200"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Trim Paint ($/5-gallon bucket)
-            </Text>
-            <Text className="text-xs text-gray-500 mb-2">
-              Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
-            </Text>
-            <TextInput
-              value={trimPaintPer5Gallon}
-              onChangeText={setTrimPaintPer5Gallon}
-              placeholder="225"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Ceiling Paint ($/5-gallon bucket)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={ceilingPaintPer5Gallon}
+                  onChangeText={setCeilingPaintPer5Gallon}
+                  placeholder="175"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          <View className="mb-6">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Primer ($/5-gallon bucket)
-            </Text>
-            <TextInput
-              value={primerPer5Gallon}
-              onChangeText={setPrimerPer5Gallon}
-              placeholder="150"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+            <View style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Trim Paint ($/5-gallon bucket)
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={trimPaintPer5Gallon}
+                  onChangeText={setTrimPaintPer5Gallon}
+                  placeholder="225"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
 
-          {/* Coverage Settings */}
-          <Text className="text-xl font-bold text-gray-900 mb-4">
-            Coverage Settings
-          </Text>
+            <View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Primer ($/5-gallon bucket)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  value={primerPer5Gallon}
+                  onChangeText={setPrimerPer5Gallon}
+                  placeholder="150"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="decimal-pad"
+                  returnKeyType="done"
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+          </Card>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Wall Coverage (sq ft/gallon)
-            </Text>
-            <TextInput
-              value={wallCoverage}
-              onChangeText={setWallCoverage}
-              placeholder="350"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
+          {/* Action Buttons */}
+          <View style={{ gap: Spacing.sm, marginBottom: Spacing.xl }}>
+            <Pressable
+              onPress={handleSave}
+              style={{
+                backgroundColor: Colors.primaryBlue,
+                borderRadius: BorderRadius.default,
+                paddingVertical: Spacing.md,
+                alignItems: "center",
+                ...Shadows.card,
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Save changes"
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600", color: Colors.white }}>
+                Save Settings
+              </Text>
+            </Pressable>
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Ceiling Coverage (sq ft/gallon)
-            </Text>
-            <TextInput
-              value={ceilingCoverage}
-              onChangeText={setCeilingCoverage}
-              placeholder="350"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
-
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              Trim Coverage (sq ft/gallon)
-            </Text>
-            <TextInput
-              value={trimCoverage}
-              onChangeText={setTrimCoverage}
-              placeholder="350"
-              keyboardType="decimal-pad"
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 text-base"
-            />
-          </View>
-
-          <View className="flex-row gap-3">
             <Pressable
               onPress={() => pricing.resetToDefaults()}
-              className="flex-1 bg-gray-200 rounded-xl py-4 items-center active:bg-gray-300"
+              style={{
+                backgroundColor: Colors.neutralGray,
+                borderRadius: BorderRadius.default,
+                paddingVertical: Spacing.md,
+                alignItems: "center",
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Reset to defaults"
             >
-              <Text className="text-gray-900 font-semibold">
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600", color: Colors.darkCharcoal }}>
                 Reset to Defaults
               </Text>
             </Pressable>
-            <Pressable
-              onPress={handleSave}
-              className="flex-1 bg-blue-600 rounded-xl py-4 items-center active:bg-blue-700"
-            >
-              <Text className="text-white font-semibold">Save Settings</Text>
-            </Pressable>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

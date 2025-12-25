@@ -81,6 +81,7 @@ export function getDefaultQuoteBuilder(): QuoteBuilder {
     // Structural elements
     includeStaircases: true,
     includeFireplaces: true,
+    includeBuiltIns: true,
     includePrimer: true,
     includeFloor1: true,
     includeFloor2: true,
@@ -290,15 +291,16 @@ export function calculateRoomMetrics(
     doorDeduction = doorCount * (doorOpeningArea + doorTrimArea);
   }
 
-  // Single closet: opening area + trim area
-  const singleClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * (calcSettings.singleClosetHeight / 12);
-  const singleClosetPerimeterForWall = (2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12);
+  // Single closet: opening area + trim area (use room height for closet height)
+  const closetHeightFt = height; // Use room ceiling height
+  const singleClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * closetHeightFt;
+  const singleClosetPerimeterForWall = (2 * closetHeightFt) + (calcSettings.singleClosetWidth / 12);
   const singleClosetTrimArea = singleClosetPerimeterForWall * (calcSettings.singleClosetTrimWidth / 12);
   const singleClosetDeduction = singleClosets * (singleClosetOpeningArea + singleClosetTrimArea);
 
-  // Double closet: opening area + trim area
-  const doubleClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * (calcSettings.doubleClosetHeight / 12);
-  const doubleClosetPerimeterForWall = (2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12);
+  // Double closet: opening area + trim area (use room height for closet height)
+  const doubleClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * closetHeightFt;
+  const doubleClosetPerimeterForWall = (2 * closetHeightFt) + (calcSettings.doubleClosetWidth / 12);
   const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
   const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
@@ -366,9 +368,9 @@ export function calculateRoomMetrics(
   // Calculate trim area for windows and doors (if being painted AND if included)
   let windowDoorTrimSqFt = 0;
 
-  // Add window trim area if painting trim AND windows exist AND trim is included
-  // Window frames are part of trim, controlled by paintTrim toggle
-  if ((room.paintTrim ?? true) && windowCount > 0 && room.includeWindows !== false && room.includeTrim !== false) {
+  // Add window trim area if painting window frames AND windows exist AND trim is included
+  // Window frames are painted separately, controlled by paintWindowFrames toggle
+  if ((room.paintWindowFrames ?? true) && windowCount > 0 && room.includeWindows !== false && room.includeTrim !== false) {
     // Trim width from calculation settings
     const trimWidthFt = calcSettings.windowTrimWidth / 12; // Convert inches to feet
     const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight); // All 4 sides
@@ -376,29 +378,29 @@ export function calculateRoomMetrics(
     windowDoorTrimSqFt += windowCount * trimAreaPerWindow;
   }
 
-  // Add door trim area if painting trim AND doors exist AND trim is included
-  // Door frames are part of trim, controlled by paintTrim toggle
-  if ((room.paintTrim ?? true) && doorCount > 0 && room.includeDoors !== false && room.includeTrim !== false) {
+  // Add door trim area if painting door frames AND doors exist AND trim is included
+  // Door frames are painted separately, controlled by paintDoorFrames toggle (includes closet doors)
+  if ((room.paintDoorFrames ?? true) && doorCount > 0 && room.includeDoors !== false && room.includeTrim !== false) {
     const trimWidthFt = calcSettings.doorTrimWidth / 12; // Convert inches to feet
     const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth; // 2 sides + top, no floor
     const trimAreaPerDoor = doorTrimPerimeter * trimWidthFt;
     windowDoorTrimSqFt += doorCount * trimAreaPerDoor;
   }
 
-  // Add closet door trim area (closet doors are always painted as part of trim, if trim is included)
-  if (room.includeTrim !== false) {
+  // Add closet door trim area (closet doors are painted if paintDoorFrames is included)
+  if ((room.paintDoorFrames ?? true) && room.includeTrim !== false) {
     if (singleClosets > 0) {
       const trimWidthFt = calcSettings.singleClosetTrimWidth / 12; // Convert inches to feet
-      // Calculate perimeter: 2 × height + 1 × width (no trim on floor)
-      const singleClosetPerimeter = (2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12);
+      // Calculate perimeter: 2 × height + 1 × width (no trim on floor) - use room height
+      const singleClosetPerimeter = (2 * height) + (calcSettings.singleClosetWidth / 12);
       const trimAreaPerCloset = singleClosetPerimeter * trimWidthFt;
       windowDoorTrimSqFt += singleClosets * trimAreaPerCloset;
     }
 
     if (doubleClosets > 0) {
       const trimWidthFt = calcSettings.doubleClosetTrimWidth / 12; // Convert inches to feet
-      // Calculate perimeter: 2 × height + 1 × width (no trim on floor)
-      const doubleClosetPerimeter = (2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12);
+      // Calculate perimeter: 2 × height + 1 × width (no trim on floor) - use room height
+      const doubleClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
       const trimAreaPerCloset = doubleClosetPerimeter * trimWidthFt;
       windowDoorTrimSqFt += doubleClosets * trimAreaPerCloset;
     }
@@ -411,7 +413,37 @@ export function calculateRoomMetrics(
     baseboardTrimSqFt = baseboardLF * baseboardTrimWidthFt;
   }
 
-  // Calculate crown moulding linear feet and area (only if trim is included)
+  // Calculate opening area and trim (pass-through openings without doors)
+  // Openings subtract from wall area and baseboard length, but add trim
+  let openingWallAreaSqFt = 0;
+  let openingTrimSqFt = 0;
+  let openingBaseboardLF = 0;
+  if (room.openings && room.openings.length > 0 && room.includeTrim !== false) {
+    for (const opening of room.openings) {
+      const openingWidthFt = opening.width / 12; // Convert inches to feet
+      const openingHeightFt = opening.height / 12; // Convert inches to feet
+
+      // Subtract opening area from wall area (opening removes wall)
+      openingWallAreaSqFt += openingWidthFt * openingHeightFt;
+
+      // Subtract opening width from baseboard length
+      openingBaseboardLF += openingWidthFt;
+
+      // Add trim area around opening
+      // Trim goes on 2 sides (full height), 1 top (full width), and optionally 1 back
+      const trimWidthFt = calcSettings.openingTrimWidth / 12;
+      const interiorTrimPerimeter = opening.hasInteriorTrim
+        ? (2 * openingHeightFt) + openingWidthFt  // 2 sides + top
+        : 0;
+      const exteriorTrimPerimeter = opening.hasExteriorTrim
+        ? (2 * openingHeightFt) + openingWidthFt  // 2 sides + top
+        : 0;
+      const totalOpeningTrimPerimeter = interiorTrimPerimeter + exteriorTrimPerimeter;
+      openingTrimSqFt += totalOpeningTrimPerimeter * trimWidthFt;
+    }
+  }
+
+  // Crown moulding section
   let crownMouldingLF = 0;
   let crownMouldingTrimSqFt = 0;
   if (room.hasCrownMoulding && room.includeTrim !== false) {
@@ -427,7 +459,19 @@ export function calculateRoomMetrics(
   }
 
   // Total trim square footage (combining all trim types) - ensure non-negative
-  const trimSqFt = Math.max(0, safeNumber(windowDoorTrimSqFt + baseboardTrimSqFt + crownMouldingTrimSqFt));
+  // Include opening trim in the total
+  const trimSqFt = Math.max(0, safeNumber(windowDoorTrimSqFt + baseboardTrimSqFt + crownMouldingTrimSqFt + openingTrimSqFt));
+
+  // Adjust wall area and baseboard length for openings
+  const adjustedWallSqFt = Math.max(0, wallSqFt - openingWallAreaSqFt);
+  const adjustedBaseboardLF = Math.max(0, baseboardLF - openingBaseboardLF);
+
+  // Recalculate baseboard trim area with adjusted length
+  let adjustedBaseboardTrimSqFt = baseboardTrimSqFt;
+  if (room.paintBaseboard !== false && room.includeTrim !== false) {
+    const baseboardTrimWidthFt = calcSettings.baseboardWidth / 12;
+    adjustedBaseboardTrimSqFt = adjustedBaseboardLF * baseboardTrimWidthFt;
+  }
 
   // Safe coverage values (minimum 1 to prevent division by zero)
   const wallCoverage = Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350));
@@ -435,7 +479,8 @@ export function calculateRoomMetrics(
   const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
 
   // Calculate paint gallons with safe division
-  const rawWallGallons = (wallSqFt / wallCoverage) * coatsWalls;
+  // Use adjusted wall area (subtracts openings)
+  const rawWallGallons = (adjustedWallSqFt / wallCoverage) * coatsWalls;
   const rawCeilingGallons = (ceilingSqFt / ceilingCoverage) * coatsCeiling;
   const rawTrimGallons = (trimSqFt / trimCoverage) * coatsTrim;
 
@@ -496,9 +541,9 @@ export function calculateRoomMetrics(
     laborCost += doorCount * safeNumber(pricing.doorLabor, 0) * doorLaborMultiplier;
   }
 
-  // Add window labor only if painting trim AND windows are included
+  // Add window labor only if painting window frames AND windows are included
   // Window frames are part of trim work - multiply by coat multiplier
-  if ((room.paintTrim ?? true) && room.includeWindows !== false) {
+  if ((room.paintWindowFrames ?? true) && room.includeWindows !== false) {
     laborCost += windowCount * safeNumber(pricing.windowLabor, 0) * trimLaborMultiplier;
   }
 
@@ -573,6 +618,8 @@ export function calculateRoomMetricsWithQB(
   const effectivePaintWalls = (room.paintWalls !== false) && quoteBuilder.includeWalls;
   const effectivePaintCeilings = (room.paintCeilings !== false) && quoteBuilder.includeCeilings;
   const effectivePaintTrim = (room.paintTrim !== false) && quoteBuilder.includeTrim;
+  const effectivePaintWindowFrames = (room.paintWindowFrames !== false) && quoteBuilder.includeTrim && quoteBuilder.includeWindows;
+  const effectivePaintDoorFrames = (room.paintDoorFrames !== false) && quoteBuilder.includeTrim && quoteBuilder.includeDoors;
   const effectivePaintDoors = (room.paintDoors !== false) && quoteBuilder.includeDoors;
   const effectivePaintBaseboard = (room.paintBaseboard !== false) && quoteBuilder.includeBaseboards;
   const effectiveIncludeCloset = (room.includeClosetInteriorInQuote ?? projectIncludeClosetInteriorInQuote ?? true) && quoteBuilder.includeClosets;
@@ -583,6 +630,8 @@ export function calculateRoomMetricsWithQB(
     paintWalls: effectivePaintWalls,
     paintCeilings: effectivePaintCeilings,
     paintTrim: effectivePaintTrim,
+    paintWindowFrames: effectivePaintWindowFrames,
+    paintDoorFrames: effectivePaintDoorFrames,
     paintDoors: effectivePaintDoors,
     paintBaseboard: effectivePaintBaseboard,
     includeClosetInteriorInQuote: effectiveIncludeCloset,
@@ -1005,14 +1054,14 @@ export function calculateFilteredRoomMetrics(
     const doorTrimArea = doorTrimPerimeter * (calcSettings.doorTrimWidth / 12);
     const doorDeduction = doorCount * (doorOpeningArea + doorTrimArea);
 
-    // Deduct closet openings ALWAYS (physical reality)
-    const singleClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * (calcSettings.singleClosetHeight / 12);
-    const singleClosetPerimeterForWall = (2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12);
+    // Deduct closet openings ALWAYS (physical reality) - use room height for closet height
+    const singleClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * height;
+    const singleClosetPerimeterForWall = (2 * height) + (calcSettings.singleClosetWidth / 12);
     const singleClosetTrimArea = singleClosetPerimeterForWall * (calcSettings.singleClosetTrimWidth / 12);
     const singleClosetDeduction = singleClosets * (singleClosetOpeningArea + singleClosetTrimArea);
 
-    const doubleClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * (calcSettings.doubleClosetHeight / 12);
-    const doubleClosetPerimeterForWall = (2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12);
+    const doubleClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * height;
+    const doubleClosetPerimeterForWall = (2 * height) + (calcSettings.doubleClosetWidth / 12);
     const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
     const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
@@ -1122,13 +1171,15 @@ export function calculateFilteredRoomMetrics(
   if (true) {
     if (singleClosets > 0) {
       const trimWidthFt = calcSettings.singleClosetTrimWidth / 12;
-      const singleClosetPerimeter = (2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12);
+      // Use room height for closet perimeter
+      const singleClosetPerimeter = (2 * height) + (calcSettings.singleClosetWidth / 12);
       const trimAreaPerCloset = singleClosetPerimeter * trimWidthFt;
       closetTrimSqFt += singleClosets * trimAreaPerCloset;
     }
     if (doubleClosets > 0) {
       const trimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
-      const doubleClosetPerimeter = (2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12);
+      // Use room height for closet perimeter
+      const doubleClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
       const trimAreaPerCloset = doubleClosetPerimeter * trimWidthFt;
       closetTrimSqFt += doubleClosets * trimAreaPerCloset;
     }

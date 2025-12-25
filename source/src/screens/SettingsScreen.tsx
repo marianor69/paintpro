@@ -10,7 +10,7 @@ import { useAppSettings } from "../state/appSettings";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { NumericInput } from "../components/NumericInput";
-import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
+import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { AUDIT_FILES } from "../utils/auditData";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
@@ -170,7 +170,7 @@ export default function SettingsScreen() {
                 marginLeft: Spacing.sm,
               }}
             >
-              Open Pricing Settings
+              Pricing Settings
             </Text>
           </Pressable>
 
@@ -194,7 +194,7 @@ export default function SettingsScreen() {
                 marginLeft: Spacing.sm,
               }}
             >
-              Open Calculation Settings
+              Calculation Settings
             </Text>
           </Pressable>
         </Card>
@@ -213,7 +213,7 @@ export default function SettingsScreen() {
           </Text>
 
           <NumericInput
-            label="Wall Paint Coverage"
+            label="Wall Paint Coverage (sqft/gal)"
             value={String(appSettings.wallCoverageSqFtPerGallon)}
             onChangeText={(text) =>
               appSettings.updateSettings({
@@ -225,7 +225,7 @@ export default function SettingsScreen() {
           />
 
           <NumericInput
-            label="Ceiling Paint Coverage"
+            label="Ceiling Paint Coverage (sqft/gal)"
             value={String(appSettings.ceilingCoverageSqFtPerGallon)}
             onChangeText={(text) =>
               appSettings.updateSettings({
@@ -237,7 +237,7 @@ export default function SettingsScreen() {
           />
 
           <NumericInput
-            label="Trim Paint Coverage"
+            label="Trim Paint Coverage (sqft/gal)"
             value={String(appSettings.trimCoverageSqFtPerGallon)}
             onChangeText={(text) =>
               appSettings.updateSettings({
@@ -249,19 +249,7 @@ export default function SettingsScreen() {
           />
 
           <NumericInput
-            label="Door Paint Coverage"
-            value={String(appSettings.doorCoverageSqFtPerGallon)}
-            onChangeText={(text) =>
-              appSettings.updateSettings({
-                doorCoverageSqFtPerGallon: parseFloat(text) || 0,
-              })
-            }
-            unit="sqft/gal"
-            placeholder="350"
-          />
-
-          <NumericInput
-            label="Primer Coverage"
+            label="Primer Coverage (sqft/gal)"
             value={String(appSettings.primerCoverageSqFtPerGallon)}
             onChangeText={(text) =>
               appSettings.updateSettings({
@@ -270,18 +258,6 @@ export default function SettingsScreen() {
             }
             unit="sqft/gal"
             placeholder="350"
-          />
-
-          <NumericInput
-            label="Closet Cavity Depth"
-            value={String(appSettings.closetCavityDepth)}
-            onChangeText={(text) =>
-              appSettings.updateSettings({
-                closetCavityDepth: parseFloat(text) || 0,
-              })
-            }
-            unit="ft"
-            placeholder="2"
           />
         </Card>
 

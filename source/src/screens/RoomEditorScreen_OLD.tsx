@@ -1036,7 +1036,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                               <View className="flex-row justify-between mb-1">
                                 <Text className="text-sm text-gray-600">Less single closets:</Text>
                                 <Text className="text-sm text-gray-900">
-                                  -{parseInt(singleDoorClosets)} × [({calcSettings.singleClosetWidth}&quot;×{calcSettings.singleClosetHeight}&quot;)+trim] = -{((parseInt(singleDoorClosets) || 0) * ((calcSettings.singleClosetWidth / 12) * (calcSettings.singleClosetHeight / 12) + ((2 * (calcSettings.singleClosetHeight / 12)) + (calcSettings.singleClosetWidth / 12)) * (calcSettings.singleClosetTrimWidth / 12))).toFixed(1)} sq ft
+                                  -{parseInt(singleDoorClosets)} × [({calcSettings.singleClosetWidth}&quot;×ceiling)+trim] = -{((parseInt(singleDoorClosets) || 0) * ((calcSettings.singleClosetWidth / 12) * 8 + ((2 * 8) + (calcSettings.singleClosetWidth / 12)) * (calcSettings.singleClosetTrimWidth / 12))).toFixed(1)} sq ft
                                 </Text>
                               </View>
                             </>
@@ -1046,7 +1046,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                               <View className="flex-row justify-between mb-1">
                                 <Text className="text-sm text-gray-600">Less double closets:</Text>
                                 <Text className="text-sm text-gray-900">
-                                  -{parseInt(doubleDoorClosets)} × [({calcSettings.doubleClosetWidth}&quot;×{calcSettings.doubleClosetHeight}&quot;)+trim] = -{((parseInt(doubleDoorClosets) || 0) * ((calcSettings.doubleClosetWidth / 12) * (calcSettings.doubleClosetHeight / 12) + ((2 * (calcSettings.doubleClosetHeight / 12)) + (calcSettings.doubleClosetWidth / 12)) * (calcSettings.doubleClosetTrimWidth / 12))).toFixed(1)} sq ft
+                                  -{parseInt(doubleDoorClosets)} × [({calcSettings.doubleClosetWidth}&quot;×ceiling)+trim] = -{((parseInt(doubleDoorClosets) || 0) * ((calcSettings.doubleClosetWidth / 12) * 8 + ((2 * 8) + (calcSettings.doubleClosetWidth / 12)) * (calcSettings.doubleClosetTrimWidth / 12))).toFixed(1)} sq ft
                                 </Text>
                               </View>
                             </>

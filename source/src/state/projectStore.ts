@@ -6,6 +6,7 @@ import {
   Room,
   Staircase,
   Fireplace,
+  BuiltIn,
   ClientInfo,
   QuoteBuilder,
   Quote,
@@ -20,11 +21,13 @@ function getDefaultGlobalPaintDefaults(): GlobalPaintDefaults {
     paintWalls: true,
     paintCeilings: true,
     paintTrim: true,
+    paintWindowFrames: true,
+    paintDoorFrames: true,
     paintBaseboards: true,
-    paintDoors: false,
-    paintDoorJambs: false,
+    paintDoors: true,
+    paintDoorJambs: true,
     paintWindows: false,
-    paintCrownMoulding: false,
+    paintCrownMoulding: true,
     paintClosetInteriors: true,
     includeStaircases: true,
     includeFireplaces: true,
@@ -99,6 +102,15 @@ interface ProjectStore {
     fireplace: Partial<Fireplace>
   ) => void;
   deleteFireplace: (projectId: string, fireplaceId: string) => void;
+
+  // Built-In operations
+  addBuiltIn: (projectId: string) => string;
+  updateBuiltIn: (
+    projectId: string,
+    builtInId: string,
+    builtIn: Partial<BuiltIn>
+  ) => void;
+  deleteBuiltIn: (projectId: string, builtInId: string) => void;
 }
 
 export const useProjectStore = create<ProjectStore>()(
@@ -117,6 +129,7 @@ export const useProjectStore = create<ProjectStore>()(
           rooms: [],
           staircases: [],
           fireplaces: [],
+          builtIns: [],
           createdAt: now,
           updatedAt: now,
           floorCount: floorInfo?.floorCount || 1,
@@ -426,6 +439,8 @@ export const useProjectStore = create<ProjectStore>()(
           paintWalls: globalDefaults.paintWalls,
           paintCeilings: globalDefaults.paintCeilings,
           paintTrim: globalDefaults.paintTrim,
+          paintWindowFrames: globalDefaults.paintWindowFrames,
+          paintDoorFrames: globalDefaults.paintDoorFrames,
           paintBaseboard: globalDefaults.paintBaseboards,
           paintWindows: globalDefaults.paintWindows,
           paintDoors: globalDefaults.paintDoors,
@@ -580,6 +595,61 @@ export const useProjectStore = create<ProjectStore>()(
               ? {
                   ...p,
                   fireplaces: p.fireplaces.filter((f) => f.id !== fireplaceId),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      addBuiltIn: (projectId) => {
+        const builtInId = uuidv4();
+        const newBuiltIn: BuiltIn = {
+          id: builtInId,
+          name: "Built-In",
+          width: 36,
+          height: 80,
+          depth: 12,
+          shelfCount: 4,
+          coats: 2,
+        };
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  builtIns: [...p.builtIns, newBuiltIn],
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+        return builtInId;
+      },
+
+      updateBuiltIn: (projectId, builtInId, builtIn) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  builtIns: p.builtIns.map((b) =>
+                    b.id === builtInId ? { ...b, ...builtIn } : b
+                  ),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      deleteBuiltIn: (projectId, builtInId) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  builtIns: p.builtIns.filter((b) => b.id !== builtInId),
                   updatedAt: Date.now(),
                 }
               : p

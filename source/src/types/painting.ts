@@ -21,7 +21,9 @@ export interface Room {
   // Room-level paint options (override global defaults)
   paintWalls?: boolean; // Whether to paint walls in this room
   paintCeilings?: boolean; // Whether to paint ceilings in this room
-  paintTrim?: boolean; // Whether to paint trim in this room
+  paintTrim?: boolean; // Whether to paint trim in this room (deprecated - use paintWindowFrames and paintDoorFrames)
+  paintWindowFrames?: boolean; // Whether to paint window frames/trim
+  paintDoorFrames?: boolean; // Whether to paint door frames/trim (includes closet doors)
   paintWindows?: boolean;
   paintDoors?: boolean;
   paintJambs?: boolean;
@@ -39,6 +41,8 @@ export interface Room {
   includeWindows?: boolean; // Whether to include windows in calculations (default: true)
   includeDoors?: boolean; // Whether to include doors in calculations (default: true)
   includeTrim?: boolean; // Whether to include trim (baseboard/crown) in calculations (default: true)
+  // Openings (e.g., pass-through openings without doors)
+  openings?: Opening[];
   // Per-room gallon usage (stored as decimals for accurate totaling)
   gallonUsage?: {
     wall: number;
@@ -52,6 +56,16 @@ export interface Room {
   grandTotal?: number;
   // Photos for documentation (with notes)
   photos?: RoomPhoto[];
+  // Standalone notes field (available without photos)
+  notes?: string;
+}
+
+export interface Opening {
+  id: string;
+  width: number; // in inches
+  height: number; // in inches
+  hasInteriorTrim: boolean; // Whether opening has trim on interior side (front)
+  hasExteriorTrim: boolean; // Whether opening has trim on exterior side (back)
 }
 
 export interface RoomPhoto {
@@ -75,6 +89,8 @@ export interface Staircase {
   tallWallHeight?: number; // in feet
   shortWallHeight?: number; // in feet
   doubleSidedWalls?: boolean;
+  // Notes field (available without photos)
+  notes?: string;
 }
 
 export interface Fireplace {
@@ -85,11 +101,27 @@ export interface Fireplace {
   hasTrim: boolean;
   trimLinearFeet: number;
   coats: number;
+  // Notes field (available without photos)
+  notes?: string;
+}
+
+export interface BuiltIn {
+  id: string;
+  name: string; // e.g., "Library Bookshelf", "Living Room Built-In"
+  width: number; // in inches
+  height: number; // in inches
+  depth: number; // in inches (how far it protrudes from wall)
+  shelfCount: number; // number of shelves
+  coats: number; // number of coats to paint
+  // Notes field (available without photos)
+  notes?: string;
 }
 
 export interface ClientInfo {
   name: string;
   address: string;
+  city?: string;
+  country?: string;
   phone: string;
   email: string;
 }
@@ -119,6 +151,7 @@ export interface QuoteBuilder {
   // Structural elements
   includeStaircases: boolean;
   includeFireplaces: boolean;
+  includeBuiltIns: boolean;
   includePrimer: boolean;
   includeFloor1: boolean;
   includeFloor2: boolean;
@@ -155,7 +188,9 @@ export interface Quote {
 export interface GlobalPaintDefaults {
   paintWalls: boolean;
   paintCeilings: boolean;
-  paintTrim: boolean;
+  paintTrim: boolean; // deprecated - use paintWindowFrames and paintDoorFrames
+  paintWindowFrames: boolean;
+  paintDoorFrames: boolean;
   paintBaseboards: boolean;
   paintDoors: boolean;
   paintDoorJambs: boolean;
@@ -177,6 +212,7 @@ export interface Project {
   rooms: Room[];
   staircases: Staircase[];
   fireplaces: Fireplace[];
+  builtIns: BuiltIn[];
   createdAt: number;
   updatedAt: number;
   // Floor information
