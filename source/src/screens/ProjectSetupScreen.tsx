@@ -18,7 +18,7 @@ import { useProjectStore } from "../state/projectStore";
 import { useAppSettings } from "../state/appSettings";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
-import { StepProgressIndicator } from "../components/StepProgressIndicator";
+import StepProgressIndicator from "../components/StepProgressIndicator";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { t } from "../i18n";
 import { calculateCurrentStep, getCompletedSteps, getStepValidationErrors, isStep1Complete } from "../utils/projectStepLogic";
