@@ -631,7 +631,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
             )}
           </Card>
 
-          {/* PAINT DEFAULTS SECTION */}
+          {/* PAINT DEFAULTS SECTION - Only show for existing projects */}
+          {project && (
           <Card style={{ marginBottom: Spacing.md }}>
             <Pressable
               onPress={() => toggleSection("paintDefaults")}
@@ -652,7 +653,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               />
             </Pressable>
 
-            {expandedSections.paintDefaults && project && (
+            {expandedSections.paintDefaults && (
               <>
                 <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
@@ -770,6 +771,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               </>
             )}
           </Card>
+          )}
 
           {/* Save & Continue Button */}
           <Pressable
