@@ -210,10 +210,12 @@ const styles = {
   } as ViewStyle,
 
   stepCircle: {
-    borderRadius: 9999,
+    borderRadius: 28,
     borderWidth: 2,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
+    minWidth: 50,
+    minHeight: 50,
   } as ViewStyle,
 
   stepNumber: {
@@ -221,9 +223,9 @@ const styles = {
   },
 
   connector: {
-    flex: 1,
+    width: 40,
     height: 2,
-    marginHorizontal: Spacing.sm,
+    marginHorizontal: Spacing.xs,
   } as ViewStyle,
 
   labelsContainer: {

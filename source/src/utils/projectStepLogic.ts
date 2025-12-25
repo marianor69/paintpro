@@ -22,10 +22,10 @@ export type ProjectStep = 1 | 2 | 3;
 export function isStep1Complete(project: Project | null): boolean {
   if (!project) return false;
 
-  const hasClientName = project.clientName && project.clientName.trim().length > 0;
-  const hasFloorConfig = project.floorCount > 0 && project.floorHeights && project.floorHeights.length === project.floorCount;
+  const hasClientName = project.clientInfo?.name && project.clientInfo.name.trim().length > 0;
+  const hasFloorConfig = (project.floorCount ?? 0) > 0 && project.floorHeights && project.floorHeights.length === (project.floorCount ?? 0);
 
-  return hasClientName && hasFloorConfig;
+  return !!(hasClientName && hasFloorConfig);
 }
 
 /**
@@ -102,13 +102,13 @@ export function getStepValidationErrors(project: Project | null, step: ProjectSt
 
   switch (step) {
     case 1:
-      if (!project.clientName || project.clientName.trim().length === 0) {
+      if (!project.clientInfo?.name || project.clientInfo.name.trim().length === 0) {
         errors.push('Client name is required');
       }
       if (!project.floorCount || project.floorCount === 0) {
         errors.push('Number of floors is required');
       }
-      if (!project.floorHeights || project.floorHeights.length !== project.floorCount) {
+      if (!project.floorHeights || project.floorHeights.length !== (project.floorCount ?? 0)) {
         errors.push('Floor heights must be specified for all floors');
       }
       break;

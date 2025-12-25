@@ -1,4 +1,4 @@
-import { getLocales } from 'expo-localization';
+import { NativeModules, Platform } from 'react-native';
 import en from './locales/en';
 import es from './locales/es';
 import fr from './locales/fr';
@@ -26,14 +26,23 @@ let currentLanguage: Language = 'en';
  */
 export function detectDeviceLanguage(): Language {
   try {
-    const locales = getLocales();
-    if (locales && locales.length > 0) {
-      const deviceLang = locales[0].languageCode?.toLowerCase();
-      if (deviceLang === 'es') return 'es';
-      if (deviceLang === 'fr') return 'fr';
+    // Get device language using React Native's NativeModules
+    let deviceLang = 'en';
+    if (Platform.OS === 'ios') {
+      deviceLang = (
+        NativeModules.SettingsManager?.settings?.AppleLocale ||
+        NativeModules.SettingsManager?.settings?.AppleLanguages?.[0] ||
+        'en'
+      ).toLowerCase();
+    } else {
+      deviceLang = (NativeModules.I18nManager?.localeIdentifier || 'en').toLowerCase();
     }
+
+    // Check for language match
+    if (deviceLang.startsWith('es')) return 'es';
+    if (deviceLang.startsWith('fr')) return 'fr';
   } catch (error) {
-    console.error('Error detecting device language:', error);
+    // Silently fall back to English
   }
   return 'en';
 }

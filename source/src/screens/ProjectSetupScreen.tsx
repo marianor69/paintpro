@@ -41,21 +41,21 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const projectId = paramProjectId || "";
 
   const project = useProjectStore((s) =>
-    projectId ? s.projects.find((p) => p.id === projectId) : null
+    projectId ? s.projects.find((p) => p.id === projectId) ?? null : null
   );
   const createProject = useProjectStore((s) => s.createProject);
-  const updateProjectInfo = useProjectStore((s) => s.updateProjectInfo);
+  const updateClientInfo = useProjectStore((s) => s.updateClientInfo);
   const updateProjectFloors = useProjectStore((s) => s.updateProjectFloors);
   const updateGlobalPaintDefaults = useProjectStore((s) => s.updateGlobalPaintDefaults);
   const updateProjectCoverPhoto = useProjectStore((s) => s.updateProjectCoverPhoto);
 
   // Client Info State (for new projects)
-  const [name, setName] = useState(project?.clientName || "");
-  const [address, setAddress] = useState(project?.address || "");
-  const [city, setCity] = useState(project?.city || "");
-  const [country, setCountry] = useState(project?.country || "");
-  const [phone, setPhone] = useState(project?.phone || "");
-  const [email, setEmail] = useState(project?.email || "");
+  const [name, setName] = useState(project?.clientInfo?.name || "");
+  const [address, setAddress] = useState(project?.clientInfo?.address || "");
+  const [city, setCity] = useState(project?.clientInfo?.city || "");
+  const [country, setCountry] = useState(project?.clientInfo?.country || "");
+  const [phone, setPhone] = useState(project?.clientInfo?.phone || "");
+  const [email, setEmail] = useState(project?.clientInfo?.email || "");
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
 
   // Floor Config State
@@ -73,6 +73,22 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [localFloorHeights, setLocalFloorHeights] = useState<string[]>(
     effectiveFloorHeights.map((h) => h.toString())
   );
+
+  // Paint Defaults State (for new projects)
+  const [localPaintDefaults, setLocalPaintDefaults] = useState({
+    paintWalls: project?.globalPaintDefaults?.paintWalls ?? true,
+    paintCeilings: project?.globalPaintDefaults?.paintCeilings ?? true,
+    paintTrim: project?.globalPaintDefaults?.paintTrim ?? true,
+    paintBaseboards: project?.globalPaintDefaults?.paintBaseboards ?? true,
+    paintDoors: project?.globalPaintDefaults?.paintDoors ?? true,
+    paintDoorJambs: project?.globalPaintDefaults?.paintDoorJambs ?? true,
+    paintCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? false,
+    paintClosetInteriors: project?.globalPaintDefaults?.paintClosetInteriors ?? true,
+    defaultWallCoats: project?.globalPaintDefaults?.defaultWallCoats ?? 2,
+    defaultCeilingCoats: project?.globalPaintDefaults?.defaultCeilingCoats ?? 2,
+    defaultTrimCoats: project?.globalPaintDefaults?.defaultTrimCoats ?? 2,
+    defaultDoorCoats: project?.globalPaintDefaults?.defaultDoorCoats ?? 2,
+  });
 
   // Collapsible sections state
   const [expandedSections, setExpandedSections] = useState({
@@ -216,7 +232,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
     // For new projects, create the project
     if (isNew) {
-      const projectId = createProject(
+      const newProjectId = createProject(
         {
           name: name.trim(),
           address: address.trim(),
@@ -231,16 +247,19 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         }
       );
 
+      // Apply paint defaults from local state
+      updateGlobalPaintDefaults(newProjectId, localPaintDefaults);
+
       if (coverPhotoUri) {
-        updateProjectCoverPhoto(projectId, coverPhotoUri);
+        updateProjectCoverPhoto(newProjectId, coverPhotoUri);
       }
 
-      navigation.replace("ProjectDetail", { projectId });
+      navigation.replace("ProjectDetail", { projectId: newProjectId });
     } else {
       // For existing projects, update info and navigate
       if (project) {
-        updateProjectInfo(project.id, {
-          clientName: name.trim(),
+        updateClientInfo(project.id, {
+          name: name.trim(),
           address: address.trim(),
           city: city.trim(),
           country: country.trim(),
@@ -631,8 +650,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
             )}
           </Card>
 
-          {/* PAINT DEFAULTS SECTION - Only show for existing projects */}
-          {project && (
+          {/* PAINT DEFAULTS SECTION - Shows for both new and existing projects */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Pressable
               onPress={() => toggleSection("paintDefaults")}
@@ -659,60 +677,68 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintWalls")}
-                  value={project.globalPaintDefaults?.paintWalls ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintWalls: value })
-                  }
+                  value={localPaintDefaults.paintWalls}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintWalls: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintWalls: value });
+                  }}
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintCeilings")}
-                  value={project.globalPaintDefaults?.paintCeilings ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintCeilings: value })
-                  }
+                  value={localPaintDefaults.paintCeilings}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintCeilings: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintCeilings: value });
+                  }}
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintTrim")}
-                  value={project.globalPaintDefaults?.paintTrim ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintTrim: value })
-                  }
+                  value={localPaintDefaults.paintTrim}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintTrim: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintTrim: value });
+                  }}
                   description="Includes door frames and window frames"
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintBaseboards")}
-                  value={project.globalPaintDefaults?.paintBaseboards ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintBaseboards: value })
-                  }
+                  value={localPaintDefaults.paintBaseboards}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintBaseboards: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintBaseboards: value });
+                  }}
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintDoors")}
-                  value={project.globalPaintDefaults?.paintDoors ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintDoors: value })
-                  }
+                  value={localPaintDefaults.paintDoors}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintDoors: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintDoors: value });
+                  }}
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintDoorJambs")}
-                  value={project.globalPaintDefaults?.paintDoorJambs ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintDoorJambs: value })
-                  }
+                  value={localPaintDefaults.paintDoorJambs}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintDoorJambs: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintDoorJambs: value });
+                  }}
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintCrownMoulding")}
-                  value={project.globalPaintDefaults?.paintCrownMoulding ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintCrownMoulding: value })
-                  }
+                  value={localPaintDefaults.paintCrownMoulding}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintCrownMoulding: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintCrownMoulding: value });
+                  }}
                 />
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintClosetInteriors")}
-                  value={project.globalPaintDefaults?.paintClosetInteriors ?? true}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, { paintClosetInteriors: value })
-                  }
+                  value={localPaintDefaults.paintClosetInteriors}
+                  onValueChange={(value) => {
+                    setLocalPaintDefaults(prev => ({ ...prev, paintClosetInteriors: value }));
+                    if (project) updateGlobalPaintDefaults(project.id, { paintClosetInteriors: value });
+                  }}
                 />
 
                 {/* Default Coats Section */}
@@ -727,51 +753,50 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.coatsForWalls")}
-                  value={(project.globalPaintDefaults?.defaultWallCoats ?? 2) === 2}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, {
-                      defaultWallCoats: value ? 2 : 1,
-                    })
-                  }
-                  description={`Currently: ${project.globalPaintDefaults?.defaultWallCoats ?? 2} coat(s)`}
+                  value={localPaintDefaults.defaultWallCoats === 2}
+                  onValueChange={(value) => {
+                    const newCoats = value ? 2 : 1;
+                    setLocalPaintDefaults(prev => ({ ...prev, defaultWallCoats: newCoats }));
+                    if (project) updateGlobalPaintDefaults(project.id, { defaultWallCoats: newCoats });
+                  }}
+                  description={`Currently: ${localPaintDefaults.defaultWallCoats} coat(s)`}
                 />
 
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.coatsForCeilings")}
-                  value={(project.globalPaintDefaults?.defaultCeilingCoats ?? 2) === 2}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, {
-                      defaultCeilingCoats: value ? 2 : 1,
-                    })
-                  }
-                  description={`Currently: ${project.globalPaintDefaults?.defaultCeilingCoats ?? 2} coat(s)`}
+                  value={localPaintDefaults.defaultCeilingCoats === 2}
+                  onValueChange={(value) => {
+                    const newCoats = value ? 2 : 1;
+                    setLocalPaintDefaults(prev => ({ ...prev, defaultCeilingCoats: newCoats }));
+                    if (project) updateGlobalPaintDefaults(project.id, { defaultCeilingCoats: newCoats });
+                  }}
+                  description={`Currently: ${localPaintDefaults.defaultCeilingCoats} coat(s)`}
                 />
 
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.coatsForTrim")}
-                  value={(project.globalPaintDefaults?.defaultTrimCoats ?? 2) === 2}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, {
-                      defaultTrimCoats: value ? 2 : 1,
-                    })
-                  }
-                  description={`Currently: ${project.globalPaintDefaults?.defaultTrimCoats ?? 2} coat(s)`}
+                  value={localPaintDefaults.defaultTrimCoats === 2}
+                  onValueChange={(value) => {
+                    const newCoats = value ? 2 : 1;
+                    setLocalPaintDefaults(prev => ({ ...prev, defaultTrimCoats: newCoats }));
+                    if (project) updateGlobalPaintDefaults(project.id, { defaultTrimCoats: newCoats });
+                  }}
+                  description={`Currently: ${localPaintDefaults.defaultTrimCoats} coat(s)`}
                 />
 
                 <Toggle
                   label={t("screens.projectSetup.projectDefaults.coatsForDoors")}
-                  value={(project.globalPaintDefaults?.defaultDoorCoats ?? 2) === 2}
-                  onValueChange={(value) =>
-                    updateGlobalPaintDefaults(project.id, {
-                      defaultDoorCoats: value ? 2 : 1,
-                    })
-                  }
-                  description={`Currently: ${project.globalPaintDefaults?.defaultDoorCoats ?? 2} coat(s)`}
+                  value={localPaintDefaults.defaultDoorCoats === 2}
+                  onValueChange={(value) => {
+                    const newCoats = value ? 2 : 1;
+                    setLocalPaintDefaults(prev => ({ ...prev, defaultDoorCoats: newCoats }));
+                    if (project) updateGlobalPaintDefaults(project.id, { defaultDoorCoats: newCoats });
+                  }}
+                  description={`Currently: ${localPaintDefaults.defaultDoorCoats} coat(s)`}
                 />
               </>
             )}
           </Card>
-          )}
 
           {/* Save & Continue Button */}
           <Pressable
