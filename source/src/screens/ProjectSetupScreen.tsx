@@ -20,8 +20,59 @@ import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
-import { t } from "../i18n";
+// import { t } from "../i18n";
 import { calculateCurrentStep, getCompletedSteps, getStepValidationErrors, isStep1Complete } from "../utils/projectStepLogic";
+
+// Temporary hardcoded strings while debugging
+const t = (key: string): string => {
+  const strings: Record<string, string> = {
+    "common.noData": "No data available",
+    "common.error": "Error",
+    "common.cancel": "Cancel",
+    "common.delete": "Delete",
+    "common.edit": "Edit",
+    "screens.projectSetup.clientInfo.title": "Client Information",
+    "screens.projectSetup.clientInfo.clientNamePlaceholder": "Enter client name",
+    "screens.projectSetup.clientInfo.clientName": "Client Name",
+    "screens.projectSetup.clientInfo.address": "Address",
+    "screens.projectSetup.clientInfo.addressPlaceholder": "Enter address",
+    "screens.projectSetup.clientInfo.city": "City",
+    "screens.projectSetup.clientInfo.cityPlaceholder": "Enter city",
+    "screens.projectSetup.clientInfo.country": "Country",
+    "screens.projectSetup.clientInfo.countryPlaceholder": "Enter country",
+    "screens.projectSetup.clientInfo.phone": "Phone",
+    "screens.projectSetup.clientInfo.phonePlaceholder": "Enter phone",
+    "screens.projectSetup.clientInfo.email": "Email",
+    "screens.projectSetup.clientInfo.emailPlaceholder": "Enter email",
+    "screens.projectSetup.clientInfo.photo": "Cover Photo",
+    "screens.projectSetup.clientInfo.takePhoto": "Take Photo",
+    "screens.projectSetup.clientInfo.uploadPhoto": "Upload",
+    "screens.projectSetup.floors.title": "Project Floors",
+    "screens.projectSetup.floors.numberOfFloors": "Number of Floors",
+    "screens.projectSetup.floors.floorHeight": "Floor Height",
+    "screens.projectSetup.floors.floorHeightHelp": "Standard ceiling height is 8ft",
+    "screens.projectSetup.projectDefaults.title": "Project Defaults",
+    "screens.projectSetup.projectDefaults.subtitle": "What will you be painting?",
+    "screens.projectSetup.projectDefaults.paintWalls": "Paint Walls",
+    "screens.projectSetup.projectDefaults.paintCeilings": "Paint Ceilings",
+    "screens.projectSetup.projectDefaults.paintTrim": "Paint Trim",
+    "screens.projectSetup.projectDefaults.paintBaseboards": "Paint Baseboards",
+    "screens.projectSetup.projectDefaults.paintDoors": "Paint Doors",
+    "screens.projectSetup.projectDefaults.paintDoorJambs": "Paint Door Jambs",
+    "screens.projectSetup.projectDefaults.paintCrownMoulding": "Paint Crown Moulding",
+    "screens.projectSetup.projectDefaults.paintClosetInteriors": "Paint Closet Interiors",
+    "screens.projectSetup.projectDefaults.defaultCoats": "Default Number of Coats",
+    "screens.projectSetup.projectDefaults.coatsForWalls": "Coats for Walls",
+    "screens.projectSetup.projectDefaults.coatsForCeilings": "Coats for Ceilings",
+    "screens.projectSetup.projectDefaults.coatsForTrim": "Coats for Trim",
+    "screens.projectSetup.projectDefaults.coatsForDoors": "Coats for Doors",
+    "screens.projectSetup.validation.clientNameRequired": "Client name is required",
+    "screens.projectSetup.validation.addressRequired": "Address is required",
+    "screens.projectSetup.validation.floorHeightRequired": "At least one floor is required",
+    "screens.projectSetup.buttons.saveAndContinue": "Save & Continue",
+  };
+  return strings[key] || key;
+};
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 
