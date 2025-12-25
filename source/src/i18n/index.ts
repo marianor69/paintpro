@@ -82,31 +82,31 @@ export function initializeLanguage(): Language {
  * Returns the key itself if translation not found (for debugging)
  */
 export function t(key: string): string {
-  // Split key by dots to navigate nested structure
-  const keys = key.split('.');
-  let value: any = translations[currentLanguage];
-
-  // Navigate through nested object
-  for (const k of keys) {
-    if (value && typeof value === 'object') {
-      value = value[k];
-    } else {
-      // If key not found, try English as fallback
-      value = translations.en;
-      for (const fallbackK of keys) {
-        if (value && typeof value === 'object') {
-          value = value[fallbackK];
-        } else {
-          // If still not found, return the key itself (for debugging)
-          return key;
-        }
+  // Helper function to get nested value
+  const getNestedValue = (obj: any, keys: string[]): string | undefined => {
+    let value = obj;
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return undefined;
       }
-      break;
     }
+    return typeof value === 'string' ? value : undefined;
+  };
+
+  const keys = key.split('.');
+
+  // Try current language first
+  let result = getNestedValue(translations[currentLanguage], keys);
+
+  // Fall back to English if not found
+  if (result === undefined) {
+    result = getNestedValue(translations.en, keys);
   }
 
-  // If value is a string, return it; otherwise return the key
-  return typeof value === 'string' ? value : key;
+  // Return key itself if still not found (for debugging)
+  return result ?? key;
 }
 
 /**
