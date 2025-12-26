@@ -192,7 +192,7 @@ function StepConnector({ isCompleted, nextStepDisabled }: StepConnectorProps) {
 const styles = {
   container: {
     backgroundColor: Colors.white,
-    paddingVertical: Spacing.sm,
+    paddingVertical: 0,
     paddingHorizontal: Spacing.sm,
     borderBottomColor: Colors.neutralGray,
     borderBottomWidth: 1,
