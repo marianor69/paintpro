@@ -335,7 +335,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
+    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
       <StepProgressIndicator
         currentStep={1}
@@ -349,7 +349,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <ScrollView
-          contentContainerStyle={{ padding: Spacing.md, paddingTop: 0, paddingBottom: 200 }}
+          contentContainerStyle={{ padding: Spacing.md, paddingTop: Spacing.sm, paddingBottom: 200 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           automaticallyAdjustKeyboardInsets={true}
