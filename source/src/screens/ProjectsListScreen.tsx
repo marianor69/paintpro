@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, FlatList, Alert, Image, Share } from "react-native";
+import { View, Text, Pressable, FlatList, Alert, Image, Share, SectionList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
@@ -9,6 +9,22 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { Card } from "../components/Card";
 import { Colors, Typography, Spacing, BorderRadius } from "../utils/designSystem";
+import { Project } from "../types/painting";
+import { isStep1Complete, isStep2Complete, isStep3Complete } from "../utils/projectStepLogic";
+
+// Get project status for display
+function getProjectStatus(project: Project): { label: string; color: string; bgColor: string } {
+  if (isStep3Complete(project)) {
+    return { label: "Sent", color: Colors.success, bgColor: Colors.success + "20" };
+  }
+  if (isStep2Complete(project)) {
+    return { label: "Ready", color: Colors.primaryBlue, bgColor: Colors.primaryBlueLight };
+  }
+  if (isStep1Complete(project)) {
+    return { label: "Building", color: Colors.warning || "#F59E0B", bgColor: "#FEF3C7" };
+  }
+  return { label: "New", color: Colors.mediumGray, bgColor: Colors.neutralGray };
+}
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectsList">;
 
@@ -100,9 +116,22 @@ export default function ProjectsListScreen({ navigation }: Props) {
                         {format(item.updatedAt, "MMM d, yyyy")}
                       </Text>
                     </View>
-                    <View style={{ backgroundColor: Colors.primaryBlueLight, borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}>
-                      <Text style={{ ...Typography.caption, color: Colors.primaryBlue, fontWeight: "600" }}>
-                        {item.rooms.length} rooms
+                    <View style={{ alignItems: "flex-end" }}>
+                      {/* Status Badge */}
+                      <View style={{
+                        backgroundColor: getProjectStatus(item).bgColor,
+                        borderRadius: 8,
+                        paddingHorizontal: Spacing.sm,
+                        paddingVertical: Spacing.xs,
+                        marginBottom: Spacing.xs,
+                      }}>
+                        <Text style={{ ...Typography.caption, color: getProjectStatus(item).color, fontWeight: "600" }}>
+                          {getProjectStatus(item).label}
+                        </Text>
+                      </View>
+                      {/* Room count */}
+                      <Text style={{ ...Typography.caption, color: Colors.mediumGray }}>
+                        {item.rooms.length} {item.rooms.length === 1 ? "room" : "rooms"}
                       </Text>
                     </View>
                   </View>
