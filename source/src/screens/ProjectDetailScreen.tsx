@@ -668,10 +668,15 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     }
   };
 
-  // Mark estimate as complete and go to Step 3
+  // Mark estimate as complete (stays on this screen to review)
   const handleDoneBuilding = () => {
     setEstimateBuildComplete(project.id, true);
-    navigation.navigate("ClientProposal", { projectId: project.id });
+    // Don't navigate - let user review on this screen first
+  };
+
+  // Reopen estimate for editing (if user wants to add more items)
+  const handleReopenEstimate = () => {
+    setEstimateBuildComplete(project.id, false);
   };
 
   // Calculate running stats for display
@@ -1212,6 +1217,18 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Pressable>
             </Card>
           )}
+          {/* Show hint if no items yet */}
+          {!canMarkStep2Complete && (
+            <Card style={{ marginBottom: Spacing.md, backgroundColor: Colors.neutralGray + "40" }}>
+              <View style={{ alignItems: "center", padding: Spacing.md }}>
+                <Ionicons name="information-circle-outline" size={32} color={Colors.mediumGray} />
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "center", marginTop: Spacing.sm }}>
+                  Add at least one room, staircase, fireplace, or built-in to complete your estimate
+                </Text>
+              </View>
+            </Card>
+          )}
+
           {/* Done Building Estimate Button - Only show when items exist and not already complete */}
           {canMarkStep2Complete && !project.estimateBuildComplete && (
             <Card style={{ marginBottom: Spacing.md }}>
@@ -1234,72 +1251,166 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </Text>
                 </View>
                 <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, marginTop: Spacing.xs, opacity: 0.9 }}>
-                  Proceed to send proposal to client
+                  Review your estimate before sending
                 </Text>
               </Pressable>
             </Card>
           )}
 
-          {/* Show Continue to Proposal if already marked complete */}
+          {/* ESTIMATE COMPLETE - Show Review Section */}
           {project.estimateBuildComplete && (
-            <Card style={{ marginBottom: Spacing.md }}>
+            <>
+              {/* Review Summary Card */}
+              <Card style={{ marginBottom: Spacing.md, borderWidth: 2, borderColor: Colors.success }}>
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.md }}>
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.success} style={{ marginRight: Spacing.sm }} />
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.success }}>
+                    Estimate Complete
+                  </Text>
+                </View>
+
+                {/* Items Summary */}
+                <View style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                    Items Included:
+                  </Text>
+
+                  {roomCount > 0 && (
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                      <Ionicons name="bed-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        {roomCount} {roomCount === 1 ? "Room" : "Rooms"}
+                      </Text>
+                    </View>
+                  )}
+
+                  {staircaseCount > 0 && (
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                      <Ionicons name="arrow-up-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        {staircaseCount} {staircaseCount === 1 ? "Staircase" : "Staircases"}
+                      </Text>
+                    </View>
+                  )}
+
+                  {fireplaceCount > 0 && (
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                      <Ionicons name="flame-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        {fireplaceCount} {fireplaceCount === 1 ? "Fireplace" : "Fireplaces"}
+                      </Text>
+                    </View>
+                  )}
+
+                  {builtInCount > 0 && (
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                      <Ionicons name="cube-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        {builtInCount} {builtInCount === 1 ? "Built-In" : "Built-Ins"}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* Price Summary */}
+                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.md }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Labor</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      {formatCurrency(displaySummary.totalLaborCost || 0)}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Materials</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      {formatCurrency(displaySummary.totalMaterialCost || 0)}
+                    </Text>
+                  </View>
+                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, paddingTop: Spacing.sm, flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total</Text>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                      {formatCurrency(displaySummary.grandTotal)}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Edit Estimate Button */}
+                <Pressable
+                  onPress={handleReopenEstimate}
+                  style={{
+                    backgroundColor: Colors.white,
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.sm,
+                    alignItems: "center",
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Edit estimate"
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Ionicons name="pencil-outline" size={18} color={Colors.darkCharcoal} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      Edit Estimate
+                    </Text>
+                  </View>
+                </Pressable>
+              </Card>
+
+              {/* Send to Client Button */}
+              <Card style={{ marginBottom: Spacing.md }}>
+                <Pressable
+                  onPress={() => navigation.navigate("ClientProposal", { projectId: project.id })}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    padding: Spacing.lg,
+                    alignItems: "center",
+                    ...Shadows.card,
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Send to client"
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Ionicons name="send" size={24} color={Colors.white} style={{ marginRight: Spacing.sm }} />
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.white }}>
+                      Send to Client
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, marginTop: Spacing.xs, opacity: 0.9 }}>
+                    Generate and share proposal
+                  </Text>
+                </Pressable>
+              </Card>
+            </>
+          )}
+
+          {/* Project Actions - Only show when NOT in complete state (avoid redundancy) */}
+          {!project.estimateBuildComplete && (
+            <Card>
               <Pressable
-                onPress={() => navigation.navigate("ClientProposal", { projectId: project.id })}
+                onPress={() => navigation.navigate("ProjectActions", { projectId })}
                 style={{
-                  backgroundColor: Colors.success,
+                  backgroundColor: Colors.primaryBlue,
                   borderRadius: BorderRadius.default,
-                  padding: Spacing.lg,
-                  alignItems: "center",
+                  padding: Spacing.md,
                   ...Shadows.card,
                 }}
                 accessibilityRole="button"
-                accessibilityLabel="Continue to proposal"
+                accessibilityLabel="Open project actions"
               >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Ionicons name="arrow-forward-circle" size={24} color={Colors.white} style={{ marginRight: Spacing.sm }} />
-                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.white }}>
-                    Continue to Proposal
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                  <Ionicons name="settings-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Project Actions
                   </Text>
                 </View>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
+                  Customize quote, view materials
+                </Text>
               </Pressable>
             </Card>
           )}
-
-          {/* Show hint if no items yet */}
-          {!canMarkStep2Complete && (
-            <Card style={{ marginBottom: Spacing.md, backgroundColor: Colors.neutralGray + "40" }}>
-              <View style={{ alignItems: "center", padding: Spacing.md }}>
-                <Ionicons name="information-circle-outline" size={32} color={Colors.mediumGray} />
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "center", marginTop: Spacing.sm }}>
-                  Add at least one room, staircase, fireplace, or built-in to complete your estimate
-                </Text>
-              </View>
-            </Card>
-          )}
-
-          <Card>
-            <Pressable
-              onPress={() => navigation.navigate("ProjectActions", { projectId })}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                borderRadius: BorderRadius.default,
-                padding: Spacing.md,
-                ...Shadows.card,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Open project actions"
-            >
-              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                <Ionicons name="settings-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Project Actions
-                </Text>
-              </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                Tools for quoting, materials, and client proposals
-              </Text>
-            </Pressable>
-          </Card>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

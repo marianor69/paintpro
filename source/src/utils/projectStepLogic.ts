@@ -64,6 +64,16 @@ export function canCompleteStep2(project: Project | null): boolean {
 }
 
 /**
+ * Check if Step 3 (Send to Client) is complete
+ * Requirements:
+ * - User successfully shared/sent the proposal (proposalSent flag)
+ */
+export function isStep3Complete(project: Project | null): boolean {
+  if (!project) return false;
+  return !!project.proposalSent;
+}
+
+/**
  * Get the array of completed steps
  */
 export function getCompletedSteps(project: Project | null): ProjectStep[] {
@@ -77,7 +87,9 @@ export function getCompletedSteps(project: Project | null): ProjectStep[] {
     completed.push(2);
   }
 
-  // Step 3 is only complete when actually sent (not tracked here)
+  if (isStep3Complete(project)) {
+    completed.push(3);
+  }
 
   return completed;
 }

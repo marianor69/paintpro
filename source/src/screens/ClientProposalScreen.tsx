@@ -26,6 +26,7 @@ export default function ClientProposalScreen({ route, navigation }: Props) {
   const project = useProjectStore((s) =>
     s.projects.find((p) => p.id === projectId)
   );
+  const setProposalSent = useProjectStore((s) => s.setProposalSent);
   const pricing = usePricingStore();
   const testMode = useAppSettings((s) => s.testMode);
 
@@ -169,9 +170,14 @@ export default function ClientProposalScreen({ route, navigation }: Props) {
   const handleShare = async () => {
     try {
       const text = generateProposalText();
-      await Share.share({
+      const result = await Share.share({
         message: text,
       });
+      // Mark proposal as sent if user completed the share action
+      if (result.action === Share.sharedAction) {
+        setProposalSent(projectId, true);
+        Alert.alert("Success", "Proposal shared successfully!");
+      }
     } catch (error: any) {
       Alert.alert("Error", "Could not share proposal");
     }
@@ -196,7 +202,12 @@ export default function ClientProposalScreen({ route, navigation }: Props) {
         return;
       }
 
-      await SMS.sendSMSAsync([phoneNumber], text);
+      const result = await SMS.sendSMSAsync([phoneNumber], text);
+      // Mark proposal as sent if SMS was sent
+      if (result.result === "sent") {
+        setProposalSent(projectId, true);
+        Alert.alert("Success", "Proposal sent via SMS!");
+      }
     } catch (error: any) {
       Alert.alert("Error", "Could not send SMS");
     }

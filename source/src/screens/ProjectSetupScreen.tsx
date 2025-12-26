@@ -346,11 +346,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <ScrollView
-          contentContainerStyle={{ padding: Spacing.md, paddingBottom: Spacing.xl }}
+          contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets={true}
         >
           {/* CLIENT INFORMATION SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>

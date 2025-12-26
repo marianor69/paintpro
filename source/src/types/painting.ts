@@ -237,6 +237,7 @@ export interface Project {
   coverPhotoUri?: string;
   // Step progress tracking
   estimateBuildComplete?: boolean; // User explicitly marked Step 2 as done
+  proposalSent?: boolean; // User successfully shared/sent the proposal (Step 3 complete)
 }
 
 export interface PricingSettings {
