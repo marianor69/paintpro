@@ -3,6 +3,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import RootNavigator from "./src/navigation/RootNavigator";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /*
 IMPORTANT NOTICE: DO NOT REMOVE
@@ -26,6 +28,14 @@ const openai_api_key = Constants.expoConfig.extra.apikey;
 */
 
 export default function App() {
+  // TEMPORARY: Clear AsyncStorage once to fix branch-switching state issues
+  // Remove this after the app loads successfully once
+  useEffect(() => {
+    AsyncStorage.clear().then(() => {
+      console.log("✅ AsyncStorage cleared - state reset complete");
+    });
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
