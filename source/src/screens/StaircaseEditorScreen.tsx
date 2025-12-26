@@ -286,7 +286,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 <TextInput
                   value={riserCount}
                   onChangeText={setRiserCount}
-                  keyboardType="number-pad"
+                  keyboardType="default"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -309,7 +309,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   ref={handrailLengthRef}
                   value={handrailLength}
                   onChangeText={setHandrailLength}
-                  keyboardType="decimal-pad"
+                  keyboardType="default"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -329,7 +329,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   ref={spindleCountRef}
                   value={spindleCount}
                   onChangeText={setSpindleCount}
-                  keyboardType="number-pad"
+                  keyboardType="default"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -358,7 +358,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         ref={tallWallHeightRef}
                         value={tallWallHeight}
                         onChangeText={setTallWallHeight}
-                        keyboardType="decimal-pad"
+                        keyboardType="default"
                         placeholder="0"
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="next"
@@ -378,7 +378,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         ref={shortWallHeightRef}
                         value={shortWallHeight}
                         onChangeText={setShortWallHeight}
-                        keyboardType="decimal-pad"
+                        keyboardType="default"
                         placeholder="0"
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="done"
