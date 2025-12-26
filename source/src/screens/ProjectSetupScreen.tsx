@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   View,
   Text,
@@ -108,6 +108,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [phone, setPhone] = useState(project?.clientInfo?.phone || "");
   const [email, setEmail] = useState(project?.clientInfo?.email || "");
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
+
+  // Refs for form field navigation
+  const addressRef = useRef<TextInput>(null);
+  const cityRef = useRef<TextInput>(null);
+  const countryRef = useRef<TextInput>(null);
+  const phoneRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
 
   // Floor Config State
   let effectiveFloorCount = 1;
@@ -382,6 +389,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholder={t("screens.projectSetup.clientInfo.clientNamePlaceholder")}
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
+                      onSubmitEditing={() => addressRef.current?.focus()}
+                      blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -397,11 +406,14 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={addressRef}
                       value={address}
                       onChangeText={setAddress}
                       placeholder={t("screens.projectSetup.clientInfo.addressPlaceholder")}
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
+                      onSubmitEditing={() => cityRef.current?.focus()}
+                      blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -417,11 +429,14 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={cityRef}
                       value={city}
                       onChangeText={setCity}
                       placeholder={t("screens.projectSetup.clientInfo.cityPlaceholder")}
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
+                      onSubmitEditing={() => countryRef.current?.focus()}
+                      blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -437,11 +452,14 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={countryRef}
                       value={country}
                       onChangeText={setCountry}
                       placeholder={t("screens.projectSetup.clientInfo.countryPlaceholder")}
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
+                      onSubmitEditing={() => phoneRef.current?.focus()}
+                      blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -457,12 +475,15 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={phoneRef}
                       value={phone}
                       onChangeText={setPhone}
                       placeholder={t("screens.projectSetup.clientInfo.phonePlaceholder")}
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="phone-pad"
                       returnKeyType="next"
+                      onSubmitEditing={() => emailRef.current?.focus()}
+                      blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -478,6 +499,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={emailRef}
                       value={email}
                       onChangeText={setEmail}
                       placeholder={t("screens.projectSetup.clientInfo.emailPlaceholder")}
