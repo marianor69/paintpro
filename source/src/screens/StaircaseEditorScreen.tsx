@@ -119,8 +119,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
+      Keyboard.dismiss(); // Hide keyboard BEFORE showing modal
       setShowSavePrompt(true);
-      Keyboard.dismiss(); // Hide keyboard when modal appears
     }
   });
 
