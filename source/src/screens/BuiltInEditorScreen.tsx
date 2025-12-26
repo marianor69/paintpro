@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -50,6 +51,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
 
   // Track unsaved changes
   useEffect(() => {
@@ -73,12 +75,18 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     }
   }, [isNewBuiltIn, builtIn, name, width, height, depth, shelfCount, notes]);
 
-  // Prevent navigation when there are unsaved changes
-  usePreventRemove(hasUnsavedChanges, ({ data }) => {
-    setShowSavePrompt(true);
+  // Prevent navigation when there are unsaved changes (but not while saving)
+  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
+    if (!isSaving) {
+      setShowSavePrompt(true);
+      Keyboard.dismiss(); // Hide keyboard when modal appears
+    }
   });
 
   const handleSave = () => {
+    // Prevent double-save
+    if (isSaving) return;
+
     const hasAnyData = name !== "" || width !== "" || height !== "" || depth !== "" || shelfCount !== "";
 
     if (!hasAnyData) {
@@ -86,6 +94,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       return;
     }
 
+    // Mark as saving to prevent usePreventRemove from triggering
+    setIsSaving(true);
     setHasUnsavedChanges(false);
 
     if (isNewBuiltIn) {
@@ -115,6 +125,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       });
     }
 
+    setShowSavePrompt(false);
     navigation.goBack();
   };
 
