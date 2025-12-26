@@ -102,8 +102,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
-      Keyboard.dismiss(); // Hide keyboard BEFORE showing modal
-      setShowSavePrompt(true);
+      Keyboard.dismiss(); // Dismiss keyboard immediately
+      setTimeout(() => setShowSavePrompt(true), 100); // Delay modal slightly to ensure keyboard dismisses
     }
   });
 

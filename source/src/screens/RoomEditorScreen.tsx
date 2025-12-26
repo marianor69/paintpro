@@ -320,8 +320,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   ]);
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
-    Keyboard.dismiss(); // Hide keyboard BEFORE showing modal
-    setShowSavePrompt(true);
+    Keyboard.dismiss(); // Dismiss keyboard immediately
+    setTimeout(() => setShowSavePrompt(true), 100); // Delay modal slightly to ensure keyboard dismisses
   });
 
   // Photo handling functions
