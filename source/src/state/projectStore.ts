@@ -690,6 +690,7 @@ export const useProjectStore = create<ProjectStore>()(
     {
       name: "project-storage",
       storage: createJSONStorage(() => AsyncStorage),
+      version: 2, // Bump version to clear incompatible cached state from main branch
       onRehydrateStorage: () => (state) => {
         // Migration: Convert old quoteBuilder to quotes array
         if (state) {
@@ -728,11 +729,6 @@ export const useProjectStore = create<ProjectStore>()(
           });
         }
       },
-    },
-    {
-      name: "project-store-storage",
-      storage: createJSONStorage(() => AsyncStorage),
-      version: 2, // Increment to force fresh state and ignore old cached data
     }
   )
 );
