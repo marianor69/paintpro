@@ -1586,6 +1586,14 @@ export function calculateFilteredProjectSummary(
     });
   }
 
+  // Calculate built-in totals (if included)
+  // NOTE: Built-ins don't have a pricing summary function yet, so we skip them for now
+  // TODO: Implement computeBuiltInPricingSummary() and add calculation here
+  if (qb.includeBuiltIns && project.builtIns) {
+    // Placeholder for when built-in pricing is implemented
+    console.log("[calculateFilteredProjectSummary] Built-ins exist but pricing not yet implemented:", project.builtIns.length);
+  }
+
   // Ensure all totals are safe
   totalWallGallons = Math.max(0, safeNumber(totalWallGallons));
   totalCeilingGallons = Math.max(0, safeNumber(totalCeilingGallons));
