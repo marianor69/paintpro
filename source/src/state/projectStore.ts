@@ -691,6 +691,13 @@ export const useProjectStore = create<ProjectStore>()(
       name: "project-storage",
       storage: createJSONStorage(() => AsyncStorage),
       version: 2, // Bump version to clear incompatible cached state from main branch
+      migrate: (persistedState: any, version: number) => {
+        // If migrating from old version, return fresh state to avoid compatibility issues
+        if (version < 2) {
+          return { projects: [], currentProjectId: null };
+        }
+        return persistedState;
+      },
       onRehydrateStorage: () => (state) => {
         // Migration: Convert old quoteBuilder to quotes array
         if (state) {
