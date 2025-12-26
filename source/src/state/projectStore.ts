@@ -728,6 +728,11 @@ export const useProjectStore = create<ProjectStore>()(
           });
         }
       },
+    },
+    {
+      name: "project-store-storage",
+      storage: createJSONStorage(() => AsyncStorage),
+      version: 2, // Increment to force fresh state and ignore old cached data
     }
   )
 );
