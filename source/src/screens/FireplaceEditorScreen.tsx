@@ -56,6 +56,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const isSavingRef = useRef(false); // Prevent double-save
 
   // Track unsaved changes
   useEffect(() => {
@@ -92,12 +93,17 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     notes,
   ]);
 
-  // Prevent navigation when there are unsaved changes
-  usePreventRemove(hasUnsavedChanges, ({ data }) => {
-    setShowSavePrompt(true);
+  // Prevent navigation when there are unsaved changes (but not while saving)
+  usePreventRemove(hasUnsavedChanges && !isSavingRef.current, ({ data }) => {
+    if (!isSavingRef.current) {
+      setShowSavePrompt(true);
+    }
   });
 
   const handleSave = () => {
+    // Prevent double-save
+    if (isSavingRef.current) return;
+
     const hasAnyData =
       width !== "" ||
       height !== "" ||
@@ -108,6 +114,9 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       Alert.alert("No Data Entered", "Please enter at least one measurement before saving.");
       return;
     }
+
+    // Mark as saving to prevent usePreventRemove from triggering
+    isSavingRef.current = true;
 
     if (isNewFireplace) {
       // CREATE new fireplace with data

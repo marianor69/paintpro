@@ -70,6 +70,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const isSavingRef = useRef(false); // Prevent double-save
 
   // Track unsaved changes
   useEffect(() => {
@@ -108,12 +109,17 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     doubleSidedWalls,
   ]);
 
-  // Prevent navigation when there are unsaved changes
-  usePreventRemove(hasUnsavedChanges, ({ data }) => {
-    setShowSavePrompt(true);
+  // Prevent navigation when there are unsaved changes (but not while saving)
+  usePreventRemove(hasUnsavedChanges && !isSavingRef.current, ({ data }) => {
+    if (!isSavingRef.current) {
+      setShowSavePrompt(true);
+    }
   });
 
   const handleSave = () => {
+    // Prevent double-save
+    if (isSavingRef.current) return;
+
     const hasAnyData =
       riserCount !== "" ||
       handrailLength !== "" ||
@@ -124,6 +130,9 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       Alert.alert("No Data Entered", "Please enter at least one measurement before saving.");
       return;
     }
+
+    // Mark as saving to prevent usePreventRemove from triggering
+    isSavingRef.current = true;
 
     if (isNewStaircase) {
       // CREATE new staircase with data

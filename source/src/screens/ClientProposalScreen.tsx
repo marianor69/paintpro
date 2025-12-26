@@ -176,7 +176,9 @@ export default function ClientProposalScreen({ route, navigation }: Props) {
       // Mark proposal as sent if user completed the share action
       if (result.action === Share.sharedAction) {
         setProposalSent(projectId, true);
-        Alert.alert("Success", "Proposal shared successfully!");
+        Alert.alert("Success", "Proposal shared successfully!", [
+          { text: "OK", onPress: () => navigation.goBack() }
+        ]);
       }
     } catch (error: any) {
       Alert.alert("Error", "Could not share proposal");
@@ -206,7 +208,9 @@ export default function ClientProposalScreen({ route, navigation }: Props) {
       // Mark proposal as sent if SMS was sent
       if (result.result === "sent") {
         setProposalSent(projectId, true);
-        Alert.alert("Success", "Proposal sent via SMS!");
+        Alert.alert("Success", "Proposal sent via SMS!", [
+          { text: "OK", onPress: () => navigation.goBack() }
+        ]);
       }
     } catch (error: any) {
       Alert.alert("Error", "Could not send SMS");

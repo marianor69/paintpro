@@ -37,40 +37,36 @@ export default function StepProgressIndicator({
 
   return (
     <View style={[styles.container, style]}>
-      {/* Main progress bar */}
-      <View style={styles.progressBar}>
+      {/* Combined circles and labels - each step is a column */}
+      <View style={styles.stepsRow}>
         {steps.map((step, index) => (
           <React.Fragment key={step}>
-            {/* Step circle */}
-            <StepCircle
-              step={step}
-              isCurrent={step === currentStep}
-              isCompleted={isStepCompleted(step)}
-              isDisabled={isStepDisabled(step)}
-              onPress={() => {
-                if (!isStepDisabled(step) && onStepPress) {
-                  onStepPress(step);
-                }
-              }}
-            />
+            {/* Step column (circle + label) */}
+            <View style={styles.stepColumn}>
+              <StepCircle
+                step={step}
+                isCurrent={step === currentStep}
+                isCompleted={isStepCompleted(step)}
+                isDisabled={isStepDisabled(step)}
+                onPress={() => {
+                  if (!isStepDisabled(step) && onStepPress) {
+                    onStepPress(step);
+                  }
+                }}
+              />
+              <Text style={styles.label}>{labels[step - 1]}</Text>
+            </View>
 
             {/* Connector line (not after last step) */}
             {index < steps.length - 1 && (
-              <StepConnector
-                isCompleted={isStepCompleted(step)}
-                nextStepDisabled={isStepDisabled(steps[index + 1])}
-              />
+              <View style={styles.connectorWrapper}>
+                <StepConnector
+                  isCompleted={isStepCompleted(step)}
+                  nextStepDisabled={isStepDisabled(steps[index + 1])}
+                />
+              </View>
             )}
           </React.Fragment>
-        ))}
-      </View>
-
-      {/* Step labels below */}
-      <View style={styles.labelsContainer}>
-        {steps.map((step) => (
-          <View key={step} style={styles.labelWrapper}>
-            <Text style={styles.label}>{labels[step - 1]}</Text>
-          </View>
         ))}
       </View>
     </View>
@@ -196,53 +192,39 @@ function StepConnector({ isCompleted, nextStepDisabled }: StepConnectorProps) {
 const styles = {
   container: {
     backgroundColor: Colors.white,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
     borderBottomColor: Colors.neutralGray,
     borderBottomWidth: 1,
   } as ViewStyle,
 
-  progressBar: {
+  stepsRow: {
     flexDirection: 'row' as const,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    marginBottom: Spacing.lg,
   } as ViewStyle,
 
-  stepCircle: {
-    borderRadius: 28,
-    borderWidth: 2,
-    justifyContent: 'center' as const,
+  stepColumn: {
     alignItems: 'center' as const,
-    minWidth: 50,
-    minHeight: 50,
+    width: 80,
   } as ViewStyle,
 
-  stepNumber: {
-    fontWeight: '600' as const,
-  },
+  connectorWrapper: {
+    justifyContent: 'center' as const,
+    paddingTop: 20, // Align with center of circles
+  } as ViewStyle,
 
   connector: {
-    width: 40,
+    width: 30,
     height: 2,
-    marginHorizontal: Spacing.xs,
-  } as ViewStyle,
-
-  labelsContainer: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-around',
-  } as ViewStyle,
-
-  labelWrapper: {
-    flex: 1,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
+    marginHorizontal: 2,
   } as ViewStyle,
 
   label: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500' as const,
     color: Colors.mediumGray,
     textAlign: 'center' as const,
+    marginTop: Spacing.xs,
   },
 };
