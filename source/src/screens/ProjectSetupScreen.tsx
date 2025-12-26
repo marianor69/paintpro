@@ -383,6 +383,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       style={TextInputStyles.base}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Client name input"
                     />
                   </View>
@@ -401,6 +403,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       style={TextInputStyles.base}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Address input"
                     />
                   </View>
@@ -419,6 +423,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       style={TextInputStyles.base}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="City input"
                     />
                   </View>
@@ -437,6 +443,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       style={TextInputStyles.base}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Country input"
                     />
                   </View>
@@ -456,6 +464,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       keyboardType="phone-pad"
                       returnKeyType="next"
                       style={TextInputStyles.base}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Phone number input"
                     />
                   </View>
@@ -477,6 +487,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       returnKeyType="done"
                       onSubmitEditing={() => Keyboard.dismiss()}
                       style={TextInputStyles.base}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Email input"
                     />
                   </View>
@@ -687,6 +699,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="done"
                         style={TextInputStyles.base}
+                        cursorColor={Colors.primaryBlue}
+                        selectionColor={Colors.primaryBlue}
                         accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
                       />
                     </View>
