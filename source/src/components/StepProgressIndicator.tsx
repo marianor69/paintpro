@@ -98,7 +98,7 @@ function StepCircle({
   let backgroundColor: string;
   let borderColor: string;
   let textColor: string;
-  let size = 50;
+  let size = 44;
 
   if (isCompleted) {
     // Green with checkmark
@@ -110,16 +110,16 @@ function StepCircle({
     backgroundColor = Colors.primaryBlue;
     borderColor = Colors.primaryBlue;
     textColor = Colors.white;
-    size = 56;
+    size = 50;
   } else if (isDisabled) {
-    // Gray and dimmed
-    backgroundColor = Colors.neutralGray;
-    borderColor = Colors.neutralGray;
+    // Gray and dimmed - use mediumGray for visibility
+    backgroundColor = Colors.mediumGray;
+    borderColor = Colors.mediumGray;
     textColor = Colors.white;
   } else {
-    // Incomplete but available - light gray
-    backgroundColor = Colors.neutralGray;
-    borderColor = Colors.neutralGray;
+    // Incomplete but available - use mediumGray for visibility
+    backgroundColor = Colors.mediumGray;
+    borderColor = Colors.mediumGray;
     textColor = Colors.white;
   }
 
@@ -127,16 +127,6 @@ function StepCircle({
     <Pressable
       onPress={onPress}
       disabled={isDisabled}
-      style={({ pressed }) => [
-        styles.stepCircle,
-        {
-          width: size,
-          height: size,
-          backgroundColor,
-          borderColor,
-          opacity: pressed && !isDisabled ? 0.8 : 1,
-        },
-      ]}
       accessibilityRole="button"
       accessibilityLabel={`Step ${step}`}
       accessibilityHint={
@@ -149,22 +139,32 @@ function StepCircle({
               : `Step ${step} available`
       }
     >
-      {isCompleted ? (
-        <Ionicons name="checkmark" size={24} color={textColor} />
-      ) : (
-        <Text
-          style={[
-            styles.stepNumber,
-            {
+      <View
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor,
+          borderWidth: 2,
+          borderColor,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {isCompleted ? (
+          <Ionicons name="checkmark" size={24} color={textColor} />
+        ) : (
+          <Text
+            style={{
               color: textColor,
-              fontSize: isCurrent ? 20 : 16,
+              fontSize: isCurrent ? 18 : 16,
               fontWeight: isCurrent ? '700' : '600',
-            },
-          ]}
-        >
-          {step}
-        </Text>
-      )}
+            }}
+          >
+            {step}
+          </Text>
+        )}
+      </View>
     </Pressable>
   );
 }

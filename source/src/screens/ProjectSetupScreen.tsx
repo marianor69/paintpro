@@ -133,7 +133,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     paintBaseboards: project?.globalPaintDefaults?.paintBaseboards ?? true,
     paintDoors: project?.globalPaintDefaults?.paintDoors ?? true,
     paintDoorJambs: project?.globalPaintDefaults?.paintDoorJambs ?? true,
-    paintCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? false,
+    paintCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? true,
     paintClosetInteriors: project?.globalPaintDefaults?.paintClosetInteriors ?? true,
     defaultWallCoats: project?.globalPaintDefaults?.defaultWallCoats ?? 2,
     defaultCeilingCoats: project?.globalPaintDefaults?.defaultCeilingCoats ?? 2,
