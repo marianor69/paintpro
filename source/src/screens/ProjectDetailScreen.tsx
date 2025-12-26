@@ -18,6 +18,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
+import StepProgressIndicator from "../components/StepProgressIndicator";
+import { calculateCurrentStep, getCompletedSteps } from "../utils/projectStepLogic";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -664,8 +666,27 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     return `${n}th`;
   };
 
+  // Step progress tracking
+  const currentStep = calculateCurrentStep(project);
+  const completedSteps = getCompletedSteps(project);
+
+  const handleStepPress = (step: 1 | 2 | 3) => {
+    if (step === 1) {
+      navigation.navigate("ProjectSetup", { projectId: project.id });
+    } else if (step === 3 && completedSteps.includes(2)) {
+      navigation.navigate("ClientProposal", { projectId: project.id });
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }} edges={["bottom"]}>
+      {/* Step Progress Indicator */}
+      <StepProgressIndicator
+        currentStep={currentStep}
+        completedSteps={completedSteps}
+        onStepPress={handleStepPress}
+        disabledSteps={completedSteps.includes(2) ? [] : [3]}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
