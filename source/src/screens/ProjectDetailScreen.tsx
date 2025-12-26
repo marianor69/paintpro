@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, Alert, TextInput, KeyboardAvoidingView, Platform, Image } from "react-native";
+import React from "react";
+import { View, Text, Pressable, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
@@ -9,17 +9,14 @@ import { useAppSettings } from "../state/appSettings";
 import { useCalculationSettings } from "../state/calculationStore";
 import { calculateFilteredProjectSummary, formatCurrency, safeNumber, getDefaultQuoteBuilder } from "../utils/calculations";
 import { computeRoomPricingSummary, computeStaircasePricingSummary, computeFireplacePricingSummary } from "../utils/pricingSummary";
-import { formatPhoneNumber } from "../utils/phoneFormatter";
 import { Staircase, Fireplace } from "../types/painting";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
+import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
 import { Card } from "../components/Card";
-import { Toggle } from "../components/Toggle";
 import StepProgressIndicator from "../components/StepProgressIndicator";
-import { calculateCurrentStep, getCompletedSteps } from "../utils/projectStepLogic";
+import { calculateCurrentStep, getCompletedSteps, canCompleteStep2 } from "../utils/projectStepLogic";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -37,19 +34,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const deleteStaircase = useProjectStore((s) => s.deleteStaircase);
   const deleteFireplace = useProjectStore((s) => s.deleteFireplace);
   const deleteBuiltIn = useProjectStore((s) => s.deleteBuiltIn);
-  const updateClientInfo = useProjectStore((s) => s.updateClientInfo);
+  const setEstimateBuildComplete = useProjectStore((s) => s.setEstimateBuildComplete);
   const pricing = usePricingStore();
   const appSettings = useAppSettings();
   const calculationSettings = useCalculationSettings((s) => s.settings);
 
-  // State for editing client info
-  const [isEditingClient, setIsEditingClient] = useState(false);
-  const [editName, setEditName] = useState("");
-  const [editAddress, setEditAddress] = useState("");
-  const [editCity, setEditCity] = useState("");
-  const [editCountry, setEditCountry] = useState("");
-  const [editPhone, setEditPhone] = useState("");
-  const [editEmail, setEditEmail] = useState("");
 
   // Wrap project loading and preprocessing
   let summary: ReturnType<typeof calculateFilteredProjectSummary> | null = null;
@@ -669,6 +658,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   // Step progress tracking
   const currentStep = calculateCurrentStep(project);
   const completedSteps = getCompletedSteps(project);
+  const canMarkStep2Complete = canCompleteStep2(project);
 
   const handleStepPress = (step: 1 | 2 | 3) => {
     if (step === 1) {
@@ -677,6 +667,19 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
       navigation.navigate("ClientProposal", { projectId: project.id });
     }
   };
+
+  // Mark estimate as complete and go to Step 3
+  const handleDoneBuilding = () => {
+    setEstimateBuildComplete(project.id, true);
+    navigation.navigate("ClientProposal", { projectId: project.id });
+  };
+
+  // Calculate running stats for display
+  const roomCount = project.rooms?.length || 0;
+  const staircaseCount = project.staircases?.length || 0;
+  const fireplaceCount = project.fireplaces?.length || 0;
+  const builtInCount = project.builtIns?.length || 0;
+  const totalItems = roomCount + staircaseCount + fireplaceCount + builtInCount;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }} edges={["bottom"]}>
@@ -697,228 +700,80 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          {/* Project Info */}
+          {/* Running Estimate Summary */}
           <Card style={{ marginBottom: Spacing.md }}>
-            {isEditingClient ? (
-              <>
-                {/* Edit Mode */}
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                  Edit Client Details
-                </Text>
+            {/* Total Estimate - Large and Prominent */}
+            <View style={{ alignItems: "center", marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                Running Estimate
+              </Text>
+              <Text style={{ fontSize: 36, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                {formatCurrency(displaySummary.grandTotal)}
+              </Text>
+            </View>
 
-                <View style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Client Name
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      value={editName}
-                      onChangeText={setEditName}
-                      placeholder="Client name"
-                      placeholderTextColor={Colors.mediumGray}
-                      style={TextInputStyles.base}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Address
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      value={editAddress}
-                      onChangeText={setEditAddress}
-                      placeholder="Address"
-                      placeholderTextColor={Colors.mediumGray}
-                      style={TextInputStyles.base}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    City
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      value={editCity}
-                      onChangeText={setEditCity}
-                      placeholder="City"
-                      placeholderTextColor={Colors.mediumGray}
-                      style={TextInputStyles.base}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Country
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      value={editCountry}
-                      onChangeText={setEditCountry}
-                      placeholder="Country"
-                      placeholderTextColor={Colors.mediumGray}
-                      style={TextInputStyles.base}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Phone
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      value={editPhone}
-                      onChangeText={setEditPhone}
-                      placeholder="Phone number"
-                      placeholderTextColor={Colors.mediumGray}
-                      keyboardType="phone-pad"
-                      style={TextInputStyles.base}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Email
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      value={editEmail}
-                      onChangeText={setEditEmail}
-                      placeholder="Email address"
-                      placeholderTextColor={Colors.mediumGray}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      style={TextInputStyles.base}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                  <Pressable
-                    onPress={() => setIsEditingClient(false)}
-                    style={{
-                      flex: 1,
-                      backgroundColor: Colors.white,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      borderRadius: BorderRadius.default,
-                      paddingVertical: Spacing.sm,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                      Cancel
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={() => {
-                      updateClientInfo(projectId, {
-                        name: editName.trim() || "Unnamed Client",
-                        address: editAddress.trim(),
-                        city: editCity.trim(),
-                        country: editCountry.trim(),
-                        phone: editPhone.trim(),
-                        email: editEmail.trim(),
-                      });
-                      setIsEditingClient(false);
-                    }}
-                    style={{
-                      flex: 1,
-                      backgroundColor: Colors.primaryBlue,
-                      borderRadius: BorderRadius.default,
-                      paddingVertical: Spacing.sm,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                      Save
-                    </Text>
-                  </Pressable>
-                </View>
-              </>
-            ) : (
-              <>
-                {/* View Mode */}
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: Typography.h1.fontSize, fontWeight: Typography.h1.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                      {project.clientInfo.name}
-                    </Text>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                      {project.clientInfo.address}
-                    </Text>
-                    {project.clientInfo.phone && (
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        {formatPhoneNumber(project.clientInfo.phone, project.clientInfo.country)}
-                      </Text>
-                    )}
-                    {project.clientInfo.email && (
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        {project.clientInfo.email}
-                      </Text>
-                    )}
-                  </View>
-                  <Pressable
-                    onPress={() => {
-                      setEditName(project.clientInfo.name);
-                      setEditAddress(project.clientInfo.address);
-                      setEditCity(project.clientInfo.city || "");
-                      setEditCountry(project.clientInfo.country || "");
-                      setEditPhone(project.clientInfo.phone || "");
-                      setEditEmail(project.clientInfo.email || "");
-                      setIsEditingClient(true);
-                    }}
-                    style={{
-                      padding: Spacing.sm,
-                    }}
-                  >
-                    <Ionicons name="pencil" size={20} color={Colors.primaryBlue} />
-                  </Pressable>
-                </View>
-
-                {/* Total Estimate */}
-                <View style={{ marginTop: Spacing.md, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.neutralGray }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Total Estimate
-                  </Text>
-                  <Text style={{ fontSize: 32, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                    {formatCurrency(displaySummary.grandTotal)}
-                  </Text>
-                </View>
-              </>
-            )}
-          </Card>
-
-          {/* Floors & Heights - Navigate to ProjectSetup */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Pressable
-              onPress={() => navigation.navigate("ProjectSetup", { projectId })}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                paddingVertical: Spacing.sm,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Configure project setup"
-              accessibilityHint="Opens floor heights and paint defaults configuration"
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Project Setup
-                </Text>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                  Configure floors, heights & paint defaults
+            {/* Running Stats Grid */}
+            <View style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              borderTopWidth: 1,
+              borderTopColor: Colors.neutralGray,
+              paddingTop: Spacing.md,
+            }}>
+              {/* Rooms */}
+              <View style={{ width: "50%", marginBottom: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Rooms</Text>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                  {roomCount}
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={24} color={Colors.primaryBlue} />
-            </Pressable>
+
+              {/* Wall Area */}
+              <View style={{ width: "50%", marginBottom: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Wall Area</Text>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                  {displaySummary.totalWallSqFt?.toLocaleString() || 0} sqft
+                </Text>
+              </View>
+
+              {/* Doors */}
+              <View style={{ width: "50%", marginBottom: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Doors</Text>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                  {displaySummary.totalDoors || 0}
+                </Text>
+              </View>
+
+              {/* Windows */}
+              <View style={{ width: "50%" }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Windows</Text>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                  {displaySummary.totalWindows || 0}
+                </Text>
+              </View>
+            </View>
+
+            {/* Labor & Materials breakdown */}
+            <View style={{
+              flexDirection: "row",
+              borderTopWidth: 1,
+              borderTopColor: Colors.neutralGray,
+              paddingTop: Spacing.md,
+              marginTop: Spacing.sm,
+            }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Labor</Text>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                  {formatCurrency(displaySummary.totalLaborCost || 0)}
+                </Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Materials</Text>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                  {formatCurrency(displaySummary.totalMaterialCost || 0)}
+                </Text>
+              </View>
+            </View>
           </Card>
 
           {/* Rooms & Structural Elements Section */}
@@ -1357,6 +1212,71 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Pressable>
             </Card>
           )}
+          {/* Done Building Estimate Button - Only show when items exist and not already complete */}
+          {canMarkStep2Complete && !project.estimateBuildComplete && (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Pressable
+                onPress={handleDoneBuilding}
+                style={{
+                  backgroundColor: Colors.success,
+                  borderRadius: BorderRadius.default,
+                  padding: Spacing.lg,
+                  alignItems: "center",
+                  ...Shadows.card,
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Done building estimate"
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.white} style={{ marginRight: Spacing.sm }} />
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.white }}>
+                    Done Building Estimate
+                  </Text>
+                </View>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, marginTop: Spacing.xs, opacity: 0.9 }}>
+                  Proceed to send proposal to client
+                </Text>
+              </Pressable>
+            </Card>
+          )}
+
+          {/* Show Continue to Proposal if already marked complete */}
+          {project.estimateBuildComplete && (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Pressable
+                onPress={() => navigation.navigate("ClientProposal", { projectId: project.id })}
+                style={{
+                  backgroundColor: Colors.success,
+                  borderRadius: BorderRadius.default,
+                  padding: Spacing.lg,
+                  alignItems: "center",
+                  ...Shadows.card,
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Continue to proposal"
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Ionicons name="arrow-forward-circle" size={24} color={Colors.white} style={{ marginRight: Spacing.sm }} />
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.white }}>
+                    Continue to Proposal
+                  </Text>
+                </View>
+              </Pressable>
+            </Card>
+          )}
+
+          {/* Show hint if no items yet */}
+          {!canMarkStep2Complete && (
+            <Card style={{ marginBottom: Spacing.md, backgroundColor: Colors.neutralGray + "40" }}>
+              <View style={{ alignItems: "center", padding: Spacing.md }}>
+                <Ionicons name="information-circle-outline" size={32} color={Colors.mediumGray} />
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "center", marginTop: Spacing.sm }}>
+                  Add at least one room, staircase, fireplace, or built-in to complete your estimate
+                </Text>
+              </View>
+            </Card>
+          )}
+
           <Card>
             <Pressable
               onPress={() => navigation.navigate("ProjectActions", { projectId })}

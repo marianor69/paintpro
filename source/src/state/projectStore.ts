@@ -69,6 +69,7 @@ interface ProjectStore {
   updateQuoteBuilder: (projectId: string, quoteBuilder: QuoteBuilder) => void;
   updateGlobalPaintDefaults: (projectId: string, defaults: Partial<GlobalPaintDefaults>) => void;
   updateProjectCoverPhoto: (projectId: string, coverPhotoUri: string | undefined) => void;
+  setEstimateBuildComplete: (projectId: string, complete: boolean) => void;
   setCurrentProject: (projectId: string | null) => void;
   getCurrentProject: () => Project | null;
 
@@ -253,6 +254,20 @@ export const useProjectStore = create<ProjectStore>()(
               ? {
                   ...p,
                   coverPhotoUri,
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      setEstimateBuildComplete: (projectId, complete) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  estimateBuildComplete: complete,
                   updatedAt: Date.now(),
                 }
               : p

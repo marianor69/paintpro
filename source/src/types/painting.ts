@@ -235,6 +235,8 @@ export interface Project {
   quoteBuilder?: QuoteBuilder; // Deprecated: Use quotes array instead
   // Project cover photo for home screen thumbnail
   coverPhotoUri?: string;
+  // Step progress tracking
+  estimateBuildComplete?: boolean; // User explicitly marked Step 2 as done
 }
 
 export interface PricingSettings {

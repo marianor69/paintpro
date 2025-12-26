@@ -31,9 +31,28 @@ export function isStep1Complete(project: Project | null): boolean {
 /**
  * Check if Step 2 (Build Estimate) is complete
  * Requirements:
- * - ≥1 room OR staircase OR fireplace OR built-in
+ * - User explicitly marked estimate as complete (estimateBuildComplete flag)
+ * - AND has ≥1 room OR staircase OR fireplace OR built-in
  */
 export function isStep2Complete(project: Project | null): boolean {
+  if (!project) return false;
+
+  // User must explicitly mark Step 2 as complete
+  if (!project.estimateBuildComplete) return false;
+
+  const hasRooms = project.rooms && project.rooms.length > 0;
+  const hasStaircases = project.staircases && project.staircases.length > 0;
+  const hasFireplaces = project.fireplaces && project.fireplaces.length > 0;
+  const hasBuiltIns = project.builtIns && project.builtIns.length > 0;
+
+  return !!(hasRooms || hasStaircases || hasFireplaces || hasBuiltIns);
+}
+
+/**
+ * Check if user can mark Step 2 as complete
+ * (has at least one item to estimate)
+ */
+export function canCompleteStep2(project: Project | null): boolean {
   if (!project) return false;
 
   const hasRooms = project.rooms && project.rooms.length > 0;
