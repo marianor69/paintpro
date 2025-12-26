@@ -242,7 +242,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                 <TextInput
                   value={width}
                   onChangeText={setWidth}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -262,7 +262,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   ref={heightRef}
                   value={height}
                   onChangeText={setHeight}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -282,7 +282,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   ref={depthRef}
                   value={depth}
                   onChangeText={setDepth}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -311,7 +311,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     ref={trimLinearFeetRef}
                     value={trimLinearFeet}
                     onChangeText={setTrimLinearFeet}
-                    keyboardType="default"
+                    keyboardType="numeric"
                     placeholder="0"
                     placeholderTextColor={Colors.mediumGray}
                     returnKeyType="done"

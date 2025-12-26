@@ -230,7 +230,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   ref={widthRef}
                   value={width}
                   onChangeText={setWidth}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="36"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -250,7 +250,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   ref={heightRef}
                   value={height}
                   onChangeText={setHeight}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="80"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -270,7 +270,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   ref={depthRef}
                   value={depth}
                   onChangeText={setDepth}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="12"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -290,7 +290,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   ref={shelfCountRef}
                   value={shelfCount}
                   onChangeText={setShelfCount}
-                  keyboardType="default"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
