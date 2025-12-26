@@ -117,8 +117,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Mark as saving to prevent usePreventRemove from triggering
+    // IMMEDIATELY disable unsaved changes to prevent modal
+    setHasUnsavedChanges(false);
+    setShowSavePrompt(false);
     setIsSaving(true);
+    Keyboard.dismiss();
 
     if (isNewFireplace) {
       // CREATE new fireplace with data
@@ -147,8 +150,6 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       });
     }
 
-    setHasUnsavedChanges(false);
-    setShowSavePrompt(false);
     navigation.goBack();
   };
 

@@ -133,8 +133,11 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Mark as saving to prevent usePreventRemove from triggering
+    // IMMEDIATELY disable unsaved changes to prevent modal
+    setHasUnsavedChanges(false);
+    setShowSavePrompt(false);
     setIsSaving(true);
+    Keyboard.dismiss();
 
     if (isNewStaircase) {
       // CREATE new staircase with data
@@ -171,8 +174,6 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       });
     }
 
-    setHasUnsavedChanges(false);
-    setShowSavePrompt(false);
     navigation.goBack();
   };
 

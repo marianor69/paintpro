@@ -94,9 +94,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // Mark as saving to prevent usePreventRemove from triggering
-    setIsSaving(true);
+    // IMMEDIATELY disable unsaved changes to prevent modal
     setHasUnsavedChanges(false);
+    setShowSavePrompt(false);
+    setIsSaving(true);
+    Keyboard.dismiss();
 
     if (isNewBuiltIn) {
       // CREATE new built-in with data
@@ -125,7 +127,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       });
     }
 
-    setShowSavePrompt(false);
     navigation.goBack();
   };
 
