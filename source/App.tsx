@@ -28,14 +28,6 @@ const openai_api_key = Constants.expoConfig.extra.apikey;
 */
 
 export default function App() {
-  // TEMPORARY: Clear AsyncStorage once to fix branch-switching state issues
-  // Remove this after the app loads successfully once
-  useEffect(() => {
-    AsyncStorage.clear().then(() => {
-      console.log("✅ AsyncStorage cleared - state reset complete");
-    });
-  }, []);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
