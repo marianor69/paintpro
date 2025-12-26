@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -56,7 +57,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
-  const isSavingRef = useRef(false); // Prevent double-save
+  const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
 
   // Track unsaved changes
   useEffect(() => {
@@ -94,15 +95,16 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   ]);
 
   // Prevent navigation when there are unsaved changes (but not while saving)
-  usePreventRemove(hasUnsavedChanges && !isSavingRef.current, ({ data }) => {
-    if (!isSavingRef.current) {
+  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
+    if (!isSaving) {
       setShowSavePrompt(true);
+      Keyboard.dismiss(); // Hide keyboard when modal appears
     }
   });
 
   const handleSave = () => {
     // Prevent double-save
-    if (isSavingRef.current) return;
+    if (isSaving) return;
 
     const hasAnyData =
       width !== "" ||
@@ -116,7 +118,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     }
 
     // Mark as saving to prevent usePreventRemove from triggering
-    isSavingRef.current = true;
+    setIsSaving(true);
 
     if (isNewFireplace) {
       // CREATE new fireplace with data
