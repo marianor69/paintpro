@@ -11,6 +11,9 @@ interface NumericInputProps {
   unit?: string;
   error?: string;
   className?: string;
+  returnKeyType?: "done" | "next";
+  onSubmitEditing?: () => void;
+  blurOnSubmit?: boolean;
 }
 
 export function NumericInput({
@@ -21,6 +24,9 @@ export function NumericInput({
   unit,
   error,
   className,
+  returnKeyType = "done",
+  onSubmitEditing,
+  blurOnSubmit = true,
 }: NumericInputProps) {
   const inputRef = useRef<TextInput>(null);
 
@@ -55,8 +61,9 @@ export function NumericInput({
           placeholder={placeholder}
           placeholderTextColor={Colors.mediumGray}
           keyboardType="numeric"
-          returnKeyType="done"
-          onSubmitEditing={() => Keyboard.dismiss()}
+          returnKeyType={returnKeyType}
+          onSubmitEditing={onSubmitEditing || (() => Keyboard.dismiss())}
+          blurOnSubmit={blurOnSubmit}
           cursorColor={Colors.primaryBlue}
           selectionColor={Colors.primaryBlue}
           style={{

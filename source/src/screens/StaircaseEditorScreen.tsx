@@ -73,6 +73,12 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
 
+  // Refs for form field navigation
+  const handrailLengthRef = useRef<TextInput>(null);
+  const spindleCountRef = useRef<TextInput>(null);
+  const tallWallHeightRef = useRef<TextInput>(null);
+  const shortWallHeightRef = useRef<TextInput>(null);
+
   // Track unsaved changes
   useEffect(() => {
     if (isNewStaircase) {
@@ -283,7 +289,9 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   keyboardType="number-pad"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => handrailLengthRef.current?.focus()}
+                  blurOnSubmit={false}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -298,12 +306,15 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={handrailLengthRef}
                   value={handrailLength}
                   onChangeText={setHandrailLength}
                   keyboardType="decimal-pad"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => spindleCountRef.current?.focus()}
+                  blurOnSubmit={false}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -315,12 +326,14 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={spindleCountRef}
                   value={spindleCount}
                   onChangeText={setSpindleCount}
                   keyboardType="number-pad"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
+                  onSubmitEditing={() => Keyboard.dismiss()}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -342,12 +355,15 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <View style={TextInputStyles.container}>
                       <TextInput
+                        ref={tallWallHeightRef}
                         value={tallWallHeight}
                         onChangeText={setTallWallHeight}
                         keyboardType="decimal-pad"
                         placeholder="0"
                         placeholderTextColor={Colors.mediumGray}
-                        returnKeyType="done"
+                        returnKeyType="next"
+                        onSubmitEditing={() => shortWallHeightRef.current?.focus()}
+                        blurOnSubmit={false}
                         style={TextInputStyles.base}
                       />
                     </View>
@@ -359,12 +375,14 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <View style={TextInputStyles.container}>
                       <TextInput
+                        ref={shortWallHeightRef}
                         value={shortWallHeight}
                         onChangeText={setShortWallHeight}
                         keyboardType="decimal-pad"
                         placeholder="0"
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="done"
+                        onSubmitEditing={() => Keyboard.dismiss()}
                         style={TextInputStyles.base}
                       />
                     </View>
@@ -380,7 +398,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             </Card>
 
             {/* Notes Section */}
-            <View style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
                 Notes
               </Text>
@@ -393,7 +411,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 numberOfLines={3}
                 style={TextInputStyles.multiline}
               />
-            </View>
+            </Card>
 
             {/* Calculations Preview */}
             {calculations && hasDataEntered && (

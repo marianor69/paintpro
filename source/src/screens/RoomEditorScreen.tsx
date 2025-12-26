@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Image,
   Modal,
+  Keyboard,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { usePreventRemove } from "@react-navigation/native";
@@ -320,6 +321,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
     setShowSavePrompt(true);
+    Keyboard.dismiss(); // Hide keyboard when modal appears
   });
 
   // Photo handling functions
