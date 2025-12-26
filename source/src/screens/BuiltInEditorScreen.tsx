@@ -83,6 +83,13 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     }
   });
 
+  // Navigate back after save completes
+  useEffect(() => {
+    if (isSaving) {
+      navigation.goBack();
+    }
+  }, [isSaving, navigation]);
+
   const handleSave = () => {
     // Prevent double-save
     if (isSaving) return;
@@ -127,7 +134,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       });
     }
 
-    navigation.goBack();
+    // Navigation happens automatically via useEffect when isSaving becomes true
   };
 
   const handleDiscardAndLeave = () => {
