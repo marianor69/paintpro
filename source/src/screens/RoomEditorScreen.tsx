@@ -19,8 +19,10 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProjectStore } from "../state/projectStore";
 import { usePricingStore } from "../state/pricingStore";
 import { useCalculationSettings } from "../state/calculationStore";
+import { useAppSettings } from "../state/appSettings";
 import { formatCurrency, getDefaultQuoteBuilder } from "../utils/calculations";
 import { computeRoomPricingSummary } from "../utils/pricingSummary";
+import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 import * as ImagePicker from "expo-image-picker";
 import { v4 as uuidv4 } from "uuid";
 import { Ionicons } from "@expo/vector-icons";
@@ -103,16 +105,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const deleteRoom = useProjectStore((s) => s.deleteRoom);
   const pricing = usePricingStore();
   const calcSettings = useCalculationSettings((s) => s.settings);
+  const unitSystem = useAppSettings((s) => s.unitSystem);
 
   // Store initial state snapshot for dirty checking
   const initialStateRef = useRef<string | null>(null);
 
   const [name, setName] = useState(room?.name || "");
-  const [length, setLength] = useState(room?.length && room.length > 0 ? room.length.toString() : "");
-  const [width, setWidth] = useState(room?.width && room.width > 0 ? room.width.toString() : "");
+  // Room dimensions stored in feet, convert for display based on unit system
+  const [length, setLength] = useState(room?.length && room.length > 0 ? formatMeasurementValue(room.length, 'length', unitSystem, 2) : "");
+  const [width, setWidth] = useState(room?.width && room.width > 0 ? formatMeasurementValue(room.width, 'length', unitSystem, 2) : "");
   const floor = room?.floor || initialFloor || 1;
   const [manualArea, setManualArea] = useState(
-    room?.manualArea && room.manualArea > 0 ? room.manualArea.toString() : ""
+    room?.manualArea && room.manualArea > 0 ? formatMeasurementValue(room.manualArea, 'area', unitSystem, 2) : ""
   );
   const [ceilingType, setCeilingType] = useState(room?.ceilingType || "flat");
   const [windowCount, setWindowCount] = useState(
@@ -147,7 +151,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [hasCrownMoulding, setHasCrownMoulding] = useState(room?.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true);
   const [hasAccentWall, setHasAccentWall] = useState(room?.hasAccentWall ?? false);
   const [cathedralPeakHeight, setCathedralPeakHeight] = useState(
-    room?.cathedralPeakHeight && room.cathedralPeakHeight > 0 ? room.cathedralPeakHeight.toString() : ""
+    room?.cathedralPeakHeight && room.cathedralPeakHeight > 0 ? formatMeasurementValue(room.cathedralPeakHeight, 'length', unitSystem, 2) : ""
   );
 
   // Room photos state
@@ -439,16 +443,22 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       height = project.firstFloorHeight;
     }
 
+    // Convert display values back to imperial feet/sq ft for storage
+    const lengthFeet = parseDisplayValue(length, 'length', unitSystem);
+    const widthFeet = parseDisplayValue(width, 'length', unitSystem);
+    const manualAreaSqFt = manualArea ? parseDisplayValue(manualArea, 'area', unitSystem) : undefined;
+    const cathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
+
     const updatedRoom = {
       id: currentRoomId,
       name: trimmedName,
-      length: parseFloat(length) || 0,
-      width: parseFloat(width) || 0,
+      length: lengthFeet,
+      width: widthFeet,
       height,
       floor,
-      manualArea: parseFloat(manualArea) || undefined,
+      manualArea: manualAreaSqFt,
       ceilingType,
-      cathedralPeakHeight: parseFloat(cathedralPeakHeight) || undefined,
+      cathedralPeakHeight: cathedralPeakHeightFeet,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
       hasCloset,
@@ -706,7 +716,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             {/* Length */}
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Length (ft)
+                Length ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -725,7 +735,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             {/* Width */}
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Width (ft)
+                Width ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -745,7 +755,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           {/* Manual Area */}
           <View>
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Manual Area (sq ft) - Optional
+              Manual Area ({unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional
             </Text>
             <View style={TextInputStyles.container}>
               <TextInput
@@ -837,7 +847,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           {ceilingType === "cathedral" && (
             <View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Peak Height (ft)
+                Peak Height ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -1518,20 +1528,20 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                 <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Wall Area:</Text>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {pricingSummary.wallArea.toFixed(1)} sq ft
+                  {formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}
                 </Text>
               </View>
               <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                 <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Ceiling Area:</Text>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {pricingSummary.ceilingArea.toFixed(0)} sq ft
+                  {formatMeasurement(pricingSummary.ceilingArea, 'area', unitSystem)}
                 </Text>
               </View>
               {paintBaseboard && pricingSummary.baseboardLF > 0 && (
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Baseboard:</Text>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    {pricingSummary.baseboardLF.toFixed(0)} linear ft
+                    {formatMeasurement(pricingSummary.baseboardLF, 'linearFeet', unitSystem)}
                   </Text>
                 </View>
               )}
@@ -1539,7 +1549,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Crown Moulding:</Text>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    {pricingSummary.crownMouldingLF.toFixed(0)} linear ft
+                    {formatMeasurement(pricingSummary.crownMouldingLF, 'linearFeet', unitSystem)}
                   </Text>
                 </View>
               )}

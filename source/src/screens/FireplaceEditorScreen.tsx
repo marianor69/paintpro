@@ -25,6 +25,7 @@ import {
   calculateFireplaceMetrics,
   formatCurrency,
 } from "../utils/calculations";
+import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 
 type Props = NativeStackScreenProps<RootStackParamList, "FireplaceEditor">;
 
@@ -44,14 +45,15 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const addFireplace = useProjectStore((s) => s.addFireplace);
   const updateFireplace = useProjectStore((s) => s.updateFireplace);
   const pricing = usePricingStore();
-  const testMode = useAppSettings((s) => s.testMode);
+  const { testMode, unitSystem } = useAppSettings();
 
-  const [width, setWidth] = useState(!isNewFireplace && fireplace?.width && fireplace.width > 0 ? fireplace.width.toString() : "");
-  const [height, setHeight] = useState(!isNewFireplace && fireplace?.height && fireplace.height > 0 ? fireplace.height.toString() : "");
-  const [depth, setDepth] = useState(!isNewFireplace && fireplace?.depth && fireplace.depth > 0 ? fireplace.depth.toString() : "");
+  // Fireplace dimensions stored in feet, convert for display based on unit system
+  const [width, setWidth] = useState(!isNewFireplace && fireplace?.width && fireplace.width > 0 ? formatMeasurementValue(fireplace.width, 'length', unitSystem, 2) : "");
+  const [height, setHeight] = useState(!isNewFireplace && fireplace?.height && fireplace.height > 0 ? formatMeasurementValue(fireplace.height, 'length', unitSystem, 2) : "");
+  const [depth, setDepth] = useState(!isNewFireplace && fireplace?.depth && fireplace.depth > 0 ? formatMeasurementValue(fireplace.depth, 'length', unitSystem, 2) : "");
   const [hasTrim, setHasTrim] = useState(!isNewFireplace && fireplace?.hasTrim ? true : false);
   const [trimLinearFeet, setTrimLinearFeet] = useState(
-    !isNewFireplace && fireplace?.trimLinearFeet && fireplace.trimLinearFeet > 0 ? fireplace.trimLinearFeet.toString() : ""
+    !isNewFireplace && fireplace?.trimLinearFeet && fireplace.trimLinearFeet > 0 ? formatMeasurementValue(fireplace.trimLinearFeet, 'linearFeet', unitSystem, 2) : ""
   );
   const [notes, setNotes] = useState(!isNewFireplace && fireplace?.notes ? fireplace.notes : "");
 
@@ -128,28 +130,34 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     setIsSaving(true);
     Keyboard.dismiss();
 
+    // Convert display values back to imperial feet for storage
+    const widthFeet = parseDisplayValue(width, 'length', unitSystem);
+    const heightFeet = parseDisplayValue(height, 'length', unitSystem);
+    const depthFeet = parseDisplayValue(depth, 'length', unitSystem);
+    const trimLinearFeetValue = parseDisplayValue(trimLinearFeet, 'linearFeet', unitSystem);
+
     if (isNewFireplace) {
       // CREATE new fireplace with data
       const newFireplaceId = addFireplace(projectId);
 
       // Then immediately update it with the entered data
       updateFireplace(projectId, newFireplaceId, {
-        width: parseFloat(width) || 0,
-        height: parseFloat(height) || 0,
-        depth: parseFloat(depth) || 0,
+        width: widthFeet,
+        height: heightFeet,
+        depth: depthFeet,
         hasTrim,
-        trimLinearFeet: parseFloat(trimLinearFeet) || 0,
+        trimLinearFeet: trimLinearFeetValue,
         coats: 2,
         notes: notes.trim() || undefined,
       });
     } else {
       // UPDATE existing fireplace
       updateFireplace(projectId, fireplaceId!, {
-        width: parseFloat(width) || 0,
-        height: parseFloat(height) || 0,
-        depth: parseFloat(depth) || 0,
+        width: widthFeet,
+        height: heightFeet,
+        depth: depthFeet,
         hasTrim,
-        trimLinearFeet: parseFloat(trimLinearFeet) || 0,
+        trimLinearFeet: trimLinearFeetValue,
         coats: fireplace?.coats || 2,
         notes: notes.trim() || undefined,
       });
@@ -236,7 +244,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           <View style={{ padding: Spacing.lg }}>
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Width (ft)
+                Width ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -255,7 +263,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Height (ft)
+                Height ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -275,7 +283,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Depth (ft)
+                Depth ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -304,7 +312,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             {hasTrim && (
               <View style={{ marginBottom: Spacing.md }}>
                 <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                  Trim Linear Feet
+                  Trim Linear ({unitSystem === 'metric' ? 'm' : 'ft'})
                 </Text>
                 <View style={TextInputStyles.container}>
                   <TextInput
@@ -353,26 +361,26 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Front/Back faces:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      2 × ({width} ft × {height} ft) = {(2 * parseFloat(width) * parseFloat(height)).toFixed(1)} sq ft
+                      2 × ({width} {unitSystem === 'metric' ? 'm' : 'ft'} × {height} {unitSystem === 'metric' ? 'm' : 'ft'}) = {(2 * parseFloat(width || '0') * parseFloat(height || '0')).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Top surface:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {width} ft × {depth} ft = {(parseFloat(width) * parseFloat(depth)).toFixed(1)} sq ft
+                      {width} {unitSystem === 'metric' ? 'm' : 'ft'} × {depth} {unitSystem === 'metric' ? 'm' : 'ft'} = {(parseFloat(width || '0') * parseFloat(depth || '0')).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Side surface:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {height} ft × {depth} ft = {(parseFloat(height) * parseFloat(depth)).toFixed(1)} sq ft
+                      {height} {unitSystem === 'metric' ? 'm' : 'ft'} × {depth} {unitSystem === 'metric' ? 'm' : 'ft'} = {(parseFloat(height || '0') * parseFloat(depth || '0')).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                     </Text>
                   </View>
-                  {hasTrim && parseFloat(trimLinearFeet) > 0 && (
+                  {hasTrim && parseFloat(trimLinearFeet || '0') > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Trim area:</Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {trimLinearFeet} ft × 0.5 ft = {(parseFloat(trimLinearFeet) * 0.5).toFixed(1)} sq ft
+                        {trimLinearFeet} {unitSystem === 'metric' ? 'm' : 'ft'} × 0.{unitSystem === 'metric' ? '15' : '5'} {unitSystem === 'metric' ? 'm' : 'ft'} = {(parseFloat(trimLinearFeet || '0') * (unitSystem === 'metric' ? 0.15 : 0.5)).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                       </Text>
                     </View>
                   )}
@@ -380,7 +388,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                       <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Paintable Area:</Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        {calculations.paintableArea.toFixed(1)} sq ft
+                        {formatMeasurement(calculations.paintableArea, 'area', unitSystem)}
                       </Text>
                     </View>
                   </View>

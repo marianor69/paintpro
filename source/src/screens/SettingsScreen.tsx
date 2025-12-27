@@ -371,6 +371,67 @@ export default function SettingsScreen() {
           </View>
         </Card>
 
+        {/* Measurement System */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <Text
+            style={{
+              fontSize: Typography.h2.fontSize,
+              fontWeight: Typography.h2.fontWeight,
+              color: Colors.darkCharcoal,
+              marginBottom: Spacing.xs,
+            }}
+          >
+            Measurement System
+          </Text>
+
+          <Text
+            style={{
+              fontSize: Typography.body.fontSize,
+              color: Colors.mediumGray,
+              marginBottom: Spacing.md,
+            }}
+          >
+            Choose between Imperial (ft, in) or Metric (m, cm) units for all measurements.
+          </Text>
+
+          <Toggle
+            label="Use Metric System"
+            value={appSettings.unitSystem === 'metric'}
+            onValueChange={(value) =>
+              appSettings.updateSettings({ unitSystem: value ? 'metric' : 'imperial' })
+            }
+            description={
+              appSettings.unitSystem === 'metric'
+                ? 'Currently using meters (m) and centimeters (cm)'
+                : 'Currently using feet (ft) and inches (in)'
+            }
+          />
+
+          {/* Info Box */}
+          <View
+            style={{
+              marginTop: Spacing.md,
+              padding: Spacing.sm,
+              backgroundColor: Colors.primaryBlueLight,
+              borderRadius: BorderRadius.default,
+              borderLeftWidth: 3,
+              borderLeftColor: appSettings.unitSystem === 'metric' ? Colors.success : Colors.primaryBlue,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+              <Ionicons
+                name="information-circle"
+                size={16}
+                color={Colors.primaryBlue}
+                style={{ marginRight: Spacing.xs, marginTop: 2 }}
+              />
+              <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
+                All measurements will be automatically converted. Existing projects will display in the selected unit system.
+              </Text>
+            </View>
+          </View>
+        </Card>
+
         {/* App Behavior */}
         <Card style={{ marginBottom: Spacing.md }}>
           <Text

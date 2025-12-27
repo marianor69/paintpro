@@ -25,6 +25,7 @@ import {
   calculateStaircaseMetrics,
   formatCurrency,
 } from "../utils/calculations";
+import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 
 type Props = NativeStackScreenProps<RootStackParamList, "StaircaseEditor">;
 
@@ -44,13 +45,14 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const addStaircase = useProjectStore((s) => s.addStaircase);
   const updateStaircase = useProjectStore((s) => s.updateStaircase);
   const pricing = usePricingStore();
-  const testMode = useAppSettings((s) => s.testMode);
+  const { testMode, unitSystem } = useAppSettings();
 
+  // Staircase dimensions stored in feet, convert for display based on unit system
   const [riserCount, setRiserCount] = useState(
     !isNewStaircase && staircase?.riserCount && staircase.riserCount > 0 ? staircase.riserCount.toString() : ""
   );
   const [handrailLength, setHandrailLength] = useState(
-    !isNewStaircase && staircase?.handrailLength && staircase.handrailLength > 0 ? staircase.handrailLength.toString() : ""
+    !isNewStaircase && staircase?.handrailLength && staircase.handrailLength > 0 ? formatMeasurementValue(staircase.handrailLength, 'length', unitSystem, 2) : ""
   );
   const [spindleCount, setSpindleCount] = useState(
     !isNewStaircase && staircase?.spindleCount && staircase.spindleCount > 0 ? staircase.spindleCount.toString() : ""
@@ -59,10 +61,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     !isNewStaircase && staircase?.hasSecondaryStairwell ? true : false
   );
   const [tallWallHeight, setTallWallHeight] = useState(
-    !isNewStaircase && staircase?.tallWallHeight && staircase.tallWallHeight > 0 ? staircase.tallWallHeight.toString() : ""
+    !isNewStaircase && staircase?.tallWallHeight && staircase.tallWallHeight > 0 ? formatMeasurementValue(staircase.tallWallHeight, 'length', unitSystem, 2) : ""
   );
   const [shortWallHeight, setShortWallHeight] = useState(
-    !isNewStaircase && staircase?.shortWallHeight && staircase.shortWallHeight > 0 ? staircase.shortWallHeight.toString() : ""
+    !isNewStaircase && staircase?.shortWallHeight && staircase.shortWallHeight > 0 ? formatMeasurementValue(staircase.shortWallHeight, 'length', unitSystem, 2) : ""
   );
   const [doubleSidedWalls, setDoubleSidedWalls] = useState(
     !isNewStaircase && staircase?.doubleSidedWalls ? true : false
@@ -152,6 +154,11 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     setIsSaving(true);
     Keyboard.dismiss();
 
+    // Convert display values back to imperial feet for storage
+    const handrailLengthFeet = parseDisplayValue(handrailLength, 'length', unitSystem);
+    const tallWallHeightFeet = parseDisplayValue(tallWallHeight, 'length', unitSystem);
+    const shortWallHeightFeet = parseDisplayValue(shortWallHeight, 'length', unitSystem);
+
     if (isNewStaircase) {
       // CREATE new staircase with data
       const newStaircaseId = addStaircase(projectId);
@@ -161,12 +168,12 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         riserCount: parseInt(riserCount) || 0,
         riserHeight: 7.5,
         treadDepth: 0,
-        handrailLength: parseFloat(handrailLength) || 0,
+        handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
         coats: 2,
         hasSecondaryStairwell,
-        tallWallHeight: parseFloat(tallWallHeight) || 0,
-        shortWallHeight: parseFloat(shortWallHeight) || 0,
+        tallWallHeight: tallWallHeightFeet,
+        shortWallHeight: shortWallHeightFeet,
         doubleSidedWalls,
         notes: notes.trim() || undefined,
       });
@@ -176,12 +183,12 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         riserCount: parseInt(riserCount) || 0,
         riserHeight: 7.5,
         treadDepth: 0,
-        handrailLength: parseFloat(handrailLength) || 0,
+        handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
         coats: staircase?.coats || 2,
         hasSecondaryStairwell,
-        tallWallHeight: parseFloat(tallWallHeight) || 0,
-        shortWallHeight: parseFloat(shortWallHeight) || 0,
+        tallWallHeight: tallWallHeightFeet,
+        shortWallHeight: shortWallHeightFeet,
         doubleSidedWalls,
         notes: notes.trim() || undefined,
       });
@@ -302,7 +309,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Handrail Length (ft)
+                Handrail Length ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -351,7 +358,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 <>
                   <View style={{ marginBottom: Spacing.md, marginTop: Spacing.md }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                      Tall Wall Height (ft)
+                      Tall Wall Height ({unitSystem === 'metric' ? 'm' : 'ft'})
                     </Text>
                     <View style={TextInputStyles.container}>
                       <TextInput
@@ -371,7 +378,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                   <View style={{ marginBottom: Spacing.md }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                      Short Wall Height (ft)
+                      Short Wall Height ({unitSystem === 'metric' ? 'm' : 'ft'})
                     </Text>
                     <View style={TextInputStyles.container}>
                       <TextInput

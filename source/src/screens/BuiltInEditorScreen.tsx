@@ -21,6 +21,7 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } f
 import { Card } from "../components/Card";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { formatCurrency } from "../utils/calculations";
+import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 
 type Props = NativeStackScreenProps<RootStackParamList, "BuiltInEditor">;
 
@@ -40,12 +41,14 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const addBuiltIn = useProjectStore((s) => s.addBuiltIn);
   const updateBuiltIn = useProjectStore((s) => s.updateBuiltIn);
   const pricing = usePricingStore();
-  const testMode = useAppSettings((s) => s.testMode);
+  const { testMode, unitSystem } = useAppSettings();
 
+  // Convert stored imperial values (inches) to display values based on unit system
+  // Built-ins store dimensions in INCHES, but unit conversion works with FEET, so convert inches->feet->display
   const [name, setName] = useState(!isNewBuiltIn && builtIn?.name ? builtIn.name : "");
-  const [width, setWidth] = useState(!isNewBuiltIn && builtIn?.width && builtIn.width > 0 ? builtIn.width.toString() : "");
-  const [height, setHeight] = useState(!isNewBuiltIn && builtIn?.height && builtIn.height > 0 ? builtIn.height.toString() : "");
-  const [depth, setDepth] = useState(!isNewBuiltIn && builtIn?.depth && builtIn.depth > 0 ? builtIn.depth.toString() : "");
+  const [width, setWidth] = useState(!isNewBuiltIn && builtIn?.width && builtIn.width > 0 ? formatMeasurementValue(builtIn.width / 12, 'length', unitSystem, 2) : "");
+  const [height, setHeight] = useState(!isNewBuiltIn && builtIn?.height && builtIn.height > 0 ? formatMeasurementValue(builtIn.height / 12, 'length', unitSystem, 2) : "");
+  const [depth, setDepth] = useState(!isNewBuiltIn && builtIn?.depth && builtIn.depth > 0 ? formatMeasurementValue(builtIn.depth / 12, 'length', unitSystem, 2) : "");
   const [shelfCount, setShelfCount] = useState(!isNewBuiltIn && builtIn?.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "");
   const [notes, setNotes] = useState(!isNewBuiltIn && builtIn?.notes ? builtIn.notes : "");
 
@@ -113,6 +116,12 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     setIsSaving(true);
     Keyboard.dismiss();
 
+    // Convert display values back to imperial inches for storage
+    // parseDisplayValue returns feet, so multiply by 12 to get inches
+    const widthInches = parseDisplayValue(width, 'length', unitSystem) * 12;
+    const heightInches = parseDisplayValue(height, 'length', unitSystem) * 12;
+    const depthInches = parseDisplayValue(depth, 'length', unitSystem) * 12;
+
     if (isNewBuiltIn) {
       // CREATE new built-in with data
       const newBuiltInId = addBuiltIn(projectId);
@@ -120,9 +129,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       // Then immediately update it with the entered data
       updateBuiltIn(projectId, newBuiltInId, {
         name: name.trim(),
-        width: parseFloat(width) || 0,
-        height: parseFloat(height) || 0,
-        depth: parseFloat(depth) || 0,
+        width: widthInches,
+        height: heightInches,
+        depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
         coats: 1,
         notes: notes.trim() || undefined,
@@ -131,9 +140,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       // UPDATE existing built-in
       updateBuiltIn(projectId, builtInId!, {
         name: name.trim(),
-        width: parseFloat(width) || 0,
-        height: parseFloat(height) || 0,
-        depth: parseFloat(depth) || 0,
+        width: widthInches,
+        height: heightInches,
+        depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
         coats: builtIn?.coats || 1,
         notes: notes.trim() || undefined,
@@ -223,7 +232,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Width (inches)
+                Width ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -231,7 +240,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   value={width}
                   onChangeText={setWidth}
                   keyboardType="numeric"
-                  placeholder="36"
+                  placeholder={unitSystem === 'metric' ? '0.91' : '3'}
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
                   onSubmitEditing={() => heightRef.current?.focus()}
@@ -243,7 +252,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Height (inches)
+                Height ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -251,7 +260,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   value={height}
                   onChangeText={setHeight}
                   keyboardType="numeric"
-                  placeholder="80"
+                  placeholder={unitSystem === 'metric' ? '2.03' : '6.67'}
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
                   onSubmitEditing={() => depthRef.current?.focus()}
@@ -263,7 +272,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Depth (inches)
+                Depth ({unitSystem === 'metric' ? 'm' : 'ft'})
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
@@ -271,7 +280,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   value={depth}
                   onChangeText={setDepth}
                   keyboardType="numeric"
-                  placeholder="12"
+                  placeholder={unitSystem === 'metric' ? '0.30' : '1'}
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
                   onSubmitEditing={() => shelfCountRef.current?.focus()}
@@ -327,19 +336,19 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Front/Back:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {(2 * widthVal * heightVal).toFixed(1)} sq ft
+                      {(2 * widthVal * heightVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Left/Right sides:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {(2 * heightVal * depthVal).toFixed(1)} sq ft
+                      {(2 * heightVal * depthVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Top/Bottom:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {(2 * widthVal * depthVal).toFixed(1)} sq ft
+                      {(2 * widthVal * depthVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                     </Text>
                   </View>
                   {shelfCount && parseInt(shelfCount) > 0 && (
@@ -348,7 +357,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         {shelfCount} shelves:
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {(parseInt(shelfCount) * widthVal).toFixed(1)} sq ft
+                        {(parseInt(shelfCount) * widthVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                       </Text>
                     </View>
                   )}
@@ -358,7 +367,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         Total Paintable Area:
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        {totalPaintableArea.toFixed(1)} sq ft
+                        {totalPaintableArea.toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
                       </Text>
                     </View>
                   </View>

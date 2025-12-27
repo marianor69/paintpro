@@ -9,6 +9,7 @@ import { useAppSettings } from "../state/appSettings";
 import { useCalculationSettings } from "../state/calculationStore";
 import { calculateFilteredProjectSummary, formatCurrency, safeNumber, getDefaultQuoteBuilder } from "../utils/calculations";
 import { computeRoomPricingSummary, computeStaircasePricingSummary, computeFireplacePricingSummary } from "../utils/pricingSummary";
+import { formatMeasurement } from "../utils/unitConversion";
 import { Staircase, Fireplace } from "../types/painting";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
@@ -737,7 +738,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               <View style={{ width: "50%", marginBottom: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Wall Area</Text>
                 <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {displaySummary.totalWallSqFt?.toLocaleString() || 0} sqft
+                  {formatMeasurement(displaySummary.totalWallSqFt || 0, 'area', appSettings.unitSystem)}
                 </Text>
               </View>
 
