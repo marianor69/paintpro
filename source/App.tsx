@@ -28,6 +28,7 @@ const openai_api_key = Constants.expoConfig.extra.apikey;
 */
 
 export default function App() {
+  // Metric/Imperial conversion feature enabled
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
