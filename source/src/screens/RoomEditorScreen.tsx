@@ -331,7 +331,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
     Keyboard.dismiss(); // Dismiss keyboard immediately
-    setTimeout(() => setShowSavePrompt(true), 300); // Delay modal to ensure keyboard dismisses (iOS animation ~250-300ms)
+    setTimeout(() => setShowSavePrompt(true), 500); // Delay modal to ensure keyboard fully dismisses before modal appears
   });
 
   // Photo handling functions
