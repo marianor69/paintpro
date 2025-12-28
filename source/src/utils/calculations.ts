@@ -1556,9 +1556,23 @@ export function calculateFilteredProjectSummary(
   });
 
   // Calculate staircase totals (if included) - defaults to true if undefined
+  console.log("[STAIRCASE DEBUG]", {
+    includeStaircases: qb.includeStaircases,
+    willInclude: qb.includeStaircases !== false,
+    staircaseCount: (project.staircases || []).length,
+    staircases: project.staircases
+  });
   if (qb.includeStaircases !== false) {
     (project.staircases || []).forEach((staircase, index) => {
       const pricingSummary = computeStaircasePricingSummary(staircase, pricing, project.projectCoats);
+      console.log(`[STAIRCASE ${index + 1}]`, {
+        riserCount: staircase.riserCount,
+        handrailLength: staircase.handrailLength,
+        spindleCount: staircase.spindleCount,
+        laborCost: pricingSummary.laborDisplayed,
+        materialsCost: pricingSummary.materialsDisplayed,
+        totalCost: pricingSummary.totalDisplayed
+      });
       // Add gallons by paint type
       totalTrimGallons += safeNumber(pricingSummary.trimGallons);
       totalWallGallons += safeNumber(pricingSummary.wallGallons);
@@ -1573,9 +1587,23 @@ export function calculateFilteredProjectSummary(
   }
 
   // Calculate fireplace totals (if included) - defaults to true if undefined
+  console.log("[FIREPLACE DEBUG]", {
+    includeFireplaces: qb.includeFireplaces,
+    willInclude: qb.includeFireplaces !== false,
+    fireplaceCount: (project.fireplaces || []).length,
+    fireplaces: project.fireplaces
+  });
   if (qb.includeFireplaces !== false) {
     (project.fireplaces || []).forEach((fireplace, index) => {
       const pricingSummary = computeFireplacePricingSummary(fireplace, pricing);
+      console.log(`[FIREPLACE ${index + 1}]`, {
+        width: fireplace.width,
+        height: fireplace.height,
+        depth: fireplace.depth,
+        laborCost: pricingSummary.laborDisplayed,
+        materialsCost: pricingSummary.materialsDisplayed,
+        totalCost: pricingSummary.totalDisplayed
+      });
       totalWallGallons += safeNumber(pricingSummary.totalGallons);
       totalLaborCost += safeNumber(pricingSummary.laborDisplayed);
       totalMaterialCost += safeNumber(pricingSummary.materialsDisplayed);
