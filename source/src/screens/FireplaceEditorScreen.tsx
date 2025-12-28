@@ -20,6 +20,7 @@ import { useAppSettings } from "../state/appSettings";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
+import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import {
   formatCurrency,
@@ -298,61 +299,41 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
           <View style={{ padding: Spacing.lg }}>
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Width ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  value={width}
-                  onChangeText={setWidth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => heightRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={width}
+                onChangeText={setWidth}
+                keyboardType="numeric"
+                placeholder="0"
+                nextFieldRef={heightRef}
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Height ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={heightRef}
-                  value={height}
-                  onChangeText={setHeight}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => depthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={heightRef}
+                label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={height}
+                onChangeText={setHeight}
+                keyboardType="numeric"
+                placeholder="0"
+                nextFieldRef={depthRef}
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Depth ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={depthRef}
-                  value={depth}
-                  onChangeText={setDepth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={depthRef}
+                label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={depth}
+                onChangeText={setDepth}
+                keyboardType="numeric"
+                placeholder="0"
+                nextFieldRef={hasTrim ? trimLinearFeetRef : undefined}
+                className="mb-0"
+              />
             </View>
 
             {/* Has Trim Toggle */}
@@ -366,22 +347,15 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
             {hasTrim && (
               <View style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                  Trim Linear ({unitSystem === 'metric' ? 'm' : 'ft'})
-                </Text>
-                <View style={TextInputStyles.container}>
-                  <TextInput
-                    ref={trimLinearFeetRef}
-                    value={trimLinearFeet}
-                    onChangeText={setTrimLinearFeet}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="done"
-                    onSubmitEditing={() => Keyboard.dismiss()}
-                    style={TextInputStyles.base}
-                  />
-                </View>
+                <FormInput
+                  ref={trimLinearFeetRef}
+                  label={`Trim Linear (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                  value={trimLinearFeet}
+                  onChangeText={setTrimLinearFeet}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  className="mb-0"
+                />
               </View>
             )}
 

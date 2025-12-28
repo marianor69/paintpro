@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { View, Text, TextInput, Keyboard } from "react-native";
+import React, { useRef, RefObject } from "react";
+import { View, Text, TextInput, Keyboard, Platform, InputAccessoryView, Pressable } from "react-native";
 import { Colors, Typography, Spacing, BorderRadius } from "../utils/designSystem";
 import { cn } from "../utils/cn";
 
@@ -11,6 +11,7 @@ interface DimensionInputProps {
   onInchesChange: (text: string) => void;
   error?: string;
   className?: string;
+  nextFieldRef?: RefObject<TextInput>;
 }
 
 export function DimensionInput({
@@ -21,9 +22,21 @@ export function DimensionInput({
   onInchesChange,
   error,
   className,
+  nextFieldRef,
 }: DimensionInputProps) {
   const feetRef = useRef<TextInput>(null);
   const inchesRef = useRef<TextInput>(null);
+
+  const isFinal = !nextFieldRef;
+  const accessoryID = Platform.OS === "ios" ? "dimensionInputAccessory" : undefined;
+
+  const handleInchesSubmit = () => {
+    if (nextFieldRef?.current) {
+      nextFieldRef.current.focus();
+    } else {
+      Keyboard.dismiss();
+    }
+  };
 
   return (
     <View className={cn("mb-4", className)}>
@@ -60,7 +73,9 @@ export function DimensionInput({
               placeholderTextColor={Colors.mediumGray}
               keyboardType="numeric"
               returnKeyType="next"
+              blurOnSubmit={false}
               onSubmitEditing={() => inchesRef.current?.focus()}
+              inputAccessoryViewID={accessoryID}
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -103,8 +118,10 @@ export function DimensionInput({
               placeholder="0"
               placeholderTextColor={Colors.mediumGray}
               keyboardType="numeric"
-              returnKeyType="done"
-              onSubmitEditing={() => Keyboard.dismiss()}
+              returnKeyType={isFinal ? "done" : "next"}
+              blurOnSubmit={isFinal}
+              onSubmitEditing={handleInchesSubmit}
+              inputAccessoryViewID={accessoryID}
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -136,6 +153,43 @@ export function DimensionInput({
         >
           {error}
         </Text>
+      )}
+
+      {/* iOS InputAccessoryView for numeric keyboard */}
+      {Platform.OS === "ios" && accessoryID && (
+        <InputAccessoryView nativeID={accessoryID}>
+          <View
+            style={{
+              backgroundColor: Colors.neutralGray,
+              paddingHorizontal: Spacing.md,
+              paddingVertical: Spacing.sm,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              borderTopWidth: 1,
+              borderTopColor: Colors.mediumGray,
+            }}
+          >
+            <Pressable
+              onPress={handleInchesSubmit}
+              style={{
+                backgroundColor: Colors.primaryBlue,
+                paddingHorizontal: Spacing.lg,
+                paddingVertical: Spacing.sm,
+                borderRadius: BorderRadius.default,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: Typography.body.fontSize,
+                  color: Colors.white,
+                  fontWeight: "600",
+                }}
+              >
+                {isFinal ? "Done" : "Next"}
+              </Text>
+            </Pressable>
+          </View>
+        </InputAccessoryView>
       )}
     </View>
   );

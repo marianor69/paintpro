@@ -31,6 +31,7 @@ import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { NumericInput } from "../components/NumericInput";
 import { DimensionInput } from "../components/DimensionInput";
+import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto } from "../types/painting";
 
@@ -770,75 +771,48 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
             {/* Length */}
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Length ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={lengthRef}
-                  value={length}
-                  onChangeText={setLength}
-                  keyboardType="decimal-pad"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => widthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                  accessibilityLabel="Room length input"
-                />
-              </View>
+              <FormInput
+                ref={lengthRef}
+                label={`Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={length}
+                onChangeText={setLength}
+                keyboardType="decimal-pad"
+                placeholder="0"
+                nextFieldRef={widthRef}
+                accessibilityLabel="Room length input"
+                className="mb-0"
+              />
             </View>
 
             {/* Width */}
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Width ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={widthRef}
-                  value={width}
-                  onChangeText={setWidth}
-                  keyboardType="decimal-pad"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => manualAreaRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                  accessibilityLabel="Room width input"
-                />
-              </View>
+              <FormInput
+                ref={widthRef}
+                label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={width}
+                onChangeText={setWidth}
+                keyboardType="decimal-pad"
+                placeholder="0"
+                nextFieldRef={manualAreaRef}
+                accessibilityLabel="Room width input"
+                className="mb-0"
+              />
             </View>
           </View>
 
           {/* Manual Area */}
           <View>
-            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Manual Area ({unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional
-            </Text>
-            <View style={TextInputStyles.container}>
-              <TextInput
-                ref={manualAreaRef}
-                value={manualArea}
-                onChangeText={setManualArea}
-                keyboardType="decimal-pad"
-                placeholder="0"
-                placeholderTextColor={Colors.mediumGray}
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  if (ceilingType === "cathedral") {
-                    cathedralPeakHeightRef.current?.focus();
-                  } else {
-                    Keyboard.dismiss();
-                  }
-                }}
-                blurOnSubmit={false}
-                style={TextInputStyles.base}
-                accessibilityLabel="Manual area input"
-              />
-            </View>
+            <FormInput
+              ref={manualAreaRef}
+              label={`Manual Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional`}
+              value={manualArea}
+              onChangeText={setManualArea}
+              keyboardType="decimal-pad"
+              placeholder="0"
+              nextFieldRef={ceilingType === "cathedral" ? cathedralPeakHeightRef : undefined}
+              accessibilityLabel="Manual area input"
+              className="mb-0"
+            />
             <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
               If entered, this will override Length × Width for ceiling area
             </Text>
@@ -916,22 +890,16 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
           {ceilingType === "cathedral" && (
             <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Peak Height ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={cathedralPeakHeightRef}
-                  value={cathedralPeakHeight}
-                  onChangeText={setCathedralPeakHeight}
-                  keyboardType="decimal-pad"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
-                  style={TextInputStyles.base}
-                  accessibilityLabel="Cathedral peak height input"
-                />
-              </View>
+              <FormInput
+                ref={cathedralPeakHeightRef}
+                label={`Peak Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={cathedralPeakHeight}
+                onChangeText={setCathedralPeakHeight}
+                keyboardType="decimal-pad"
+                placeholder="0"
+                accessibilityLabel="Cathedral peak height input"
+                className="mb-0"
+              />
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Height at the highest point of the cathedral ceiling
               </Text>

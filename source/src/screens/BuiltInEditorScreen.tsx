@@ -19,6 +19,7 @@ import { usePricingStore } from "../state/pricingStore";
 import { useAppSettings } from "../state/appSettings";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
+import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { formatCurrency } from "../utils/calculations";
 import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
@@ -283,82 +284,54 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Width ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={widthRef}
-                  value={width}
-                  onChangeText={setWidth}
-                  keyboardType="numeric"
-                  placeholder={unitSystem === 'metric' ? '0.91' : '3'}
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => heightRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={widthRef}
+                label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={width}
+                onChangeText={setWidth}
+                keyboardType="numeric"
+                placeholder={unitSystem === 'metric' ? '0.91' : '3'}
+                nextFieldRef={heightRef}
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Height ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={heightRef}
-                  value={height}
-                  onChangeText={setHeight}
-                  keyboardType="numeric"
-                  placeholder={unitSystem === 'metric' ? '2.03' : '6.67'}
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => depthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={heightRef}
+                label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={height}
+                onChangeText={setHeight}
+                keyboardType="numeric"
+                placeholder={unitSystem === 'metric' ? '2.03' : '6.67'}
+                nextFieldRef={depthRef}
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Depth ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={depthRef}
-                  value={depth}
-                  onChangeText={setDepth}
-                  keyboardType="numeric"
-                  placeholder={unitSystem === 'metric' ? '0.30' : '1'}
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => shelfCountRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={depthRef}
+                label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={depth}
+                onChangeText={setDepth}
+                keyboardType="numeric"
+                placeholder={unitSystem === 'metric' ? '0.30' : '1'}
+                nextFieldRef={shelfCountRef}
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Number of Shelves
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={shelfCountRef}
-                  value={shelfCount}
-                  onChangeText={setShelfCount}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={shelfCountRef}
+                label="Number of Shelves"
+                value={shelfCount}
+                onChangeText={setShelfCount}
+                keyboardType="numeric"
+                placeholder="0"
+                className="mb-0"
+              />
             </View>
 
             {/* Notes Section */}

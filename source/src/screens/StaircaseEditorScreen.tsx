@@ -20,6 +20,7 @@ import { useAppSettings } from "../state/appSettings";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
+import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import {
   formatCurrency,
@@ -336,64 +337,43 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
           <View style={{ padding: Spacing.lg }}>
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Number of Risers
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  value={riserCount}
-                  onChangeText={setRiserCount}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => handrailLengthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                label="Number of Risers"
+                value={riserCount}
+                onChangeText={setRiserCount}
+                keyboardType="numeric"
+                placeholder="0"
+                nextFieldRef={handrailLengthRef}
+                className="mb-0"
+              />
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Standard riser height of 7.5 inches assumed
               </Text>
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Handrail Length ({unitSystem === 'metric' ? 'm' : 'ft'})
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={handrailLengthRef}
-                  value={handrailLength}
-                  onChangeText={setHandrailLength}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => spindleCountRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={handrailLengthRef}
+                label={`Handrail Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                value={handrailLength}
+                onChangeText={setHandrailLength}
+                keyboardType="numeric"
+                placeholder="0"
+                nextFieldRef={spindleCountRef}
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Number of Spindles
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={spindleCountRef}
-                  value={spindleCount}
-                  onChangeText={setSpindleCount}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={spindleCountRef}
+                label="Number of Spindles"
+                value={spindleCount}
+                onChangeText={setSpindleCount}
+                keyboardType="numeric"
+                placeholder="0"
+                className="mb-0"
+              />
             </View>
 
             {/* Secondary Stairwell Section */}
@@ -407,42 +387,28 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               {hasSecondaryStairwell && (
                 <>
                   <View style={{ marginBottom: Spacing.md, marginTop: Spacing.md }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                      Tall Wall Height ({unitSystem === 'metric' ? 'm' : 'ft'})
-                    </Text>
-                    <View style={TextInputStyles.container}>
-                      <TextInput
-                        ref={tallWallHeightRef}
-                        value={tallWallHeight}
-                        onChangeText={setTallWallHeight}
-                        keyboardType="numeric"
-                        placeholder="0"
-                        placeholderTextColor={Colors.mediumGray}
-                        returnKeyType="next"
-                        onSubmitEditing={() => shortWallHeightRef.current?.focus()}
-                        blurOnSubmit={false}
-                        style={TextInputStyles.base}
-                      />
-                    </View>
+                    <FormInput
+                      ref={tallWallHeightRef}
+                      label={`Tall Wall Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                      value={tallWallHeight}
+                      onChangeText={setTallWallHeight}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      nextFieldRef={shortWallHeightRef}
+                      className="mb-0"
+                    />
                   </View>
 
                   <View style={{ marginBottom: Spacing.md }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                      Short Wall Height ({unitSystem === 'metric' ? 'm' : 'ft'})
-                    </Text>
-                    <View style={TextInputStyles.container}>
-                      <TextInput
-                        ref={shortWallHeightRef}
-                        value={shortWallHeight}
-                        onChangeText={setShortWallHeight}
-                        keyboardType="numeric"
-                        placeholder="0"
-                        placeholderTextColor={Colors.mediumGray}
-                        returnKeyType="done"
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        style={TextInputStyles.base}
-                      />
-                    </View>
+                    <FormInput
+                      ref={shortWallHeightRef}
+                      label={`Short Wall Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                      value={shortWallHeight}
+                      onChangeText={setShortWallHeight}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      className="mb-0"
+                    />
                   </View>
 
                   <Toggle
