@@ -224,7 +224,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   returnKeyType="next"
                   onSubmitEditing={() => widthRef.current?.focus()}
                   blurOnSubmit={false}
-                  selectTextOnFocus={false}
                   style={TextInputStyles.base}
                 />
               </View>

@@ -335,7 +335,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   };
 
   return (
-    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
       <StepProgressIndicator
         currentStep={1}
@@ -393,7 +393,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       returnKeyType="next"
                       onSubmitEditing={() => addressRef.current?.focus()}
                       blurOnSubmit={false}
-                      selectTextOnFocus={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -417,7 +416,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       returnKeyType="next"
                       onSubmitEditing={() => cityRef.current?.focus()}
                       blurOnSubmit={false}
-                      selectTextOnFocus={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -441,7 +439,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       returnKeyType="next"
                       onSubmitEditing={() => countryRef.current?.focus()}
                       blurOnSubmit={false}
-                      selectTextOnFocus={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -465,7 +462,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       returnKeyType="next"
                       onSubmitEditing={() => phoneRef.current?.focus()}
                       blurOnSubmit={false}
-                      selectTextOnFocus={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -490,7 +486,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       returnKeyType="next"
                       onSubmitEditing={() => emailRef.current?.focus()}
                       blurOnSubmit={false}
-                      selectTextOnFocus={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -515,7 +510,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       autoCapitalize="none"
                       returnKeyType="done"
                       onSubmitEditing={() => Keyboard.dismiss()}
-                      selectTextOnFocus={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
@@ -728,8 +722,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                         placeholder="8"
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="done"
-                        selectTextOnFocus={false}
-                        style={TextInputStyles.base}
+                          style={TextInputStyles.base}
                         cursorColor={Colors.primaryBlue}
                         selectionColor={Colors.primaryBlue}
                         accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}

@@ -179,6 +179,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   // Use ref to track saved state for cleanup - avoids stale closure issues
   const isSavedRef = useRef(false);
 
+  // W-005, W-006: TextInput refs for focus navigation
+  const lengthRef = useRef<TextInput>(null);
+  const widthRef = useRef<TextInput>(null);
+  const manualAreaRef = useRef<TextInput>(null);
+  const cathedralPeakHeightRef = useRef<TextInput>(null);
+
   // Update header title dynamically when room name changes
   useEffect(() => {
     const displayName = name || "Unnamed Room";
@@ -695,8 +701,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 onChangeText={setName}
                 placeholder="Enter room name"
                 placeholderTextColor={Colors.mediumGray}
-                returnKeyType="done"
-                selectTextOnFocus={false}
+                returnKeyType="next"
+                onSubmitEditing={() => lengthRef.current?.focus()}
+                blurOnSubmit={false}
                 style={TextInputStyles.base}
                 accessibilityLabel="Room name input"
                 accessibilityHint="Enter a name for this room"
@@ -720,12 +727,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={lengthRef}
                   value={length}
                   onChangeText={setLength}
                   keyboardType="decimal-pad"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => widthRef.current?.focus()}
+                  blurOnSubmit={false}
                   style={TextInputStyles.base}
                   accessibilityLabel="Room length input"
                 />
@@ -739,12 +749,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={widthRef}
                   value={width}
                   onChangeText={setWidth}
                   keyboardType="decimal-pad"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => manualAreaRef.current?.focus()}
+                  blurOnSubmit={false}
                   style={TextInputStyles.base}
                   accessibilityLabel="Room width input"
                 />
@@ -759,12 +772,21 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </Text>
             <View style={TextInputStyles.container}>
               <TextInput
+                ref={manualAreaRef}
                 value={manualArea}
                 onChangeText={setManualArea}
                 keyboardType="decimal-pad"
                 placeholder="0"
                 placeholderTextColor={Colors.mediumGray}
-                returnKeyType="done"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  if (ceilingType === "cathedral") {
+                    cathedralPeakHeightRef.current?.focus();
+                  } else {
+                    Keyboard.dismiss();
+                  }
+                }}
+                blurOnSubmit={false}
                 style={TextInputStyles.base}
                 accessibilityLabel="Manual area input"
               />
@@ -851,6 +873,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={cathedralPeakHeightRef}
                   value={cathedralPeakHeight}
                   onChangeText={setCathedralPeakHeight}
                   keyboardType="decimal-pad"
