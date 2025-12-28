@@ -133,7 +133,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     if (!isSaving) {
       if (isKeyboardVisibleRef.current) {
         pendingSavePromptRef.current = true;
-        blurFocusedInput();
         Keyboard.dismiss();
       } else {
         setShowSavePrompt(true);

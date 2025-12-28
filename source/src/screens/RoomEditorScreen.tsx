@@ -376,7 +376,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
     if (isKeyboardVisibleRef.current) {
       pendingSavePromptRef.current = true;
-      blurFocusedInput();
       Keyboard.dismiss();
     } else {
       setShowSavePrompt(true);
