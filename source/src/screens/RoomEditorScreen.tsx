@@ -178,6 +178,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [isSaved, setIsSaved] = useState(false);
   // Use ref to track saved state for cleanup - avoids stale closure issues
   const isSavedRef = useRef(false);
+  const isKeyboardVisibleRef = useRef(false);
+  const pendingSavePromptRef = useRef(false);
 
   // W-005, W-006: TextInput refs for focus navigation
   const lengthRef = useRef<TextInput>(null);
@@ -192,6 +194,24 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       title: `Edit Room: ${displayName}`,
     });
   }, [name, navigation]);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      isKeyboardVisibleRef.current = true;
+    });
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      isKeyboardVisibleRef.current = false;
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   // Cleanup on unmount - delete if never saved and name is empty
   useEffect(() => {
@@ -330,8 +350,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   ]);
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
-    Keyboard.dismiss();
-    setShowSavePrompt(true);
+    if (isKeyboardVisibleRef.current) {
+      pendingSavePromptRef.current = true;
+      Keyboard.dismiss();
+    } else {
+      setShowSavePrompt(true);
+    }
   });
 
   // Photo handling functions

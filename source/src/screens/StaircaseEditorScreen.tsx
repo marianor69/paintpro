@@ -74,6 +74,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
+  const isKeyboardVisibleRef = useRef(false);
+  const pendingSavePromptRef = useRef(false);
 
   // Refs for form field navigation
   const handrailLengthRef = useRef<TextInput>(null);
@@ -118,11 +120,33 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     doubleSidedWalls,
   ]);
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      isKeyboardVisibleRef.current = true;
+    });
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      isKeyboardVisibleRef.current = false;
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
-      Keyboard.dismiss();
-      setShowSavePrompt(true);
+      if (isKeyboardVisibleRef.current) {
+        pendingSavePromptRef.current = true;
+        Keyboard.dismiss();
+      } else {
+        setShowSavePrompt(true);
+      }
     }
   });
 
