@@ -719,20 +719,20 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
               {/* DEBUG INFO - ST-001 & FP-002 */}
               {appSettings.testMode && (
-                <View style={{ marginTop: Spacing.md, padding: Spacing.sm, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default }}>
-                  <Text style={{ fontSize: 10, fontWeight: "600", color: Colors.error, marginBottom: Spacing.xs }}>
-                    DEBUG: Staircase/Fireplace Aggregation
+                <View style={{ marginTop: Spacing.md, padding: Spacing.md, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default }}>
+                  <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.error, marginBottom: Spacing.sm }}>
+                    DEBUG: Aggregation
                   </Text>
-                  <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
+                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     Staircases: {(project.staircases || []).length}
                   </Text>
-                  <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
+                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     Fireplaces: {(project.fireplaces || []).length}
                   </Text>
-                  <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
+                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     Items in total: {(displaySummary.itemizedPrices || []).length}
                   </Text>
-                  <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
+                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
                     Items: {(displaySummary.itemizedPrices || []).map(p => `${p.name}=$${p.price}`).join(", ") || "none"}
                   </Text>
                 </View>
