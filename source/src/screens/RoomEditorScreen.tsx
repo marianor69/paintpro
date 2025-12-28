@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -187,6 +187,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const manualAreaRef = useRef<TextInput>(null);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
 
+  const blurFocusedInput = useCallback(() => {
+    const focusedInput = TextInput.State?.currentlyFocusedInput?.();
+    if (focusedInput && "blur" in focusedInput) {
+      (focusedInput as { blur?: () => void }).blur?.();
+      return;
+    }
+
+    const focusedField = TextInput.State?.currentlyFocusedField?.();
+    if (focusedField != null) {
+      TextInput.State.blurTextInput(focusedField);
+    }
+  }, []);
+
   // Update header title dynamically when room name changes
   useEffect(() => {
     const displayName = name || "Unnamed Room";
@@ -212,6 +225,17 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       keyboardDidHideListener.remove();
     };
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("gestureStart", () => {
+      if (isKeyboardVisibleRef.current) {
+        blurFocusedInput();
+        Keyboard.dismiss();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, blurFocusedInput]);
 
   // Cleanup on unmount - delete if never saved and name is empty
   useEffect(() => {
@@ -352,6 +376,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
     if (isKeyboardVisibleRef.current) {
       pendingSavePromptRef.current = true;
+      blurFocusedInput();
       Keyboard.dismiss();
     } else {
       setShowSavePrompt(true);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -64,6 +64,19 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const depthRef = useRef<TextInput>(null);
   const shelfCountRef = useRef<TextInput>(null);
 
+  const blurFocusedInput = useCallback(() => {
+    const focusedInput = TextInput.State?.currentlyFocusedInput?.();
+    if (focusedInput && "blur" in focusedInput) {
+      (focusedInput as { blur?: () => void }).blur?.();
+      return;
+    }
+
+    const focusedField = TextInput.State?.currentlyFocusedField?.();
+    if (focusedField != null) {
+      TextInput.State.blurTextInput(focusedField);
+    }
+  }, []);
+
   // Track unsaved changes
   useEffect(() => {
     if (isNewBuiltIn) {
@@ -104,11 +117,23 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("gestureStart", () => {
+      if (isKeyboardVisibleRef.current) {
+        blurFocusedInput();
+        Keyboard.dismiss();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, blurFocusedInput]);
+
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
       if (isKeyboardVisibleRef.current) {
         pendingSavePromptRef.current = true;
+        blurFocusedInput();
         Keyboard.dismiss();
       } else {
         setShowSavePrompt(true);
