@@ -89,6 +89,9 @@ export default function HomeScreen({ navigation }: Props) {
             <Text style={{ fontSize: 28, fontWeight: "700", color: Colors.darkCharcoal, marginTop: Spacing.md, textAlign: "center" }}>
               New Interface
             </Text>
+            <Text style={{ fontSize: 12, fontWeight: "500", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
+              e2fde00 - Dec 28, 12:15 AM ET
+            </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
             </Text>

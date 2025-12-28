@@ -110,10 +110,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // IMMEDIATELY disable unsaved changes to prevent modal
+    // IMMEDIATELY set saving state to prevent modal
+    setIsSaving(true);
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
-    setIsSaving(true);
     Keyboard.dismiss();
 
     // Convert display values back to imperial inches for storage
@@ -377,8 +377,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
             <Pressable
               onPress={handleSave}
+              disabled={isSaving}
               style={{
-                backgroundColor: Colors.primaryBlue,
+                backgroundColor: isSaving ? Colors.mediumGray : Colors.primaryBlue,
                 borderRadius: BorderRadius.default,
                 paddingVertical: Spacing.md,
                 alignItems: "center",

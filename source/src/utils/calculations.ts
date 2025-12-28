@@ -1555,8 +1555,8 @@ export function calculateFilteredProjectSummary(
     });
   });
 
-  // Calculate staircase totals (if included)
-  if (qb.includeStaircases) {
+  // Calculate staircase totals (if included) - defaults to true if undefined
+  if (qb.includeStaircases !== false) {
     (project.staircases || []).forEach((staircase, index) => {
       const pricingSummary = computeStaircasePricingSummary(staircase, pricing, project.projectCoats);
       // Add gallons by paint type
@@ -1572,8 +1572,8 @@ export function calculateFilteredProjectSummary(
     });
   }
 
-  // Calculate fireplace totals (if included)
-  if (qb.includeFireplaces) {
+  // Calculate fireplace totals (if included) - defaults to true if undefined
+  if (qb.includeFireplaces !== false) {
     (project.fireplaces || []).forEach((fireplace, index) => {
       const pricingSummary = computeFireplacePricingSummary(fireplace, pricing);
       totalWallGallons += safeNumber(pricingSummary.totalGallons);

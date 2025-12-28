@@ -148,10 +148,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // IMMEDIATELY disable unsaved changes to prevent modal
+    // IMMEDIATELY set saving state to prevent modal
+    setIsSaving(true);
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
-    setIsSaving(true);
     Keyboard.dismiss();
 
     // Convert display values back to imperial feet for storage
