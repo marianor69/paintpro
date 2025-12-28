@@ -718,28 +718,22 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Text>
 
               {/* DEBUG INFO - ST-001 & FP-002 */}
-              {testMode && (
+              {appSettings.testMode && (
                 <View style={{ marginTop: Spacing.md, padding: Spacing.sm, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default }}>
                   <Text style={{ fontSize: 10, fontWeight: "600", color: Colors.error, marginBottom: Spacing.xs }}>
                     DEBUG: Staircase/Fireplace Aggregation
                   </Text>
                   <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
-                    Staircases in project: {(project.staircases || []).length}
+                    Staircases: {(project.staircases || []).length}
                   </Text>
                   <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
-                    Fireplaces in project: {(project.fireplaces || []).length}
+                    Fireplaces: {(project.fireplaces || []).length}
                   </Text>
                   <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
-                    Itemized prices count: {displaySummary.itemizedPrices.length}
+                    Items in total: {(displaySummary.itemizedPrices || []).length}
                   </Text>
                   <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
-                    Itemized: {displaySummary.itemizedPrices.map(p => `${p.name}=$${p.price}`).join(", ")}
-                  </Text>
-                  <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
-                    QB includeStaircases: {String((project.quotes?.find(q => q.id === project.activeQuoteId)?.quoteBuilder || project.quoteBuilder || getDefaultQuoteBuilder()).includeStaircases)}
-                  </Text>
-                  <Text style={{ fontSize: 9, color: Colors.darkCharcoal }}>
-                    QB includeFireplaces: {String((project.quotes?.find(q => q.id === project.activeQuoteId)?.quoteBuilder || project.quoteBuilder || getDefaultQuoteBuilder()).includeFireplaces)}
+                    Items: {(displaySummary.itemizedPrices || []).map(p => `${p.name}=$${p.price}`).join(", ") || "none"}
                   </Text>
                 </View>
               )}
