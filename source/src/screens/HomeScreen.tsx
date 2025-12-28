@@ -90,7 +90,7 @@ export default function HomeScreen({ navigation }: Props) {
               New Interface
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              fdf0415 - Dec 28, 1:15 AM ET
+              0b870c7 - Dec 28, 1:25 AM ET
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
