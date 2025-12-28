@@ -718,25 +718,41 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Text>
 
               {/* DEBUG INFO - ST-001 & FP-002 */}
-              {appSettings.testMode && (
-                <View style={{ marginTop: Spacing.md, padding: Spacing.md, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default }}>
-                  <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.error, marginBottom: Spacing.sm }}>
-                    DEBUG: Aggregation
-                  </Text>
-                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    Staircases: {(project.staircases || []).length}
-                  </Text>
-                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    Fireplaces: {(project.fireplaces || []).length}
-                  </Text>
-                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    Items in total: {(displaySummary.itemizedPrices || []).length}
-                  </Text>
-                  <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
-                    Items: {(displaySummary.itemizedPrices || []).map(p => `${p.name}=$${p.price}`).join(", ") || "none"}
-                  </Text>
-                </View>
-              )}
+              {appSettings.testMode && (() => {
+                const activeQuote = project.quotes?.find(q => q.id === project.activeQuoteId);
+                const qb = activeQuote?.quoteBuilder || project.quoteBuilder || getDefaultQuoteBuilder();
+                return (
+                  <View style={{ marginTop: Spacing.md, padding: Spacing.md, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default }}>
+                    <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.error, marginBottom: Spacing.sm }}>
+                      DEBUG: Aggregation
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Staircases: {(project.staircases || []).length}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Fireplaces: {(project.fireplaces || []).length}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Items in total: {(displaySummary.itemizedPrices || []).length}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Items: {(displaySummary.itemizedPrices || []).map(p => `${p.name}=$${p.price}`).join(", ") || "none"}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.primaryBlue, marginTop: Spacing.xs, fontWeight: "700" }}>
+                      QB Flags:
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
+                      includeStaircases: {String(qb.includeStaircases)}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
+                      includeFireplaces: {String(qb.includeFireplaces)}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
+                      Test: !== false = {String(qb.includeStaircases !== false)}
+                    </Text>
+                  </View>
+                );
+              })()}
             </View>
 
             {/* Running Stats Grid */}
