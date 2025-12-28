@@ -76,7 +76,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     }
 
     const focusedField = TextInput.State?.currentlyFocusedField?.();
-    if (focusedField != null) {
+    if (focusedField != null && TextInput.State?.blurTextInput) {
       TextInput.State.blurTextInput(focusedField);
     }
   }, []);
