@@ -55,6 +55,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
+  const isSavingRef = useRef(false); // Ref-based guard for rapid taps (more reliable than state)
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
 
@@ -148,8 +149,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   }, [isSaving, navigation]);
 
   const handleSave = () => {
-    // Prevent double-save
-    if (isSaving) return;
+    // Prevent double-save using ref (checked first, before any state reads)
+    if (isSavingRef.current) return;
+
+    // For existing built-ins, prevent saving when no changes exist
+    if (!isNewBuiltIn && !hasUnsavedChanges) return;
 
     const hasAnyData = name !== "" || width !== "" || height !== "" || depth !== "" || shelfCount !== "";
 
@@ -158,7 +162,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       return;
     }
 
-    // IMMEDIATELY set saving state to prevent modal
+    // IMMEDIATELY set saving state to prevent modal and double-save
+    isSavingRef.current = true;
     setIsSaving(true);
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
