@@ -74,6 +74,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const pendingSavePromptRef = useRef(false);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
 
   // Refs for form field navigation
@@ -119,13 +120,25 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     doubleSidedWalls,
   ]);
 
+  // KB-001: Listen for keyboard hide event before showing modal
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
+    });
+
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
       Keyboard.dismiss();
-      InteractionManager.runAfterInteractions(() => {
-        setShowSavePrompt(true);
-      });
+      pendingSavePromptRef.current = true;
     }
   });
 

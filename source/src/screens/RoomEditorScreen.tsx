@@ -179,6 +179,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [isSaved, setIsSaved] = useState(false);
   // Use ref to track saved state for cleanup - avoids stale closure issues
   const isSavedRef = useRef(false);
+  const pendingSavePromptRef = useRef(false);
 
   // W-005, W-006: TextInput refs for focus navigation
   const lengthRef = useRef<TextInput>(null);
@@ -330,11 +331,23 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     includeClosetInteriorInQuote,
   ]);
 
+  // KB-001: Listen for keyboard hide event before showing modal
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
+    });
+
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
     Keyboard.dismiss();
-    InteractionManager.runAfterInteractions(() => {
-      setShowSavePrompt(true);
-    });
+    pendingSavePromptRef.current = true;
   });
 
   // Photo handling functions
