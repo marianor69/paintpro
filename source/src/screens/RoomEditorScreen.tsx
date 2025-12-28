@@ -12,6 +12,7 @@ import {
   Image,
   Modal,
   Keyboard,
+  InteractionManager,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { usePreventRemove } from "@react-navigation/native";
@@ -330,8 +331,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   ]);
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
-    Keyboard.dismiss(); // Dismiss keyboard immediately
-    setTimeout(() => setShowSavePrompt(true), 500); // Delay modal to ensure keyboard fully dismisses before modal appears
+    Keyboard.dismiss();
+    InteractionManager.runAfterInteractions(() => {
+      setShowSavePrompt(true);
+    });
   });
 
   // Photo handling functions

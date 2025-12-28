@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   Keyboard,
+  InteractionManager,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -104,8 +105,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
-      Keyboard.dismiss(); // Dismiss keyboard immediately
-      setTimeout(() => setShowSavePrompt(true), 500); // Delay modal to ensure keyboard fully dismisses before modal appears
+      Keyboard.dismiss();
+      InteractionManager.runAfterInteractions(() => {
+        setShowSavePrompt(true);
+      });
     }
   });
 
