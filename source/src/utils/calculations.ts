@@ -1450,26 +1450,11 @@ export function calculateFilteredProjectSummary(
     });
   }
 
-  // SAFETY CHECK — Prevent empty datasets from collapsing calculations
+  // REMOVED: Early return that prevented staircases/fireplaces from being calculated
+  // when there are no rooms. Staircases/fireplaces should still be included even if
+  // the project has no rooms yet.
   if (activeRooms.length === 0) {
-    console.log("[calculateFilteredProjectSummary] ⚠️ NO ROOMS SELECTED - Returning zero summary");
-    return {
-      totalWallGallons: 0,
-      totalCeilingGallons: 0,
-      totalTrimGallons: 0,
-      totalDoorGallons: 0,
-      totalPrimerGallons: 0,
-      totalLaborCost: 0,
-      totalMaterialCost: 0,
-      grandTotal: 0,
-      itemizedPrices: [],
-      totalDoors: 0,
-      totalWindows: 0,
-      totalWallSqFt: 0,
-      totalCeilingSqFt: 0,
-      totalTrimSqFt: 0,
-      totalDoorSqFt: 0,
-    };
+    console.log("[calculateFilteredProjectSummary] ⚠️ NO ROOMS - Will still process staircases/fireplaces");
   }
 
   // 2. AGGREGATE PER-ROOM METRICS - Now iterate only over active rooms
