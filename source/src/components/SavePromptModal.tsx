@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Text, Pressable, Keyboard } from "react-native";
+import React from "react";
+import { View, Text, Pressable } from "react-native";
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
 
 interface SavePromptModalProps {
@@ -19,13 +19,6 @@ export function SavePromptModal({
   title = "Save Changes?",
   message = "You have unsaved changes. Do you want to save them before leaving?",
 }: SavePromptModalProps) {
-  // KB-001: Dismiss keyboard when modal appears
-  useEffect(() => {
-    if (visible) {
-      Keyboard.dismiss();
-    }
-  }, [visible]);
-
   if (!visible) return null;
 
   return (

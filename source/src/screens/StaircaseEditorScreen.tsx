@@ -122,7 +122,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
       Keyboard.dismiss(); // Dismiss keyboard immediately
-      setTimeout(() => setShowSavePrompt(true), 100); // Delay modal slightly to ensure keyboard dismisses
+      setTimeout(() => setShowSavePrompt(true), 300); // Delay modal to ensure keyboard dismisses (iOS animation ~250-300ms)
     }
   });
 
