@@ -22,9 +22,9 @@ import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { SavePromptModal } from "../components/SavePromptModal";
 import {
-  calculateFireplaceMetrics,
   formatCurrency,
 } from "../utils/calculations";
+import { computeFireplacePricingSummary } from "../utils/pricingSummary";
 import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 
 type Props = NativeStackScreenProps<RootStackParamList, "FireplaceEditor">;
@@ -193,7 +193,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
   const calculations =
     isNewFireplace || !fireplace
-      ? calculateFireplaceMetrics(
+      ? computeFireplacePricingSummary(
           {
             id: "",
             width: parseFloat(width) || 0,
@@ -206,7 +206,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           },
           pricing
         )
-      : calculateFireplaceMetrics(
+      : computeFireplacePricingSummary(
           {
             ...fireplace,
             width: parseFloat(width) || 0,
@@ -428,7 +428,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Paint cost:</Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {Math.ceil(calculations.totalGallons)} gal × ${pricing.wallPaintPerGallon}/gal = ${calculations.materialCost.toFixed(2)}
+                      {Math.ceil(calculations.totalGallons)} gal × ${pricing.wallPaintPerGallon}/gal = ${calculations.materialsDisplayed.toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -437,17 +437,17 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                 <View style={{ backgroundColor: Colors.primaryBlueLight, borderWidth: 1, borderColor: Colors.primaryBlue, borderRadius: BorderRadius.default, padding: Spacing.sm }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Labor Cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.laborCost.toFixed(2)}</Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.laborDisplayed.toFixed(2)}</Text>
                   </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Material Cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.materialCost.toFixed(2)}</Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.materialsDisplayed.toFixed(2)}</Text>
                   </View>
                   <View style={{ borderTopWidth: 1, borderTopColor: Colors.primaryBlue, paddingTop: Spacing.sm }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                       <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Price:</Text>
                       <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700", color: Colors.primaryBlue }}>
-                        {formatCurrency(calculations.totalPrice)}
+                        {formatCurrency(calculations.totalDisplayed)}
                       </Text>
                     </View>
                   </View>
