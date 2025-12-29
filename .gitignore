@@ -39,3 +39,7 @@ yarn-error.*
 
 # Expo log
 expo.log
+
+
+ios/
+android/
