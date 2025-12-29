@@ -1,4 +1,4 @@
-import React, { RefObject, forwardRef } from "react";
+import React, { RefObject } from "react";
 import {
   View,
   Text,
@@ -21,7 +21,7 @@ interface FormInputProps extends Omit<TextInputProps, "style"> {
   inputAccessoryViewID?: string;
 }
 
-export const FormInput = forwardRef<TextInput, FormInputProps>(({
+export function FormInput({
   label,
   error,
   className,
@@ -30,7 +30,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   inputAccessoryViewID,
   keyboardType,
   ...textInputProps
-}, ref) => {
+}: FormInputProps) {
   const isFinal = !nextFieldRef;
   const isNumericKeyboard =
     keyboardType === "numeric" ||
@@ -78,7 +78,6 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         }}
       >
         <TextInput
-          ref={ref}
           {...textInputProps}
           keyboardType={keyboardType}
           returnKeyType={effectiveReturnKeyType}
@@ -157,4 +156,4 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
       )}
     </View>
   );
-});
+}
