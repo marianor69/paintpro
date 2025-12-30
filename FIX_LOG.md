@@ -3,7 +3,7 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-003** (commit TBD) - Dec 30, 2024
+**CF-003** (commit 9b088f6) - Dec 30, 2024
 
 ---
 
@@ -13,7 +13,7 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 **Date:** Dec 30, 2024
 **Status:** ⏳ Awaiting user confirmation
 **Severity:** LOW - Visual/UX issue
-**Commit:** TBD
+**Commit:** 9b088f6
 
 #### Issue
 - AREA B: Large gap between navigation header and StepProgressIndicator caused by SafeAreaView top inset
