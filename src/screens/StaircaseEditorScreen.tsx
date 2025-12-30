@@ -461,11 +461,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
             {/* Notes Section */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
                 Notes
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-                Document nail pops, holes, sheetrock patches, or other observations
               </Text>
               <TextInput
                 value={notes}
@@ -474,7 +471,12 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 placeholderTextColor={Colors.mediumGray}
                 multiline
                 numberOfLines={3}
-                style={TextInputStyles.multiline}
+                style={[
+                  TextInputStyles.multiline,
+                  {
+                    backgroundColor: Colors.backgroundWarmGray,
+                  }
+                ]}
               />
             </Card>
 
