@@ -10,7 +10,6 @@ import {
   Keyboard,
   Image,
   Alert,
-  findNodeHandle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -111,6 +110,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
 
   // Refs for form field navigation
+  const stepIndicatorRef = useRef<View>(null);
+  const stepIndicatorBottomRef = useRef(0);
+  const scrollYRef = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const addressRef = useRef<TextInput>(null);
   const cityRef = useRef<TextInput>(null);
@@ -187,34 +189,23 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const handleFieldFocus = (labelRef: React.RefObject<View>) => {
     if (!scrollViewRef.current || !labelRef.current) return;
 
-    // Delay to ensure keyboard animation completes and automatic scroll finishes
-    setTimeout(() => {
-      labelRef.current?.measureLayout(
-        findNodeHandle(scrollViewRef.current) as number,
-        (x, y, width, height) => {
-          // StepProgressIndicator height:
-          // - paddingTop: 4px, circle: 44px, margin: 4px, label: 13px, paddingBottom: 8px, border: 1px
-          // - Total: ~74px, using 80px to be safe
-          const STEP_INDICATOR_HEIGHT = 80;
-          const MIN_GAP_BELOW_INDICATOR = 16; // Production gap value
-
-          // Calculate scroll position so label appears 16px below StepProgressIndicator
-          // If ScrollView scrolls by amount S, content at position y appears at viewport position (y - S)
-          // We want: (y - S) = STEP_INDICATOR_HEIGHT + MIN_GAP_BELOW_INDICATOR
-          // Therefore: S = y - STEP_INDICATOR_HEIGHT - MIN_GAP_BELOW_INDICATOR
-          const scrollToY = Math.max(0, y - STEP_INDICATOR_HEIGHT - MIN_GAP_BELOW_INDICATOR);
+    requestAnimationFrame(() => {
+      labelRef.current?.measureInWindow((lx, ly, lw, lh) => {
+        scrollViewRef.current?.measureInWindow((sx, sy) => {
+          const minGapBelowIndicator = 16;
+          const labelYInScroll = ly - sy + scrollYRef.current;
+          const scrollToY = Math.max(
+            0,
+            labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator
+          );
 
           scrollViewRef.current?.scrollTo({
             y: scrollToY,
             animated: true,
           });
-        },
-        (error: unknown) => {
-          // Silently fail - measureLayout can fail if component unmounted
-          console.log("Label measurement failed:", error);
-        }
-      );
-    }, 300); // Increased delay to run after keyboard animation
+        });
+      });
+    });
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -382,11 +373,20 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   return (
     <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
-      <StepProgressIndicator
-        currentStep={1}
-        completedSteps={completedSteps}
-        disabledSteps={[2, 3]}
-      />
+      <View
+        ref={stepIndicatorRef}
+        onLayout={() => {
+          stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
+            stepIndicatorBottomRef.current = y + height;
+          });
+        }}
+      >
+        <StepProgressIndicator
+          currentStep={1}
+          completedSteps={completedSteps}
+          disabledSteps={[2, 3]}
+        />
+      </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -398,7 +398,11 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
-          automaticallyAdjustKeyboardInsets={false}
+          automaticallyAdjustKeyboardInsets={true}
+          onScroll={(event) => {
+            scrollYRef.current = event.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
         >
           {/* CLIENT INFORMATION SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>
