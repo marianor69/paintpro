@@ -3,17 +3,17 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**MD-002** (commit f3afb12) - Dec 30, 12:15 AM ET
+**MD-002v2** (commit 3c45d19) - Dec 30, 12:45 AM ET
 
 ---
 
 ## Fixes
 
 ### MD-002: Discard Changes Modal Requires Single Tap ⏳ PENDING VERIFICATION
-**Date:** Dec 30, 2024, 12:15 AM ET
-**Status:** ⏳ Awaiting user verification
+**Date:** Dec 30, 2024, 12:45 AM ET
+**Status:** ⏳ Awaiting user verification (v2 deployed)
 **Severity:** MEDIUM - UX annoyance
-**Commit:** f3afb12
+**Commit:** 3c45d19 (v2 - navigation dispatch approach)
 
 #### Issue
 - Tapping "Discard Changes" in the save prompt modal requires **two taps** to exit
@@ -38,30 +38,36 @@ handleDiscardAndLeave() {
 // Now hasUnsavedChanges is actually false, navigation succeeds
 ```
 
-#### Solution
-Added `isDiscardingRef` to bypass the `usePreventRemove` check when explicitly discarding:
+#### Solution (v2 - Navigation Dispatch Approach)
+**First attempt (v1)** using `isDiscardingRef` didn't work - the ref-based bypass still had timing issues.
+
+**Working solution (v2)**: Store the prevented navigation action and dispatch it when discarding:
 
 ```typescript
-// 1. Added ref
-const isDiscardingRef = useRef(false);
+// 1. Added ref to store navigation action
+const preventedNavigationActionRef = useRef<any>(null);
 
-// 2. Updated usePreventRemove to check ref
-usePreventRemove(hasUnsavedChanges && !isDiscardingRef.current, ({ data }) => {
-  // ... show modal
+// 2. Store the action in usePreventRemove callback
+usePreventRemove(hasUnsavedChanges, ({ data }) => {
+  preventedNavigationActionRef.current = data.action;  // Store original action
+  setShowSavePrompt(true);
 });
 
-// 3. Set ref BEFORE setState in handleDiscardAndLeave
+// 3. Dispatch the stored action in handleDiscardAndLeave
 const handleDiscardAndLeave = () => {
-  isDiscardingRef.current = true;  // Bypass prevention IMMEDIATELY
-
   setHasUnsavedChanges(false);
   setShowSavePrompt(false);
 
-  navigation.goBack();  // Now allowed - ref check bypasses prevention
+  // Complete the ORIGINAL navigation that was prevented
+  if (preventedNavigationActionRef.current) {
+    navigation.dispatch(preventedNavigationActionRef.current);
+  } else {
+    navigation.goBack();
+  }
 };
 ```
 
-This approach uses a ref (which updates synchronously) instead of relying on async state updates.
+This approach completes the **original** navigation event that was prevented, rather than starting a new navigation attempt.
 
 #### Files Changed
 - `src/screens/RoomEditorScreen.tsx` - Added ref, updated usePreventRemove, fixed handleDiscardAndLeave, removed setTimeout
