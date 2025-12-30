@@ -219,6 +219,8 @@ export default function SettingsScreen() {
           </Text>
 
           <NumericInput
+            inputRef={wallCoverageRef}
+            nextFieldRef={ceilingCoverageRef}
             label="Wall Paint Coverage (sqft/gal)"
             value={String(appSettings.wallCoverageSqFtPerGallon)}
             onChangeText={(text) =>
@@ -231,6 +233,9 @@ export default function SettingsScreen() {
           />
 
           <NumericInput
+            inputRef={ceilingCoverageRef}
+            previousFieldRef={wallCoverageRef}
+            nextFieldRef={trimCoverageRef}
             label="Ceiling Paint Coverage (sqft/gal)"
             value={String(appSettings.ceilingCoverageSqFtPerGallon)}
             onChangeText={(text) =>
@@ -243,6 +248,9 @@ export default function SettingsScreen() {
           />
 
           <NumericInput
+            inputRef={trimCoverageRef}
+            previousFieldRef={ceilingCoverageRef}
+            nextFieldRef={primerCoverageRef}
             label="Trim Paint Coverage (sqft/gal)"
             value={String(appSettings.trimCoverageSqFtPerGallon)}
             onChangeText={(text) =>
@@ -255,6 +263,8 @@ export default function SettingsScreen() {
           />
 
           <NumericInput
+            inputRef={primerCoverageRef}
+            previousFieldRef={trimCoverageRef}
             label="Primer Coverage (sqft/gal)"
             value={String(appSettings.primerCoverageSqFtPerGallon)}
             onChangeText={(text) =>
