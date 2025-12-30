@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useId } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Keyboard,
   Image,
   Alert,
+  InputAccessoryView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -114,11 +115,20 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const stepIndicatorBottomRef = useRef(0);
   const scrollYRef = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const nameRef = useRef<TextInput>(null);
   const addressRef = useRef<TextInput>(null);
   const cityRef = useRef<TextInput>(null);
   const countryRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
+
+  // KB-004: Unique IDs for InputAccessoryViews
+  const nameAccessoryID = useId();
+  const addressAccessoryID = useId();
+  const cityAccessoryID = useId();
+  const countryAccessoryID = useId();
+  const phoneAccessoryID = useId();
+  const emailAccessoryID = useId();
 
   // Refs for field labels (to prevent them from hiding behind StepProgressIndicator)
   const clientNameLabelRef = useRef<View>(null);
@@ -431,6 +441,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={nameRef}
                       value={name}
                       onChangeText={setName}
                       placeholder={t("screens.projectSetup.clientInfo.clientNamePlaceholder")}
@@ -440,6 +451,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onFocus={() => handleFieldFocus(clientNameLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `projectClientName-${nameAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Client name input"
@@ -464,6 +476,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onFocus={() => handleFieldFocus(addressLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `projectAddress-${addressAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Address input"
@@ -488,6 +501,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onFocus={() => handleFieldFocus(cityLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `projectCity-${cityAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
                       accessibilityLabel="City input"
@@ -512,6 +526,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onFocus={() => handleFieldFocus(countryLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `projectCountry-${countryAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Country input"
@@ -537,6 +552,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onFocus={() => handleFieldFocus(phoneLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `projectPhone-${phoneAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Phone number input"
@@ -562,6 +578,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onSubmitEditing={() => Keyboard.dismiss()}
                       onFocus={() => handleFieldFocus(emailLabelRef)}
                       style={TextInputStyles.base}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `projectEmail-${emailAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Email input"
@@ -959,6 +976,294 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* KB-004: InputAccessoryViews for Client Info fields */}
+      {Platform.OS === "ios" && (
+        <>
+          {/* Client Name - First field, only Next */}
+          <InputAccessoryView nativeID={`projectClientName-${nameAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={() => addressRef.current?.focus()}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Next
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+
+          {/* Address - Previous/Next */}
+          <InputAccessoryView nativeID={`projectAddress-${addressAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={() => nameRef.current?.focus()}
+                style={{
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => cityRef.current?.focus()}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Next
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+
+          {/* City - Previous/Next */}
+          <InputAccessoryView nativeID={`projectCity-${cityAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={() => addressRef.current?.focus()}
+                style={{
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => countryRef.current?.focus()}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Next
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+
+          {/* Country - Previous/Next */}
+          <InputAccessoryView nativeID={`projectCountry-${countryAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={() => cityRef.current?.focus()}
+                style={{
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => phoneRef.current?.focus()}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Next
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+
+          {/* Phone - Previous/Next */}
+          <InputAccessoryView nativeID={`projectPhone-${phoneAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={() => countryRef.current?.focus()}
+                style={{
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => emailRef.current?.focus()}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Next
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+
+          {/* Email - Last field, Previous/Done */}
+          <InputAccessoryView nativeID={`projectEmail-${emailAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={() => phoneRef.current?.focus()}
+                style={{
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => Keyboard.dismiss()}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Done
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+        </>
+      )}
     </SafeAreaView>
   );
 }
