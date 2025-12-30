@@ -80,6 +80,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
+  // MD-002: Ref to bypass usePreventRemove when explicitly discarding
+  const isDiscardingRef = useRef(false);
 
   // Refs for form field navigation
   const nameRef = useRef<TextInput>(null);
@@ -171,8 +173,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     return unsubscribe;
   }, [navigation, blurFocusedInput]);
 
-  // Prevent navigation when there are unsaved changes (but not while saving)
-  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
+  // Prevent navigation when there are unsaved changes (but not while saving or discarding)
+  usePreventRemove(hasUnsavedChanges && !isSaving && !isDiscardingRef.current, ({ data }) => {
     if (!isSaving) {
       if (isKeyboardVisibleRef.current) {
         pendingSavePromptRef.current = true;
@@ -257,6 +259,9 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   };
 
   const handleDiscardAndLeave = () => {
+    // MD-002: Set ref FIRST to bypass usePreventRemove check
+    isDiscardingRef.current = true;
+
     // For new staircases, nothing to delete (never created)
     // For existing staircases, just go back without changes
     setHasUnsavedChanges(false);

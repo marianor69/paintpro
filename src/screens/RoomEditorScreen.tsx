@@ -181,6 +181,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const isSavedRef = useRef(false);
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
+  // MD-002: Ref to bypass usePreventRemove when explicitly discarding
+  const isDiscardingRef = useRef(false);
 
   // W-005, W-006: TextInput refs for focus navigation
   const lengthRef = useRef<TextInput>(null);
@@ -374,7 +376,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     includeClosetInteriorInQuote,
   ]);
 
-  usePreventRemove(hasUnsavedChanges, ({ data }) => {
+  usePreventRemove(hasUnsavedChanges && !isDiscardingRef.current, ({ data }) => {
     if (isKeyboardVisibleRef.current) {
       pendingSavePromptRef.current = true;
       Keyboard.dismiss();
@@ -623,6 +625,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   };
 
   const handleDiscardAndLeave = () => {
+    // MD-002: Set ref FIRST to bypass usePreventRemove check
+    isDiscardingRef.current = true;
+
     // For new rooms with no name, nothing was created so just navigate back
     // For existing rooms with no name, delete them
     const trimmedName = name.trim();
@@ -633,9 +638,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     setIsSaved(true);
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
-    setTimeout(() => {
-      navigation.goBack();
-    }, 50);
+
+    // Navigate immediately - no setTimeout needed with ref approach
+    navigation.goBack();
   };
 
   const handleSaveAndLeave = () => {

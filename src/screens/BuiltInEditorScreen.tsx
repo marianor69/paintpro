@@ -59,6 +59,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const isSavingRef = useRef(false); // Ref-based guard for rapid taps (more reliable than state)
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
+  // MD-002: Ref to bypass usePreventRemove when explicitly discarding
+  const isDiscardingRef = useRef(false);
 
   // Refs for form field navigation
   const nameRef = useRef<TextInput>(null);
@@ -131,8 +133,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     return unsubscribe;
   }, [navigation, blurFocusedInput]);
 
-  // Prevent navigation when there are unsaved changes (but not while saving)
-  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
+  // Prevent navigation when there are unsaved changes (but not while saving or discarding)
+  usePreventRemove(hasUnsavedChanges && !isSaving && !isDiscardingRef.current, ({ data }) => {
     if (!isSaving) {
       if (isKeyboardVisibleRef.current) {
         pendingSavePromptRef.current = true;
@@ -208,6 +210,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   };
 
   const handleDiscardAndLeave = () => {
+    // MD-002: Set ref FIRST to bypass usePreventRemove check
+    isDiscardingRef.current = true;
+
     // For new built-ins, nothing to delete (never created)
     // For existing built-ins, just go back without changes
     setHasUnsavedChanges(false);
