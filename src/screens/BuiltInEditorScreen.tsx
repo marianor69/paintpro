@@ -350,7 +350,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                 Notes
               </Text>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-                Add any observations about this built-in
+                Document nail pops, holes, sheetrock patches, or other observations
               </Text>
               <TextInput
                 value={notes}
