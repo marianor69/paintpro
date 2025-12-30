@@ -9,24 +9,26 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 
 ## Fixes
 
-### CF-003: Eliminate Area B Gap in ProjectSetupScreen ⏳ PENDING VERIFICATION
+### CF-003: Eliminate Area B Gap and Standardize Card Spacing ⏳ PENDING VERIFICATION
 **Date:** Dec 30, 2024
 **Status:** ⏳ Awaiting user confirmation
 **Severity:** LOW - Visual/UX issue
-**Commit:** 9b088f6
+**Commit:** TBD (v2 in progress)
 
 #### Issue
-- AREA B: Large gap between navigation header and StepProgressIndicator caused by SafeAreaView top inset
-- Expected: StepProgressIndicator appears immediately below navigation header
-- Actual: Visible gap (Area B) between header and progress indicators
+- **AREA B**: Large gap between navigation header and StepProgressIndicator caused by SafeAreaView top inset
+- **First card spacing**: 120px gap between StepProgressIndicator and Client Information card (inconsistent with 16px spacing between other cards)
+- Expected: StepProgressIndicator appears immediately below navigation header, consistent 16px spacing for all cards
+- Actual: Visible gap (Area B) between header and progress indicators, excessive spacing above first card
 
 #### Root Cause
-SafeAreaView was applying top inset padding, creating gap between navigation header and content.
+1. SafeAreaView was applying top inset padding, creating gap between navigation header and content
+2. ScrollView had `paddingTop: 120` creating excessive space above first card
 
-**Code location:** `src/screens/ProjectSetupScreen.tsx` line 338
+**Code location:** `src/screens/ProjectSetupScreen.tsx` lines 338, 352
 
-#### Solution
-Changed SafeAreaView to only apply bottom edge inset:
+#### Solution (v2)
+1. Changed SafeAreaView to only apply bottom edge inset:
 ```typescript
 // BEFORE:
 <SafeAreaView style={{ flex: 1, ... }}>
@@ -35,13 +37,23 @@ Changed SafeAreaView to only apply bottom edge inset:
 <SafeAreaView edges={["bottom"]} style={{ flex: 1, ... }}>
 ```
 
-This eliminates the top inset gap while keeping bottom safe area for gesture navigation.
+2. Removed excessive paddingTop override from ScrollView:
+```typescript
+// BEFORE:
+contentContainerStyle={{ padding: Spacing.md, paddingTop: 120, paddingBottom: 200 }}
+
+// AFTER:
+contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
+// Now uses Spacing.md (16px) for top padding, matching card spacing
+```
+
+This eliminates the top inset gap and creates consistent 16px spacing throughout.
 
 #### Files Changed
-- `src/screens/ProjectSetupScreen.tsx` - Changed SafeAreaView edges to bottom only (line 338)
+- `src/screens/ProjectSetupScreen.tsx` - Changed SafeAreaView edges to bottom only (line 338), removed paddingTop override (line 352)
 
 #### Verification
-User needs to test: Open ProjectSetupScreen → StepProgressIndicator should appear immediately below navigation header with no gap.
+User needs to test: Open ProjectSetupScreen → StepProgressIndicator should appear immediately below navigation header, Client Information card should have 16px spacing above it (matching spacing between cards).
 
 ---
 
