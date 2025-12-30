@@ -464,6 +464,9 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Notes
               </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                Add any observations about this staircase
+              </Text>
               <TextInput
                 value={notes}
                 onChangeText={setNotes}
