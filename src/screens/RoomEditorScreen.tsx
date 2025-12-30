@@ -499,10 +499,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     }
 
     // Convert display values back to imperial feet/sq ft for storage
-    console.log("[RoomEditor] BEFORE CONVERSION - unitSystem:", unitSystem, "length:", length, "width:", width);
     const lengthFeet = parseDisplayValue(length, 'length', unitSystem);
     const widthFeet = parseDisplayValue(width, 'length', unitSystem);
-    console.log("[RoomEditor] AFTER CONVERSION - lengthFeet:", lengthFeet, "widthFeet:", widthFeet);
     const manualAreaSqFt = manualArea ? parseDisplayValue(manualArea, 'area', unitSystem) : undefined;
     const cathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
 
@@ -667,17 +665,23 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   // Calculate room pricing using CENTRALIZED PRICING SUMMARY (SINGLE SOURCE OF TRUTH)
   // This ensures preview totals match what will be shown in all other views
   // For new rooms, calculate with temp data; for existing rooms, use the saved room data
+  // IMPORTANT: Convert display values to imperial before passing to calculation
+  const previewLengthFeet = parseDisplayValue(length || "0", 'length', unitSystem);
+  const previewWidthFeet = parseDisplayValue(width || "0", 'length', unitSystem);
+  const previewManualAreaSqFt = manualArea ? parseDisplayValue(manualArea, 'area', unitSystem) : undefined;
+  const previewCathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
+
   const pricingSummary = computeRoomPricingSummary(
     {
       id: roomId || "temp-new-room",
       name: name.trim() || "Unnamed Room",
-      length: parseFloat(length) || 0,
-      width: parseFloat(width) || 0,
+      length: previewLengthFeet,
+      width: previewWidthFeet,
       height: currentHeight,
       floor,
-      manualArea: parseFloat(manualArea) || undefined,
+      manualArea: previewManualAreaSqFt,
       ceilingType,
-      cathedralPeakHeight: parseFloat(cathedralPeakHeight) || undefined,
+      cathedralPeakHeight: previewCathedralPeakHeightFeet,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
       hasCloset,
