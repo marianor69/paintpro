@@ -334,6 +334,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={widthRef}
+                previousFieldRef={nameRef}
                 label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={width}
                 onChangeText={setWidth}
@@ -347,6 +348,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={heightRef}
+                previousFieldRef={widthRef}
                 label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={height}
                 onChangeText={setHeight}
@@ -360,6 +362,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={depthRef}
+                previousFieldRef={heightRef}
                 label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={depth}
                 onChangeText={setDepth}
@@ -383,6 +386,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               <View style={{ marginBottom: Spacing.md }}>
                 <FormInput
                   ref={trimLinearFeetRef}
+                  previousFieldRef={depthRef}
                   label={`Trim Linear (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                   value={trimLinearFeet}
                   onChangeText={setTrimLinearFeet}

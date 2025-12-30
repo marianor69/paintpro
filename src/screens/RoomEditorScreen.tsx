@@ -185,6 +185,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const preventedNavigationActionRef = useRef<any>(null);
 
   // W-005, W-006: TextInput refs for focus navigation
+  const nameRef = useRef<TextInput>(null);
   const lengthRef = useRef<TextInput>(null);
   const widthRef = useRef<TextInput>(null);
   const manualAreaRef = useRef<TextInput>(null);
@@ -761,6 +762,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </Text>
             <View style={TextInputStyles.container}>
               <TextInput
+                ref={nameRef}
                 value={name}
                 onChangeText={setName}
                 placeholder="Enter room name"
@@ -788,6 +790,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View style={{ flex: 1 }}>
               <FormInput
                 ref={lengthRef}
+                previousFieldRef={nameRef}
                 label={`Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={length}
                 onChangeText={setLength}
@@ -803,6 +806,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View style={{ flex: 1 }}>
               <FormInput
                 ref={widthRef}
+                previousFieldRef={lengthRef}
                 label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={width}
                 onChangeText={setWidth}
@@ -819,6 +823,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <View>
             <FormInput
               ref={manualAreaRef}
+              previousFieldRef={widthRef}
               label={`Manual Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional`}
               value={manualArea}
               onChangeText={setManualArea}
@@ -907,6 +912,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View>
               <FormInput
                 ref={cathedralPeakHeightRef}
+                previousFieldRef={manualAreaRef}
                 label={`Peak Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={cathedralPeakHeight}
                 onChangeText={setCathedralPeakHeight}

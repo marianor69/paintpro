@@ -1,4 +1,4 @@
-import React, { useRef, RefObject, useId } from "react";
+import React, { useRef, RefObject, useId, useState } from "react";
 import { View, Text, TextInput, Keyboard, Platform, InputAccessoryView, Pressable } from "react-native";
 import { Colors, Typography, Spacing, BorderRadius } from "../utils/designSystem";
 import { cn } from "../utils/cn";
@@ -9,6 +9,7 @@ interface DimensionInputProps {
   inchesValue: string;
   onFeetChange: (text: string) => void;
   onInchesChange: (text: string) => void;
+  previousFieldRef?: RefObject<TextInput>;
   error?: string;
   className?: string;
   nextFieldRef?: RefObject<TextInput>;
@@ -20,6 +21,7 @@ export function DimensionInput({
   inchesValue,
   onFeetChange,
   onInchesChange,
+  previousFieldRef,
   error,
   className,
   nextFieldRef,
@@ -27,10 +29,35 @@ export function DimensionInput({
   const uniqueId = useId();
   const feetRef = useRef<TextInput>(null);
   const inchesRef = useRef<TextInput>(null);
+  const [focusedField, setFocusedField] = useState<"feet" | "inches" | null>(null);
 
   const isFinal = !nextFieldRef;
   const shouldShowAccessory = Platform.OS === "ios" && (nextFieldRef || isFinal);
   const accessoryID = shouldShowAccessory ? `dimensionInput-${uniqueId}` : undefined;
+
+  const handlePrevious = () => {
+    if (focusedField === "inches") {
+      feetRef.current?.focus();
+    } else {
+      previousFieldRef?.current?.focus();
+    }
+  };
+
+  const handleNext = () => {
+    if (focusedField === "feet") {
+      inchesRef.current?.focus();
+      return;
+    }
+    if (nextFieldRef?.current) {
+      nextFieldRef.current.focus();
+    } else {
+      Keyboard.dismiss();
+    }
+  };
+
+  const handleDone = () => {
+    Keyboard.dismiss();
+  };
 
   const handleInchesSubmit = () => {
     if (nextFieldRef?.current) {
@@ -79,6 +106,7 @@ export function DimensionInput({
               blurOnSubmit={false}
               onSubmitEditing={() => inchesRef.current?.focus()}
               inputAccessoryViewID={accessoryID}
+              onFocus={() => setFocusedField("feet")}
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -126,6 +154,7 @@ export function DimensionInput({
               blurOnSubmit={isFinal}
               onSubmitEditing={handleInchesSubmit}
               inputAccessoryViewID={accessoryID}
+              onFocus={() => setFocusedField("inches")}
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -164,17 +193,33 @@ export function DimensionInput({
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
-              backgroundColor: Colors.lightGray,
+              backgroundColor: "#f1f1f1",
               paddingHorizontal: Spacing.md,
               paddingVertical: Spacing.sm,
               flexDirection: "row",
               justifyContent: "flex-end",
-              borderTopWidth: 1,
-              borderTopColor: Colors.mediumGray,
             }}
           >
             <Pressable
-              onPress={handleInchesSubmit}
+              onPress={handlePrevious}
+              disabled={!previousFieldRef && focusedField !== "inches"}
+              style={{
+                paddingHorizontal: Spacing.lg,
+                paddingVertical: Spacing.sm,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: Typography.body.fontSize,
+                  color: (!previousFieldRef && focusedField !== "inches") ? "#c7c7c7" : "#007AFF",
+                  fontWeight: "400",
+                }}
+              >
+                Previous
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={isFinal && focusedField === "inches" ? handleDone : handleNext}
               style={{
                 backgroundColor: Colors.primaryBlue,
                 paddingHorizontal: Spacing.lg,
@@ -189,7 +234,7 @@ export function DimensionInput({
                   fontWeight: "600",
                 }}
               >
-                {isFinal ? "Done" : "Next"}
+                {isFinal && focusedField === "inches" ? "Done" : "Next"}
               </Text>
             </Pressable>
           </View>

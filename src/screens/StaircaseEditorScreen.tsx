@@ -372,6 +372,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={riserCountRef}
+                previousFieldRef={nameRef}
                 label="Number of Risers"
                 value={riserCount}
                 onChangeText={setRiserCount}
@@ -388,6 +389,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={handrailLengthRef}
+                previousFieldRef={riserCountRef}
                 label={`Handrail Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={handrailLength}
                 onChangeText={setHandrailLength}
@@ -401,6 +403,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={spindleCountRef}
+                previousFieldRef={handrailLengthRef}
                 label="Number of Spindles"
                 value={spindleCount}
                 onChangeText={setSpindleCount}
@@ -423,6 +426,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   <View style={{ marginBottom: Spacing.md, marginTop: Spacing.md }}>
                     <FormInput
                       ref={tallWallHeightRef}
+                      previousFieldRef={spindleCountRef}
                       label={`Tall Wall Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                       value={tallWallHeight}
                       onChangeText={setTallWallHeight}
@@ -436,6 +440,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   <View style={{ marginBottom: Spacing.md }}>
                     <FormInput
                       ref={shortWallHeightRef}
+                      previousFieldRef={tallWallHeightRef}
                       label={`Short Wall Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                       value={shortWallHeight}
                       onChangeText={setShortWallHeight}

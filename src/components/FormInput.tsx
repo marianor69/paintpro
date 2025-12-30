@@ -17,6 +17,7 @@ interface FormInputProps extends Omit<TextInputProps, "style"> {
   error?: string;
   className?: string;
   unit?: string;
+  previousFieldRef?: RefObject<TextInput>;
   nextFieldRef?: RefObject<TextInput>;
   inputAccessoryViewID?: string;
 }
@@ -26,6 +27,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   error,
   className,
   unit,
+  previousFieldRef,
   nextFieldRef,
   inputAccessoryViewID,
   keyboardType,
@@ -34,10 +36,23 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   // Generate unique ID for this component instance
   const uniqueId = useId();
   const isFinal = !nextFieldRef;
+  const isFirst = !previousFieldRef;
   const isNumericKeyboard =
     keyboardType === "numeric" ||
     keyboardType === "decimal-pad" ||
     keyboardType === "number-pad";
+
+  const handlePrevious = () => {
+    previousFieldRef?.current?.focus();
+  };
+
+  const handleNext = () => {
+    nextFieldRef?.current?.focus();
+  };
+
+  const handleDone = () => {
+    Keyboard.dismiss();
+  };
 
   const handleSubmit = () => {
     if (nextFieldRef?.current) {
@@ -129,17 +144,33 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
-              backgroundColor: Colors.lightGray,
+              backgroundColor: "#f1f1f1",
               paddingHorizontal: Spacing.md,
               paddingVertical: Spacing.sm,
               flexDirection: "row",
               justifyContent: "flex-end",
-              borderTopWidth: 1,
-              borderTopColor: Colors.mediumGray,
             }}
           >
             <Pressable
-              onPress={handleSubmit}
+              onPress={handlePrevious}
+              disabled={isFirst}
+              style={{
+                paddingHorizontal: Spacing.lg,
+                paddingVertical: Spacing.sm,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: Typography.body.fontSize,
+                  color: isFirst ? "#c7c7c7" : "#007AFF",
+                  fontWeight: "400",
+                }}
+              >
+                Previous
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={isFinal ? handleDone : handleNext}
               style={{
                 backgroundColor: Colors.primaryBlue,
                 paddingHorizontal: Spacing.lg,
