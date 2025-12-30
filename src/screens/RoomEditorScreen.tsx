@@ -499,8 +499,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     }
 
     // Convert display values back to imperial feet/sq ft for storage
+    console.log("[RoomEditor] BEFORE CONVERSION - unitSystem:", unitSystem, "length:", length, "width:", width);
     const lengthFeet = parseDisplayValue(length, 'length', unitSystem);
     const widthFeet = parseDisplayValue(width, 'length', unitSystem);
+    console.log("[RoomEditor] AFTER CONVERSION - lengthFeet:", lengthFeet, "widthFeet:", widthFeet);
     const manualAreaSqFt = manualArea ? parseDisplayValue(manualArea, 'area', unitSystem) : undefined;
     const cathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
 

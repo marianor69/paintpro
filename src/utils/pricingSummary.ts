@@ -199,6 +199,7 @@ export function computeRoomPricingSummary(
   // Output: perimeter in feet
   // Example: 10m x 10m room → stored as 32.81ft x 32.81ft → perimeter = 131.23ft → displays as 40m
   const perimeter = hasLengthWidth ? 2 * (length + width) : 0;
+  console.log("[pricingSummary] Room:", room.name, "| length:", length, "ft, width:", width, "ft | perimeter:", perimeter, "ft");
 
   // Calculate effective wall height (for cathedral ceilings)
   let effectiveWallHeight = height;
