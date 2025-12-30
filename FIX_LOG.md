@@ -3,17 +3,17 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-001v4** (commit 0ceae97) - Dec 30, 2024
+**CF-001v5** (commit TBD) - Dec 30, 2024
 
 ---
 
 ## Fixes
 
-### CF-001v4: Form Field Labels Hidden Behind StepProgressIndicator ⏳ PENDING VERIFICATION
+### CF-001v5: Form Field Labels Hidden Behind StepProgressIndicator ⏳ PENDING VERIFICATION
 **Date:** Dec 30, 2024
-**Status:** ⏳ Awaiting user confirmation (v4 - testing 48px gap)
+**Status:** ⏳ Awaiting user confirmation (v5 - fixed scroll conflict)
 **Severity:** MEDIUM - UX issue affecting form usability
-**Commit:** 0ceae97
+**Commit:** TBD
 
 #### Issue
 When keyboard appears in ProjectSetupScreen's Client Information form, the ScrollView content scrolls up and field labels (Client Name, Address, City, etc.) hide behind the fixed StepProgressIndicator at the top. User cannot see which field they are typing in.
@@ -29,14 +29,19 @@ StepProgressIndicator is fixed at top of screen, outside the ScrollView. When ke
 
 **Code location:** `src/screens/ProjectSetupScreen.tsx`
 
-#### Solution (v4 - Testing 48px Gap)
+#### Solution (v5 - Fixed Scroll Conflict)
 **v1 issue:** Initial calculation used `scrollToY = y - 16`, which positioned label 16px from top of viewport but didn't account for StepProgressIndicator blocking the top ~80px.
 
-**v2 issue:** Used correct formula but 16px gap was insufficient.
+**v2-v4 issue:** Used correct formula and increased gap from 16→32→48px, but **no visual difference occurred**. This revealed the real problem: automatic keyboard handling was overriding custom scroll.
 
-**v3 issue:** Increased to 32px but user reported no visual difference.
+**Root cause:** `automaticallyAdjustKeyboardInsets={true}` on ScrollView was scrolling AFTER the custom scroll, completely overriding it.
 
-**v4 fix:** Increased gap to 48px for final testing:
+**v5 fix:** Disable automatic keyboard handling and increase timing delay:
+
+1. Changed `automaticallyAdjustKeyboardInsets` from `true` to `false`
+2. Increased `setTimeout` delay from 100ms to 300ms
+3. This ensures custom scroll runs AFTER keyboard animation completes
+4. Custom scroll is no longer overridden by automatic behavior
 
 Implemented custom scroll-to-field logic using refs and measureLayout:
 
@@ -73,10 +78,24 @@ const handleFieldFocus = (labelRef: React.RefObject<View>) => {
 };
 ```
 
-This ensures labels appear exactly 48px below the StepProgressIndicator when their field is focused (testing value).
+```typescript
+// KEY FIX: Disable automatic keyboard handling
+<ScrollView
+  ref={scrollViewRef}
+  automaticallyAdjustKeyboardInsets={false} // ← Changed from true
+  ...
+>
+
+// Increased delay to run after keyboard animation
+setTimeout(() => {
+  // custom scroll logic...
+}, 300); // ← Changed from 100ms
+```
+
+This ensures custom scroll works and labels appear exactly 48px below the StepProgressIndicator when their field is focused.
 
 #### Files Changed
-- `src/screens/ProjectSetupScreen.tsx` - Added findNodeHandle import, ScrollView ref, label refs, handleFieldFocus function, and onFocus handlers to all 6 client info text inputs
+- `src/screens/ProjectSetupScreen.tsx` - Added findNodeHandle import, ScrollView ref with automaticallyAdjustKeyboardInsets={false}, label refs, handleFieldFocus function with 300ms delay, and onFocus handlers to all 6 client info text inputs
 
 #### Verification
 User needs to test each field:

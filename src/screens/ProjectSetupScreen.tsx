@@ -187,7 +187,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const handleFieldFocus = (labelRef: React.RefObject<View>) => {
     if (!scrollViewRef.current || !labelRef.current) return;
 
-    // Small delay to ensure keyboard animation has started
+    // Delay to ensure keyboard animation completes and automatic scroll finishes
     setTimeout(() => {
       labelRef.current?.measureLayout(
         findNodeHandle(scrollViewRef.current) as number,
@@ -214,7 +214,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           console.log("Label measurement failed:", error);
         }
       );
-    }, 100);
+    }, 300); // Increased delay to run after keyboard animation
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -398,7 +398,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
-          automaticallyAdjustKeyboardInsets={true}
+          automaticallyAdjustKeyboardInsets={false}
         >
           {/* CLIENT INFORMATION SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>
