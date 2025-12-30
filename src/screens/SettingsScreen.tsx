@@ -221,79 +221,87 @@ export default function SettingsScreen() {
               marginBottom: Spacing.md,
             }}
           >
-            Paint Coverage Rules
+            Paint Coverage Rules (sqft/gal)
           </Text>
 
-          <FormInput
-            ref={wallCoverageRef}
-            label="Wall Paint Coverage (sqft/gal)"
-            value={String(appSettings.wallCoverageSqFtPerGallon)}
-            onChangeText={(text) =>
-              appSettings.updateSettings({
-                wallCoverageSqFtPerGallon: parseFloat(text) || 0,
-              })
-            }
-            unit="sqft/gal"
-            placeholder="350"
-            keyboardType="numeric"
-            returnKeyType="next"
-            blurOnSubmit={false}
-            onSubmitEditing={() => ceilingCoverageRef.current?.focus()}
-            inputAccessoryViewID={`wallCoverage-${wallCoverageID}`}
-          />
+          {/* Row 1: Wall Paint & Ceiling Paint */}
+          <View style={{ flexDirection: "row", marginBottom: Spacing.sm, gap: Spacing.sm }}>
+            <View style={{ flex: 1 }}>
+              <FormInput
+                ref={wallCoverageRef}
+                label="Wall Paint"
+                value={String(appSettings.wallCoverageSqFtPerGallon)}
+                onChangeText={(text) =>
+                  appSettings.updateSettings({
+                    wallCoverageSqFtPerGallon: parseFloat(text) || 0,
+                  })
+                }
+                placeholder="350"
+                keyboardType="numeric"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => ceilingCoverageRef.current?.focus()}
+                inputAccessoryViewID={`wallCoverage-${wallCoverageID}`}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <FormInput
+                ref={ceilingCoverageRef}
+                label="Ceiling Paint"
+                value={String(appSettings.ceilingCoverageSqFtPerGallon)}
+                onChangeText={(text) =>
+                  appSettings.updateSettings({
+                    ceilingCoverageSqFtPerGallon: parseFloat(text) || 0,
+                  })
+                }
+                placeholder="350"
+                keyboardType="numeric"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => trimCoverageRef.current?.focus()}
+                inputAccessoryViewID={`ceilingCoverage-${ceilingCoverageID}`}
+              />
+            </View>
+          </View>
 
-          <FormInput
-            ref={ceilingCoverageRef}
-            label="Ceiling Paint Coverage (sqft/gal)"
-            value={String(appSettings.ceilingCoverageSqFtPerGallon)}
-            onChangeText={(text) =>
-              appSettings.updateSettings({
-                ceilingCoverageSqFtPerGallon: parseFloat(text) || 0,
-              })
-            }
-            unit="sqft/gal"
-            placeholder="350"
-            keyboardType="numeric"
-            returnKeyType="next"
-            blurOnSubmit={false}
-            onSubmitEditing={() => trimCoverageRef.current?.focus()}
-            inputAccessoryViewID={`ceilingCoverage-${ceilingCoverageID}`}
-          />
-
-          <FormInput
-            ref={trimCoverageRef}
-            label="Trim Paint Coverage (sqft/gal)"
-            value={String(appSettings.trimCoverageSqFtPerGallon)}
-            onChangeText={(text) =>
-              appSettings.updateSettings({
-                trimCoverageSqFtPerGallon: parseFloat(text) || 0,
-              })
-            }
-            unit="sqft/gal"
-            placeholder="350"
-            keyboardType="numeric"
-            returnKeyType="next"
-            blurOnSubmit={false}
-            onSubmitEditing={() => primerCoverageRef.current?.focus()}
-            inputAccessoryViewID={`trimCoverage-${trimCoverageID}`}
-          />
-
-          <FormInput
-            ref={primerCoverageRef}
-            label="Primer Coverage (sqft/gal)"
-            value={String(appSettings.primerCoverageSqFtPerGallon)}
-            onChangeText={(text) =>
-              appSettings.updateSettings({
-                primerCoverageSqFtPerGallon: parseFloat(text) || 0,
-              })
-            }
-            unit="sqft/gal"
-            placeholder="350"
-            keyboardType="numeric"
-            returnKeyType="done"
-            onSubmitEditing={() => Keyboard.dismiss()}
-            inputAccessoryViewID={`primerCoverage-${primerCoverageID}`}
-          />
+          {/* Row 2: Trim Paint & Primer */}
+          <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+            <View style={{ flex: 1 }}>
+              <FormInput
+                ref={trimCoverageRef}
+                label="Trim Paint"
+                value={String(appSettings.trimCoverageSqFtPerGallon)}
+                onChangeText={(text) =>
+                  appSettings.updateSettings({
+                    trimCoverageSqFtPerGallon: parseFloat(text) || 0,
+                  })
+                }
+                placeholder="350"
+                keyboardType="numeric"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => primerCoverageRef.current?.focus()}
+                inputAccessoryViewID={`trimCoverage-${trimCoverageID}`}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <FormInput
+                ref={primerCoverageRef}
+                label="Primer"
+                value={String(appSettings.primerCoverageSqFtPerGallon)}
+                onChangeText={(text) =>
+                  appSettings.updateSettings({
+                    primerCoverageSqFtPerGallon: parseFloat(text) || 0,
+                  })
+                }
+                placeholder="350"
+                keyboardType="numeric"
+                returnKeyType="done"
+                onSubmitEditing={() => Keyboard.dismiss()}
+                inputAccessoryViewID={`primerCoverage-${primerCoverageID}`}
+              />
+            </View>
+          </View>
         </Card>
 
         {/* Settings Protection */}
