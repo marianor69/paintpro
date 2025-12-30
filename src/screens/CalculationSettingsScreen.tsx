@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useId } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  InputAccessoryView,
 } from "react-native";
 import { useCalculationSettings } from "../state/calculationStore";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -39,6 +40,42 @@ export default function CalculationSettingsScreen() {
 
   const [baseboardWidth, setBaseboardWidth] = useState(settings.baseboardWidth.toString());
   const [crownMouldingWidth, setCrownMouldingWidth] = useState(settings.crownMouldingWidth.toString());
+
+  // KB-004: Refs for keyboard navigation
+  const doorHeightRef = useRef<TextInput>(null);
+  const doorWidthRef = useRef<TextInput>(null);
+  const doorTrimWidthRef = useRef<TextInput>(null);
+  const doorJambWidthRef = useRef<TextInput>(null);
+  const windowWidthRef = useRef<TextInput>(null);
+  const windowHeightRef = useRef<TextInput>(null);
+  const windowTrimWidthRef = useRef<TextInput>(null);
+  const singleClosetWidthRef = useRef<TextInput>(null);
+  const singleClosetTrimWidthRef = useRef<TextInput>(null);
+  const singleClosetBaseboardRef = useRef<TextInput>(null);
+  const doubleClosetWidthRef = useRef<TextInput>(null);
+  const doubleClosetTrimWidthRef = useRef<TextInput>(null);
+  const doubleClosetBaseboardRef = useRef<TextInput>(null);
+  const closetCavityDepthRef = useRef<TextInput>(null);
+  const baseboardWidthRef = useRef<TextInput>(null);
+  const crownMouldingWidthRef = useRef<TextInput>(null);
+
+  // KB-004: Unique IDs for InputAccessoryViews
+  const doorHeightID = useId();
+  const doorWidthID = useId();
+  const doorTrimWidthID = useId();
+  const doorJambWidthID = useId();
+  const windowWidthID = useId();
+  const windowHeightID = useId();
+  const windowTrimWidthID = useId();
+  const singleClosetWidthID = useId();
+  const singleClosetTrimWidthID = useId();
+  const singleClosetBaseboardID = useId();
+  const doubleClosetWidthID = useId();
+  const doubleClosetTrimWidthID = useId();
+  const doubleClosetBaseboardID = useId();
+  const closetCavityDepthID = useId();
+  const baseboardWidthID = useId();
+  const crownMouldingWidthID = useId();
 
   const handleSave = () => {
     const newSettings = {
@@ -142,12 +179,16 @@ export default function CalculationSettingsScreen() {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={doorHeightRef}
                       value={doorHeight}
                       onChangeText={setDoorHeight}
                       keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="done"
+                      returnKeyType="next"
+                      onSubmitEditing={() => doorWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorHeight-${doorHeightID}` : undefined}
                       style={TextInputStyles.base}
                     />
                   </View>
@@ -158,12 +199,16 @@ export default function CalculationSettingsScreen() {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={doorWidthRef}
                       value={doorWidth}
                       onChangeText={setDoorWidth}
                       keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="done"
+                      returnKeyType="next"
+                      onSubmitEditing={() => doorTrimWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorWidth-${doorWidthID}` : undefined}
                       style={TextInputStyles.base}
                     />
                   </View>
@@ -180,12 +225,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={doorTrimWidthRef}
                   value={doorTrimWidth}
                   onChangeText={setDoorTrimWidth}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => doorJambWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorTrimWidth-${doorTrimWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -200,12 +249,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={doorJambWidthRef}
                   value={doorJambWidth}
                   onChangeText={setDoorJambWidth}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => windowWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorJambWidth-${doorJambWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -232,12 +285,16 @@ export default function CalculationSettingsScreen() {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={windowWidthRef}
                       value={windowWidth}
                       onChangeText={setWindowWidth}
                       keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="done"
+                      returnKeyType="next"
+                      onSubmitEditing={() => windowHeightRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowWidth-${windowWidthID}` : undefined}
                       style={TextInputStyles.base}
                     />
                   </View>
@@ -248,12 +305,16 @@ export default function CalculationSettingsScreen() {
                   </Text>
                   <View style={TextInputStyles.container}>
                     <TextInput
+                      ref={windowHeightRef}
                       value={windowHeight}
                       onChangeText={setWindowHeight}
                       keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="done"
+                      returnKeyType="next"
+                      onSubmitEditing={() => windowTrimWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowHeight-${windowHeightID}` : undefined}
                       style={TextInputStyles.base}
                     />
                   </View>
@@ -270,12 +331,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={windowTrimWidthRef}
                   value={windowTrimWidth}
                   onChangeText={setWindowTrimWidth}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -297,12 +362,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={closetCavityDepthRef}
                   value={closetCavityDepth}
                   onChangeText={setClosetCavityDepth}
                   keyboardType="numeric"
                   placeholder="2"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -323,12 +392,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={singleClosetWidthRef}
                   value={singleClosetWidth}
                   onChangeText={setSingleClosetWidth}
                   keyboardType="numeric"
                   placeholder="24"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => singleClosetTrimWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetWidth-${singleClosetWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -340,12 +413,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={singleClosetTrimWidthRef}
                   value={singleClosetTrimWidth}
                   onChangeText={setSingleClosetTrimWidth}
                   keyboardType="numeric"
                   placeholder="3.5"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => singleClosetBaseboardRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetTrimWidth-${singleClosetTrimWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -357,12 +434,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={singleClosetBaseboardRef}
                   value={singleClosetBaseboardPerimeter}
                   onChangeText={setSingleClosetBaseboardPerimeter}
                   keyboardType="numeric"
                   placeholder="88"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => doubleClosetWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetBaseboard-${singleClosetBaseboardID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -383,12 +464,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={doubleClosetWidthRef}
                   value={doubleClosetWidth}
                   onChangeText={setDoubleClosetWidth}
                   keyboardType="numeric"
                   placeholder="48"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => doubleClosetTrimWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetWidth-${doubleClosetWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -400,12 +485,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={doubleClosetTrimWidthRef}
                   value={doubleClosetTrimWidth}
                   onChangeText={setDoubleClosetTrimWidth}
                   keyboardType="numeric"
                   placeholder="3.5"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => doubleClosetBaseboardRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetTrimWidth-${doubleClosetTrimWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -417,12 +506,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={doubleClosetBaseboardRef}
                   value={doubleClosetBaseboardPerimeter}
                   onChangeText={setDoubleClosetBaseboardPerimeter}
                   keyboardType="numeric"
                   placeholder="112"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => baseboardWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetBaseboard-${doubleClosetBaseboardID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -444,12 +537,16 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={baseboardWidthRef}
                   value={baseboardWidth}
                   onChangeText={setBaseboardWidth}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
+                  returnKeyType="next"
+                  onSubmitEditing={() => crownMouldingWidthRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcBaseboardWidth-${baseboardWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -471,12 +568,15 @@ export default function CalculationSettingsScreen() {
               </Text>
               <View style={TextInputStyles.container}>
                 <TextInput
+                  ref={crownMouldingWidthRef}
                   value={crownMouldingWidth}
                   onChangeText={setCrownMouldingWidth}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
+                  onSubmitEditing={() => Keyboard.dismiss()}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
@@ -523,6 +623,105 @@ export default function CalculationSettingsScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* KB-004: InputAccessoryViews for all calculation fields */}
+      {Platform.OS === "ios" && (<>
+        <InputAccessoryView nativeID={`calcDoorHeight-${doorHeightID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doorWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcDoorWidth-${doorWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doorHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => doorTrimWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcDoorTrimWidth-${doorTrimWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doorWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => doorJambWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcDoorJambWidth-${doorJambWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doorTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => windowWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcWindowWidth-${windowWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doorJambWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcWindowHeight-${windowHeightID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => windowWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => windowTrimWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcWindowTrimWidth-${windowTrimWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => closetCavityDepthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcClosetCavityDepth-${closetCavityDepthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => windowTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => singleClosetWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcSingleClosetWidth-${singleClosetWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => closetCavityDepthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => singleClosetTrimWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcSingleClosetTrimWidth-${singleClosetTrimWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => singleClosetWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => singleClosetBaseboardRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcSingleClosetBaseboard-${singleClosetBaseboardID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => singleClosetTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => doubleClosetWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcDoubleClosetWidth-${doubleClosetWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => singleClosetBaseboardRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => doubleClosetTrimWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcDoubleClosetTrimWidth-${doubleClosetTrimWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doubleClosetWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => doubleClosetBaseboardRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcDoubleClosetBaseboard-${doubleClosetBaseboardID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doubleClosetTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => baseboardWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcBaseboardWidth-${baseboardWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => doubleClosetBaseboardRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => crownMouldingWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`calcCrownMouldingWidth-${crownMouldingWidthID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => baseboardWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => Keyboard.dismiss()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Done</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+      </>)}
     </SafeAreaView>
   );
 }
