@@ -1671,18 +1671,22 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           setEditingPhotoNote("");
         }}
       >
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => {
-            setEditingPhotoId(null);
-            setEditingPhotoNote("");
-          }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
         >
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              setEditingPhotoId(null);
+              setEditingPhotoNote("");
+            }}
+          >
           <Pressable
             style={{
               backgroundColor: Colors.white,
@@ -1754,7 +1758,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </Pressable>
             </View>
           </Pressable>
-        </Pressable>
+          </Pressable>
+        </KeyboardAvoidingView>
       </Modal>
     </KeyboardAvoidingView>
   );
