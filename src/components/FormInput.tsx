@@ -1,4 +1,4 @@
-import React, { RefObject, forwardRef } from "react";
+import React, { RefObject, forwardRef, useId } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Pressable,
   InputAccessoryView,
   Keyboard,
+  Platform,
 } from "react-native";
 import { Colors, Typography, Spacing, BorderRadius } from "../utils/designSystem";
 import { cn } from "../utils/cn";
@@ -30,6 +31,8 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   keyboardType,
   ...textInputProps
 }, ref) => {
+  // Generate unique ID for this component instance
+  const uniqueId = useId();
   const isFinal = !nextFieldRef;
   const isNumericKeyboard =
     keyboardType === "numeric" ||
@@ -44,24 +47,12 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
     }
   };
 
-  //Handle numeric input filtering for default keyboard
-  const handleChangeText = (text: string) => {
-    if (isNumericKeyboard && textInputProps.onChangeText) {
-      // Allow numbers, decimal point, and negative sign
-      const filtered = text.replace(/[^0-9.-]/g, '');
-      textInputProps.onChangeText(filtered);
-    } else if (textInputProps.onChangeText) {
-      textInputProps.onChangeText(text);
-    }
-  };
-
   const effectiveReturnKeyType = textInputProps.returnKeyType || (isFinal ? "done" : "next");
   const effectiveBlurOnSubmit = textInputProps.blurOnSubmit ?? !nextFieldRef;
   const effectiveOnSubmitEditing = textInputProps.onSubmitEditing || handleSubmit;
 
-  // Use default keyboard to get blue Next key, with numeric filtering
-  const effectiveKeyboardType = isNumericKeyboard ? "default" : keyboardType;
-  const accessoryID = inputAccessoryViewID;
+  // For numeric keyboards on iOS, use InputAccessoryView with unique ID
+  const accessoryID = inputAccessoryViewID || (isNumericKeyboard && Platform.OS === "ios" ? `formInput-${uniqueId}` : undefined);
 
   return (
     <View className={cn("mb-4", className)}>
@@ -92,8 +83,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         <TextInput
           ref={ref}
           {...textInputProps}
-          keyboardType={effectiveKeyboardType}
-          onChangeText={handleChangeText}
+          keyboardType={keyboardType}
           returnKeyType={effectiveReturnKeyType}
           enablesReturnKeyAutomatically={false}
           blurOnSubmit={effectiveBlurOnSubmit}
@@ -133,12 +123,12 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         </Text>
       )}
 
-      {/* iOS InputAccessoryView - only if explicitly provided */}
-      {accessoryID && (
+      {/* iOS InputAccessoryView for numeric keyboards */}
+      {isNumericKeyboard && Platform.OS === "ios" && accessoryID && (
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
-              backgroundColor: Colors.neutralGray,
+              backgroundColor: Colors.lightGray,
               paddingHorizontal: Spacing.md,
               paddingVertical: Spacing.sm,
               flexDirection: "row",

@@ -1,5 +1,5 @@
-import React, { useRef, RefObject } from "react";
-import { View, Text, TextInput, Keyboard } from "react-native";
+import React, { useRef, RefObject, useId } from "react";
+import { View, Text, TextInput, Keyboard, Platform, InputAccessoryView, Pressable } from "react-native";
 import { Colors, Typography, Spacing, BorderRadius } from "../utils/designSystem";
 import { cn } from "../utils/cn";
 
@@ -24,10 +24,12 @@ export function DimensionInput({
   className,
   nextFieldRef,
 }: DimensionInputProps) {
+  const uniqueId = useId();
   const feetRef = useRef<TextInput>(null);
   const inchesRef = useRef<TextInput>(null);
 
   const isFinal = !nextFieldRef;
+  const accessoryID = Platform.OS === "ios" ? `dimensionInput-${uniqueId}` : undefined;
 
   const handleInchesSubmit = () => {
     if (nextFieldRef?.current) {
@@ -35,17 +37,6 @@ export function DimensionInput({
     } else {
       Keyboard.dismiss();
     }
-  };
-
-  // Filter numeric input for default keyboard
-  const handleFeetChange = (text: string) => {
-    const filtered = text.replace(/[^0-9.-]/g, '');
-    onFeetChange(filtered);
-  };
-
-  const handleInchesChange = (text: string) => {
-    const filtered = text.replace(/[^0-9.-]/g, '');
-    onInchesChange(filtered);
   };
 
   return (
@@ -78,14 +69,15 @@ export function DimensionInput({
             <TextInput
               ref={feetRef}
               value={feetValue}
-              onChangeText={handleFeetChange}
+              onChangeText={onFeetChange}
               placeholder="0"
               placeholderTextColor={Colors.mediumGray}
-              keyboardType="default"
+              keyboardType="numeric"
               returnKeyType="next"
               enablesReturnKeyAutomatically={false}
               blurOnSubmit={false}
               onSubmitEditing={() => inchesRef.current?.focus()}
+              inputAccessoryViewID={accessoryID}
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -124,14 +116,15 @@ export function DimensionInput({
             <TextInput
               ref={inchesRef}
               value={inchesValue}
-              onChangeText={handleInchesChange}
+              onChangeText={onInchesChange}
               placeholder="0"
               placeholderTextColor={Colors.mediumGray}
-              keyboardType="default"
+              keyboardType="numeric"
               returnKeyType={isFinal ? "done" : "next"}
               enablesReturnKeyAutomatically={false}
               blurOnSubmit={isFinal}
               onSubmitEditing={handleInchesSubmit}
+              inputAccessoryViewID={accessoryID}
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -165,6 +158,42 @@ export function DimensionInput({
         </Text>
       )}
 
+      {/* iOS InputAccessoryView for numeric keyboard */}
+      {Platform.OS === "ios" && accessoryID && (
+        <InputAccessoryView nativeID={accessoryID}>
+          <View
+            style={{
+              backgroundColor: Colors.lightGray,
+              paddingHorizontal: Spacing.md,
+              paddingVertical: Spacing.sm,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              borderTopWidth: 1,
+              borderTopColor: Colors.mediumGray,
+            }}
+          >
+            <Pressable
+              onPress={handleInchesSubmit}
+              style={{
+                backgroundColor: Colors.primaryBlue,
+                paddingHorizontal: Spacing.lg,
+                paddingVertical: Spacing.sm,
+                borderRadius: BorderRadius.default,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: Typography.body.fontSize,
+                  color: Colors.white,
+                  fontWeight: "600",
+                }}
+              >
+                {isFinal ? "Done" : "Next"}
+              </Text>
+            </Pressable>
+          </View>
+        </InputAccessoryView>
+      )}
     </View>
   );
 }
