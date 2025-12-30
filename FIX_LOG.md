@@ -215,12 +215,32 @@ Do not attempt KB-003 again without:
 
 ---
 
+### CF-002: Remove Layout Gaps in ProjectSetupScreen ❌ REVERTED
+**Date:** Dec 30, 2024
+**Status:** ❌ Reverted - User feedback: "looks much worse than before"
+**Commit:** c7b791b (reverted)
+
+#### Issue
+User reported excessive spacing in ProjectSetupScreen with AREA A (header), AREA B (gap), and AREA C (progress indicators).
+
+#### Attempted Solutions
+- **v1**: Removed `paddingTop: 120` from ScrollView
+- **v2**: Integrated StepProgressIndicator into navigation header, removed SafeAreaView top inset
+
+#### Result
+User reported v2 looked worse than original layout. Reverted to commit a9fa866 (MD-002v2 state).
+
+#### Lesson Learned
+Do not modify ProjectSetupScreen layout without user approval of approach first.
+
+---
+
 ## Fix Statistics
 
 - **Total Fixes:** 4
 - **Verified Working:** 4 (KB-002v4, DM-001, CAL-001, MD-002v2)
 - **Pending Verification:** 0
-- **Reverted:** 1 (KB-003)
+- **Reverted:** 2 (KB-003, CF-002)
 - **Current Active:** KB-002v4 + DM-001 + CAL-001 + MD-002v2 (3c45d19)
 
 ## Notes
