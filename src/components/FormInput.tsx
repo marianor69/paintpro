@@ -43,11 +43,19 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
     keyboardType === "number-pad";
 
   const handlePrevious = () => {
-    previousFieldRef?.current?.focus();
+    if (previousFieldRef?.current) {
+      requestAnimationFrame(() => {
+        previousFieldRef.current?.focus();
+      });
+    }
   };
 
   const handleNext = () => {
-    nextFieldRef?.current?.focus();
+    if (nextFieldRef?.current) {
+      requestAnimationFrame(() => {
+        nextFieldRef.current?.focus();
+      });
+    }
   };
 
   const handleDone = () => {
