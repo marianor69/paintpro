@@ -3,17 +3,17 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**KB-004** (commit d2c6b48) - Dec 30, 2024
+**KB-004** (commit 9f8c552) - Dec 30, 2024
 
 ---
 
 ## Fixes
 
-### KB-004: Keyboard Navigation with Previous/Next/Done ⏳ PENDING VERIFICATION
+### KB-004: Keyboard Navigation with Previous/Next/Done ✅ VERIFIED
 **Date:** Dec 30, 2024
-**Status:** ⏳ Awaiting user confirmation
+**Status:** ✅ Fixed and verified by user
 **Severity:** HIGH - Major UX improvement for form navigation
-**Commit:** d2c6b48
+**Commit:** 9f8c552 (initial: d2c6b48, fixes: 9f8c552)
 
 #### Issue
 Users could only navigate forward through forms using the Next button, with no way to go back to a previous field without dismissing the keyboard and manually tapping. This made form correction tedious and broke the expected iOS keyboard navigation pattern.
@@ -68,19 +68,26 @@ Extended InputAccessoryView to include Previous/Next/Done navigation:
 - `src/screens/BuiltInEditorScreen.tsx` - Wired previousFieldRef for all fields
 - `src/screens/StaircaseEditorScreen.tsx` - Wired previousFieldRef for all fields
 - `src/screens/FireplaceEditorScreen.tsx` - Wired previousFieldRef for all fields
-- `src/screens/RoomEditorScreen.tsx` - Added nameRef, wired previousFieldRef for all fields
+- `src/screens/RoomEditorScreen.tsx` - Added nameRef, wired previousFieldRef for FormInput fields, added InputAccessoryView for Room Name field (commit 9f8c552)
+- `src/screens/ProjectSetupScreen.tsx` - Added nameRef, wired InputAccessoryViews for all 6 client info fields (commit 9f8c552)
 
 #### Verification
-User needs to test keyboard navigation in all editor screens:
-1. **Forward navigation (Next)**: Still works, advances to next field
-2. **Backward navigation (Previous)**: NEW - goes back to previous field
-3. **Done button**: Appears on last field, dismisses keyboard
-4. **Previous disabled**: Gray on first field, cannot go back
-5. **Previous enabled**: Blue on all other fields
-6. **DimensionInput**: Previous from inches goes to feet, then to previous field
-7. **Visual**: No border above toolbar, iOS-standard gray background
+**User confirmed working** - All keyboard navigation tested and verified:
+1. ✅ **Forward navigation (Next)**: Works correctly, advances to next field
+2. ✅ **Backward navigation (Previous)**: Works correctly, goes back to previous field
+3. ✅ **Done button**: Appears on last field, dismisses keyboard
+4. ✅ **Previous disabled**: Gray on first field (Client Name in ProjectSetup, Room Name when no previous field)
+5. ✅ **Previous enabled**: Blue on all other fields
+6. ✅ **DimensionInput**: Previous from inches goes to feet, then to previous field
+7. ✅ **Visual**: No border above toolbar, iOS-standard gray background
+8. ✅ **KB-002 still works**: Next/Done keyboard navigation not broken
 
-**CRITICAL: Must verify KB-002 still works** - Next/Done keyboard navigation must not be broken by these changes.
+**Screens tested:**
+- ProjectSetupScreen: Client Name → Address → City → Country → Phone → Email (all 6 fields)
+- RoomEditorScreen: Room Name → Length → Width → Manual Area → Cathedral Peak Height
+- StaircaseEditorScreen: Name → Riser Count → Handrail Length → Spindle Count → Tall Wall → Short Wall
+- FireplaceEditorScreen: Name → Width → Height → Depth → Trim Linear Feet
+- BuiltInEditorScreen: Name → Width → Height → Depth → Shelf Count
 
 ---
 
@@ -559,10 +566,10 @@ Do not modify ProjectSetupScreen layout without user approval of approach first.
 ## Fix Statistics
 
 - **Total Fixes:** 9
-- **Verified Working:** 8 (KB-002v4, DM-001, CAL-001, MD-002v2, CF-003v2, UI-002, CF-001v5, KB-006)
-- **Pending Verification:** 1 (KB-004)
+- **Verified Working:** 9 (KB-002v4, DM-001, CAL-001, MD-002v2, CF-003v2, UI-002, CF-001v5, KB-006, KB-004)
+- **Pending Verification:** 0
 - **Reverted:** 2 (KB-003, CF-002)
-- **Current Active:** KB-004 (awaiting confirmation)
+- **Current Active:** KB-004 (verified and working)
 
 ## Notes
 
