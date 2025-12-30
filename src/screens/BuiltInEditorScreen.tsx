@@ -345,8 +345,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </View>
 
             {/* Notes Section */}
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Notes
               </Text>
               <TextInput
@@ -358,7 +358,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                 numberOfLines={3}
                 style={TextInputStyles.multiline}
               />
-            </View>
+            </Card>
 
             {/* Paintable Area Preview */}
             {totalPaintableArea > 0 && (

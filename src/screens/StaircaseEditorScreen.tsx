@@ -461,7 +461,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
             {/* Notes Section */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Notes
               </Text>
               <TextInput
