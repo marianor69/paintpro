@@ -48,6 +48,9 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const pricing = usePricingStore();
   const { testMode, unitSystem } = useAppSettings();
 
+  // Staircase name/location
+  const [name, setName] = useState(!isNewStaircase && staircase?.name ? staircase.name : "");
+
   // Staircase dimensions stored in feet, convert for display based on unit system
   const [riserCount, setRiserCount] = useState(
     !isNewStaircase && staircase?.riserCount && staircase.riserCount > 0 ? staircase.riserCount.toString() : ""
@@ -79,6 +82,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const pendingSavePromptRef = useRef(false);
 
   // Refs for form field navigation
+  const nameRef = useRef<TextInput>(null);
+  const riserCountRef = useRef<TextInput>(null);
   const handrailLengthRef = useRef<TextInput>(null);
   const spindleCountRef = useRef<TextInput>(null);
   const tallWallHeightRef = useRef<TextInput>(null);
@@ -102,6 +107,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     if (isNewStaircase) {
       // For new staircase: changes are when user enters any data
       const hasChanges =
+        name !== "" ||
         riserCount !== "" ||
         handrailLength !== "" ||
         spindleCount !== "" ||
@@ -112,6 +118,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       if (!staircase) return;
 
       const hasChanges =
+        name !== (staircase.name || "") ||
         riserCount !== (staircase.riserCount && staircase.riserCount > 0 ? staircase.riserCount.toString() : "") ||
         handrailLength !== (staircase.handrailLength && staircase.handrailLength > 0 ? staircase.handrailLength.toString() : "") ||
         spindleCount !== (staircase.spindleCount && staircase.spindleCount > 0 ? staircase.spindleCount.toString() : "") ||
@@ -125,6 +132,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   }, [
     isNewStaircase,
     staircase,
+    name,
     riserCount,
     handrailLength,
     spindleCount,
@@ -214,6 +222,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
       // Then immediately update it with the entered data
       updateStaircase(projectId, newStaircaseId, {
+        name: name.trim(),
         riserCount: parseInt(riserCount) || 0,
         riserHeight: 7.5,
         treadDepth: 0,
@@ -229,6 +238,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     } else {
       // UPDATE existing staircase
       updateStaircase(projectId, staircaseId!, {
+        name: name.trim(),
         riserCount: parseInt(riserCount) || 0,
         riserHeight: 7.5,
         treadDepth: 0,
@@ -338,6 +348,20 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
           <View style={{ padding: Spacing.lg }}>
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
+                ref={nameRef}
+                label="Name/Location"
+                value={name}
+                onChangeText={setName}
+                placeholder="e.g., Main Staircase, Second Floor"
+                nextFieldRef={riserCountRef}
+                returnKeyType="next"
+                className="mb-0"
+              />
+            </View>
+
+            <View style={{ marginBottom: Spacing.md }}>
+              <FormInput
+                ref={riserCountRef}
                 label="Number of Risers"
                 value={riserCount}
                 onChangeText={setRiserCount}

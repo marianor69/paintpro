@@ -61,6 +61,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const pendingSavePromptRef = useRef(false);
 
   // Refs for form field navigation
+  const nameRef = useRef<TextInput>(null);
   const widthRef = useRef<TextInput>(null);
   const heightRef = useRef<TextInput>(null);
   const depthRef = useRef<TextInput>(null);
@@ -266,21 +267,16 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
           <View style={{ padding: Spacing.lg }}>
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                Built-In Name
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="e.g., Library Bookshelf"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => widthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  style={TextInputStyles.base}
-                />
-              </View>
+              <FormInput
+                ref={nameRef}
+                label="Name/Location"
+                value={name}
+                onChangeText={setName}
+                placeholder="e.g., Library Bookshelf, Living Room Built-In"
+                nextFieldRef={widthRef}
+                returnKeyType="next"
+                className="mb-0"
+              />
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>

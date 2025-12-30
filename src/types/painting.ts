@@ -78,6 +78,7 @@ export interface RoomPhoto {
 
 export interface Staircase {
   id: string;
+  name: string; // Name/Location identifier
   riserCount: number;
   riserHeight: number;
   treadDepth: number;
@@ -95,6 +96,7 @@ export interface Staircase {
 
 export interface Fireplace {
   id: string;
+  name: string; // Name/Location identifier
   width: number;
   height: number;
   depth: number;

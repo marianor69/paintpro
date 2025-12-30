@@ -48,6 +48,9 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const pricing = usePricingStore();
   const { testMode, unitSystem } = useAppSettings();
 
+  // Fireplace name/location
+  const [name, setName] = useState(!isNewFireplace && fireplace?.name ? fireplace.name : "");
+
   // Fireplace dimensions stored in feet, convert for display based on unit system
   const [width, setWidth] = useState(!isNewFireplace && fireplace?.width && fireplace.width > 0 ? formatMeasurementValue(fireplace.width, 'length', unitSystem, 2) : "");
   const [height, setHeight] = useState(!isNewFireplace && fireplace?.height && fireplace.height > 0 ? formatMeasurementValue(fireplace.height, 'length', unitSystem, 2) : "");
@@ -65,6 +68,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const pendingSavePromptRef = useRef(false);
 
   // Refs for form field navigation
+  const nameRef = useRef<TextInput>(null);
+  const widthRef = useRef<TextInput>(null);
   const heightRef = useRef<TextInput>(null);
   const depthRef = useRef<TextInput>(null);
   const trimLinearFeetRef = useRef<TextInput>(null);
@@ -87,6 +92,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     if (isNewFireplace) {
       // For new fireplace: changes are when user enters any data
       const hasChanges =
+        name !== "" ||
         width !== "" ||
         height !== "" ||
         depth !== "" ||
@@ -97,6 +103,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       if (!fireplace) return;
 
       const hasChanges =
+        name !== (fireplace.name || "") ||
         width !== (fireplace.width && fireplace.width > 0 ? fireplace.width.toString() : "") ||
         height !== (fireplace.height && fireplace.height > 0 ? fireplace.height.toString() : "") ||
         depth !== (fireplace.depth && fireplace.depth > 0 ? fireplace.depth.toString() : "") ||
@@ -109,6 +116,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   }, [
     isNewFireplace,
     fireplace,
+    name,
     width,
     height,
     depth,
@@ -198,6 +206,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
       // Then immediately update it with the entered data
       updateFireplace(projectId, newFireplaceId, {
+        name: name.trim(),
         width: widthFeet,
         height: heightFeet,
         depth: depthFeet,
@@ -209,6 +218,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     } else {
       // UPDATE existing fireplace
       updateFireplace(projectId, fireplaceId!, {
+        name: name.trim(),
         width: widthFeet,
         height: heightFeet,
         depth: depthFeet,
@@ -300,6 +310,20 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           <View style={{ padding: Spacing.lg }}>
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
+                ref={nameRef}
+                label="Name/Location"
+                value={name}
+                onChangeText={setName}
+                placeholder="e.g., Living Room Fireplace, Master Bedroom"
+                nextFieldRef={widthRef}
+                returnKeyType="next"
+                className="mb-0"
+              />
+            </View>
+
+            <View style={{ marginBottom: Spacing.md }}>
+              <FormInput
+                ref={widthRef}
                 label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={width}
                 onChangeText={setWidth}
