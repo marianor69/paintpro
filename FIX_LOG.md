@@ -3,7 +3,7 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-001v5** (commit 0500ba4) - Dec 30, 2024
+**CF-001v5** (commit de65aaf) - Dec 30, 2024
 
 ---
 
@@ -11,9 +11,9 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 
 ### CF-001v5: Form Field Labels Hidden Behind StepProgressIndicator ⏳ PENDING VERIFICATION
 **Date:** Dec 30, 2024
-**Status:** ⏳ Awaiting user confirmation (v5 - fixed scroll conflict, 16px gap)
+**Status:** ⏳ Awaiting user confirmation (v5 - improved implementation, 16px gap)
 **Severity:** MEDIUM - UX issue affecting form usability
-**Commit:** 0500ba4
+**Commit:** de65aaf
 
 #### Issue
 When keyboard appears in ProjectSetupScreen's Client Information form, the ScrollView content scrolls up and field labels (Client Name, Address, City, etc.) hide behind the fixed StepProgressIndicator at the top. User cannot see which field they are typing in.
