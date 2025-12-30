@@ -3,11 +3,76 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CAL-001-FIXED** (commit 0f98b93) - Dec 29, 11:15 PM ET
+**MD-002** (commit f3afb12) - Dec 30, 12:15 AM ET
 
 ---
 
 ## Fixes
+
+### MD-002: Discard Changes Modal Requires Single Tap ⏳ PENDING VERIFICATION
+**Date:** Dec 30, 2024, 12:15 AM ET
+**Status:** ⏳ Awaiting user verification
+**Severity:** MEDIUM - UX annoyance
+**Commit:** f3afb12
+
+#### Issue
+- Tapping "Discard Changes" in the save prompt modal requires **two taps** to exit
+- Expected: Single tap immediately discards changes and exits
+- Actual: First tap does nothing, second tap required to exit
+- Affects: All editor screens (Room, Staircase, Fireplace, Built-in)
+
+#### Root Cause
+React's `setState` is asynchronous. When `handleDiscardAndLeave` called `setHasUnsavedChanges(false)` followed by `navigation.goBack()`, the state update hadn't propagated yet. The `usePreventRemove` hook was still checking the OLD value of `hasUnsavedChanges` (true), causing it to block the navigation and show the modal again.
+
+**Code flow (BROKEN):**
+```typescript
+// First tap:
+handleDiscardAndLeave() {
+  setHasUnsavedChanges(false);  // Async - doesn't update immediately
+  setShowSavePrompt(false);
+  navigation.goBack();          // usePreventRemove still sees hasUnsavedChanges = true
+}
+// → Navigation blocked, modal shows again
+
+// Second tap:
+// Now hasUnsavedChanges is actually false, navigation succeeds
+```
+
+#### Solution
+Added `isDiscardingRef` to bypass the `usePreventRemove` check when explicitly discarding:
+
+```typescript
+// 1. Added ref
+const isDiscardingRef = useRef(false);
+
+// 2. Updated usePreventRemove to check ref
+usePreventRemove(hasUnsavedChanges && !isDiscardingRef.current, ({ data }) => {
+  // ... show modal
+});
+
+// 3. Set ref BEFORE setState in handleDiscardAndLeave
+const handleDiscardAndLeave = () => {
+  isDiscardingRef.current = true;  // Bypass prevention IMMEDIATELY
+
+  setHasUnsavedChanges(false);
+  setShowSavePrompt(false);
+
+  navigation.goBack();  // Now allowed - ref check bypasses prevention
+};
+```
+
+This approach uses a ref (which updates synchronously) instead of relying on async state updates.
+
+#### Files Changed
+- `src/screens/RoomEditorScreen.tsx` - Added ref, updated usePreventRemove, fixed handleDiscardAndLeave, removed setTimeout
+- `src/screens/StaircaseEditorScreen.tsx` - Added ref, updated usePreventRemove, fixed handleDiscardAndLeave
+- `src/screens/FireplaceEditorScreen.tsx` - Added ref, updated usePreventRemove, fixed handleDiscardAndLeave
+- `src/screens/BuiltInEditorScreen.tsx` - Added ref, updated usePreventRemove, fixed handleDiscardAndLeave
+
+#### Verification
+User needs to test: Edit field → Back → Discard → Should exit immediately with single tap
+
+---
 
 ### CAL-001: Metric Room Perimeter Calculations ✅ VERIFIED
 **Date:** Dec 29, 2024, 11:15 PM ET
@@ -146,10 +211,11 @@ Do not attempt KB-003 again without:
 
 ## Fix Statistics
 
-- **Total Fixes:** 3
+- **Total Fixes:** 4
 - **Verified Working:** 3 (KB-002v4, DM-001, CAL-001)
+- **Pending Verification:** 1 (MD-002)
 - **Reverted:** 1 (KB-003)
-- **Current Active:** KB-002v4 (88be488) + DM-001 (c539cdc) + CAL-001 (0f98b93)
+- **Current Active:** KB-002v4 + DM-001 + CAL-001 + MD-002 (f3afb12)
 
 ## Notes
 
