@@ -82,6 +82,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
           {...textInputProps}
           keyboardType={keyboardType}
           returnKeyType={effectiveReturnKeyType}
+          enablesReturnKeyAutomatically={false}
           blurOnSubmit={effectiveBlurOnSubmit}
           onSubmitEditing={effectiveOnSubmitEditing}
           inputAccessoryViewID={accessoryID}
@@ -158,3 +159,5 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
     </View>
   );
 });
+
+FormInput.displayName = "FormInput";

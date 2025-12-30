@@ -145,7 +145,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setWallLaborPerSqFt}
                   placeholder="1.50"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -162,7 +162,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setCeilingLaborPerSqFt}
                   placeholder="1.75"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -179,7 +179,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setBaseboardLaborPerLF}
                   placeholder="1.25"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -197,7 +197,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onChangeText={setDoorLabor}
                     placeholder="50"
                     placeholderTextColor={Colors.mediumGray}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     returnKeyType="done"
                     style={TextInputStyles.base}
                   />
@@ -213,7 +213,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onChangeText={setWindowLabor}
                     placeholder="35"
                     placeholderTextColor={Colors.mediumGray}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     returnKeyType="done"
                     style={TextInputStyles.base}
                   />
@@ -231,7 +231,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setClosetLabor}
                   placeholder="75"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -249,7 +249,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onChangeText={setRiserLabor}
                     placeholder="15"
                     placeholderTextColor={Colors.mediumGray}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     returnKeyType="done"
                     style={TextInputStyles.base}
                   />
@@ -265,7 +265,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onChangeText={setSpindleLabor}
                     placeholder="8"
                     placeholderTextColor={Colors.mediumGray}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     returnKeyType="done"
                     style={TextInputStyles.base}
                   />
@@ -284,7 +284,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onChangeText={setHandrailLaborPerLF}
                     placeholder="10"
                     placeholderTextColor={Colors.mediumGray}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     returnKeyType="done"
                     style={TextInputStyles.base}
                   />
@@ -300,7 +300,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onChangeText={setFireplaceLabor}
                     placeholder="150"
                     placeholderTextColor={Colors.mediumGray}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     returnKeyType="done"
                     style={TextInputStyles.base}
                   />
@@ -318,7 +318,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setCrownMouldingLaborPerLF}
                   placeholder="1.50"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -345,7 +345,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setSecondCoatLaborMultiplier}
                   placeholder="2.0"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -372,7 +372,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setAccentWallLaborMultiplier}
                   placeholder="1.25"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -396,7 +396,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setWallPaintPerGallon}
                   placeholder="45"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -413,7 +413,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setCeilingPaintPerGallon}
                   placeholder="40"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -433,7 +433,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setTrimPaintPerGallon}
                   placeholder="50"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -450,7 +450,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setPrimerPerGallon}
                   placeholder="35"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -474,7 +474,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setWallPaintPer5Gallon}
                   placeholder="200"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -491,7 +491,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setCeilingPaintPer5Gallon}
                   placeholder="175"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -511,7 +511,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setTrimPaintPer5Gallon}
                   placeholder="225"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />
@@ -528,7 +528,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onChangeText={setPrimerPer5Gallon}
                   placeholder="150"
                   placeholderTextColor={Colors.mediumGray}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   returnKeyType="done"
                   style={TextInputStyles.base}
                 />

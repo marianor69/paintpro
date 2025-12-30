@@ -718,7 +718,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       <TextInput
                         value={height}
                         onChangeText={(value) => handleFloorHeightChange(index, value)}
-                        keyboardType="decimal-pad"
+                        keyboardType="numeric"
                         placeholder="8"
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="done"

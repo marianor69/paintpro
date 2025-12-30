@@ -73,6 +73,7 @@ export function DimensionInput({
               placeholderTextColor={Colors.mediumGray}
               keyboardType="numeric"
               returnKeyType="next"
+              enablesReturnKeyAutomatically={false}
               blurOnSubmit={false}
               onSubmitEditing={() => inchesRef.current?.focus()}
               inputAccessoryViewID={accessoryID}
@@ -119,6 +120,7 @@ export function DimensionInput({
               placeholderTextColor={Colors.mediumGray}
               keyboardType="numeric"
               returnKeyType={isFinal ? "done" : "next"}
+              enablesReturnKeyAutomatically={false}
               blurOnSubmit={isFinal}
               onSubmitEditing={handleInchesSubmit}
               inputAccessoryViewID={accessoryID}

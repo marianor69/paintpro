@@ -144,7 +144,7 @@ export default function CalculationSettingsScreen() {
                     <TextInput
                       value={doorHeight}
                       onChangeText={setDoorHeight}
-                      keyboardType="decimal-pad"
+                      keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="done"
@@ -160,7 +160,7 @@ export default function CalculationSettingsScreen() {
                     <TextInput
                       value={doorWidth}
                       onChangeText={setDoorWidth}
-                      keyboardType="decimal-pad"
+                      keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="done"
@@ -182,7 +182,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={doorTrimWidth}
                   onChangeText={setDoorTrimWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -202,7 +202,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={doorJambWidth}
                   onChangeText={setDoorJambWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -234,7 +234,7 @@ export default function CalculationSettingsScreen() {
                     <TextInput
                       value={windowWidth}
                       onChangeText={setWindowWidth}
-                      keyboardType="decimal-pad"
+                      keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="done"
@@ -250,7 +250,7 @@ export default function CalculationSettingsScreen() {
                     <TextInput
                       value={windowHeight}
                       onChangeText={setWindowHeight}
-                      keyboardType="decimal-pad"
+                      keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="done"
@@ -272,7 +272,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={windowTrimWidth}
                   onChangeText={setWindowTrimWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -299,7 +299,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={closetCavityDepth}
                   onChangeText={setClosetCavityDepth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="2"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -325,7 +325,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={singleClosetWidth}
                   onChangeText={setSingleClosetWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="24"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -342,7 +342,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={singleClosetTrimWidth}
                   onChangeText={setSingleClosetTrimWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="3.5"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -359,7 +359,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={singleClosetBaseboardPerimeter}
                   onChangeText={setSingleClosetBaseboardPerimeter}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="88"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -385,7 +385,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={doubleClosetWidth}
                   onChangeText={setDoubleClosetWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="48"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -402,7 +402,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={doubleClosetTrimWidth}
                   onChangeText={setDoubleClosetTrimWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="3.5"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -419,7 +419,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={doubleClosetBaseboardPerimeter}
                   onChangeText={setDoubleClosetBaseboardPerimeter}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="112"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -446,7 +446,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={baseboardWidth}
                   onChangeText={setBaseboardWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
@@ -473,7 +473,7 @@ export default function CalculationSettingsScreen() {
                 <TextInput
                   value={crownMouldingWidth}
                   onChangeText={setCrownMouldingWidth}
-                  keyboardType="decimal-pad"
+                  keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"

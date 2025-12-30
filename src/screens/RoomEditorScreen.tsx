@@ -776,7 +776,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 label={`Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={length}
                 onChangeText={setLength}
-                keyboardType="decimal-pad"
+                keyboardType="numeric"
                 placeholder="0"
                 nextFieldRef={widthRef}
                 accessibilityLabel="Room length input"
@@ -791,7 +791,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={width}
                 onChangeText={setWidth}
-                keyboardType="decimal-pad"
+                keyboardType="numeric"
                 placeholder="0"
                 nextFieldRef={manualAreaRef}
                 accessibilityLabel="Room width input"
@@ -807,7 +807,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               label={`Manual Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional`}
               value={manualArea}
               onChangeText={setManualArea}
-              keyboardType="decimal-pad"
+              keyboardType="numeric"
               placeholder="0"
               nextFieldRef={ceilingType === "cathedral" ? cathedralPeakHeightRef : undefined}
               accessibilityLabel="Manual area input"
@@ -895,7 +895,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 label={`Peak Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={cathedralPeakHeight}
                 onChangeText={setCathedralPeakHeight}
-                keyboardType="decimal-pad"
+                keyboardType="numeric"
                 placeholder="0"
                 accessibilityLabel="Cathedral peak height input"
                 className="mb-0"
@@ -1002,7 +1002,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                             }}
                             placeholder="36"
                             placeholderTextColor={Colors.mediumGray}
-                            keyboardType="decimal-pad"
+                            keyboardType="numeric"
                             style={TextInputStyles.base}
                           />
                         </View>
@@ -1022,7 +1022,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                             }}
                             placeholder="80"
                             placeholderTextColor={Colors.mediumGray}
-                            keyboardType="decimal-pad"
+                            keyboardType="numeric"
                             style={TextInputStyles.base}
                           />
                         </View>
