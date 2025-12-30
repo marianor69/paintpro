@@ -10,6 +10,7 @@ import {
   Keyboard,
   Image,
   Alert,
+  findNodeHandle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -110,11 +111,20 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
 
   // Refs for form field navigation
+  const scrollViewRef = useRef<ScrollView>(null);
   const addressRef = useRef<TextInput>(null);
   const cityRef = useRef<TextInput>(null);
   const countryRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
+
+  // Refs for field labels (to prevent them from hiding behind StepProgressIndicator)
+  const clientNameLabelRef = useRef<View>(null);
+  const addressLabelRef = useRef<View>(null);
+  const cityLabelRef = useRef<View>(null);
+  const countryLabelRef = useRef<View>(null);
+  const phoneLabelRef = useRef<View>(null);
+  const emailLabelRef = useRef<View>(null);
 
   // Floor Config State
   let effectiveFloorCount = 1;
@@ -171,6 +181,36 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       </SafeAreaView>
     );
   }
+
+  // Handler to scroll field label into view when focused (CF-001 fix)
+  // Ensures labels don't hide behind StepProgressIndicator when keyboard appears
+  const handleFieldFocus = (labelRef: React.RefObject<View>) => {
+    if (!scrollViewRef.current || !labelRef.current) return;
+
+    // Small delay to ensure keyboard animation has started
+    setTimeout(() => {
+      labelRef.current?.measureLayout(
+        findNodeHandle(scrollViewRef.current) as number,
+        (x, y, width, height) => {
+          // StepProgressIndicator is ~76-80px tall, add 16px gap
+          const MIN_VISIBLE_GAP = 16;
+
+          // Scroll to position label below the StepProgressIndicator
+          // y is the label's top position within ScrollView content
+          const scrollToY = Math.max(0, y - MIN_VISIBLE_GAP);
+
+          scrollViewRef.current?.scrollTo({
+            y: scrollToY,
+            animated: true,
+          });
+        },
+        (error: unknown) => {
+          // Silently fail - measureLayout can fail if component unmounted
+          console.log("Label measurement failed:", error);
+        }
+      );
+    }, 100);
+  };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({
@@ -349,6 +389,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
@@ -375,7 +416,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
                 {/* Client Name */}
-                <View style={{ marginBottom: Spacing.md }}>
+                <View ref={clientNameLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.clientName")} *
                   </Text>
@@ -387,6 +428,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => addressRef.current?.focus()}
+                      onFocus={() => handleFieldFocus(clientNameLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
@@ -397,7 +439,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Address */}
-                <View style={{ marginBottom: Spacing.md }}>
+                <View ref={addressLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.address")} *
                   </Text>
@@ -410,6 +452,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => cityRef.current?.focus()}
+                      onFocus={() => handleFieldFocus(addressLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
@@ -420,7 +463,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* City */}
-                <View style={{ marginBottom: Spacing.md }}>
+                <View ref={cityLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.city")}
                   </Text>
@@ -433,6 +476,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => countryRef.current?.focus()}
+                      onFocus={() => handleFieldFocus(cityLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
@@ -443,7 +487,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Country */}
-                <View style={{ marginBottom: Spacing.md }}>
+                <View ref={countryLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.country")}
                   </Text>
@@ -456,6 +500,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => phoneRef.current?.focus()}
+                      onFocus={() => handleFieldFocus(countryLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
@@ -466,7 +511,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Phone */}
-                <View style={{ marginBottom: Spacing.md }}>
+                <View ref={phoneLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.phone")}
                   </Text>
@@ -480,6 +525,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       keyboardType="phone-pad"
                       returnKeyType="next"
                       onSubmitEditing={() => emailRef.current?.focus()}
+                      onFocus={() => handleFieldFocus(phoneLabelRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
@@ -490,7 +536,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Email */}
-                <View style={{ marginBottom: Spacing.md }}>
+                <View ref={emailLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.email")}
                   </Text>
@@ -505,6 +551,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       autoCapitalize="none"
                       returnKeyType="done"
                       onSubmitEditing={() => Keyboard.dismiss()}
+                      onFocus={() => handleFieldFocus(emailLabelRef)}
                       style={TextInputStyles.base}
                       cursorColor={Colors.primaryBlue}
                       selectionColor={Colors.primaryBlue}

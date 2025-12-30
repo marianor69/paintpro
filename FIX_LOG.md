@@ -3,11 +3,89 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**UI-002** (commit f2b9ed7) - Dec 30, 2024
+**CF-001** (commit TBD) - Dec 30, 2024
 
 ---
 
 ## Fixes
+
+### CF-001: Form Field Labels Hidden Behind StepProgressIndicator ⏳ PENDING VERIFICATION
+**Date:** Dec 30, 2024
+**Status:** ⏳ Awaiting user confirmation
+**Severity:** MEDIUM - UX issue affecting form usability
+**Commit:** TBD
+
+#### Issue
+When keyboard appears in ProjectSetupScreen's Client Information form, the ScrollView content scrolls up and field labels (Client Name, Address, City, etc.) hide behind the fixed StepProgressIndicator at the top. User cannot see which field they are typing in.
+
+**Progression:**
+- User taps field → keyboard appears
+- ScrollView scrolls up to show input
+- Field's LABEL scrolls behind StepProgressIndicator
+- User loses context of which field is active
+
+#### Root Cause
+StepProgressIndicator is fixed at top of screen, outside the ScrollView. When keyboard appears, the ScrollView automatically scrolls to show the focused input, but doesn't account for the StepProgressIndicator obstruction. Labels scroll into the "forbidden zone" behind the indicator.
+
+**Code location:** `src/screens/ProjectSetupScreen.tsx`
+
+#### Solution
+Implemented custom scroll-to-field logic using refs and measureLayout:
+
+1. Added refs for ScrollView and each field's label wrapper View
+2. Created `handleFieldFocus()` function that:
+   - Measures label position relative to ScrollView
+   - Calculates scroll position to show label below StepProgressIndicator
+   - Scrolls with 16px gap between indicator and label
+3. Added `onFocus` handlers to all text inputs (Client Name, Address, City, Country, Phone, Email)
+
+```typescript
+const handleFieldFocus = (labelRef: React.RefObject<View>) => {
+  if (!scrollViewRef.current || !labelRef.current) return;
+
+  setTimeout(() => {
+    labelRef.current?.measureLayout(
+      findNodeHandle(scrollViewRef.current) as number,
+      (x, y, width, height) => {
+        const MIN_VISIBLE_GAP = 16;
+        const scrollToY = Math.max(0, y - MIN_VISIBLE_GAP);
+
+        scrollViewRef.current?.scrollTo({
+          y: scrollToY,
+          animated: true,
+        });
+      }
+    );
+  }, 100);
+};
+
+// Each field:
+<View ref={clientNameLabelRef} style={{ marginBottom: Spacing.md }}>
+  <Text>Client Name *</Text>
+  <TextInput
+    onFocus={() => handleFieldFocus(clientNameLabelRef)}
+    ...
+  />
+</View>
+```
+
+This ensures labels stay visible below the StepProgressIndicator when their field is focused.
+
+#### Files Changed
+- `src/screens/ProjectSetupScreen.tsx` - Added findNodeHandle import, ScrollView ref, label refs, handleFieldFocus function, and onFocus handlers to all 6 client info text inputs
+
+#### Verification
+User needs to test each field:
+- Client Name → Label "Client Name *" stays visible when typing
+- Address → Label "Address *" stays visible when typing
+- City → Label "City" stays visible when typing
+- Country → Label "Country" stays visible when typing
+- Phone → Label "Phone" stays visible when typing
+- Email → Label "Email" stays visible when typing
+
+All labels should have 16px gap below StepProgressIndicator when focused.
+
+---
 
 ### UI-002: Remove Subtitle from Client Information Card ✅ VERIFIED
 **Date:** Dec 30, 2024
@@ -321,11 +399,11 @@ Do not modify ProjectSetupScreen layout without user approval of approach first.
 
 ## Fix Statistics
 
-- **Total Fixes:** 6
+- **Total Fixes:** 7
 - **Verified Working:** 6 (KB-002v4, DM-001, CAL-001, MD-002v2, CF-003v2, UI-002)
-- **Pending Verification:** 0
+- **Pending Verification:** 1 (CF-001)
 - **Reverted:** 2 (KB-003, CF-002)
-- **Current Active:** All fixes verified (UI-002: f2b9ed7)
+- **Current Active:** CF-001 (awaiting confirmation)
 
 ## Notes
 
