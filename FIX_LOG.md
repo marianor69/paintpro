@@ -3,7 +3,7 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-001v5** (commit de65aaf) - Dec 30, 2024
+**CF-001v5** (commit 0047d3e) - Dec 30, 2024
 
 ---
 
@@ -13,7 +13,7 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 **Date:** Dec 30, 2024
 **Status:** ⏳ Awaiting user confirmation (v5 - improved implementation, 16px gap)
 **Severity:** MEDIUM - UX issue affecting form usability
-**Commit:** de65aaf
+**Commit:** 0047d3e
 
 #### Issue
 When keyboard appears in ProjectSetupScreen's Client Information form, the ScrollView content scrolls up and field labels (Client Name, Address, City, etc.) hide behind the fixed StepProgressIndicator at the top. User cannot see which field they are typing in.
