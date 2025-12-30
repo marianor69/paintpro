@@ -3,15 +3,90 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**KB-006** (commit 98d2a65) - Dec 30, 2024
+**KB-004** (commit d2c6b48) - Dec 30, 2024
 
 ---
 
 ## Fixes
 
-### KB-006: Photo Note Modal Keyboard Overlap ⏳ PENDING VERIFICATION
+### KB-004: Keyboard Navigation with Previous/Next/Done ⏳ PENDING VERIFICATION
 **Date:** Dec 30, 2024
 **Status:** ⏳ Awaiting user confirmation
+**Severity:** HIGH - Major UX improvement for form navigation
+**Commit:** d2c6b48
+
+#### Issue
+Users could only navigate forward through forms using the Next button, with no way to go back to a previous field without dismissing the keyboard and manually tapping. This made form correction tedious and broke the expected iOS keyboard navigation pattern.
+
+**Missing functionality:**
+- No "Previous" button to navigate backwards through fields
+- Inconsistent behavior across different screens
+- Unwanted gray border above keyboard toolbar
+- Some screens had partial/no implementation
+
+#### Root Cause
+InputAccessoryView implementation was incomplete - only provided Next/Done buttons without Previous functionality. No backward navigation refs were wired in editor screens.
+
+**Code locations:**
+- `src/components/FormInput.tsx`
+- `src/components/DimensionInput.tsx`
+- All editor screens (Room, Staircase, Fireplace, BuiltIn)
+
+#### Solution
+Extended InputAccessoryView to include Previous/Next/Done navigation:
+
+**1. Updated FormInput.tsx:**
+- Added `previousFieldRef` prop
+- Added `handlePrevious`, `handleNext`, `handleDone` functions
+- Updated toolbar to show Previous button (gray when disabled, blue when enabled)
+- Removed unwanted `borderTopWidth` from toolbar
+- Changed background to iOS-standard `#f1f1f1`
+
+**2. Updated DimensionInput.tsx:**
+- Added `previousFieldRef` prop
+- Added `focusedField` state to track if user is in feet or inches field
+- Smart Previous logic: inches→feet or feet→previous field
+- Updated toolbar with Previous button
+- Added `onFocus` handlers to both inputs
+
+**3. Wired previousFieldRef in all editors:**
+- BuiltInEditorScreen: name→width→height→depth→shelfCount
+- StaircaseEditorScreen: name→riserCount→handrailLength→spindleCount→tallWall→shortWall
+- FireplaceEditorScreen: name→width→height→depth→trimLinearFeet
+- RoomEditorScreen: Added nameRef, wired name→length→width→manualArea→cathedralPeakHeight
+
+**Button behavior:**
+| Field Position | Previous Button | Next Button | Done Button |
+|----------------|-----------------|-------------|-------------|
+| FIRST field    | Disabled (gray #c7c7c7) | Blue (#007AFF) | Hidden |
+| MIDDLE fields  | Blue (#007AFF) | Blue (#007AFF) | Hidden |
+| LAST field     | Blue (#007AFF) | Hidden | Blue (primaryBlue) |
+
+#### Files Changed
+- `src/components/FormInput.tsx` - Added Previous button, previousFieldRef prop, updated toolbar styling
+- `src/components/DimensionInput.tsx` - Added Previous button with smart feet/inches logic
+- `src/screens/BuiltInEditorScreen.tsx` - Wired previousFieldRef for all fields
+- `src/screens/StaircaseEditorScreen.tsx` - Wired previousFieldRef for all fields
+- `src/screens/FireplaceEditorScreen.tsx` - Wired previousFieldRef for all fields
+- `src/screens/RoomEditorScreen.tsx` - Added nameRef, wired previousFieldRef for all fields
+
+#### Verification
+User needs to test keyboard navigation in all editor screens:
+1. **Forward navigation (Next)**: Still works, advances to next field
+2. **Backward navigation (Previous)**: NEW - goes back to previous field
+3. **Done button**: Appears on last field, dismisses keyboard
+4. **Previous disabled**: Gray on first field, cannot go back
+5. **Previous enabled**: Blue on all other fields
+6. **DimensionInput**: Previous from inches goes to feet, then to previous field
+7. **Visual**: No border above toolbar, iOS-standard gray background
+
+**CRITICAL: Must verify KB-002 still works** - Next/Done keyboard navigation must not be broken by these changes.
+
+---
+
+### KB-006: Photo Note Modal Keyboard Overlap ✅ VERIFIED
+**Date:** Dec 30, 2024
+**Status:** ✅ Fixed and verified by user
 **Severity:** MEDIUM - UX issue affecting note entry
 **Commit:** 98d2a65
 
@@ -483,11 +558,11 @@ Do not modify ProjectSetupScreen layout without user approval of approach first.
 
 ## Fix Statistics
 
-- **Total Fixes:** 8
-- **Verified Working:** 7 (KB-002v4, DM-001, CAL-001, MD-002v2, CF-003v2, UI-002, CF-001v5)
-- **Pending Verification:** 1 (KB-006)
+- **Total Fixes:** 9
+- **Verified Working:** 8 (KB-002v4, DM-001, CAL-001, MD-002v2, CF-003v2, UI-002, CF-001v5, KB-006)
+- **Pending Verification:** 1 (KB-004)
 - **Reverted:** 2 (KB-003, CF-002)
-- **Current Active:** KB-006 (awaiting confirmation)
+- **Current Active:** KB-004 (awaiting confirmation)
 
 ## Notes
 
