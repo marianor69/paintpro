@@ -3,11 +3,47 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-003v2** (commit 5bcaee8) - Dec 30, 2024
+**UI-002** (commit TBD) - Dec 30, 2024
 
 ---
 
 ## Fixes
+
+### UI-002: Remove Subtitle from Client Information Card ⏳ PENDING VERIFICATION
+**Date:** Dec 30, 2024
+**Status:** ⏳ Awaiting user confirmation
+**Severity:** LOW - UI cleanup
+**Commit:** TBD
+
+#### Issue
+Client Information card header had redundant subtitle "Enter client name" below the title.
+
+#### Root Cause
+Unnecessary subtitle text displayed in card header.
+
+**Code location:** `src/screens/ProjectSetupScreen.tsx` lines 367-369
+
+#### Solution
+Removed the subtitle text element, keeping only the "Client Information" title.
+
+```typescript
+// BEFORE:
+<View>
+  <Text>Client Information</Text>
+  <Text>Enter client name</Text>  // ← Removed this
+</View>
+
+// AFTER:
+<Text>Client Information</Text>
+```
+
+#### Files Changed
+- `src/screens/ProjectSetupScreen.tsx` - Removed subtitle from Client Information card header
+
+#### Verification
+User needs to test: Open ProjectSetupScreen → Client Information card should show only title, no subtitle.
+
+---
 
 ### CF-003v2: Eliminate Area B Gap and Standardize Card Spacing ⏳ PENDING VERIFICATION
 **Date:** Dec 30, 2024
@@ -285,11 +321,11 @@ Do not modify ProjectSetupScreen layout without user approval of approach first.
 
 ## Fix Statistics
 
-- **Total Fixes:** 5
+- **Total Fixes:** 6
 - **Verified Working:** 4 (KB-002v4, DM-001, CAL-001, MD-002v2)
-- **Pending Verification:** 1 (CF-003)
+- **Pending Verification:** 2 (CF-003v2, UI-002)
 - **Reverted:** 2 (KB-003, CF-002)
-- **Current Active:** CF-003 (awaiting confirmation)
+- **Current Active:** UI-002 (awaiting confirmation)
 
 ## Notes
 

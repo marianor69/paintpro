@@ -360,14 +360,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               onPress={() => toggleSection("clientInfo")}
               style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
             >
-              <View>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                  {t("screens.projectSetup.clientInfo.title")}
-                </Text>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                  {t("screens.projectSetup.clientInfo.clientNamePlaceholder")}
-                </Text>
-              </View>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                {t("screens.projectSetup.clientInfo.title")}
+              </Text>
               <Ionicons
                 name={expandedSections.clientInfo ? "chevron-up" : "chevron-down"}
                 size={24}
