@@ -3,7 +3,7 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-001v5** (commit 877cea1) - Dec 30, 2024
+**CF-001v5** (commit 0500ba4) - Dec 30, 2024
 
 ---
 
@@ -11,9 +11,9 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 
 ### CF-001v5: Form Field Labels Hidden Behind StepProgressIndicator ⏳ PENDING VERIFICATION
 **Date:** Dec 30, 2024
-**Status:** ⏳ Awaiting user confirmation (v5 - fixed scroll conflict)
+**Status:** ⏳ Awaiting user confirmation (v5 - fixed scroll conflict, 16px gap)
 **Severity:** MEDIUM - UX issue affecting form usability
-**Commit:** 877cea1
+**Commit:** 0500ba4
 
 #### Issue
 When keyboard appears in ProjectSetupScreen's Client Information form, the ScrollView content scrolls up and field labels (Client Name, Address, City, etc.) hide behind the fixed StepProgressIndicator at the top. User cannot see which field they are typing in.
@@ -32,7 +32,7 @@ StepProgressIndicator is fixed at top of screen, outside the ScrollView. When ke
 #### Solution (v5 - Fixed Scroll Conflict)
 **v1 issue:** Initial calculation used `scrollToY = y - 16`, which positioned label 16px from top of viewport but didn't account for StepProgressIndicator blocking the top ~80px.
 
-**v2-v4 issue:** Used correct formula and increased gap from 16→32→48px, but **no visual difference occurred**. This revealed the real problem: automatic keyboard handling was overriding custom scroll.
+**v2-v4 issue:** Used correct formula and increased gap from 16→32→48px for testing, but **no visual difference occurred**. This revealed the real problem: automatic keyboard handling was overriding custom scroll.
 
 **Root cause:** `automaticallyAdjustKeyboardInsets={true}` on ScrollView was scrolling AFTER the custom scroll, completely overriding it.
 
@@ -49,8 +49,8 @@ Implemented custom scroll-to-field logic using refs and measureLayout:
 2. Created `handleFieldFocus()` function that:
    - Measures label position relative to ScrollView content
    - Calculates scroll position using formula: `scrollToY = y - STEP_INDICATOR_HEIGHT - MIN_GAP`
-   - This ensures label appears at position (80px + 48px) = 128px from viewport top
-   - 80px = StepProgressIndicator height, 48px = testing gap
+   - This ensures label appears at position (80px + 16px) = 96px from viewport top
+   - 80px = StepProgressIndicator height, 16px = production gap
 3. Added `onFocus` handlers to all text inputs (Client Name, Address, City, Country, Phone, Email)
 
 ```typescript
@@ -62,10 +62,10 @@ const handleFieldFocus = (labelRef: React.RefObject<View>) => {
       findNodeHandle(scrollViewRef.current) as number,
       (x, y, width, height) => {
         const STEP_INDICATOR_HEIGHT = 80; // Measured height of indicator
-        const MIN_GAP_BELOW_INDICATOR = 48; // Testing with 48px gap
+        const MIN_GAP_BELOW_INDICATOR = 16; // Production gap value
 
         // Formula: If ScrollView scrolls by S, content at y appears at (y - S)
-        // Want: (y - S) = 80 + 48, therefore S = y - 128
+        // Want: (y - S) = 80 + 16, therefore S = y - 96
         const scrollToY = Math.max(0, y - STEP_INDICATOR_HEIGHT - MIN_GAP_BELOW_INDICATOR);
 
         scrollViewRef.current?.scrollTo({
@@ -92,7 +92,7 @@ setTimeout(() => {
 }, 300); // ← Changed from 100ms
 ```
 
-This ensures custom scroll works and labels appear exactly 48px below the StepProgressIndicator when their field is focused.
+This ensures custom scroll works and labels appear exactly 16px below the StepProgressIndicator when their field is focused.
 
 #### Files Changed
 - `src/screens/ProjectSetupScreen.tsx` - Added findNodeHandle import, ScrollView ref with automaticallyAdjustKeyboardInsets={false}, label refs, handleFieldFocus function with 300ms delay, and onFocus handlers to all 6 client info text inputs
@@ -106,7 +106,7 @@ User needs to test each field:
 - Phone → Label "Phone" stays visible when typing
 - Email → Label "Email" stays visible when typing
 
-All labels should have 48px gap below StepProgressIndicator when focused (testing value).
+All labels should have 16px gap below StepProgressIndicator when focused.
 
 ---
 
