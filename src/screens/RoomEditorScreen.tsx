@@ -181,8 +181,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const isSavedRef = useRef(false);
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
-  // MD-002: Ref to bypass usePreventRemove when explicitly discarding
-  const isDiscardingRef = useRef(false);
+  // MD-002: Store the navigation action to dispatch when discarding
+  const preventedNavigationActionRef = useRef<any>(null);
 
   // W-005, W-006: TextInput refs for focus navigation
   const lengthRef = useRef<TextInput>(null);
@@ -376,7 +376,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     includeClosetInteriorInQuote,
   ]);
 
-  usePreventRemove(hasUnsavedChanges && !isDiscardingRef.current, ({ data }) => {
+  usePreventRemove(hasUnsavedChanges, ({ data }) => {
+    // MD-002: Store the navigation action so we can dispatch it when discarding
+    preventedNavigationActionRef.current = data.action;
+
     if (isKeyboardVisibleRef.current) {
       pendingSavePromptRef.current = true;
       Keyboard.dismiss();
@@ -625,9 +628,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   };
 
   const handleDiscardAndLeave = () => {
-    // MD-002: Set ref FIRST to bypass usePreventRemove check
-    isDiscardingRef.current = true;
-
     // For new rooms with no name, nothing was created so just navigate back
     // For existing rooms with no name, delete them
     const trimmedName = name.trim();
@@ -639,8 +639,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
 
-    // Navigate immediately - no setTimeout needed with ref approach
-    navigation.goBack();
+    // MD-002: Dispatch the stored navigation action to complete the original navigation
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+    } else {
+      navigation.goBack();
+    }
   };
 
   const handleSaveAndLeave = () => {

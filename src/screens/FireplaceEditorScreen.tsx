@@ -66,8 +66,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
-  // MD-002: Ref to bypass usePreventRemove when explicitly discarding
-  const isDiscardingRef = useRef(false);
+  // MD-002: Store the navigation action to dispatch when discarding
+  const preventedNavigationActionRef = useRef<any>(null);
 
   // Refs for form field navigation
   const nameRef = useRef<TextInput>(null);
@@ -156,9 +156,12 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     return unsubscribe;
   }, [navigation, blurFocusedInput]);
 
-  // Prevent navigation when there are unsaved changes (but not while saving or discarding)
-  usePreventRemove(hasUnsavedChanges && !isSaving && !isDiscardingRef.current, ({ data }) => {
+  // Prevent navigation when there are unsaved changes (but not while saving)
+  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
+      // MD-002: Store the navigation action so we can dispatch it when discarding
+      preventedNavigationActionRef.current = data.action;
+
       if (isKeyboardVisibleRef.current) {
         pendingSavePromptRef.current = true;
         Keyboard.dismiss();
@@ -235,15 +238,17 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   };
 
   const handleDiscardAndLeave = () => {
-    // MD-002: Set ref FIRST to bypass usePreventRemove check
-    isDiscardingRef.current = true;
-
     // For new fireplaces, nothing to delete (never created)
     // For existing fireplaces, just go back without changes
     setHasUnsavedChanges(false);
     setShowSavePrompt(false);
 
-    navigation.goBack();
+    // MD-002: Dispatch the stored navigation action to complete the original navigation
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+    } else {
+      navigation.goBack();
+    }
   };
 
   const handleSaveAndLeave = () => {
