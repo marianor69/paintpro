@@ -778,7 +778,7 @@ export default function SettingsScreen() {
           </InputAccessoryView>
 
           <InputAccessoryView nativeID={`ceilingCoverage-${ceilingCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
               <Pressable onPress={() => wallCoverageRef.current?.focus()}>
                 <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400", paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}>Previous</Text>
               </Pressable>
@@ -789,7 +789,7 @@ export default function SettingsScreen() {
           </InputAccessoryView>
 
           <InputAccessoryView nativeID={`trimCoverage-${trimCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
               <Pressable onPress={() => ceilingCoverageRef.current?.focus()}>
                 <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400", paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}>Previous</Text>
               </Pressable>
@@ -800,7 +800,7 @@ export default function SettingsScreen() {
           </InputAccessoryView>
 
           <InputAccessoryView nativeID={`primerCoverage-${primerCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
               <Pressable onPress={() => trimCoverageRef.current?.focus()}>
                 <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400", paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}>Previous</Text>
               </Pressable>
