@@ -29,73 +29,73 @@ StepProgressIndicator is fixed at top of screen, outside the ScrollView. When ke
 
 **Code location:** `src/screens/ProjectSetupScreen.tsx`
 
-#### Solution (v5 - Fixed Scroll Conflict)
+#### Solution (v5 - Improved Implementation)
 **v1 issue:** Initial calculation used `scrollToY = y - 16`, which positioned label 16px from top of viewport but didn't account for StepProgressIndicator blocking the top ~80px.
 
 **v2-v4 issue:** Used correct formula and increased gap from 16→32→48px for testing, but **no visual difference occurred**. This revealed the real problem: automatic keyboard handling was overriding custom scroll.
 
-**Root cause:** `automaticallyAdjustKeyboardInsets={true}` on ScrollView was scrolling AFTER the custom scroll, completely overriding it.
+**Initial v5 approach:** Disabled `automaticallyAdjustKeyboardInsets` and used `setTimeout(300ms)`, but this was a workaround fighting against React Native's native behavior.
 
-**v5 fix:** Disable automatic keyboard handling and increase timing delay:
+**Final v5 solution (improved):** Works WITH automatic keyboard handling using better measurement APIs:
 
-1. Changed `automaticallyAdjustKeyboardInsets` from `true` to `false`
-2. Increased `setTimeout` delay from 100ms to 300ms
-3. This ensures custom scroll runs AFTER keyboard animation completes
-4. Custom scroll is no longer overridden by automatic behavior
-
-Implemented custom scroll-to-field logic using refs and measureLayout:
-
-1. Added refs for ScrollView and each field's label wrapper View
-2. Created `handleFieldFocus()` function that:
-   - Measures label position relative to ScrollView content
-   - Calculates scroll position using formula: `scrollToY = y - STEP_INDICATOR_HEIGHT - MIN_GAP`
-   - This ensures label appears at position (80px + 16px) = 96px from viewport top
-   - 80px = StepProgressIndicator height, 16px = production gap
-3. Added `onFocus` handlers to all text inputs (Client Name, Address, City, Country, Phone, Email)
+**Key improvements:**
+1. **Dynamic measurement** - Measures actual StepProgressIndicator height via `onLayout` instead of hardcoded 80px
+2. **Better APIs** - Uses `measureInWindow` instead of deprecated `measureLayout` + `findNodeHandle`
+3. **Proper timing** - Uses `requestAnimationFrame` instead of arbitrary `setTimeout` delays
+4. **Tracks scroll position** - Added `onScroll` handler to account for current scroll offset
+5. **Native cooperation** - Keeps `automaticallyAdjustKeyboardInsets={true}` for better native behavior
 
 ```typescript
+// Measure StepProgressIndicator's actual position
+<View
+  ref={stepIndicatorRef}
+  onLayout={() => {
+    stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
+      stepIndicatorBottomRef.current = y + height; // Store actual bottom position
+    });
+  }}
+>
+  <StepProgressIndicator ... />
+</View>
+
+// Track scroll position
+<ScrollView
+  ref={scrollViewRef}
+  automaticallyAdjustKeyboardInsets={true} // Work WITH native behavior
+  onScroll={(event) => {
+    scrollYRef.current = event.nativeEvent.contentOffset.y;
+  }}
+  scrollEventThrottle={16}
+>
+
+// Custom scroll handler
 const handleFieldFocus = (labelRef: React.RefObject<View>) => {
   if (!scrollViewRef.current || !labelRef.current) return;
 
-  setTimeout(() => {
-    labelRef.current?.measureLayout(
-      findNodeHandle(scrollViewRef.current) as number,
-      (x, y, width, height) => {
-        const STEP_INDICATOR_HEIGHT = 80; // Measured height of indicator
-        const MIN_GAP_BELOW_INDICATOR = 16; // Production gap value
-
-        // Formula: If ScrollView scrolls by S, content at y appears at (y - S)
-        // Want: (y - S) = 80 + 16, therefore S = y - 96
-        const scrollToY = Math.max(0, y - STEP_INDICATOR_HEIGHT - MIN_GAP_BELOW_INDICATOR);
+  requestAnimationFrame(() => { // Proper timing with render cycle
+    labelRef.current?.measureInWindow((lx, ly, lw, lh) => {
+      scrollViewRef.current?.measureInWindow((sx, sy) => {
+        const minGapBelowIndicator = 16;
+        const labelYInScroll = ly - sy + scrollYRef.current; // Account for scroll offset
+        const scrollToY = Math.max(
+          0,
+          labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator
+        );
 
         scrollViewRef.current?.scrollTo({
           y: scrollToY,
           animated: true,
         });
-      }
-    );
-  }, 100);
+      });
+    });
+  });
 };
 ```
 
-```typescript
-// KEY FIX: Disable automatic keyboard handling
-<ScrollView
-  ref={scrollViewRef}
-  automaticallyAdjustKeyboardInsets={false} // ← Changed from true
-  ...
->
-
-// Increased delay to run after keyboard animation
-setTimeout(() => {
-  // custom scroll logic...
-}, 300); // ← Changed from 100ms
-```
-
-This ensures custom scroll works and labels appear exactly 16px below the StepProgressIndicator when their field is focused.
+This ensures labels appear exactly 16px below the StepProgressIndicator when their field is focused, using dynamic measurements and proper React Native APIs.
 
 #### Files Changed
-- `src/screens/ProjectSetupScreen.tsx` - Added findNodeHandle import, ScrollView ref with automaticallyAdjustKeyboardInsets={false}, label refs, handleFieldFocus function with 300ms delay, and onFocus handlers to all 6 client info text inputs
+- `src/screens/ProjectSetupScreen.tsx` - Added stepIndicatorRef/stepIndicatorBottomRef/scrollYRef, wrapped StepProgressIndicator with onLayout measurement, updated handleFieldFocus to use measureInWindow + requestAnimationFrame, added onScroll handler, kept automaticallyAdjustKeyboardInsets={true}, and added onFocus handlers to all 6 client info text inputs
 
 #### Verification
 User needs to test each field:
