@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { View, Text, ScrollView, Pressable, Alert, TextInput, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -19,6 +19,12 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default function SettingsScreen() {
   const navigation = useNavigation<NavigationProp>();
   const appSettings = useAppSettings();
+
+  // Refs for keyboard navigation (not yet wired up)
+  const wallCoverageRef = useRef<TextInput>(null);
+  const ceilingCoverageRef = useRef<TextInput>(null);
+  const trimCoverageRef = useRef<TextInput>(null);
+  const primerCoverageRef = useRef<TextInput>(null);
 
   // PIN management state
   const [showPinModal, setShowPinModal] = useState(false);
