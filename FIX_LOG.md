@@ -3,11 +3,72 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**CF-001v5** (commit 0047d3e) - Dec 30, 2024
+**KB-006** (commit 98d2a65) - Dec 30, 2024
 
 ---
 
 ## Fixes
+
+### KB-006: Photo Note Modal Keyboard Overlap ⏳ PENDING VERIFICATION
+**Date:** Dec 30, 2024
+**Status:** ⏳ Awaiting user confirmation
+**Severity:** MEDIUM - UX issue affecting note entry
+**Commit:** 98d2a65
+
+#### Issue
+When typing in the Photo Note modal, the keyboard overlaps the text input field, making it difficult to see what is being typed.
+
+**Progression:**
+- User taps photo to add note
+- Photo Note modal appears
+- User taps in text field → keyboard appears
+- Keyboard covers the text input
+- User cannot see what they are typing
+
+#### Root Cause
+The Photo Note modal lacked KeyboardAvoidingView, so when the keyboard appeared, it simply overlaid the modal content without adjusting the layout.
+
+**Code location:** `src/screens/RoomEditorScreen.tsx` lines 1665-1763
+
+#### Solution
+Wrapped the modal content with KeyboardAvoidingView:
+
+```typescript
+<Modal
+  visible={editingPhotoId !== null}
+  transparent
+  animationType="fade"
+  onRequestClose={...}
+>
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1 }}
+  >
+    <Pressable> {/* Backdrop */}
+      <Pressable> {/* Modal card */}
+        <TextInput multiline ... /> {/* Notes input */}
+        {/* Buttons */}
+      </Pressable>
+    </Pressable>
+  </KeyboardAvoidingView>
+</Modal>
+```
+
+This ensures the modal content shifts up when the keyboard appears, keeping the text input visible above the keyboard.
+
+#### Files Changed
+- `src/screens/RoomEditorScreen.tsx` - Added KeyboardAvoidingView wrapper to Photo Note modal
+
+#### Verification
+User needs to test:
+1. Open a room with photos
+2. Tap a photo to add/edit note
+3. Tap in the text field
+4. Keyboard should appear
+5. Text input should remain visible above keyboard
+6. User should be able to see what they are typing
+
+---
 
 ### CF-001v5: Form Field Labels Hidden Behind StepProgressIndicator ✅ VERIFIED
 **Date:** Dec 30, 2024
@@ -422,11 +483,11 @@ Do not modify ProjectSetupScreen layout without user approval of approach first.
 
 ## Fix Statistics
 
-- **Total Fixes:** 7
+- **Total Fixes:** 8
 - **Verified Working:** 7 (KB-002v4, DM-001, CAL-001, MD-002v2, CF-003v2, UI-002, CF-001v5)
-- **Pending Verification:** 0
+- **Pending Verification:** 1 (KB-006)
 - **Reverted:** 2 (KB-003, CF-002)
-- **Current Active:** None - All fixes verified
+- **Current Active:** KB-006 (awaiting confirmation)
 
 ## Notes
 
