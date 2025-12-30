@@ -29,7 +29,8 @@ export function DimensionInput({
   const inchesRef = useRef<TextInput>(null);
 
   const isFinal = !nextFieldRef;
-  const accessoryID = Platform.OS === "ios" ? `dimensionInput-${uniqueId}` : undefined;
+  const shouldShowAccessory = Platform.OS === "ios" && (nextFieldRef || isFinal);
+  const accessoryID = shouldShowAccessory ? `dimensionInput-${uniqueId}` : undefined;
 
   const handleInchesSubmit = () => {
     if (nextFieldRef?.current) {

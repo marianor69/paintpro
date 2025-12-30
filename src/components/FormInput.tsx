@@ -51,8 +51,9 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   const effectiveBlurOnSubmit = textInputProps.blurOnSubmit ?? !nextFieldRef;
   const effectiveOnSubmitEditing = textInputProps.onSubmitEditing || handleSubmit;
 
-  // For numeric keyboards on iOS, use InputAccessoryView with unique ID
-  const accessoryID = inputAccessoryViewID || (isNumericKeyboard && Platform.OS === "ios" ? `formInput-${uniqueId}` : undefined);
+  // For ALL keyboards on iOS with navigation, use InputAccessoryView with unique ID
+  const shouldShowAccessory = Platform.OS === "ios" && (nextFieldRef || isFinal);
+  const accessoryID = inputAccessoryViewID || (shouldShowAccessory ? `formInput-${uniqueId}` : undefined);
 
   return (
     <View className={cn("mb-4", className)}>
@@ -123,8 +124,8 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         </Text>
       )}
 
-      {/* iOS InputAccessoryView for numeric keyboards */}
-      {isNumericKeyboard && Platform.OS === "ios" && accessoryID && (
+      {/* iOS InputAccessoryView for all keyboards with navigation */}
+      {Platform.OS === "ios" && accessoryID && (
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
