@@ -335,7 +335,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
       <StepProgressIndicator
         currentStep={1}

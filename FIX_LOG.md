@@ -3,11 +3,47 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**MD-002v2** (commit 3c45d19) - Dec 30, 12:45 AM ET
+**CF-003** (commit TBD) - Dec 30, 2024
 
 ---
 
 ## Fixes
+
+### CF-003: Eliminate Area B Gap in ProjectSetupScreen ⏳ PENDING VERIFICATION
+**Date:** Dec 30, 2024
+**Status:** ⏳ Awaiting user confirmation
+**Severity:** LOW - Visual/UX issue
+**Commit:** TBD
+
+#### Issue
+- AREA B: Large gap between navigation header and StepProgressIndicator caused by SafeAreaView top inset
+- Expected: StepProgressIndicator appears immediately below navigation header
+- Actual: Visible gap (Area B) between header and progress indicators
+
+#### Root Cause
+SafeAreaView was applying top inset padding, creating gap between navigation header and content.
+
+**Code location:** `src/screens/ProjectSetupScreen.tsx` line 338
+
+#### Solution
+Changed SafeAreaView to only apply bottom edge inset:
+```typescript
+// BEFORE:
+<SafeAreaView style={{ flex: 1, ... }}>
+
+// AFTER:
+<SafeAreaView edges={["bottom"]} style={{ flex: 1, ... }}>
+```
+
+This eliminates the top inset gap while keeping bottom safe area for gesture navigation.
+
+#### Files Changed
+- `src/screens/ProjectSetupScreen.tsx` - Changed SafeAreaView edges to bottom only (line 338)
+
+#### Verification
+User needs to test: Open ProjectSetupScreen → StepProgressIndicator should appear immediately below navigation header with no gap.
+
+---
 
 ### MD-002: Discard Changes Modal Requires Single Tap ✅ VERIFIED
 **Date:** Dec 30, 2024, 12:45 AM ET
@@ -237,11 +273,11 @@ Do not modify ProjectSetupScreen layout without user approval of approach first.
 
 ## Fix Statistics
 
-- **Total Fixes:** 4
+- **Total Fixes:** 5
 - **Verified Working:** 4 (KB-002v4, DM-001, CAL-001, MD-002v2)
-- **Pending Verification:** 0
+- **Pending Verification:** 1 (CF-003)
 - **Reverted:** 2 (KB-003, CF-002)
-- **Current Active:** KB-002v4 + DM-001 + CAL-001 + MD-002v2 (3c45d19)
+- **Current Active:** CF-003 (awaiting confirmation)
 
 ## Notes
 
