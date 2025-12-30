@@ -184,14 +184,20 @@ export function computeRoomPricingSummary(
   const coatsTrim = safeNumber(projectCoats || room.coatsTrim, 2);
   const coatsDoors = safeNumber(projectCoats || room.coatsDoors, 2);
 
-  // Get geometry
-  const length = Math.max(0, safeNumber(room.length));
-  const width = Math.max(0, safeNumber(room.width));
-  const height = Math.max(0, safeNumber(room.height));
-  const manualArea = Math.max(0, safeNumber(room.manualArea));
+  // Get geometry - ALL VALUES STORED IN IMPERIAL (FEET)
+  // Unit conversion happens ONLY at display time, never during calculation
+  const length = Math.max(0, safeNumber(room.length)); // feet
+  const width = Math.max(0, safeNumber(room.width)); // feet
+  const height = Math.max(0, safeNumber(room.height)); // feet
+  const manualArea = Math.max(0, safeNumber(room.manualArea)); // square feet
 
   const useManualArea = manualArea > 0;
   const hasLengthWidth = !useManualArea && length > 0 && width > 0;
+
+  // PERIMETER CALCULATION: Simple formula, NO UNIT CONVERSION
+  // Input: length and width in feet
+  // Output: perimeter in feet
+  // Example: 10m x 10m room → stored as 32.81ft x 32.81ft → perimeter = 131.23ft → displays as 40m
   const perimeter = hasLengthWidth ? 2 * (length + width) : 0;
 
   // Calculate effective wall height (for cathedral ceilings)
@@ -270,22 +276,25 @@ export function computeRoomPricingSummary(
     ceilingArea += closetCeilingArea;
   }
 
-  // Calculate baseboard LF
+  // Calculate baseboard LF (linear feet) - ALWAYS IN FEET
+  // Baseboard = perimeter minus door/closet openings
+  // All calculation settings (door width, trim width) are in imperial units (feet/inches)
   let baseboardLF = 0;
   if (includedBaseboards && room.includeTrim !== false) {
-    const doorOpeningWidthForBaseboard = calcSettings.doorWidth + (calcSettings.doorTrimWidth * 2 / 12);
-    const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12);
-    const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
+    const doorOpeningWidthForBaseboard = calcSettings.doorWidth + (calcSettings.doorTrimWidth * 2 / 12); // feet
+    const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12); // feet
+    const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12); // feet
 
     if (hasLengthWidth) {
+      // Use perimeter (in feet) minus opening widths (in feet) = result in feet
       baseboardLF = Math.max(0, perimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
     } else if (useManualArea) {
-      const estimatedPerimeter = 4 * Math.sqrt(manualArea);
+      const estimatedPerimeter = 4 * Math.sqrt(manualArea); // feet
       baseboardLF = Math.max(0, estimatedPerimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
     }
 
     if (includedClosets) {
-      baseboardLF += closetBaseboardLF;
+      baseboardLF += closetBaseboardLF; // feet
     }
   }
 
@@ -336,17 +345,18 @@ export function computeRoomPricingSummary(
     baseboardTrimSqFt = baseboardLF * baseboardTrimWidthFt;
   }
 
-  // Crown moulding (if trim included)
+  // Crown moulding (if trim included) - ALWAYS IN FEET
+  // Crown molding runs along the full perimeter of the room
   let crownMouldingLF = 0;
   let crownMouldingTrimSqFt = 0;
   if (room.hasCrownMoulding && includedTrim && room.includeTrim !== false) {
     if (hasLengthWidth) {
-      crownMouldingLF = perimeter;
+      crownMouldingLF = perimeter; // feet (same as perimeter)
     } else if (useManualArea) {
-      crownMouldingLF = 4 * Math.sqrt(manualArea);
+      crownMouldingLF = 4 * Math.sqrt(manualArea); // feet
     }
-    const crownMouldingWidthFt = calcSettings.crownMouldingWidth / 12;
-    crownMouldingTrimSqFt = crownMouldingLF * crownMouldingWidthFt;
+    const crownMouldingWidthFt = calcSettings.crownMouldingWidth / 12; // convert inches to feet
+    crownMouldingTrimSqFt = crownMouldingLF * crownMouldingWidthFt; // square feet
   }
 
   // Total trim square footage

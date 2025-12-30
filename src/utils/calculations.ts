@@ -231,16 +231,20 @@ export function calculateRoomMetrics(
   const coatsDoors = safeNumber(projectCoats || room.coatsDoors, 2); // Project coats override room setting
 
   // Safe geometry values - clamp to non-negative
-  const length = Math.max(0, safeNumber(room.length));
-  const width = Math.max(0, safeNumber(room.width));
-  const height = Math.max(0, safeNumber(room.height));
-  const manualArea = Math.max(0, safeNumber(room.manualArea));
+  // ALL VALUES STORED IN IMPERIAL (FEET) - Unit conversion happens ONLY at display time
+  const length = Math.max(0, safeNumber(room.length)); // feet
+  const width = Math.max(0, safeNumber(room.width)); // feet
+  const height = Math.max(0, safeNumber(room.height)); // feet
+  const manualArea = Math.max(0, safeNumber(room.manualArea)); // square feet
 
   // If manual area is provided, ALWAYS use it and ignore length/width
   const useManualArea = manualArea > 0;
   const hasLengthWidth = !useManualArea && length > 0 && width > 0;
 
-  // Calculate perimeter (only if we have length and width AND no manual area)
+  // PERIMETER CALCULATION: Simple formula, NO UNIT CONVERSION
+  // Input: length and width in feet
+  // Output: perimeter in feet
+  // Example: 10m x 10m room → stored as 32.81ft x 32.81ft → perimeter = 131.23ft → displays as 40m
   const perimeter = hasLengthWidth ? 2 * (length + width) : 0;
 
   // Determine effective wall height based on ceiling type
@@ -1006,16 +1010,20 @@ export function calculateFilteredRoomMetrics(
   const coatsDoors = safeNumber(projectCoats || room.coatsDoors, 2);
 
   // Safe geometry values - clamp to non-negative
-  const length = Math.max(0, safeNumber(room.length));
-  const width = Math.max(0, safeNumber(room.width));
-  const height = Math.max(0, safeNumber(room.height));
-  const manualArea = Math.max(0, safeNumber(room.manualArea));
+  // ALL VALUES STORED IN IMPERIAL (FEET) - Unit conversion happens ONLY at display time
+  const length = Math.max(0, safeNumber(room.length)); // feet
+  const width = Math.max(0, safeNumber(room.width)); // feet
+  const height = Math.max(0, safeNumber(room.height)); // feet
+  const manualArea = Math.max(0, safeNumber(room.manualArea)); // square feet
 
   // If manual area is provided, ALWAYS use it and ignore length/width
   const useManualArea = manualArea > 0;
   const hasLengthWidth = !useManualArea && length > 0 && width > 0;
 
-  // Calculate perimeter (only if we have length and width AND no manual area)
+  // PERIMETER CALCULATION: Simple formula, NO UNIT CONVERSION
+  // Input: length and width in feet
+  // Output: perimeter in feet
+  // Example: 10m x 10m room → stored as 32.81ft x 32.81ft → perimeter = 131.23ft → displays as 40m
   const perimeter = hasLengthWidth ? 2 * (length + width) : 0;
 
   // Determine effective wall height based on ceiling type
