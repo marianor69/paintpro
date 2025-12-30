@@ -10,6 +10,7 @@ interface NumericInputProps {
   unit?: string;
   error?: string;
   className?: string;
+  previousFieldRef?: RefObject<TextInput>;
   nextFieldRef?: RefObject<TextInput>;
   inputRef?: RefObject<TextInput>;
 }
@@ -22,6 +23,7 @@ export function NumericInput({
   unit,
   error,
   className,
+  previousFieldRef,
   nextFieldRef,
   inputRef,
 }: NumericInputProps) {
@@ -36,6 +38,7 @@ export function NumericInput({
       error={error}
       className={className}
       keyboardType="numeric"
+      previousFieldRef={previousFieldRef}
       nextFieldRef={nextFieldRef}
     />
   );
