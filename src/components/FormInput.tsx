@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TextInputProps,
-  Platform,
   Pressable,
   InputAccessoryView,
   Keyboard,
@@ -45,11 +44,24 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
     }
   };
 
+  //Handle numeric input filtering for default keyboard
+  const handleChangeText = (text: string) => {
+    if (isNumericKeyboard && textInputProps.onChangeText) {
+      // Allow numbers, decimal point, and negative sign
+      const filtered = text.replace(/[^0-9.-]/g, '');
+      textInputProps.onChangeText(filtered);
+    } else if (textInputProps.onChangeText) {
+      textInputProps.onChangeText(text);
+    }
+  };
+
   const effectiveReturnKeyType = textInputProps.returnKeyType || (isFinal ? "done" : "next");
   const effectiveBlurOnSubmit = textInputProps.blurOnSubmit ?? !nextFieldRef;
   const effectiveOnSubmitEditing = textInputProps.onSubmitEditing || handleSubmit;
 
-  const accessoryID = inputAccessoryViewID || (isNumericKeyboard && Platform.OS === "ios" ? "formInputAccessory" : undefined);
+  // Use default keyboard to get blue Next key, with numeric filtering
+  const effectiveKeyboardType = isNumericKeyboard ? "default" : keyboardType;
+  const accessoryID = inputAccessoryViewID;
 
   return (
     <View className={cn("mb-4", className)}>
@@ -80,7 +92,8 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         <TextInput
           ref={ref}
           {...textInputProps}
-          keyboardType={keyboardType}
+          keyboardType={effectiveKeyboardType}
+          onChangeText={handleChangeText}
           returnKeyType={effectiveReturnKeyType}
           enablesReturnKeyAutomatically={false}
           blurOnSubmit={effectiveBlurOnSubmit}
@@ -120,8 +133,8 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         </Text>
       )}
 
-      {/* iOS InputAccessoryView for numeric keyboards */}
-      {isNumericKeyboard && Platform.OS === "ios" && accessoryID && (
+      {/* iOS InputAccessoryView - only if explicitly provided */}
+      {accessoryID && (
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
