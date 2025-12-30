@@ -9,9 +9,9 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 
 ## Fixes
 
-### MD-002: Discard Changes Modal Requires Single Tap ⏳ PENDING VERIFICATION
+### MD-002: Discard Changes Modal Requires Single Tap ✅ VERIFIED
 **Date:** Dec 30, 2024, 12:45 AM ET
-**Status:** ⏳ Awaiting user verification (v2 deployed)
+**Status:** ✅ Fixed and verified by user (v2)
 **Severity:** MEDIUM - UX annoyance
 **Commit:** 3c45d19 (v2 - navigation dispatch approach)
 
@@ -218,10 +218,10 @@ Do not attempt KB-003 again without:
 ## Fix Statistics
 
 - **Total Fixes:** 4
-- **Verified Working:** 3 (KB-002v4, DM-001, CAL-001)
-- **Pending Verification:** 1 (MD-002)
+- **Verified Working:** 4 (KB-002v4, DM-001, CAL-001, MD-002v2)
+- **Pending Verification:** 0
 - **Reverted:** 1 (KB-003)
-- **Current Active:** KB-002v4 + DM-001 + CAL-001 + MD-002 (f3afb12)
+- **Current Active:** KB-002v4 + DM-001 + CAL-001 + MD-002v2 (3c45d19)
 
 ## Notes
 
