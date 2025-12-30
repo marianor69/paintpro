@@ -3,7 +3,7 @@
 This document tracks all bug fixes and feature implementations with their IDs, status, and details.
 
 ## Current Version
-**UI-002** (commit TBD) - Dec 30, 2024
+**UI-002** (commit f2b9ed7) - Dec 30, 2024
 
 ---
 
@@ -13,7 +13,7 @@ This document tracks all bug fixes and feature implementations with their IDs, s
 **Date:** Dec 30, 2024
 **Status:** ⏳ Awaiting user confirmation
 **Severity:** LOW - UI cleanup
-**Commit:** TBD
+**Commit:** f2b9ed7
 
 #### Issue
 Client Information card header had redundant subtitle "Enter client name" below the title.
