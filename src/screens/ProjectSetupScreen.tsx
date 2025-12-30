@@ -196,9 +196,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           // - paddingTop: 4px, circle: 44px, margin: 4px, label: 13px, paddingBottom: 8px, border: 1px
           // - Total: ~74px, using 80px to be safe
           const STEP_INDICATOR_HEIGHT = 80;
-          const MIN_GAP_BELOW_INDICATOR = 48; // Testing with 48px gap
+          const MIN_GAP_BELOW_INDICATOR = 16; // Production gap value
 
-          // Calculate scroll position so label appears 48px below StepProgressIndicator
+          // Calculate scroll position so label appears 16px below StepProgressIndicator
           // If ScrollView scrolls by amount S, content at position y appears at viewport position (y - S)
           // We want: (y - S) = STEP_INDICATOR_HEIGHT + MIN_GAP_BELOW_INDICATOR
           // Therefore: S = y - STEP_INDICATOR_HEIGHT - MIN_GAP_BELOW_INDICATOR
