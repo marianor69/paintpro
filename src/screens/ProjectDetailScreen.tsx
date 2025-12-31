@@ -1042,10 +1042,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           alignItems: "center",
                         }}
                         accessibilityRole="button"
-                        accessibilityLabel={`Edit staircase ${idx + 1}`}
+                        accessibilityLabel={`Edit staircase ${staircase.name || `Staircase ${idx + 1}`}`}
                       >
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                          Staircase {idx + 1}
+                          {staircase.name || `Staircase ${idx + 1}`}
                         </Text>
                         <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
                       </Pressable>
@@ -1131,10 +1131,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           alignItems: "center",
                         }}
                         accessibilityRole="button"
-                        accessibilityLabel={`Edit fireplace ${idx + 1}`}
+                        accessibilityLabel={`Edit fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
                       >
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                          Fireplace {idx + 1}
+                          {fireplace.name || `Fireplace ${idx + 1}`}
                         </Text>
                         <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
                       </Pressable>
@@ -1195,7 +1195,12 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.builtIns.map((builtIn, idx) => (
                   <Pressable
                     key={builtIn.id}
-                    onPress={handleAddBuiltIn}
+                    onPress={() =>
+                      navigation.navigate("BuiltInEditor", {
+                        projectId,
+                        builtInId: builtIn.id,
+                      })
+                    }
                     onLongPress={() => {
                       Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
                         { text: "Cancel", style: "cancel" },
