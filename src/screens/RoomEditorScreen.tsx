@@ -21,7 +21,7 @@ import { useProjectStore } from "../state/projectStore";
 import { usePricingStore } from "../state/pricingStore";
 import { useCalculationSettings } from "../state/calculationStore";
 import { useAppSettings } from "../state/appSettings";
-import { formatCurrency, getDefaultQuoteBuilder } from "../utils/calculations";
+import { formatCurrency, getDefaultQuoteBuilder, safeNumber } from "../utils/calculations";
 import { computeRoomPricingSummary } from "../utils/pricingSummary";
 import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 import * as ImagePicker from "expo-image-picker";
