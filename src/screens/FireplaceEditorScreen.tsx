@@ -446,107 +446,166 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               </Card>
             </View>
 
-            {/* Calculations Preview */}
-            {calculations && (
-              <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "700", color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
-                  Estimate Preview
-                </Text>
+            {/* Fireplace Summary */}
+            {calculations && (() => {
+              // Calculate per-component areas and costs
+              const frontBackArea = 2 * parseFloat(width || '0') * parseFloat(height || '0');
+              const topArea = parseFloat(width || '0') * parseFloat(depth || '0');
+              const sideArea = parseFloat(height || '0') * parseFloat(depth || '0');
+              const trimArea = hasTrim && parseFloat(trimLinearFeet || '0') > 0
+                ? parseFloat(trimLinearFeet || '0') * (unitSystem === 'metric' ? 0.15 : 0.5)
+                : 0;
 
-                {/* Paintable Area Breakdown */}
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                    PAINTABLE AREA CALCULATION:
-                  </Text>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Front/Back faces:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      2 × ({width} {unitSystem === 'metric' ? 'm' : 'ft'} × {height} {unitSystem === 'metric' ? 'm' : 'ft'}) = {(2 * parseFloat(width || '0') * parseFloat(height || '0')).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Top surface:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {width} {unitSystem === 'metric' ? 'm' : 'ft'} × {depth} {unitSystem === 'metric' ? 'm' : 'ft'} = {(parseFloat(width || '0') * parseFloat(depth || '0')).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Side surface:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {height} {unitSystem === 'metric' ? 'm' : 'ft'} × {depth} {unitSystem === 'metric' ? 'm' : 'ft'} = {(parseFloat(height || '0') * parseFloat(depth || '0')).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                    </Text>
-                  </View>
-                  {hasTrim && parseFloat(trimLinearFeet || '0') > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Trim area:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {trimLinearFeet} {unitSystem === 'metric' ? 'm' : 'ft'} × 0.{unitSystem === 'metric' ? '15' : '5'} {unitSystem === 'metric' ? 'm' : 'ft'} = {(parseFloat(trimLinearFeet || '0') * (unitSystem === 'metric' ? 0.15 : 0.5)).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                      </Text>
+              // Fireplace labor is fixed rate, materials distributed proportionally
+              const fireplaceLabor = pricing.fireplaceLabor;
+              const totalMaterials = calculations.materialsDisplayed;
+
+              // Distribute materials across surfaces
+              const totalComponents = (frontBackArea > 0 ? 1 : 0) +
+                                     (topArea > 0 ? 1 : 0) +
+                                     (sideArea > 0 ? 1 : 0) +
+                                     (trimArea > 0 ? 1 : 0);
+              const materialPerComponent = totalComponents > 0 ? totalMaterials / totalComponents : 0;
+
+              const frontBackMaterials = frontBackArea > 0 ? materialPerComponent : 0;
+              const topMaterials = topArea > 0 ? materialPerComponent : 0;
+              const sideMaterials = sideArea > 0 ? materialPerComponent : 0;
+              const trimMaterials = trimArea > 0 ? materialPerComponent : 0;
+
+              // Labor is fixed, but we'll show it as one row
+              const laborPerComponent = totalComponents > 0 ? fireplaceLabor / totalComponents : 0;
+              const frontBackLabor = frontBackArea > 0 ? laborPerComponent : 0;
+              const topLabor = topArea > 0 ? laborPerComponent : 0;
+              const sideLabor = sideArea > 0 ? laborPerComponent : 0;
+              const trimLabor = trimArea > 0 ? laborPerComponent : 0;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={Typography.h2}>Fireplace Summary</Text>
+
+                  <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                    {/* Gray section - flex: 3, 2-column layout */}
+                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                      {/* Empty row for alignment */}
+                      <View style={{ marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
+                      </View>
+
+                      {frontBackArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Front/Back</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(frontBackArea), 'area', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {topArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Top</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(topArea), 'area', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {sideArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Side</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(sideArea), 'area', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {trimArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Trim</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(trimArea), 'area', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
                     </View>
-                  )}
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.sm, paddingTop: Spacing.sm }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Paintable Area:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        {formatMeasurement(calculations.paintableArea, 'area', unitSystem)}
-                      </Text>
+
+                    {/* Blue section - flex: 2, 2 columns right-aligned */}
+                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                      {/* Header Row */}
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                      </View>
+
+                      {frontBackArea > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(frontBackLabor)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(frontBackMaterials)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {topArea > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(topLabor)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(topMaterials)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {sideArea > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(sideLabor)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(sideMaterials)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {trimArea > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(trimLabor)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(trimMaterials)}
+                          </Text>
+                        </View>
+                      )}
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      {/* Subtotals - without labels */}
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(calculations.laborDisplayed)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(calculations.materialsDisplayed)}
+                        </Text>
+                      </View>
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      {/* Total */}
+                      <View style={{ alignItems: "flex-end" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${calculations.totalDisplayed.toLocaleString()}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-
-                {/* Labor Cost */}
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                    LABOR COST CALCULATION:
-                  </Text>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Fireplace labor:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      Fixed rate = ${pricing.fireplaceLabor.toFixed(2)}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Material Cost */}
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                    MATERIAL COST CALCULATION:
-                  </Text>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Paint needed:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {calculations.paintableArea.toFixed(1)} sq ft ÷ {pricing.wallCoverageSqFtPerGallon} × {fireplace?.coats || 2} coats = {calculations.totalGallons.toFixed(2)} gal
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Paint cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {Math.ceil(calculations.totalGallons)} gal × ${pricing.wallPaintPerGallon}/gal = ${calculations.materialsDisplayed.toFixed(2)}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Total Price */}
-                <View style={{ backgroundColor: Colors.primaryBlueLight, borderWidth: 1, borderColor: Colors.primaryBlue, borderRadius: BorderRadius.default, padding: Spacing.sm }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Labor Cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.laborDisplayed.toFixed(2)}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Material Cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.materialsDisplayed.toFixed(2)}</Text>
-                  </View>
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.primaryBlue, paddingTop: Spacing.sm }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Price:</Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700", color: Colors.primaryBlue }}>
-                        {formatCurrency(calculations.totalDisplayed)}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </Card>
-            )}
+                </Card>
+              );
+            })()}
 
             <Pressable
               onPress={handleSave}

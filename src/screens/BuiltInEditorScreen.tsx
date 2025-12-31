@@ -395,55 +395,69 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               </Card>
             </View>
 
-            {/* Paintable Area Preview */}
-            {totalPaintableArea > 0 && (
-              <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "700", color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
-                  Paintable Area
-                </Text>
+            {/* Built-In Summary */}
+            {totalPaintableArea > 0 && (() => {
+              // Calculate per-component areas
+              const frontBackArea = 2 * widthVal * heightVal;
+              const leftRightArea = 2 * heightVal * depthVal;
+              const topBottomArea = 2 * widthVal * depthVal;
+              const shelvesArea = shelfCount && parseInt(shelfCount) > 0 ? parseInt(shelfCount) * widthVal : 0;
 
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Front/Back:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {(2 * widthVal * heightVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Left/Right sides:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {(2 * heightVal * depthVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Top/Bottom:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {(2 * widthVal * depthVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                    </Text>
-                  </View>
-                  {shelfCount && parseInt(shelfCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        {shelfCount} shelves:
-                      </Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {(parseInt(shelfCount) * widthVal).toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
-                      </Text>
-                    </View>
-                  )}
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.sm, paddingTop: Spacing.sm }}>
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={Typography.h2}>Built-In Summary</Text>
+
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    {frontBackArea > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Front/Back</Text>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          {formatMeasurement(Math.ceil(frontBackArea), 'area', unitSystem, 0)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {leftRightArea > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Left/Right</Text>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          {formatMeasurement(Math.ceil(leftRightArea), 'area', unitSystem, 0)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {topBottomArea > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Top/Bottom</Text>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          {formatMeasurement(Math.ceil(topBottomArea), 'area', unitSystem, 0)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {shelvesArea > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Shelves ({shelfCount})</Text>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          {formatMeasurement(Math.ceil(shelvesArea), 'area', unitSystem, 0)}
+                        </Text>
+                      </View>
+                    )}
+
+                    <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
+
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        Total Paintable Area:
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                        Total Area:
                       </Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        {totalPaintableArea.toFixed(1)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(totalPaintableArea), 'area', unitSystem, 0)}
                       </Text>
                     </View>
                   </View>
-                </View>
-              </Card>
-            )}
+                </Card>
+              );
+            })()}
 
             <Pressable
               onPress={handleSave}
