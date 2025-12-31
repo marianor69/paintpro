@@ -96,6 +96,8 @@ function ScreenNameDebug() {
 }
 
 function MainTabs() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -116,9 +118,9 @@ function MainTabs() {
           backgroundColor: Colors.white,
           borderTopColor: Colors.neutralGray,
           borderTopWidth: 1,
-          paddingBottom: 8,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingTop: 8,
-          height: 60,
+          height: 60 + (insets.bottom > 0 ? insets.bottom : 0),
         },
         tabBarLabelStyle: {
           fontSize: 12,
