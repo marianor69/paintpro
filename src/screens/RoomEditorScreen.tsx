@@ -1604,7 +1604,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
               <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                 {/* Left Column - Measurements (Gray) - Wider */}
-                <View style={{ flex: 2, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                   <View style={{ marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                       Wall Area: <Text style={{ fontWeight: "600" as any }}>{formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}</Text>
@@ -1645,30 +1645,30 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   )}
                 </View>
 
-                {/* Right Section - Pricing (Blue) with Labor and Materials columns */}
-                <View style={{ flex: 3, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                {/* Right Section - Pricing (Blue) with Labor and Materials columns - Slimmer and Right-Aligned */}
+                <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                   {/* Header Row */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any }}>Materials</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Labor</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Materials</Text>
                   </View>
 
                   {/* Walls */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(wallLaborCost)}
                     </Text>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(wallMaterialsCost)}
                     </Text>
                   </View>
 
                   {/* Ceiling */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(ceilingLaborCost)}
                     </Text>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(ceilingMaterialsCost)}
                     </Text>
                   </View>
@@ -1676,10 +1676,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   {/* Baseboard */}
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (
                     <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(baseboardLaborCost)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(baseboardMaterialsCost)}
                       </Text>
                     </View>
@@ -1688,10 +1688,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   {/* Crown Moulding */}
                   {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
                     <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(crownLaborCost)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(crownMaterialsCost)}
                       </Text>
                     </View>
@@ -1700,10 +1700,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   {/* Windows */}
                   {pricingSummary.windowsCount > 0 && (
                     <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(windowLaborCost)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(windowMaterialsCost)}
                       </Text>
                     </View>
@@ -1712,10 +1712,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   {/* Doors */}
                   {pricingSummary.doorsCount > 0 && (
                     <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(doorLaborCost)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(doorMaterialsCost)}
                       </Text>
                     </View>
@@ -1726,14 +1726,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   {/* Subtotals */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Labor:</Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(pricingSummary.laborDisplayed)}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Materials:</Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Materials:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(pricingSummary.materialsDisplayed)}
                       </Text>
                     </View>
@@ -1742,7 +1742,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
                   {/* Total */}
-                  <View>
+                  <View style={{ alignItems: "flex-end" }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
                     <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                       ${pricingSummary.totalDisplayed.toLocaleString()}
