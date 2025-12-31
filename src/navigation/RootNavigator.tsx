@@ -47,7 +47,7 @@ export type RootStackParamList = {
 };
 
 export type TabParamList = {
-  ProjectsTab: undefined;
+  HomeTab: undefined;
   SettingsTab: undefined;
 };
 
@@ -104,8 +104,8 @@ function MainTabs() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = "home";
 
-          if (route.name === "ProjectsTab") {
-            iconName = focused ? "folder" : "folder-outline";
+          if (route.name === "HomeTab") {
+            iconName = focused ? "home" : "home-outline";
           } else if (route.name === "SettingsTab") {
             iconName = focused ? "settings" : "settings-outline";
           }
@@ -136,9 +136,9 @@ function MainTabs() {
       })}
     >
       <Tab.Screen
-        name="ProjectsTab"
+        name="HomeTab"
         component={HomeScreen as any}
-        options={{ title: "Projects", headerShown: true }}
+        options={{ title: "Home", headerShown: true }}
       />
       <Tab.Screen
         name="SettingsTab"
