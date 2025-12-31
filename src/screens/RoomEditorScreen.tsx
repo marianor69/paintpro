@@ -47,7 +47,7 @@ function serializeRoomState(
   length: string,
   width: string,
   manualArea: string,
-  ceilingType: string,
+  isCathedral: boolean,
   cathedralPeakHeight: string,
   windowCount: string,
   doorCount: string,
@@ -72,7 +72,7 @@ function serializeRoomState(
     length,
     width,
     manualArea,
-    ceilingType,
+    isCathedral,
     cathedralPeakHeight,
     windowCount,
     doorCount,
@@ -120,7 +120,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [manualArea, setManualArea] = useState(
     room?.manualArea && room.manualArea > 0 ? formatMeasurementValue(room.manualArea, 'area', unitSystem, 2) : ""
   );
-  const [ceilingType, setCeilingType] = useState(room?.ceilingType || "flat");
+  const [isCathedral, setIsCathedral] = useState(room?.ceilingType === "cathedral");
   const [windowCount, setWindowCount] = useState(
     room?.windowCount && room.windowCount > 0 ? room.windowCount.toString() : ""
   );
@@ -174,6 +174,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   // Standalone notes field (available without photos)
   const [notes, setNotes] = useState(room?.notes || "");
+
+  // Collapsible sections
+  const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -272,7 +275,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         "",
         "",
         "",
-        "flat",
+        false,
         "",
         "",
         "",
@@ -303,7 +306,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       room.length && room.length > 0 ? room.length.toString() : "",
       room.width && room.width > 0 ? room.width.toString() : "",
       room.manualArea && room.manualArea > 0 ? room.manualArea.toString() : "",
-      room.ceilingType || "flat",
+      room.ceilingType === "cathedral",
       room.cathedralPeakHeight && room.cathedralPeakHeight > 0 ? room.cathedralPeakHeight.toString() : "",
       room.windowCount && room.windowCount > 0 ? room.windowCount.toString() : "",
       room.doorCount && room.doorCount > 0 ? room.doorCount.toString() : "",
@@ -334,7 +337,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       length,
       width,
       manualArea,
-      ceilingType,
+      isCathedral,
       cathedralPeakHeight,
       windowCount,
       doorCount,
@@ -362,7 +365,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     length,
     width,
     manualArea,
-    ceilingType,
+    isCathedral,
     cathedralPeakHeight,
     windowCount,
     doorCount,
@@ -524,7 +527,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       height,
       floor,
       manualArea: manualAreaSqFt,
-      ceilingType,
+      ceilingType: isCathedral ? "cathedral" : "flat",
       cathedralPeakHeight: cathedralPeakHeightFeet,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
@@ -608,7 +611,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       length,
       width,
       manualArea,
-      ceilingType,
+      isCathedral,
       cathedralPeakHeight,
       windowCount,
       doorCount,
@@ -696,7 +699,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       height: currentHeight,
       floor,
       manualArea: previewManualAreaSqFt,
-      ceilingType,
+      ceilingType: isCathedral ? "cathedral" : "flat",
       cathedralPeakHeight: previewCathedralPeakHeightFeet,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
@@ -828,7 +831,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {/* Manual Area */}
-          <View>
+          <View style={{ marginBottom: Spacing.md }}>
             <FormInput
               ref={manualAreaRef}
               previousFieldRef={widthRef}
@@ -837,7 +840,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               onChangeText={setManualArea}
               keyboardType="numeric"
               placeholder="0"
-              nextFieldRef={ceilingType === "cathedral" ? cathedralPeakHeightRef : undefined}
+              nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
               accessibilityLabel="Manual area input"
               className="mb-0"
             />
@@ -845,79 +848,16 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               If entered, this will override Length × Width for ceiling area
             </Text>
           </View>
-        </Card>
 
-        {/* Ceiling Type Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-            Ceiling Type
-          </Text>
+          {/* Cathedral Ceiling Toggle */}
+          <Toggle
+            label="Cathedral Ceiling"
+            value={isCathedral}
+            onValueChange={setIsCathedral}
+          />
 
-          {/* Compact Segmented Toggle */}
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 4,
-              borderRadius: BorderRadius.default,
-              backgroundColor: Colors.backgroundWarmGray,
-              marginBottom: ceilingType === "cathedral" ? Spacing.md : 0,
-            }}
-          >
-            {/* Flat */}
-            <Pressable
-              onPress={() => setCeilingType("flat")}
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                borderRadius: BorderRadius.default,
-                backgroundColor: ceilingType === "flat" ? Colors.white : "transparent",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Flat ceiling"
-              accessibilityState={{ selected: ceilingType === "flat" }}
-            >
-              <Text
-                style={{
-                  fontSize: Typography.body.fontSize,
-                  fontWeight: ceilingType === "flat" ? "600" as any : "400" as any,
-                  color: ceilingType === "flat" ? Colors.darkCharcoal : Colors.mediumGray,
-                }}
-              >
-                Flat
-              </Text>
-            </Pressable>
-
-            {/* Cathedral */}
-            <Pressable
-              onPress={() => setCeilingType("cathedral")}
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                borderRadius: BorderRadius.default,
-                backgroundColor: ceilingType === "cathedral" ? Colors.white : "transparent",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Cathedral ceiling"
-              accessibilityState={{ selected: ceilingType === "cathedral" }}
-            >
-              <Text
-                style={{
-                  fontSize: Typography.body.fontSize,
-                  fontWeight: ceilingType === "cathedral" ? "600" as any : "400" as any,
-                  color: ceilingType === "cathedral" ? Colors.darkCharcoal : Colors.mediumGray,
-                }}
-              >
-                Cathedral
-              </Text>
-            </Pressable>
-          </View>
-
-          {ceilingType === "cathedral" && (
-            <View>
+          {isCathedral && (
+            <View style={{ marginTop: Spacing.md }}>
               <FormInput
                 ref={cathedralPeakHeightRef}
                 previousFieldRef={manualAreaRef}
@@ -1122,9 +1062,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </View>
             )}
           </View>
-
-          {/* Divider */}
-          <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
           {/* Windows Counter */}
           <View style={{ marginBottom: Spacing.md }}>
@@ -1366,70 +1303,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
-        {/* Paint Options Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-            Paint Options
-          </Text>
-          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md, lineHeight: 18 }}>
-            Customize what to paint in this room. These override the project defaults.
-          </Text>
-
-          <Toggle
-            label="Paint Walls"
-            value={paintWalls}
-            onValueChange={setPaintWalls}
-          />
-          <Toggle
-            label="Paint Ceilings"
-            value={paintCeilings}
-            onValueChange={setPaintCeilings}
-          />
-          <Toggle
-            label="Paint Window Frames"
-            value={paintWindowFrames}
-            onValueChange={setPaintWindowFrames}
-            description="Paint window trim and frames"
-          />
-          <Toggle
-            label="Paint Door Frames"
-            value={paintDoorFrames}
-            onValueChange={setPaintDoorFrames}
-            description="Paint door frames and closet door frames"
-          />
-          <Toggle
-            label="Paint Baseboard"
-            value={paintBaseboard}
-            onValueChange={setPaintBaseboard}
-          />
-          <Toggle
-            label="Paint Doors"
-            value={paintDoors}
-            onValueChange={setPaintDoors}
-            description="Paint the door faces (both sides)"
-          />
-          {paintDoors && (
-            <Toggle
-              label="Paint Door Jambs"
-              value={paintJambs}
-              onValueChange={setPaintJambs}
-              description="Paint the inside of door frames"
-            />
-          )}
-          <Toggle
-            label="Crown Moulding"
-            value={hasCrownMoulding}
-            onValueChange={setHasCrownMoulding}
-          />
-          <Toggle
-            label="Multiple Colors / Accent Wall"
-            value={hasAccentWall}
-            onValueChange={setHasAccentWall}
-            description="Adds extra labor for cutting in different colors"
-            className="mb-0"
-          />
-        </Card>
-
         {/* Notes Section */}
         <View ref={notesCardRef}>
           <Card style={{ marginBottom: Spacing.md }}>
@@ -1596,6 +1469,86 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
                 No photos added yet
               </Text>
+            </View>
+          )}
+        </Card>
+
+        {/* Paint Options Section - Collapsable */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <Pressable
+            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Paint Options
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Customize what to paint in this room
+              </Text>
+            </View>
+            <Ionicons
+              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
+
+          {paintOptionsExpanded && (
+            <View style={{ marginTop: Spacing.md }}>
+              <Toggle
+                label="Paint Walls"
+                value={paintWalls}
+                onValueChange={setPaintWalls}
+              />
+              <Toggle
+                label="Paint Ceilings"
+                value={paintCeilings}
+                onValueChange={setPaintCeilings}
+              />
+              <Toggle
+                label="Paint Window Frames"
+                value={paintWindowFrames}
+                onValueChange={setPaintWindowFrames}
+                description="Paint window trim and frames"
+              />
+              <Toggle
+                label="Paint Door Frames"
+                value={paintDoorFrames}
+                onValueChange={setPaintDoorFrames}
+                description="Paint door frames and closet door frames"
+              />
+              <Toggle
+                label="Paint Baseboard"
+                value={paintBaseboard}
+                onValueChange={setPaintBaseboard}
+              />
+              <Toggle
+                label="Paint Doors"
+                value={paintDoors}
+                onValueChange={setPaintDoors}
+                description="Paint the door faces (both sides)"
+              />
+              {paintDoors && (
+                <Toggle
+                  label="Paint Door Jambs"
+                  value={paintJambs}
+                  onValueChange={setPaintJambs}
+                  description="Paint the inside of door frames"
+                />
+              )}
+              <Toggle
+                label="Crown Moulding"
+                value={hasCrownMoulding}
+                onValueChange={setHasCrownMoulding}
+              />
+              <Toggle
+                label="Multiple Colors / Accent Wall"
+                value={hasAccentWall}
+                onValueChange={setHasAccentWall}
+                description="Adds extra labor for cutting in different colors"
+                className="mb-0"
+              />
             </View>
           )}
         </Card>
