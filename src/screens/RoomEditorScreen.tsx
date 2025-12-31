@@ -108,6 +108,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const pricing = usePricingStore();
   const calcSettings = useCalculationSettings((s) => s.settings);
   const unitSystem = useAppSettings((s) => s.unitSystem);
+  const testMode = useAppSettings((s) => s.testMode);
 
   // Store initial state snapshot for dirty checking
   const initialStateRef = useRef<string | null>(null);
