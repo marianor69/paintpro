@@ -373,49 +373,60 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               />
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={riserCountRef}
-                previousFieldRef={nameRef}
-                label="Number of Risers"
-                value={riserCount}
-                onChangeText={setRiserCount}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={handrailLengthRef}
-                className="mb-0"
-              />
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Standard riser height of 7.5 inches assumed
+            {/* Dimensions Card */}
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Dimensions
               </Text>
-            </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={handrailLengthRef}
-                previousFieldRef={riserCountRef}
-                label={`Handrail Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={handrailLength}
-                onChangeText={setHandrailLength}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={spindleCountRef}
-                className="mb-0"
-              />
-            </View>
+              {/* Row 1: Risers & Spindles - 2 columns */}
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={riserCountRef}
+                    previousFieldRef={nameRef}
+                    label="Risers"
+                    value={riserCount}
+                    onChangeText={setRiserCount}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={spindleCountRef}
+                    className="mb-0"
+                  />
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Standard riser height of 7.5 inches assumed
+                  </Text>
+                </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={spindleCountRef}
-                previousFieldRef={handrailLengthRef}
-                label="Number of Spindles"
-                value={spindleCount}
-                onChangeText={setSpindleCount}
-                keyboardType="numeric"
-                placeholder="0"
-                className="mb-0"
-              />
-            </View>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={spindleCountRef}
+                    previousFieldRef={riserCountRef}
+                    label="Spindles"
+                    value={spindleCount}
+                    onChangeText={setSpindleCount}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={handrailLengthRef}
+                    className="mb-0"
+                  />
+                </View>
+              </View>
+
+              {/* Handrail Length - full width */}
+              <View>
+                <FormInput
+                  ref={handrailLengthRef}
+                  previousFieldRef={spindleCountRef}
+                  label={`Handrail Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                  value={handrailLength}
+                  onChangeText={setHandrailLength}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  className="mb-0"
+                />
+              </View>
+            </Card>
 
             {/* Secondary Stairwell Section */}
             <Card style={{ marginBottom: Spacing.md }}>

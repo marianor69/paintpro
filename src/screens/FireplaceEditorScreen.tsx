@@ -335,47 +335,57 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               />
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={widthRef}
-                previousFieldRef={nameRef}
-                label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={width}
-                onChangeText={setWidth}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={heightRef}
-                className="mb-0"
-              />
-            </View>
+            {/* Dimensions Card */}
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Dimensions
+              </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={heightRef}
-                previousFieldRef={widthRef}
-                label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={height}
-                onChangeText={setHeight}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={depthRef}
-                className="mb-0"
-              />
-            </View>
+              {/* Row: Width, Height, Depth - 3 columns */}
+              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={widthRef}
+                    previousFieldRef={nameRef}
+                    label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={width}
+                    onChangeText={setWidth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={heightRef}
+                    className="mb-0"
+                  />
+                </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={depthRef}
-                previousFieldRef={heightRef}
-                label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={depth}
-                onChangeText={setDepth}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={hasTrim ? trimLinearFeetRef : undefined}
-                className="mb-0"
-              />
-            </View>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={heightRef}
+                    previousFieldRef={widthRef}
+                    label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={height}
+                    onChangeText={setHeight}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={depthRef}
+                    className="mb-0"
+                  />
+                </View>
+
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={depthRef}
+                    previousFieldRef={heightRef}
+                    label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={depth}
+                    onChangeText={setDepth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={hasTrim ? trimLinearFeetRef : undefined}
+                    className="mb-0"
+                  />
+                </View>
+              </View>
+            </Card>
 
             {/* Has Trim Toggle */}
             <View style={{ marginBottom: Spacing.md }}>

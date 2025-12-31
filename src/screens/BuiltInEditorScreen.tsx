@@ -293,60 +293,73 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               />
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={widthRef}
-                previousFieldRef={nameRef}
-                label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={width}
-                onChangeText={setWidth}
-                keyboardType="numeric"
-                placeholder={unitSystem === 'metric' ? '0.91' : '3'}
-                nextFieldRef={heightRef}
-                className="mb-0"
-              />
-            </View>
+            {/* Dimensions Card */}
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Dimensions
+              </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={heightRef}
-                previousFieldRef={widthRef}
-                label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={height}
-                onChangeText={setHeight}
-                keyboardType="numeric"
-                placeholder={unitSystem === 'metric' ? '2.03' : '6.67'}
-                nextFieldRef={depthRef}
-                className="mb-0"
-              />
-            </View>
+              {/* Row 1: Width & Height */}
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={widthRef}
+                    previousFieldRef={nameRef}
+                    label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={width}
+                    onChangeText={setWidth}
+                    keyboardType="numeric"
+                    placeholder={unitSystem === 'metric' ? '0.91' : '3'}
+                    nextFieldRef={heightRef}
+                    className="mb-0"
+                  />
+                </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={depthRef}
-                previousFieldRef={heightRef}
-                label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={depth}
-                onChangeText={setDepth}
-                keyboardType="numeric"
-                placeholder={unitSystem === 'metric' ? '0.30' : '1'}
-                nextFieldRef={shelfCountRef}
-                className="mb-0"
-              />
-            </View>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={heightRef}
+                    previousFieldRef={widthRef}
+                    label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={height}
+                    onChangeText={setHeight}
+                    keyboardType="numeric"
+                    placeholder={unitSystem === 'metric' ? '2.03' : '6.67'}
+                    nextFieldRef={depthRef}
+                    className="mb-0"
+                  />
+                </View>
+              </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={shelfCountRef}
-                previousFieldRef={depthRef}
-                label="Number of Shelves"
-                value={shelfCount}
-                onChangeText={setShelfCount}
-                keyboardType="numeric"
-                placeholder="0"
-                className="mb-0"
-              />
-            </View>
+              {/* Row 2: Depth & Shelves */}
+              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={depthRef}
+                    previousFieldRef={heightRef}
+                    label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={depth}
+                    onChangeText={setDepth}
+                    keyboardType="numeric"
+                    placeholder={unitSystem === 'metric' ? '0.30' : '1'}
+                    nextFieldRef={shelfCountRef}
+                    className="mb-0"
+                  />
+                </View>
+
+                <View style={{ flex: 1 }}>
+                  <FormInput
+                    ref={shelfCountRef}
+                    previousFieldRef={depthRef}
+                    label="Shelves"
+                    value={shelfCount}
+                    onChangeText={setShelfCount}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    className="mb-0"
+                  />
+                </View>
+              </View>
+            </Card>
 
             {/* Notes Section */}
             <View ref={notesCardRef}>
