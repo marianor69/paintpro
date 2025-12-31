@@ -100,6 +100,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const updateProjectFloors = useProjectStore((s) => s.updateProjectFloors);
   const updateGlobalPaintDefaults = useProjectStore((s) => s.updateGlobalPaintDefaults);
   const updateProjectCoverPhoto = useProjectStore((s) => s.updateProjectCoverPhoto);
+  const { unitSystem } = useAppSettings();
 
   // Client Info State (for new projects)
   const [name, setName] = useState(project?.clientInfo?.name || "");
@@ -796,7 +797,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                         accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
                       />
                     </View>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>ft</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>{unitSystem === 'metric' ? 'm' : 'ft'}</Text>
                   </View>
                 ))}
 
