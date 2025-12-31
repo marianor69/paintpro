@@ -134,17 +134,26 @@ function MainTabs() {
           fontWeight: "600",
           fontSize: 17,
         },
+        headerLargeTitle: false,
       })}
     >
       <Tab.Screen
         name="HomeTab"
         component={HomeScreen as any}
-        options={{ title: "Home", headerShown: true }}
+        options={{
+          title: "Home",
+          headerShown: true,
+          headerLargeTitle: false,
+        }}
       />
       <Tab.Screen
         name="SettingsTab"
         component={SettingsGateScreen as any}
-        options={{ title: "Settings", headerShown: true }}
+        options={{
+          title: "Settings",
+          headerShown: true,
+          headerLargeTitle: false,
+        }}
       />
     </Tab.Navigator>
   );
