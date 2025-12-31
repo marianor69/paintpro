@@ -1758,6 +1758,147 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           );
         })()}
 
+        {/* Test Mode: Detailed Calculation Breakdown */}
+        {testMode && pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
+          const calcSettings = useCalculationSettings.getState().settings;
+          const secondCoatMultiplier = safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
+          const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
+
+          return (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
+                TEST MODE: Calculation Details
+              </Text>
+
+              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                {/* Walls */}
+                {pricingSummary.wallArea > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Walls
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {pricingSummary.wallArea.toFixed(2)} sqft | Coats: {pricingSummary.coatsWalls}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {pricingSummary.wallArea.toFixed(2)} × ${safeNumber(pricing.wallLaborPerSqFt, 0).toFixed(2)}/sqft × {getCoatLaborMultiplier(pricingSummary.coatsWalls).toFixed(2)} = ${(pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.wallPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.wallPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricing.wallPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Ceiling */}
+                {pricingSummary.ceilingArea > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Ceiling
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {pricingSummary.ceilingArea.toFixed(2)} sqft | Coats: {pricingSummary.coatsCeiling}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {pricingSummary.ceilingArea.toFixed(2)} × ${safeNumber(pricing.ceilingLaborPerSqFt, 0).toFixed(2)}/sqft × {getCoatLaborMultiplier(pricingSummary.coatsCeiling).toFixed(2)} = ${(pricingSummary.ceilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.ceilingPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.ceilingPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricing.ceilingPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Baseboard */}
+                {paintBaseboard && pricingSummary.baseboardLF > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Baseboard
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Length: {pricingSummary.baseboardLF.toFixed(2)} ft | Coats: {pricingSummary.coatsBaseboard}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {pricingSummary.baseboardLF.toFixed(2)} × ${safeNumber(pricing.baseboardLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsBaseboard).toFixed(2)} = ${(pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsBaseboard)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.baseboardPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.baseboardPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Crown Moulding */}
+                {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Crown Moulding
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Length: {pricingSummary.crownMouldingLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {pricingSummary.crownMouldingLF.toFixed(2)} × ${safeNumber(pricing.trimLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.crownMouldingLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.crownPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.crownPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Windows */}
+                {pricingSummary.windowsCount > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Windows
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Count: {pricingSummary.windowsCount} | Coats: {pricingSummary.coatsWindows}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {pricingSummary.windowsCount} × ${safeNumber(pricing.windowLabor, 0).toFixed(2)}/window × {getCoatLaborMultiplier(pricingSummary.coatsWindows).toFixed(2)} = ${(pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsWindows)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.windowsPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.windowsPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Doors */}
+                {pricingSummary.doorsCount > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Doors
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Count: {pricingSummary.doorsCount} | Coats: {pricingSummary.coatsDoors}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {pricingSummary.doorsCount} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsDoors).toFixed(2)} = ${(pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.doorsPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.doorsPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Totals */}
+                <View>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                    Totals
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Total Labor: ${pricingSummary.laborDisplayed.toFixed(2)}
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Total Materials: ${pricingSummary.materialsDisplayed.toFixed(2)}
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Grand Total: ${pricingSummary.totalDisplayed.toFixed(2)}
+                  </Text>
+                </View>
+              </View>
+            </Card>
+          );
+        })()}
+
         {/* Save Button */}
         <Pressable
           onPress={handleSave}

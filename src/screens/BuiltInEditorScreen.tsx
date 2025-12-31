@@ -462,6 +462,103 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
+            {/* Test Mode: Detailed Calculation Breakdown */}
+            {testMode && hasAnyDimensions && (() => {
+              const frontBackArea = 2 * widthVal * heightVal;
+              const leftRightArea = 2 * heightVal * depthVal;
+              const topBottomArea = 2 * widthVal * depthVal;
+              const shelvesArea = shelfCount && parseInt(shelfCount) > 0 ? parseInt(shelfCount) * widthVal : 0;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
+                    TEST MODE: Calculation Details
+                  </Text>
+
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    {/* Front/Back */}
+                    {frontBackArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Front/Back Faces
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {frontBackArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {width} × {height})
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Formula: 2 × width × height
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Left/Right */}
+                    {leftRightArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Left/Right Sides
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {leftRightArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {height} × {depth})
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Formula: 2 × height × depth
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Top/Bottom */}
+                    {topBottomArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Top/Bottom
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {topBottomArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {width} × {depth})
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Formula: 2 × width × depth
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Shelves */}
+                    {shelvesArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Shelves
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Count: {shelfCount} shelves
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {shelvesArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} ({shelfCount} × {width})
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Formula: shelf_count × width
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Total */}
+                    <View>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Total Paintable Area
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total: {totalPaintableArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Formula: Front/Back + Left/Right + Top/Bottom + Shelves
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        = {frontBackArea.toFixed(2)} + {leftRightArea.toFixed(2)} + {topBottomArea.toFixed(2)} + {shelvesArea.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+                </Card>
+              );
+            })()}
+
             <Pressable
               onPress={handleSave}
               disabled={isSaving}

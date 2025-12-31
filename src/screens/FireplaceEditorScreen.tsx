@@ -607,6 +607,119 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
+            {/* Test Mode: Detailed Calculation Breakdown */}
+            {testMode && calculations && (() => {
+              const frontBackArea = 2 * parseFloat(width || '0') * parseFloat(height || '0');
+              const topArea = parseFloat(width || '0') * parseFloat(depth || '0');
+              const sideArea = parseFloat(height || '0') * parseFloat(depth || '0');
+              const trimArea = hasTrim && parseFloat(trimLinearFeet || '0') > 0
+                ? parseFloat(trimLinearFeet || '0') * (unitSystem === 'metric' ? 0.15 : 0.5)
+                : 0;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
+                    TEST MODE: Calculation Details
+                  </Text>
+
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    {/* Front/Back */}
+                    {frontBackArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Front/Back Faces
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {frontBackArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {width} × {height})
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Top */}
+                    {topArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Top Surface
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {topArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} ({width} × {depth})
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Side */}
+                    {sideArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Side Surface
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {sideArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} ({height} × {depth})
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Trim */}
+                    {trimArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Trim
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {trimArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} ({trimLinearFeet} × {unitSystem === 'metric' ? '0.15' : '0.5'})
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Labor */}
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Labor
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Fixed rate: ${pricing.fireplaceLabor.toFixed(2)}
+                      </Text>
+                    </View>
+
+                    {/* Paint */}
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Paint
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Area: {calculations.paintableArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} | Coats: {fireplace?.coats || 2}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Coverage: {pricing.wallCoverageSqFtPerGallon} sqft/gal
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Gallons: {calculations.totalGallons.toFixed(2)} gal
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(calculations.totalGallons)} gal × ${pricing.wallPaintPerGallon.toFixed(2)}/gal = ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                    </View>
+
+                    {/* Totals */}
+                    <View>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Totals
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Labor: ${calculations.laborDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Materials: ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Grand Total: ${calculations.totalDisplayed.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+                </Card>
+              );
+            })()}
+
             <Pressable
               onPress={handleSave}
               style={{

@@ -687,6 +687,137 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
+            {/* Test Mode: Detailed Calculation Breakdown */}
+            {testMode && calculations && hasDataEntered && (() => {
+              const riserHeightFt = 7.5 / 12;
+              const stairWidthFt = 3;
+              const riserArea = parseInt(riserCount) * riserHeightFt * stairWidthFt;
+              const spindleArea = parseInt(spindleCount) * 0.5;
+              const handrailArea = parseFloat(handrailLength) * 0.5;
+
+              const secondaryWallArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
+                ? ((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)
+                : 0;
+              const secondaryCeilingArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
+                    TEST MODE: Calculation Details
+                  </Text>
+
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    {/* Risers */}
+                    {parseInt(riserCount) > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Risers
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Count: {riserCount} | Area: {riserArea.toFixed(2)} sqft ({riserCount} × 7.5" × 36")
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {riserCount} × ${pricing.riserLabor.toFixed(2)}/riser = ${(parseInt(riserCount) * pricing.riserLabor).toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Spindles */}
+                    {parseInt(spindleCount) > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Spindles
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Count: {spindleCount} | Area: {spindleArea.toFixed(2)} sqft ({spindleCount} × 0.5 sqft)
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {spindleCount} × ${pricing.spindleLabor.toFixed(2)}/spindle = ${(parseInt(spindleCount) * pricing.spindleLabor).toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Handrail */}
+                    {parseFloat(handrailLength) > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Handrail
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Length: {handrailLength} ft | Area: {handrailArea.toFixed(2)} sqft ({handrailLength} × 0.5 ft)
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {handrailLength} ft × ${pricing.handrailLaborPerLF.toFixed(2)}/ft = ${(parseFloat(handrailLength) * pricing.handrailLaborPerLF).toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Secondary Wall */}
+                    {secondaryWallArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Secondary Stairwell - Wall
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {secondaryWallArea.toFixed(2)} sqft (({tallWallHeight} + {shortWallHeight}) / 2 × 12 ft{doubleSidedWalls ? " × 2" : ""})
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {secondaryWallArea.toFixed(2)} × ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft = ${(secondaryWallArea * pricing.wallLaborPerSqFt).toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Secondary Ceiling */}
+                    {secondaryCeilingArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Secondary Stairwell - Ceiling
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {secondaryCeilingArea.toFixed(2)} sqft (15 ft × 3.5 ft)
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {secondaryCeilingArea.toFixed(2)} × ${pricing.ceilingLaborPerSqFt.toFixed(2)}/sqft = ${(secondaryCeilingArea * pricing.ceilingLaborPerSqFt).toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Paint */}
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Paint
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Area: {calculations.paintableArea.toFixed(2)} sqft | Coats: {staircase?.coats || 2}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Gallons: {calculations.totalGallons.toFixed(2)} gal
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(calculations.totalGallons)} gal × ${pricing.trimPaintPerGallon.toFixed(2)}/gal = ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                    </View>
+
+                    {/* Totals */}
+                    <View>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Totals
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Labor: ${calculations.laborDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Materials: ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Grand Total: ${calculations.totalDisplayed.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+                </Card>
+              );
+            })()}
+
             <Pressable
               onPress={handleSave}
               style={{
