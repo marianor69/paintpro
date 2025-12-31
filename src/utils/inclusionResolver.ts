@@ -96,9 +96,8 @@ export function computeResolvedInclusions(
   const ceilings = resolveInclusion(room.paintCeilings, quoteBuilder.includeCeilings);
   const trim = resolveInclusion(room.paintTrim, quoteBuilder.includeTrim);
   const baseboards = resolveInclusion(room.paintBaseboard, quoteBuilder.includeBaseboards);
-  // Window TRIM/FRAMES use paintTrim toggle (paintWindows was for window sash which is rarely painted)
-  // This matches the UI where "Paint Trim" description says "Includes door frames, window frames, and closet frames"
-  const windows = resolveInclusion(room.paintTrim, quoteBuilder.includeWindows);
+  // Windows and doors use their respective toggles
+  const windows = resolveInclusion(room.paintWindows, quoteBuilder.includeWindows);
   const doors = resolveInclusion(room.paintDoors, quoteBuilder.includeDoors);
   const closets = resolveInclusion(undefined, quoteBuilder.includeClosets); // No room-level closet toggle
   const crownMoulding = resolveInclusion(room.hasCrownMoulding, quoteBuilder.includeTrim); // Crown uses trim toggle
