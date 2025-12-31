@@ -1584,6 +1584,22 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   </Text>
                 </View>
               )}
+              {pricingSummary.windowsCount > 0 && (
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Windows:</Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    {pricingSummary.windowsCount}
+                  </Text>
+                </View>
+              )}
+              {pricingSummary.doorsCount > 0 && (
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Doors:</Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    {pricingSummary.doorsCount}
+                  </Text>
+                </View>
+              )}
             </View>
 
             <View style={{ backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
