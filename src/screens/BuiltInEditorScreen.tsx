@@ -280,24 +280,25 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
           )}
 
           <View style={{ padding: Spacing.md }}>
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={nameRef}
-                label="Name/Location"
-                value={name}
-                onChangeText={setName}
-                placeholder="e.g., Library Bookshelf, Living Room Built-In"
-                nextFieldRef={widthRef}
-                returnKeyType="next"
-                className="mb-0"
-              />
-            </View>
-
-            {/* Dimensions Card */}
+            {/* Built-In Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Dimensions
+                Built-In Information
               </Text>
+
+              {/* Name/Location */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <FormInput
+                  ref={nameRef}
+                  label="Name/Location"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="e.g., Library Bookshelf, Living Room Built-In"
+                  nextFieldRef={widthRef}
+                  returnKeyType="next"
+                  className="mb-0"
+                />
+              </View>
 
               {/* Row 1: Width & Height */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
