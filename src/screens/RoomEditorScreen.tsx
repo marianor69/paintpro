@@ -194,6 +194,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const widthRef = useRef<TextInput>(null);
   const manualAreaRef = useRef<TextInput>(null);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -750,6 +751,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
     >
       <ScrollView
+        ref={scrollViewRef}
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: Spacing.md }}
         keyboardShouldPersistTaps="handled"
@@ -1439,6 +1441,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             placeholderTextColor={Colors.mediumGray}
             multiline
             numberOfLines={3}
+            onFocus={() => {
+              setTimeout(() => {
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+              }, 100);
+            }}
             style={[
               TextInputStyles.multiline,
               {

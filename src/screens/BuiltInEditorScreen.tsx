@@ -68,6 +68,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const heightRef = useRef<TextInput>(null);
   const depthRef = useRef<TextInput>(null);
   const shelfCountRef = useRef<TextInput>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -262,6 +263,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         style={{ flex: 1 }}
       >
         <ScrollView
+          ref={scrollViewRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 400 }}
           keyboardShouldPersistTaps="handled"
@@ -357,6 +359,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                 placeholderTextColor={Colors.mediumGray}
                 multiline
                 numberOfLines={3}
+                onFocus={() => {
+                  setTimeout(() => {
+                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                  }, 100);
+                }}
                 style={[
                   TextInputStyles.multiline,
                   {

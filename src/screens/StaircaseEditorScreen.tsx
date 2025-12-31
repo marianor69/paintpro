@@ -90,6 +90,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const spindleCountRef = useRef<TextInput>(null);
   const tallWallHeightRef = useRef<TextInput>(null);
   const shortWallHeightRef = useRef<TextInput>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -342,6 +343,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         style={{ flex: 1 }}
       >
         <ScrollView
+          ref={scrollViewRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 400 }}
           keyboardShouldPersistTaps="handled"
@@ -472,6 +474,11 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 placeholderTextColor={Colors.mediumGray}
                 multiline
                 numberOfLines={3}
+                onFocus={() => {
+                  setTimeout(() => {
+                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                  }, 100);
+                }}
                 style={[
                   TextInputStyles.multiline,
                   {
