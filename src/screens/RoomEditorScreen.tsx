@@ -1603,54 +1603,60 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </Text>
 
               <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                {/* Left Column - Measurements (Gray) - Wider */}
+                {/* Left Column - Measurements (Gray) - Wider with 2 columns: structures (left) and measures (right) */}
                 <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
-                  <View style={{ marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                      Wall Area: <Text style={{ fontWeight: "600" as any }}>{formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}</Text>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Wall</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      {formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}
                     </Text>
                   </View>
-                  <View style={{ marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                      Ceiling Area: <Text style={{ fontWeight: "600" as any }}>{formatMeasurement(pricingSummary.ceilingArea, 'area', unitSystem)}</Text>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Ceiling</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      {formatMeasurement(pricingSummary.ceilingArea, 'area', unitSystem)}
                     </Text>
                   </View>
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (
-                    <View style={{ marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Baseboard: <Text style={{ fontWeight: "600" as any }}>{formatMeasurement(pricingSummary.baseboardLF, 'linearFeet', unitSystem)}</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Baseboard</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(pricingSummary.baseboardLF, 'linearFeet', unitSystem)}
                       </Text>
                     </View>
                   )}
                   {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
-                    <View style={{ marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Crown Moulding: <Text style={{ fontWeight: "600" as any }}>{formatMeasurement(pricingSummary.crownMouldingLF, 'linearFeet', unitSystem)}</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Crown Mld</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(pricingSummary.crownMouldingLF, 'linearFeet', unitSystem)}
                       </Text>
                     </View>
                   )}
                   {pricingSummary.windowsCount > 0 && (
-                    <View style={{ marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Windows: <Text style={{ fontWeight: "600" as any }}>{pricingSummary.windowsCount}</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Windows</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {pricingSummary.windowsCount}
                       </Text>
                     </View>
                   )}
                   {pricingSummary.doorsCount > 0 && (
-                    <View style={{ marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Doors: <Text style={{ fontWeight: "600" as any }}>{pricingSummary.doorsCount}</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Doors</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {pricingSummary.doorsCount}
                       </Text>
                     </View>
                   )}
                 </View>
 
-                {/* Right Section - Pricing (Blue) with Labor and Materials columns - Slimmer and Right-Aligned */}
+                {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                   {/* Header Row */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Materials</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Mat</Text>
                   </View>
 
                   {/* Walls */}
