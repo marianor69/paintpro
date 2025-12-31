@@ -800,10 +800,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>{unitSystem === 'metric' ? 'm' : 'ft'}</Text>
                   </View>
                 ))}
-
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm }}>
-                  {t("screens.projectSetup.floors.floorHeightHelp")}
-                </Text>
               </>
             )}
           </Card>
