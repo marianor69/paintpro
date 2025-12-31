@@ -1658,13 +1658,13 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                   {/* Header Row */}
-                  <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                   </View>
 
                   {/* Walls */}
-                  <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(wallLaborCost)}
                     </Text>
@@ -1674,7 +1674,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   </View>
 
                   {/* Ceiling */}
-                  <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(ceilingLaborCost)}
                     </Text>
@@ -1685,7 +1685,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                   {/* Baseboard */}
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (
-                    <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(baseboardLaborCost)}
                       </Text>
@@ -1697,7 +1697,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                   {/* Crown Moulding */}
                   {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
-                    <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(crownLaborCost)}
                       </Text>
@@ -1709,7 +1709,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                   {/* Windows */}
                   {pricingSummary.windowsCount > 0 && (
-                    <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(windowLaborCost)}
                       </Text>
@@ -1721,7 +1721,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                   {/* Doors */}
                   {pricingSummary.doorsCount > 0 && (
-                    <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(doorLaborCost)}
                       </Text>
@@ -1734,7 +1734,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
                   {/* Subtotals - without labels */}
-                  <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(pricingSummary.laborDisplayed)}
                     </Text>
