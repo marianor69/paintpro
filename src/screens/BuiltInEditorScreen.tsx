@@ -243,9 +243,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const depthVal = parseFloat(depth) || 0;
   const totalPaintableArea =
     2 * (widthVal * heightVal) + // front and back
-    2 * (widthVal * depthVal) + // left and right sides
-    2 * (heightVal * depthVal) + // top and bottom
+    2 * (heightVal * depthVal) + // left and right sides (height × depth)
+    2 * (widthVal * depthVal) + // top and bottom (width × depth)
     (shelfCount ? parseInt(shelfCount) * widthVal : 0); // shelves
+
+  const hasAnyDimensions = widthVal > 0 || heightVal > 0 || depthVal > 0;
 
   // If existing built-in not found, show error
   if (!isNewBuiltIn && !builtIn) {
@@ -397,7 +399,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </View>
 
             {/* Built-In Summary */}
-            {totalPaintableArea > 0 && (() => {
+            {hasAnyDimensions && (() => {
               // Calculate per-component areas
               const frontBackArea = 2 * widthVal * heightVal;
               const leftRightArea = 2 * heightVal * depthVal;
