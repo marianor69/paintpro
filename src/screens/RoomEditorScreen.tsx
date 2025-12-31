@@ -1605,6 +1605,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                 {/* Left Column - Measurements (Gray) - Wider with 2 columns: structures (left) and measures (right) */}
                 <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  {/* Empty row to align with blue section headers */}
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
+                  </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Wall</Text>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
@@ -1653,6 +1657,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                 {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  {/* Header Row */}
+                  <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
+                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Labor</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Mat</Text>
+                  </View>
+
                   {/* Walls */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
