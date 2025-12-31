@@ -1552,48 +1552,48 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         {pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
           // Calculate per-category costs
           const calcSettings = useCalculationSettings.getState().settings;
-          const secondCoatMultiplier = safeNumber(pricingSettings.secondCoatLaborMultiplier, 2.0);
+          const secondCoatMultiplier = safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
           const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
 
           // Walls
-          const wallLaborCost = pricingSummary.wallArea * safeNumber(pricingSettings.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
-          const wallMaterialsCost = Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricingSettings.wallPaintPerGallon, 0);
+          const wallLaborCost = pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
+          const wallMaterialsCost = Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricing.wallPaintPerGallon, 0);
           const wallTotal = wallLaborCost + wallMaterialsCost;
 
           // Ceilings
-          const ceilingLaborCost = pricingSummary.ceilingArea * safeNumber(pricingSettings.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
-          const ceilingMaterialsCost = Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricingSettings.ceilingPaintPerGallon, 0);
+          const ceilingLaborCost = pricingSummary.ceilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
+          const ceilingMaterialsCost = Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricing.ceilingPaintPerGallon, 0);
           const ceilingTotal = ceilingLaborCost + ceilingMaterialsCost;
 
           // Baseboard
-          const baseboardLaborCost = pricingSummary.baseboardLF * safeNumber(pricingSettings.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const baseboardLaborCost = pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const baseboardTrimWidthFt = calcSettings.baseboardWidth / 12;
           const baseboardTrimSqFt = pricingSummary.baseboardLF * baseboardTrimWidthFt;
-          const trimCoverage = Math.max(1, safeNumber(pricingSettings.trimCoverageSqFtPerGallon, 400));
+          const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
           const baseboardTrimGallons = (baseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const baseboardMaterialsCost = Math.ceil(baseboardTrimGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const baseboardMaterialsCost = Math.ceil(baseboardTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const baseboardTotal = baseboardLaborCost + baseboardMaterialsCost;
 
           // Crown Moulding
-          const crownLaborCost = pricingSummary.crownMouldingLF * safeNumber(pricingSettings.crownMouldingLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const crownLaborCost = pricingSummary.crownMouldingLF * safeNumber(pricing.crownMouldingLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const crownTrimWidthFt = calcSettings.crownMouldingWidth / 12;
           const crownTrimSqFt = pricingSummary.crownMouldingLF * crownTrimWidthFt;
           const crownTrimGallons = (crownTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const crownTotal = crownLaborCost + crownMaterialsCost;
 
           // Windows
-          const windowLaborCost = pricingSummary.windowsCount * safeNumber(pricingSettings.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const windowLaborCost = pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
           const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
           const windowTrimSqFt = pricingSummary.windowsCount * windowTrimPerimeter * windowTrimWidthFt;
           const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const windowTotal = windowLaborCost + windowMaterialsCost;
 
           // Doors
-          const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricingSettings.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
-          const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
+          const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const doorTotal = doorLaborCost + doorMaterialsCost;
 
           return (
