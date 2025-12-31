@@ -884,15 +884,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View
                         key={room.id}
                         style={{
-                          backgroundColor: Colors.white,
-                          borderRadius: BorderRadius.default,
-                          padding: Spacing.sm,
-                          marginBottom: idx < project.rooms.length - 1 ? Spacing.xs : 0,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
                           flexDirection: "row",
-                          justifyContent: "space-between",
                           alignItems: "center",
+                          gap: Spacing.sm,
+                          marginBottom: idx < project.rooms.length - 1 ? Spacing.xs : 0,
                         }}
                       >
                         <Pressable
@@ -903,7 +898,17 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               roomName: room.name || "Unnamed Room",
                             })
                           }
-                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          style={{
+                            flex: 1,
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            padding: Spacing.sm,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
                         >
@@ -928,7 +933,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               },
                             ]);
                           }}
-                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          style={{
+                            padding: Spacing.sm,
+                            backgroundColor: Colors.backgroundWarmGray,
+                            borderRadius: BorderRadius.default,
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Delete room ${room.name || "Unnamed Room"}`}
                         >
@@ -1021,15 +1030,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View
                         key={staircase.id}
                         style={{
-                          backgroundColor: Colors.white,
-                          borderRadius: BorderRadius.default,
-                          padding: Spacing.sm,
-                          marginBottom: idx < project.staircases.length - 1 ? Spacing.xs : 0,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
                           flexDirection: "row",
-                          justifyContent: "space-between",
                           alignItems: "center",
+                          gap: Spacing.sm,
+                          marginBottom: idx < project.staircases.length - 1 ? Spacing.xs : 0,
                         }}
                       >
                         <Pressable
@@ -1039,7 +1043,17 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               staircaseId: staircase.id,
                             })
                           }
-                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          style={{
+                            flex: 1,
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            padding: Spacing.sm,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Edit staircase ${staircase.name || `Staircase ${idx + 1}`}`}
                         >
@@ -1059,7 +1073,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               },
                             ]);
                           }}
-                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          style={{
+                            padding: Spacing.sm,
+                            backgroundColor: Colors.backgroundWarmGray,
+                            borderRadius: BorderRadius.default,
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Delete staircase ${staircase.name || `Staircase ${idx + 1}`}`}
                         >
@@ -1121,15 +1139,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View
                         key={fireplace.id}
                         style={{
-                          backgroundColor: Colors.white,
-                          borderRadius: BorderRadius.default,
-                          padding: Spacing.sm,
-                          marginBottom: idx < project.fireplaces.length - 1 ? Spacing.xs : 0,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
                           flexDirection: "row",
-                          justifyContent: "space-between",
                           alignItems: "center",
+                          gap: Spacing.sm,
+                          marginBottom: idx < project.fireplaces.length - 1 ? Spacing.xs : 0,
                         }}
                       >
                         <Pressable
@@ -1139,7 +1152,17 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               fireplaceId: fireplace.id,
                             })
                           }
-                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          style={{
+                            flex: 1,
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            padding: Spacing.sm,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Edit fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
                         >
@@ -1159,7 +1182,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               },
                             ]);
                           }}
-                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          style={{
+                            padding: Spacing.sm,
+                            backgroundColor: Colors.backgroundWarmGray,
+                            borderRadius: BorderRadius.default,
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Delete fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
                         >
@@ -1221,15 +1248,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View
                         key={builtIn.id}
                         style={{
-                          backgroundColor: Colors.white,
-                          borderRadius: BorderRadius.default,
-                          padding: Spacing.sm,
-                          marginBottom: idx < project.builtIns.length - 1 ? Spacing.xs : 0,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
                           flexDirection: "row",
-                          justifyContent: "space-between",
                           alignItems: "center",
+                          gap: Spacing.sm,
+                          marginBottom: idx < project.builtIns.length - 1 ? Spacing.xs : 0,
                         }}
                       >
                         <Pressable
@@ -1239,7 +1261,17 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               builtInId: builtIn.id,
                             })
                           }
-                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          style={{
+                            flex: 1,
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            padding: Spacing.sm,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
                         >
@@ -1259,7 +1291,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               },
                             ]);
                           }}
-                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          style={{
+                            padding: Spacing.sm,
+                            backgroundColor: Colors.backgroundWarmGray,
+                            borderRadius: BorderRadius.default,
+                          }}
                           accessibilityRole="button"
                           accessibilityLabel={`Delete built-in ${builtIn.name || "Unnamed Built-In"}`}
                         >
