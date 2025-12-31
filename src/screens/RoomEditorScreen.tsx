@@ -1612,20 +1612,20 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Wall</Text>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                      {formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}
+                      {formatMeasurement(Math.ceil(pricingSummary.wallArea), 'area', unitSystem, 0)}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Ceiling</Text>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                      {formatMeasurement(pricingSummary.ceilingArea, 'area', unitSystem)}
+                      {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), 'area', unitSystem, 0)}
                     </Text>
                   </View>
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Baseboard</Text>
                       <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(pricingSummary.baseboardLF, 'linearFeet', unitSystem)}
+                        {formatMeasurement(Math.ceil(pricingSummary.baseboardLF), 'linearFeet', unitSystem, 0)}
                       </Text>
                     </View>
                   )}
@@ -1633,7 +1633,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Crown Mld</Text>
                       <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(pricingSummary.crownMouldingLF, 'linearFeet', unitSystem)}
+                        {formatMeasurement(Math.ceil(pricingSummary.crownMouldingLF), 'linearFeet', unitSystem, 0)}
                       </Text>
                     </View>
                   )}
