@@ -342,7 +342,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               </Text>
 
               {/* Row: Width, Height, Depth - 3 columns */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <FormInput
                     ref={widthRef}
@@ -385,31 +385,31 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   />
                 </View>
               </View>
-            </Card>
 
-            {/* Has Trim Toggle */}
-            <View style={{ marginBottom: Spacing.md }}>
-              <Toggle
-                label="Has Trim"
-                value={hasTrim}
-                onValueChange={setHasTrim}
-              />
-            </View>
-
-            {hasTrim && (
-              <View style={{ marginBottom: Spacing.md }}>
-                <FormInput
-                  ref={trimLinearFeetRef}
-                  previousFieldRef={depthRef}
-                  label={`Trim Linear (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                  value={trimLinearFeet}
-                  onChangeText={setTrimLinearFeet}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  className="mb-0"
+              {/* Has Trim Toggle */}
+              <View style={{ marginBottom: hasTrim ? Spacing.md : 0 }}>
+                <Toggle
+                  label="Has Trim"
+                  value={hasTrim}
+                  onValueChange={setHasTrim}
                 />
               </View>
-            )}
+
+              {hasTrim && (
+                <View>
+                  <FormInput
+                    ref={trimLinearFeetRef}
+                    previousFieldRef={depthRef}
+                    label={`Trim Linear (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    value={trimLinearFeet}
+                    onChangeText={setTrimLinearFeet}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    className="mb-0"
+                  />
+                </View>
+              )}
+            </Card>
 
             {/* Notes Section */}
             <View ref={notesCardRef}>
