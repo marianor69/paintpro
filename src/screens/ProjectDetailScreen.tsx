@@ -819,174 +819,166 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             </View>
           </Card>
 
-          {/* Rooms Section */}
-          {project.rooms.length > 0 && (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Rooms
-              </Text>
-              <View style={{ marginBottom: Spacing.md }}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Rooms: {project.rooms.length}
-                  </Text>
-                  {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
-                    <Pressable
-                      onPress={() => handleAddRoom(1)}
-                      style={{
-                        backgroundColor: Colors.primaryBlue,
-                        borderRadius: 8,
-                        paddingHorizontal: Spacing.md,
-                        paddingVertical: 6,
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel="Add room"
-                    >
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                        Add
-                      </Text>
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      onPress={() => {
-                        // Show floor selection modal or dropdown
-                        const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
-                        Alert.alert("Select Floor", "Choose which floor to add the room to:", [
-                          ...Array.from({ length: floorCount }, (_, i) => ({
-                            text: `${getOrdinal(i + 1)} Floor`,
-                            onPress: () => handleAddRoom(i + 1),
-                          })),
-                          { text: "Cancel", style: "cancel" },
-                        ]);
-                      }}
-                      style={{
-                        backgroundColor: Colors.primaryBlue,
-                        borderRadius: 8,
-                        paddingHorizontal: Spacing.md,
-                        paddingVertical: 6,
-                      }}
-                      accessibilityRole="button"
-                      accessibilityLabel="Add room"
-                    >
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                        Add
-                      </Text>
-                    </Pressable>
-                  )}
-                </View>
-                {project.rooms.map((room, idx) => (
-                  <Pressable
-                    key={room.id}
-                    onPress={() =>
-                      navigation.navigate("RoomEditor", {
-                        projectId,
-                        roomId: room.id,
-                        roomName: room.name || "Unnamed Room",
-                      })
-                    }
-                    onLongPress={() => {
-                      Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
-                        { text: "Cancel", style: "cancel" },
-                        {
-                          text: "Delete",
-                          style: "destructive",
-                          onPress: () => deleteRoom(projectId, room.id),
-                        },
-                      ]);
-                    }}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      padding: Spacing.sm,
-                      marginBottom: idx < project.rooms.length - 1 ? Spacing.xs : 0,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
-                  >
-                    <View>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                        {room.name || "Unnamed Room"}
-                      </Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
-                        {getOrdinal(room.floor || 1)} floor
-                      </Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                  </Pressable>
-                ))}
-              </View>
-            </Card>
-          )}
-
-          {/* Add Room button if none exist */}
-          {project.rooms.length === 0 && (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Rooms
-              </Text>
-              <View style={{ gap: Spacing.sm }}>
-                {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
-                  <Pressable
-                    onPress={() => handleAddRoom(1)}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      paddingVertical: Spacing.md,
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Add room"
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                      Add Room
-                    </Text>
-                  </Pressable>
-                ) : (
-                  <Pressable
-                    onPress={() => {
-                      const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
-                      Alert.alert("Select Floor", "Choose which floor to add the room to:", [
-                        ...Array.from({ length: floorCount }, (_, i) => ({
-                          text: `${getOrdinal(i + 1)} Floor`,
-                          onPress: () => handleAddRoom(i + 1),
-                        })),
-                        { text: "Cancel", style: "cancel" },
-                      ]);
-                    }}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      paddingVertical: Spacing.md,
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Add room"
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                      Add Room
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            </Card>
-          )}
-
-          {/* Structures - Staircases, Fireplaces, Built-Ins */}
+          {/* Rooms and Structures - Combined */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Structures
+              Rooms and Structures
             </Text>
 
             <View style={{ gap: Spacing.md }}>
+              {/* ROOMS SECTION */}
+              <View>
+                {project.rooms && project.rooms.length > 0 ? (
+                  <>
+                    {/* Header with count and Add button */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Rooms: {project.rooms.length}
+                      </Text>
+                      {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
+                        <Pressable
+                          onPress={() => handleAddRoom(1)}
+                          style={{
+                            backgroundColor: Colors.primaryBlue,
+                            borderRadius: 8,
+                            paddingHorizontal: Spacing.md,
+                            paddingVertical: 6,
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="Add room"
+                        >
+                          <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                            Add
+                          </Text>
+                        </Pressable>
+                      ) : (
+                        <Pressable
+                          onPress={() => {
+                            const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                            Alert.alert("Select Floor", "Choose which floor to add the room to:", [
+                              ...Array.from({ length: floorCount }, (_, i) => ({
+                                text: `${getOrdinal(i + 1)} Floor`,
+                                onPress: () => handleAddRoom(i + 1),
+                              })),
+                              { text: "Cancel", style: "cancel" },
+                            ]);
+                          }}
+                          style={{
+                            backgroundColor: Colors.primaryBlue,
+                            borderRadius: 8,
+                            paddingHorizontal: Spacing.md,
+                            paddingVertical: 6,
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="Add room"
+                        >
+                          <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                            Add
+                          </Text>
+                        </Pressable>
+                      )}
+                    </View>
+
+                    {/* Rooms list */}
+                    {project.rooms.map((room, idx) => (
+                      <Pressable
+                        key={room.id}
+                        onPress={() =>
+                          navigation.navigate("RoomEditor", {
+                            projectId,
+                            roomId: room.id,
+                            roomName: room.name || "Unnamed Room",
+                          })
+                        }
+                        onLongPress={() => {
+                          Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Delete",
+                              style: "destructive",
+                              onPress: () => deleteRoom(projectId, room.id),
+                            },
+                          ]);
+                        }}
+                        style={{
+                          backgroundColor: Colors.white,
+                          borderRadius: BorderRadius.default,
+                          padding: Spacing.sm,
+                          marginBottom: idx < project.rooms.length - 1 ? Spacing.xs : 0,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
+                      >
+                        <View>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                            {room.name || "Unnamed Room"}
+                          </Text>
+                          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
+                            {getOrdinal(room.floor || 1)} floor
+                          </Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                      </Pressable>
+                    ))}
+                  </>
+                ) : (
+                  /* Empty state: Show Add Room button */
+                  <>
+                    {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
+                      <Pressable
+                        onPress={() => handleAddRoom(1)}
+                        style={{
+                          backgroundColor: Colors.white,
+                          borderRadius: BorderRadius.default,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          paddingVertical: Spacing.md,
+                          alignItems: "center",
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Add room"
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                          Add Room
+                        </Text>
+                      </Pressable>
+                    ) : (
+                      <Pressable
+                        onPress={() => {
+                          const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                          Alert.alert("Select Floor", "Choose which floor to add the room to:", [
+                            ...Array.from({ length: floorCount }, (_, i) => ({
+                              text: `${getOrdinal(i + 1)} Floor`,
+                              onPress: () => handleAddRoom(i + 1),
+                            })),
+                            { text: "Cancel", style: "cancel" },
+                          ]);
+                        }}
+                        style={{
+                          backgroundColor: Colors.white,
+                          borderRadius: BorderRadius.default,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          paddingVertical: Spacing.md,
+                          alignItems: "center",
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Add room"
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                          Add Room
+                        </Text>
+                      </Pressable>
+                    )}
+                  </>
+                )}
+              </View>
+
               {/* STAIRCASES SECTION */}
               <View>
                 {project.staircases && project.staircases.length > 0 ? (
