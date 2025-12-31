@@ -509,163 +509,183 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </Card>
             </View>
 
-            {/* Calculations Preview */}
-            {calculations && hasDataEntered && (
-              <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "700", color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
-                  Estimate Preview
-                </Text>
+            {/* Staircase Summary */}
+            {calculations && hasDataEntered && (() => {
+              // Calculate per-component costs
+              const riserLaborCost = parseFloat(riserCount) > 0 ? parseFloat(riserCount) * pricing.riserLabor : 0;
+              const spindleLaborCost = parseFloat(spindleCount) > 0 ? parseFloat(spindleCount) * pricing.spindleLabor : 0;
+              const handrailLaborCost = parseFloat(handrailLength) > 0 ? parseFloat(handrailLength) * pricing.handrailLaborPerLF : 0;
 
-                {/* Paintable Area Breakdown */}
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                    PAINTABLE AREA CALCULATION:
-                  </Text>
+              // Secondary stairwell labor
+              const secondaryWallArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
+                ? ((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)
+                : 0;
+              const secondaryCeilingArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
+              const secondaryWallLaborCost = secondaryWallArea * pricing.wallLaborPerSqFt;
+              const secondaryCeilingLaborCost = secondaryCeilingArea * pricing.ceilingLaborPerSqFt;
 
-                  {/* Original staircase area */}
-                  {parseFloat(riserCount) > 0 && (
-                    <>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Riser Area:</Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                          {parseFloat(riserCount)} risers × 7.5&quot; height × 3 ft width = {(parseFloat(riserCount) * (7.5/12) * 3).toFixed(0)} sq ft
-                        </Text>
+              // Materials: paint is distributed proportionally (simplified: equal split for now)
+              const totalComponents = (parseFloat(riserCount) > 0 ? 1 : 0) +
+                                     (parseFloat(spindleCount) > 0 ? 1 : 0) +
+                                     (parseFloat(handrailLength) > 0 ? 1 : 0) +
+                                     (secondaryWallArea > 0 ? 1 : 0) +
+                                     (secondaryCeilingArea > 0 ? 1 : 0);
+
+              const materialPerComponent = totalComponents > 0 ? calculations.materialsDisplayed / totalComponents : 0;
+
+              const riserMaterialsCost = parseFloat(riserCount) > 0 ? materialPerComponent : 0;
+              const spindleMaterialsCost = parseFloat(spindleCount) > 0 ? materialPerComponent : 0;
+              const handrailMaterialsCost = parseFloat(handrailLength) > 0 ? materialPerComponent : 0;
+              const secondaryWallMaterialsCost = secondaryWallArea > 0 ? materialPerComponent : 0;
+              const secondaryCeilingMaterialsCost = secondaryCeilingArea > 0 ? materialPerComponent : 0;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={Typography.h2}>Staircase Summary</Text>
+
+                  <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                    {/* Gray section - flex: 3, 2-column layout */}
+                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                      {/* Empty row for alignment */}
+                      <View style={{ marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
                       </View>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Tread Area:</Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>0 sq ft (not used)</Text>
-                      </View>
-                    </>
-                  )}
 
-                  {/* Secondary stairwell area */}
-                  {hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 && (
-                    <>
-                      <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.sm, paddingTop: Spacing.sm }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.xs }}>Secondary Stairwell:</Text>
+                      {parseFloat(riserCount) > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Wall Area:</Text>
-                          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                            ({tallWallHeight} + {shortWallHeight}) ÷ 2 × 12 ft{doubleSidedWalls ? " × 2" : ""} = {(((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)).toFixed(0)} sq ft
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Risers</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {Math.ceil(parseFloat(riserCount))}
                           </Text>
                         </View>
+                      )}
+
+                      {parseFloat(spindleCount) > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Ceiling Area:</Text>
-                          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>15 ft × 3.5 ft = {(15 * 3.5).toFixed(0)} sq ft</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Spindles</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {Math.ceil(parseFloat(spindleCount))}
+                          </Text>
                         </View>
-                      </View>
-                    </>
-                  )}
+                      )}
 
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.sm, paddingTop: Spacing.sm }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Paintable Area:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        {calculations.paintableArea.toFixed(0)} sq ft
-                      </Text>
-                    </View>
-                  </View>
-                </View>
+                      {parseFloat(handrailLength) > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Handrail</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(parseFloat(handrailLength)), 'length', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
 
-                {/* Labor Cost Breakdown */}
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                    LABOR COST CALCULATION:
-                  </Text>
-                  {parseFloat(riserCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Risers:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {parseFloat(riserCount)} × ${pricing.riserLabor} = ${(parseFloat(riserCount) * pricing.riserLabor).toFixed(2)}
-                      </Text>
+                      {secondaryWallArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Sec Wall</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(secondaryWallArea), 'area', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {secondaryCeilingArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Sec Ceiling</Text>
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(secondaryCeilingArea), 'area', unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
                     </View>
-                  )}
-                  {parseFloat(spindleCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Spindles:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {parseFloat(spindleCount)} × ${pricing.spindleLabor} = ${(parseFloat(spindleCount) * pricing.spindleLabor).toFixed(2)}
-                      </Text>
-                    </View>
-                  )}
-                  {parseFloat(handrailLength) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Handrail:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                        {parseFloat(handrailLength)} ft × ${pricing.handrailLaborPerLF}/ft = ${(parseFloat(handrailLength) * pricing.handrailLaborPerLF).toFixed(2)}
-                      </Text>
-                    </View>
-                  )}
-                  {/* Secondary stairwell labor */}
-                  {hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 && (
-                    <>
-                      <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.sm, paddingTop: Spacing.sm, marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.xs }}>Secondary Stairwell:</Text>
+
+                    {/* Blue section - flex: 2, 2 columns right-aligned */}
+                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                      {/* Header Row */}
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                       </View>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Wall Labor:</Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                          {(((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)).toFixed(0)} sq ft × ${pricing.wallLaborPerSqFt}/sqft = ${((((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)) * pricing.wallLaborPerSqFt).toFixed(2)}
+
+                      {parseFloat(riserCount) > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(riserLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(riserMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {parseFloat(spindleCount) > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(spindleLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(spindleMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {parseFloat(handrailLength) > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(handrailLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(handrailMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {secondaryWallArea > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(secondaryWallLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(secondaryWallMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {secondaryCeilingArea > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(secondaryCeilingLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(secondaryCeilingMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      {/* Subtotals - without labels */}
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(calculations.laborDisplayed)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(calculations.materialsDisplayed)}
                         </Text>
                       </View>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Ceiling Labor:</Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                          {(15 * 3.5).toFixed(0)} sq ft × ${pricing.ceilingLaborPerSqFt}/sqft = ${((15 * 3.5) * pricing.ceilingLaborPerSqFt).toFixed(2)}
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      {/* Total */}
+                      <View style={{ alignItems: "flex-end" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${calculations.totalDisplayed.toLocaleString()}
                         </Text>
                       </View>
-                    </>
-                  )}
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.sm, paddingTop: Spacing.sm }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Labor:</Text>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
-                        ${calculations.laborDisplayed.toFixed(2)}
-                      </Text>
                     </View>
                   </View>
-                </View>
-
-                {/* Material Cost Breakdown */}
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600", color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                    MATERIAL COST CALCULATION:
-                  </Text>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Paint needed:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {calculations.paintableArea.toFixed(0)} sq ft ÷ {pricing.wallCoverageSqFtPerGallon} × {staircase?.coats || 2} coats = {calculations.totalGallons.toFixed(2)} gal
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Paint cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                      {Math.ceil(calculations.totalGallons)} gal × ${pricing.trimPaintPerGallon}/gal = ${calculations.materialsDisplayed.toFixed(2)}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Total Price */}
-                <View style={{ backgroundColor: Colors.primaryBlueLight, borderWidth: 1, borderColor: Colors.primaryBlue, borderRadius: BorderRadius.default, padding: Spacing.sm }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Labor Cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.laborDisplayed.toFixed(2)}</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Material Cost:</Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>${calculations.materialsDisplayed.toFixed(2)}</Text>
-                  </View>
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.primaryBlue, paddingTop: Spacing.sm }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>Total Price:</Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700", color: Colors.primaryBlue }}>
-                        {formatCurrency(calculations.totalDisplayed)}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </Card>
-            )}
+                </Card>
+              );
+            })()}
 
             <Pressable
               onPress={handleSave}
