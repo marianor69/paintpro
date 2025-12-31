@@ -305,6 +305,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       >
         <ScrollView
           style={{ flex: 1 }}
+          contentContainerStyle={{ paddingBottom: 400 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >

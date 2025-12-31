@@ -343,6 +343,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       >
         <ScrollView
           style={{ flex: 1 }}
+          contentContainerStyle={{ paddingBottom: 400 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
