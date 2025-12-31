@@ -69,6 +69,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const depthRef = useRef<TextInput>(null);
   const shelfCountRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const notesCardRef = useRef<View>(null);
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -348,30 +349,38 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </View>
 
             {/* Notes Section */}
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Notes
-              </Text>
-              <TextInput
-                value={notes}
-                onChangeText={setNotes}
-                placeholder="Add any notes about this built-in..."
-                placeholderTextColor={Colors.mediumGray}
-                multiline
-                numberOfLines={3}
-                onFocus={() => {
-                  setTimeout(() => {
-                    scrollViewRef.current?.scrollToEnd({ animated: true });
-                  }, 100);
-                }}
-                style={[
-                  TextInputStyles.multiline,
-                  {
-                    backgroundColor: Colors.backgroundWarmGray,
-                  }
-                ]}
-              />
-            </Card>
+            <View ref={notesCardRef}>
+              <Card style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                  Notes
+                </Text>
+                <TextInput
+                  value={notes}
+                  onChangeText={setNotes}
+                  placeholder="Add any notes about this built-in..."
+                  placeholderTextColor={Colors.mediumGray}
+                  multiline
+                  numberOfLines={3}
+                  onFocus={() => {
+                    setTimeout(() => {
+                      notesCardRef.current?.measureLayout(
+                        scrollViewRef.current as any,
+                        (x, y) => {
+                          scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                        },
+                        () => {}
+                      );
+                    }, 100);
+                  }}
+                  style={[
+                    TextInputStyles.multiline,
+                    {
+                      backgroundColor: Colors.backgroundWarmGray,
+                    }
+                  ]}
+                />
+              </Card>
+            </View>
 
             {/* Paintable Area Preview */}
             {totalPaintableArea > 0 && (
