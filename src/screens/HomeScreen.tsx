@@ -90,7 +90,7 @@ export default function HomeScreen({ navigation }: Props) {
               New Interface
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              SUMM-010 (eb18ff6) - Dec 31, 2025
+              SUMM-011 (e65d44d) - Dec 31, 2025
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
