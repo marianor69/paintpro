@@ -761,11 +761,13 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       >
-        {/* Room Info Section */}
+        {/* Room Information Section */}
         <Card style={{ marginBottom: Spacing.md }}>
           <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
             Room Information
           </Text>
+
+          {/* Room Name */}
           <View style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
               Room Name
@@ -787,13 +789,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               />
             </View>
           </View>
-        </Card>
-
-        {/* Dimensions Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-            Dimensions
-          </Text>
 
           {/* Row: Length & Width */}
           <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
