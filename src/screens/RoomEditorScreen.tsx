@@ -1760,7 +1760,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
         {/* Test Mode: Detailed Calculation Breakdown */}
         {testMode && pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
-          const calcSettings = useCalculationSettings.getState().settings;
           const secondCoatMultiplier = safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
           const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
 
