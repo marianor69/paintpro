@@ -881,25 +881,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                     {/* Rooms list */}
                     {project.rooms.map((room, idx) => (
-                      <Pressable
+                      <View
                         key={room.id}
-                        onPress={() =>
-                          navigation.navigate("RoomEditor", {
-                            projectId,
-                            roomId: room.id,
-                            roomName: room.name || "Unnamed Room",
-                          })
-                        }
-                        onLongPress={() => {
-                          Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
-                            { text: "Cancel", style: "cancel" },
-                            {
-                              text: "Delete",
-                              style: "destructive",
-                              onPress: () => deleteRoom(projectId, room.id),
-                            },
-                          ]);
-                        }}
                         style={{
                           backgroundColor: Colors.white,
                           borderRadius: BorderRadius.default,
@@ -911,19 +894,47 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
                       >
-                        <View>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                            {room.name || "Unnamed Room"}
-                          </Text>
-                          <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
-                            {getOrdinal(room.floor || 1)} floor
-                          </Text>
-                        </View>
-                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                      </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("RoomEditor", {
+                              projectId,
+                              roomId: room.id,
+                              roomName: room.name || "Unnamed Room",
+                            })
+                          }
+                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
+                        >
+                          <View>
+                            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                              {room.name || "Unnamed Room"}
+                            </Text>
+                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
+                              {getOrdinal(room.floor || 1)} floor
+                            </Text>
+                          </View>
+                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: () => deleteRoom(projectId, room.id),
+                              },
+                            ]);
+                          }}
+                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Delete room ${room.name || "Unnamed Room"}`}
+                        >
+                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                        </Pressable>
+                      </View>
                     ))}
                   </>
                 ) : (
@@ -1007,24 +1018,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                     {/* Staircases list */}
                     {project.staircases.map((staircase, idx) => (
-                      <Pressable
+                      <View
                         key={staircase.id}
-                        onPress={() =>
-                          navigation.navigate("StaircaseEditor", {
-                            projectId,
-                            staircaseId: staircase.id,
-                          })
-                        }
-                        onLongPress={() => {
-                          Alert.alert("Delete Staircase", "Are you sure you want to delete this staircase?", [
-                            { text: "Cancel", style: "cancel" },
-                            {
-                              text: "Delete",
-                              style: "destructive",
-                              onPress: () => deleteStaircase(projectId, staircase.id),
-                            },
-                          ]);
-                        }}
                         style={{
                           backgroundColor: Colors.white,
                           borderRadius: BorderRadius.default,
@@ -1036,14 +1031,41 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Edit staircase ${staircase.name || `Staircase ${idx + 1}`}`}
                       >
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                          {staircase.name || `Staircase ${idx + 1}`}
-                        </Text>
-                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                      </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("StaircaseEditor", {
+                              projectId,
+                              staircaseId: staircase.id,
+                            })
+                          }
+                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Edit staircase ${staircase.name || `Staircase ${idx + 1}`}`}
+                        >
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {staircase.name || `Staircase ${idx + 1}`}
+                          </Text>
+                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            Alert.alert("Delete Staircase", "Are you sure you want to delete this staircase?", [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: () => deleteStaircase(projectId, staircase.id),
+                              },
+                            ]);
+                          }}
+                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Delete staircase ${staircase.name || `Staircase ${idx + 1}`}`}
+                        >
+                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                        </Pressable>
+                      </View>
                     ))}
                   </>
                 ) : (
@@ -1096,24 +1118,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                     {/* Fireplaces list */}
                     {project.fireplaces.map((fireplace, idx) => (
-                      <Pressable
+                      <View
                         key={fireplace.id}
-                        onPress={() =>
-                          navigation.navigate("FireplaceEditor", {
-                            projectId,
-                            fireplaceId: fireplace.id,
-                          })
-                        }
-                        onLongPress={() => {
-                          Alert.alert("Delete Fireplace", "Are you sure you want to delete this fireplace?", [
-                            { text: "Cancel", style: "cancel" },
-                            {
-                              text: "Delete",
-                              style: "destructive",
-                              onPress: () => deleteFireplace(projectId, fireplace.id),
-                            },
-                          ]);
-                        }}
                         style={{
                           backgroundColor: Colors.white,
                           borderRadius: BorderRadius.default,
@@ -1125,14 +1131,41 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Edit fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
                       >
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                          {fireplace.name || `Fireplace ${idx + 1}`}
-                        </Text>
-                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                      </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("FireplaceEditor", {
+                              projectId,
+                              fireplaceId: fireplace.id,
+                            })
+                          }
+                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Edit fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
+                        >
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {fireplace.name || `Fireplace ${idx + 1}`}
+                          </Text>
+                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            Alert.alert("Delete Fireplace", "Are you sure you want to delete this fireplace?", [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: () => deleteFireplace(projectId, fireplace.id),
+                              },
+                            ]);
+                          }}
+                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Delete fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
+                        >
+                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                        </Pressable>
+                      </View>
                     ))}
                   </>
                 ) : (
@@ -1185,24 +1218,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                     {/* Built-Ins list */}
                     {project.builtIns.map((builtIn, idx) => (
-                      <Pressable
+                      <View
                         key={builtIn.id}
-                        onPress={() =>
-                          navigation.navigate("BuiltInEditor", {
-                            projectId,
-                            builtInId: builtIn.id,
-                          })
-                        }
-                        onLongPress={() => {
-                          Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
-                            { text: "Cancel", style: "cancel" },
-                            {
-                              text: "Delete",
-                              style: "destructive",
-                              onPress: () => deleteBuiltIn(projectId, builtIn.id),
-                            },
-                          ]);
-                        }}
                         style={{
                           backgroundColor: Colors.white,
                           borderRadius: BorderRadius.default,
@@ -1214,14 +1231,41 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
                       >
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                          {builtIn.name || "Unnamed Built-In"}
-                        </Text>
-                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                      </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("BuiltInEditor", {
+                              projectId,
+                              builtInId: builtIn.id,
+                            })
+                          }
+                          style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
+                        >
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                            {builtIn.name || "Unnamed Built-In"}
+                          </Text>
+                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: () => deleteBuiltIn(projectId, builtIn.id),
+                              },
+                            ]);
+                          }}
+                          style={{ padding: Spacing.xs, marginLeft: Spacing.xs }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Delete built-in ${builtIn.name || "Unnamed Built-In"}`}
+                        >
+                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                        </Pressable>
+                      </View>
                     ))}
                   </>
                 ) : (
