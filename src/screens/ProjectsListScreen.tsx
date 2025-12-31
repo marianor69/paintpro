@@ -78,9 +78,9 @@ export default function ProjectsListScreen({ navigation }: Props) {
                 <Pressable onPress={() => handleProjectPress(item.id)}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
                     {/* Project Cover Photo Thumbnail */}
-                    {item.coverPhotoUri ? (
+                    {(item.coverPhotoUri || (item as any).photo) ? (
                       <Image
-                        source={{ uri: item.coverPhotoUri }}
+                        source={{ uri: item.coverPhotoUri || (item as any).photo }}
                         style={{
                           width: 60,
                           height: 60,
