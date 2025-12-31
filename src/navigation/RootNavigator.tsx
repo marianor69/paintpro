@@ -132,6 +132,7 @@ function MainTabs() {
         headerTintColor: Colors.darkCharcoal,
         headerTitleStyle: {
           fontWeight: "600",
+          fontSize: 17,
         },
       })}
     >
@@ -161,6 +162,7 @@ export default function RootNavigator() {
           headerTintColor: Colors.darkCharcoal,
           headerTitleStyle: {
             fontWeight: "600",
+            fontSize: 17,
           },
           gestureEnabled: true,
           fullScreenGestureEnabled: false,
