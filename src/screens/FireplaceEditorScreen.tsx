@@ -321,7 +321,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          <View style={{ padding: Spacing.lg }}>
+          <View style={{ padding: Spacing.md }}>
             {/* Fireplace Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>

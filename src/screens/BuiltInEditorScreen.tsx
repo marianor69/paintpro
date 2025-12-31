@@ -279,7 +279,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          <View style={{ padding: Spacing.lg }}>
+          <View style={{ padding: Spacing.md }}>
             <View style={{ marginBottom: Spacing.md }}>
               <FormInput
                 ref={nameRef}
