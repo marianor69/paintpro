@@ -1659,8 +1659,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                   {/* Header Row */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Mat</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Labor</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Mat</Text>
                   </View>
 
                   {/* Walls */}
