@@ -819,9 +819,12 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             </View>
           </Card>
 
-          {/* Rooms & Structural Elements Section */}
+          {/* Rooms Section */}
           {project.rooms.length > 0 && (
             <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Rooms
+              </Text>
               <View style={{ marginBottom: Spacing.md }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
@@ -977,10 +980,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             </Card>
           )}
 
-          {/* Staircases & Fireplaces - CONSOLIDATED (no flicker) */}
+          {/* Structures - Staircases, Fireplaces, Built-Ins */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Staircases & Fireplaces
+              Structures
             </Text>
 
             <View style={{ gap: Spacing.md }}>
@@ -1161,105 +1164,97 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </Pressable>
                 )}
               </View>
-            </View>
-          </Card>
 
-          {/* Built-Ins Section */}
-          {(project.builtIns && project.builtIns.length > 0) && (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Built-Ins
-              </Text>
+              {/* BUILT-INS SECTION */}
+              <View>
+                {project.builtIns && project.builtIns.length > 0 ? (
+                  <>
+                    {/* Header with count and Add button */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Built-Ins: {project.builtIns.length}
+                      </Text>
+                      <Pressable
+                        onPress={handleAddBuiltIn}
+                        style={{
+                          backgroundColor: Colors.primaryBlue,
+                          borderRadius: 8,
+                          paddingHorizontal: Spacing.md,
+                          paddingVertical: 6,
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Add built-in"
+                      >
+                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                          Add
+                        </Text>
+                      </Pressable>
+                    </View>
 
-              <View style={{ marginBottom: 0 }}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Built-Ins: {project.builtIns.length}
-                  </Text>
+                    {/* Built-Ins list */}
+                    {project.builtIns.map((builtIn, idx) => (
+                      <Pressable
+                        key={builtIn.id}
+                        onPress={() =>
+                          navigation.navigate("BuiltInEditor", {
+                            projectId,
+                            builtInId: builtIn.id,
+                          })
+                        }
+                        onLongPress={() => {
+                          Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Delete",
+                              style: "destructive",
+                              onPress: () => deleteBuiltIn(projectId, builtIn.id),
+                            },
+                          ]);
+                        }}
+                        style={{
+                          backgroundColor: Colors.white,
+                          borderRadius: BorderRadius.default,
+                          padding: Spacing.sm,
+                          marginBottom: idx < project.builtIns.length - 1 ? Spacing.xs : 0,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          {builtIn.name || "Unnamed Built-In"}
+                        </Text>
+                        <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                      </Pressable>
+                    ))}
+                  </>
+                ) : (
+                  /* Empty state: Show Add Built-In button */
                   <Pressable
                     onPress={handleAddBuiltIn}
                     style={{
-                      backgroundColor: Colors.primaryBlue,
-                      borderRadius: 8,
-                      paddingHorizontal: Spacing.md,
-                      paddingVertical: 6,
+                      backgroundColor: Colors.white,
+                      borderRadius: BorderRadius.default,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      paddingVertical: Spacing.md,
+                      alignItems: "center",
                     }}
                     accessibilityRole="button"
                     accessibilityLabel="Add built-in"
                   >
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                      Add
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                      Add Built-In
                     </Text>
                   </Pressable>
-                </View>
-                {project.builtIns.map((builtIn, idx) => (
-                  <Pressable
-                    key={builtIn.id}
-                    onPress={() =>
-                      navigation.navigate("BuiltInEditor", {
-                        projectId,
-                        builtInId: builtIn.id,
-                      })
-                    }
-                    onLongPress={() => {
-                      Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
-                        { text: "Cancel", style: "cancel" },
-                        {
-                          text: "Delete",
-                          style: "destructive",
-                          onPress: () => deleteBuiltIn(projectId, builtIn.id),
-                        },
-                      ]);
-                    }}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      padding: Spacing.sm,
-                      marginBottom: idx < (project.builtIns?.length || 0) - 1 ? Spacing.xs : 0,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                      {builtIn.name || "Unnamed Built-In"}
-                    </Text>
-                    <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                  </Pressable>
-                ))}
+                )}
               </View>
-            </Card>
-          )}
-
-          {/* Add Built-In button if none exist */}
-          {(!project.builtIns || project.builtIns.length === 0) && (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Built-Ins
-              </Text>
-              <Pressable
-                onPress={handleAddBuiltIn}
-                style={{
-                  backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.default,
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  paddingVertical: Spacing.md,
-                  alignItems: "center",
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Add built-in"
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                  Add Built-In
-                </Text>
-              </Pressable>
-            </Card>
-          )}
+            </View>
+          </Card>
           {/* Show hint if no items yet */}
           {!canMarkStep2Complete && (
             <Card style={{ marginBottom: Spacing.md, backgroundColor: Colors.neutralGray + "40" }}>
