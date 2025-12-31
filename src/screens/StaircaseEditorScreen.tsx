@@ -346,7 +346,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         <ScrollView
           ref={scrollViewRef}
           style={{ flex: 1 }}
-          contentContainerStyle={{ padding: Spacing.md }}
+          contentContainerStyle={{ paddingBottom: 400 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
@@ -359,7 +359,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          <View>
+          <View style={{ padding: Spacing.md }}>
             {/* Staircase Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
