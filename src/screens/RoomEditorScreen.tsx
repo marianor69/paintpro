@@ -1549,82 +1549,179 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         </Card>
 
         {/* Room Summary Section */}
-        {pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Room Summary
-            </Text>
+        {pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
+          // Calculate per-category costs
+          const calcSettings = useCalculationSettings.getState().settings;
+          const secondCoatMultiplier = safeNumber(pricingSettings.secondCoatLaborMultiplier, 2.0);
+          const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
 
-            <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Wall Area:</Text>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}
-                </Text>
-              </View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Ceiling Area:</Text>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {formatMeasurement(pricingSummary.ceilingArea, 'area', unitSystem)}
-                </Text>
-              </View>
-              {paintBaseboard && pricingSummary.baseboardLF > 0 && (
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Baseboard:</Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    {formatMeasurement(pricingSummary.baseboardLF, 'linearFeet', unitSystem)}
-                  </Text>
-                </View>
-              )}
-              {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Crown Moulding:</Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    {formatMeasurement(pricingSummary.crownMouldingLF, 'linearFeet', unitSystem)}
-                  </Text>
-                </View>
-              )}
-              {pricingSummary.windowsCount > 0 && (
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Windows:</Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    {pricingSummary.windowsCount}
-                  </Text>
-                </View>
-              )}
-              {pricingSummary.doorsCount > 0 && (
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Doors:</Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    {pricingSummary.doorsCount}
-                  </Text>
-                </View>
-              )}
-            </View>
+          // Walls
+          const wallLaborCost = pricingSummary.wallArea * safeNumber(pricingSettings.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
+          const wallMaterialsCost = Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricingSettings.wallPaintPerGallon, 0);
+          const wallTotal = wallLaborCost + wallMaterialsCost;
 
-            <View style={{ backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Labor:</Text>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                  ${pricingSummary.laborDisplayed.toFixed(2)}
-                </Text>
+          // Ceilings
+          const ceilingLaborCost = pricingSummary.ceilingArea * safeNumber(pricingSettings.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
+          const ceilingMaterialsCost = Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricingSettings.ceilingPaintPerGallon, 0);
+          const ceilingTotal = ceilingLaborCost + ceilingMaterialsCost;
+
+          // Baseboard
+          const baseboardLaborCost = pricingSummary.baseboardLF * safeNumber(pricingSettings.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const baseboardTrimWidthFt = calcSettings.baseboardWidth / 12;
+          const baseboardTrimSqFt = pricingSummary.baseboardLF * baseboardTrimWidthFt;
+          const trimCoverage = Math.max(1, safeNumber(pricingSettings.trimCoverageSqFtPerGallon, 400));
+          const baseboardTrimGallons = (baseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const baseboardMaterialsCost = Math.ceil(baseboardTrimGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const baseboardTotal = baseboardLaborCost + baseboardMaterialsCost;
+
+          // Crown Moulding
+          const crownLaborCost = pricingSummary.crownMouldingLF * safeNumber(pricingSettings.crownMouldingLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const crownTrimWidthFt = calcSettings.crownMouldingWidth / 12;
+          const crownTrimSqFt = pricingSummary.crownMouldingLF * crownTrimWidthFt;
+          const crownTrimGallons = (crownTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const crownTotal = crownLaborCost + crownMaterialsCost;
+
+          // Windows
+          const windowLaborCost = pricingSummary.windowsCount * safeNumber(pricingSettings.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
+          const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
+          const windowTrimSqFt = pricingSummary.windowsCount * windowTrimPerimeter * windowTrimWidthFt;
+          const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const windowTotal = windowLaborCost + windowMaterialsCost;
+
+          // Doors
+          const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricingSettings.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
+          const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricingSettings.trimPaintPerGallon, 0);
+          const doorTotal = doorLaborCost + doorMaterialsCost;
+
+          return (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Room Summary
+              </Text>
+
+              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                {/* Left Column - Measurements (Gray) */}
+                <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Wall Area:</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      {formatMeasurement(pricingSummary.wallArea, 'area', unitSystem)}
+                    </Text>
+                  </View>
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Ceiling Area:</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      {formatMeasurement(pricingSummary.ceilingArea, 'area', unitSystem)}
+                    </Text>
+                  </View>
+                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Baseboard:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(pricingSummary.baseboardLF, 'linearFeet', unitSystem)}
+                      </Text>
+                    </View>
+                  )}
+                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Crown Moulding:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(pricingSummary.crownMouldingLF, 'linearFeet', unitSystem)}
+                      </Text>
+                    </View>
+                  )}
+                  {pricingSummary.windowsCount > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Windows:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {pricingSummary.windowsCount}
+                      </Text>
+                    </View>
+                  )}
+                  {pricingSummary.doorsCount > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Doors:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        {pricingSummary.doorsCount}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* Right Column - Pricing (Blue) */}
+                <View style={{ flex: 1, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Walls:</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      ${wallTotal.toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Ceiling:</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      ${ceilingTotal.toFixed(2)}
+                    </Text>
+                  </View>
+                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Baseboard:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        ${baseboardTotal.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Crown:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        ${crownTotal.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                  {pricingSummary.windowsCount > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Windows:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        ${windowTotal.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                  {pricingSummary.doorsCount > 0 && (
+                    <View style={{ marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Doors:</Text>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                        ${doorTotal.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                  <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Labor:</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      ${pricingSummary.laborDisplayed.toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Materials:</Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      ${pricingSummary.materialsDisplayed.toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+                  <View>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                      ${pricingSummary.totalDisplayed.toLocaleString()}
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>Materials:</Text>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                  ${pricingSummary.materialsDisplayed.toFixed(2)}
-                </Text>
-              </View>
-              <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                  ${pricingSummary.totalDisplayed.toLocaleString()}
-                </Text>
-              </View>
-            </View>
-          </Card>
-        )}
+            </Card>
+          );
+        })()}
 
         {/* Save Button */}
         <Pressable
