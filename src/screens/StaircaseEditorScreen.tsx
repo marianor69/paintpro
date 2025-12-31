@@ -360,10 +360,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
           )}
 
           <View style={{ padding: Spacing.lg }}>
-            {/* Dimensions Card */}
+            {/* Staircase Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Dimensions
+                Staircase Information
               </Text>
 
               {/* Name/Location */}
