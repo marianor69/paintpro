@@ -322,24 +322,25 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           )}
 
           <View style={{ padding: Spacing.lg }}>
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={nameRef}
-                label="Name/Location"
-                value={name}
-                onChangeText={setName}
-                placeholder="e.g., Living Room Fireplace, Master Bedroom"
-                nextFieldRef={widthRef}
-                returnKeyType="next"
-                className="mb-0"
-              />
-            </View>
-
-            {/* Dimensions Card */}
+            {/* Fireplace Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Dimensions
+                Fireplace Information
               </Text>
+
+              {/* Name/Location */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <FormInput
+                  ref={nameRef}
+                  label="Name/Location"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="e.g., Living Room Fireplace, Master Bedroom"
+                  nextFieldRef={widthRef}
+                  returnKeyType="next"
+                  className="mb-0"
+                />
+              </View>
 
               {/* Row: Width, Height, Depth - 3 columns */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
