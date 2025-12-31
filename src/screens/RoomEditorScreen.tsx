@@ -1813,13 +1813,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Baseboard
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Length: {pricingSummary.baseboardLF.toFixed(2)} ft | Coats: {pricingSummary.coatsBaseboard}
+                      Length: {pricingSummary.baseboardLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Labor: {pricingSummary.baseboardLF.toFixed(2)} × ${safeNumber(pricing.baseboardLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsBaseboard).toFixed(2)} = ${(pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsBaseboard)).toFixed(2)}
-                    </Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Materials: {Math.ceil(pricingSummary.baseboardPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.baseboardPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                      Labor: {pricingSummary.baseboardLF.toFixed(2)} × ${safeNumber(pricing.baseboardLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
                   </View>
                 )}
@@ -1836,9 +1833,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {pricingSummary.crownMouldingLF.toFixed(2)} × ${safeNumber(pricing.trimLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.crownMouldingLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Materials: {Math.ceil(pricingSummary.crownPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.crownPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
-                    </Text>
                   </View>
                 )}
 
@@ -1849,13 +1843,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Windows
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Count: {pricingSummary.windowsCount} | Coats: {pricingSummary.coatsWindows}
+                      Count: {pricingSummary.windowsCount} | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Labor: {pricingSummary.windowsCount} × ${safeNumber(pricing.windowLabor, 0).toFixed(2)}/window × {getCoatLaborMultiplier(pricingSummary.coatsWindows).toFixed(2)} = ${(pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsWindows)).toFixed(2)}
-                    </Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Materials: {Math.ceil(pricingSummary.windowsPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.windowsPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                      Labor: {pricingSummary.windowsCount} × ${safeNumber(pricing.windowLabor, 0).toFixed(2)}/window × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
                   </View>
                 )}
@@ -1872,8 +1863,29 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {pricingSummary.doorsCount} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsDoors).toFixed(2)} = ${(pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors)).toFixed(2)}
                     </Text>
+                  </View>
+                )}
+
+                {/* Trim Paint (Baseboard, Crown, Windows) */}
+                {pricingSummary.trimPaintGallons > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Trim Paint (Baseboard + Crown + Windows)
+                    </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Materials: {Math.ceil(pricingSummary.doorsPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.doorsPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                      Materials: {Math.ceil(pricingSummary.trimPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.trimPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Door Paint */}
+                {pricingSummary.doorPaintGallons > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Door Paint
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(pricingSummary.doorPaintGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
                     </Text>
                   </View>
                 )}
