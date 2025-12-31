@@ -1653,12 +1653,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                 {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
-                  {/* Header Row */}
-                  <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, fontWeight: "600" as any, textAlign: "right" }}>Mat</Text>
-                  </View>
-
                   {/* Walls */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
@@ -1729,20 +1723,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                  {/* Subtotals */}
+                  {/* Subtotals - without labels */}
                   <View style={{ flexDirection: "row", marginBottom: Spacing.xs }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor:</Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(pricingSummary.laborDisplayed)}
-                      </Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Materials:</Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(pricingSummary.materialsDisplayed)}
-                      </Text>
-                    </View>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(pricingSummary.laborDisplayed)}
+                    </Text>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(pricingSummary.materialsDisplayed)}
+                    </Text>
                   </View>
 
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
