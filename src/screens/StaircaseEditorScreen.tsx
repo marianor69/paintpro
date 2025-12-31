@@ -360,24 +360,25 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
           )}
 
           <View style={{ padding: Spacing.lg }}>
-            <View style={{ marginBottom: Spacing.md }}>
-              <FormInput
-                ref={nameRef}
-                label="Name/Location"
-                value={name}
-                onChangeText={setName}
-                placeholder="e.g., Main Staircase, Second Floor"
-                nextFieldRef={riserCountRef}
-                returnKeyType="next"
-                className="mb-0"
-              />
-            </View>
-
             {/* Dimensions Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
                 Dimensions
               </Text>
+
+              {/* Name/Location */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <FormInput
+                  ref={nameRef}
+                  label="Name/Location"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="e.g., Main Staircase, Second Floor"
+                  nextFieldRef={riserCountRef}
+                  returnKeyType="next"
+                  className="mb-0"
+                />
+              </View>
 
               {/* Row 1: Risers & Spindles - 2 columns */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
