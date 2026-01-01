@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Pressable, ScrollView, Alert, KeyboardAvoidingView, Platform, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -105,6 +105,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     totalTrimSqFt: 0,
     totalDoorSqFt: 0,
   };
+
+  // Set navigation title to project address
+  useEffect(() => {
+    navigation.setOptions({
+      title: project.clientInfo.address,
+    });
+  }, [navigation, project.clientInfo.address]);
 
   const handleAddRoom = (floorNumber?: number) => {
     // Don't create room here - let RoomEditor create it on Save
