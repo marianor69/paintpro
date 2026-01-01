@@ -36,6 +36,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const deleteStaircase = useProjectStore((s) => s.deleteStaircase);
   const deleteFireplace = useProjectStore((s) => s.deleteFireplace);
   const deleteBuiltIn = useProjectStore((s) => s.deleteBuiltIn);
+  const deleteBrickWall = useProjectStore((s) => s.deleteBrickWall);
   const setEstimateBuildComplete = useProjectStore((s) => s.setEstimateBuildComplete);
   const pricing = usePricingStore();
   const appSettings = useAppSettings();
@@ -1231,6 +1232,65 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                             text: "Delete",
                             style: "destructive",
                             onPress: () => deleteBuiltIn(projectId, builtIn.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
+
+                {/* Brick Walls */}
+                {project.brickWalls?.map((brickWall, idx) => (
+                  <View
+                    key={brickWall.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("BrickWallEditor", {
+                          projectId,
+                          brickWallId: brickWall.id,
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <BrickWallIcon size={20} color={Colors.primaryBlue} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {brickWall.name || "Unnamed Brick Wall"}
+                        </Text>
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Brick Wall", `Are you sure you want to delete "${brickWall.name || "Unnamed Brick Wall"}"?`, [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteBrickWall(projectId, brickWall.id),
                           },
                         ]);
                       }}
