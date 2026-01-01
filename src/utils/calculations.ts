@@ -886,6 +886,11 @@ export function calculateProjectSummary(
   totalLaborCost = Math.max(0, safeNumber(totalLaborCost));
   totalMaterialCost = Math.max(0, safeNumber(totalMaterialCost));
 
+  // Add furniture moving fee if enabled
+  if (project.includeFurnitureMoving) {
+    totalLaborCost += safeNumber(pricing.furnitureMovingFee, 0);
+  }
+
   // Calculate primer (20% of total paint)
   totalPrimerGallons = Math.max(0, safeNumber(
     (totalWallGallons + totalCeilingGallons + totalTrimGallons) * 0.2
@@ -1652,6 +1657,11 @@ export function calculateFilteredProjectSummary(
   totalDoorGallons = Math.max(0, safeNumber(totalDoorGallons));
   totalLaborCost = Math.max(0, safeNumber(totalLaborCost));
   totalMaterialCost = Math.max(0, safeNumber(totalMaterialCost));
+
+  // Add furniture moving fee if enabled
+  if (project.includeFurnitureMoving) {
+    totalLaborCost += safeNumber(pricing.furnitureMovingFee, 0);
+  }
 
   // Calculate primer (20% of total paint) - only for categories that have gallons
   // Note: These totals have already been filtered by room-level paint settings

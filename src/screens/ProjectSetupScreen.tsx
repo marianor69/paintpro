@@ -100,6 +100,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const updateProjectFloors = useProjectStore((s) => s.updateProjectFloors);
   const updateGlobalPaintDefaults = useProjectStore((s) => s.updateGlobalPaintDefaults);
   const updateProjectCoverPhoto = useProjectStore((s) => s.updateProjectCoverPhoto);
+  const updateFurnitureMoving = useProjectStore((s) => s.updateFurnitureMoving);
   const { unitSystem } = useAppSettings();
 
   // Client Info State (for new projects)
@@ -170,6 +171,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     defaultTrimCoats: project?.globalPaintDefaults?.defaultTrimCoats ?? 2,
     defaultDoorCoats: project?.globalPaintDefaults?.defaultDoorCoats ?? 2,
   });
+
+  // Furniture Moving State
+  const [includeFurnitureMoving, setIncludeFurnitureMoving] = useState(project?.includeFurnitureMoving ?? false);
 
   // Collapsible sections state
   const [expandedSections, setExpandedSections] = useState({
@@ -358,6 +362,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       if (coverPhotoUri) {
         updateProjectCoverPhoto(newProjectId, coverPhotoUri);
       }
+
+      // Apply furniture moving setting
+      updateFurnitureMoving(newProjectId, includeFurnitureMoving);
 
       navigation.replace("ProjectDetail", { projectId: newProjectId });
     } else {
@@ -950,6 +957,26 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 />
               </>
             )}
+          </Card>
+
+          {/* FURNITURE MOVING SECTION */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              Furniture Moving
+            </Text>
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+              Include furniture moving service in quote
+            </Text>
+
+            <Toggle
+              label="Include Furniture Moving"
+              value={includeFurnitureMoving}
+              onValueChange={(value) => {
+                setIncludeFurnitureMoving(value);
+                if (project) updateFurnitureMoving(project.id, value);
+              }}
+              description="Adds furniture moving fee to labor cost"
+            />
           </Card>
 
           {/* Save & Continue Button */}

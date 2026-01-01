@@ -240,6 +240,8 @@ export interface Project {
   // Step progress tracking
   estimateBuildComplete?: boolean; // User explicitly marked Step 2 as done
   proposalSent?: boolean; // User successfully shared/sent the proposal (Step 3 complete)
+  // Furniture moving
+  includeFurnitureMoving?: boolean; // Whether to include furniture moving fee in quote (default: false)
 }
 
 export interface PricingSettings {
@@ -263,6 +265,10 @@ export interface PricingSettings {
   // Accent wall / multiple colors labor multiplier
   // Default: 1.25 (25% more labor for cutting in different colors)
   accentWallLaborMultiplier: number;
+
+  // Furniture moving fee (flat fee per project)
+  // Default: 100
+  furnitureMovingFee: number;
 
   // Material prices - single gallons
   wallPaintPerGallon: number;

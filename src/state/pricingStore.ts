@@ -28,6 +28,9 @@ const defaultPricing: PricingSettings = {
   // Accent wall / multiple colors labor multiplier
   accentWallLaborMultiplier: 1.25,
 
+  // Furniture moving fee (flat fee per project)
+  furnitureMovingFee: 100,
+
   // Material prices - single gallons
   wallPaintPerGallon: 45,
   ceilingPaintPerGallon: 40,

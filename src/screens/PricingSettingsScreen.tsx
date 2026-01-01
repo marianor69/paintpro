@@ -59,6 +59,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [accentWallLaborMultiplier, setAccentWallLaborMultiplier] = React.useState(
     (pricing.accentWallLaborMultiplier || 1.25).toString()
   );
+  const [furnitureMovingFee, setFurnitureMovingFee] = React.useState(
+    (pricing.furnitureMovingFee || 100).toString()
+  );
 
   const [wallPaintPerGallon, setWallPaintPerGallon] = React.useState(
     pricing.wallPaintPerGallon.toString()
@@ -100,6 +103,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const crownMouldingRef = useRef<TextInput>(null);
   const secondCoatMultiplierRef = useRef<TextInput>(null);
   const accentWallMultiplierRef = useRef<TextInput>(null);
+  const furnitureMovingFeeRef = useRef<TextInput>(null);
   const wallPaintGallonRef = useRef<TextInput>(null);
   const ceilingPaintGallonRef = useRef<TextInput>(null);
   const trimPaintGallonRef = useRef<TextInput>(null);
@@ -123,6 +127,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const crownMouldingID = useId();
   const secondCoatMultiplierID = useId();
   const accentWallMultiplierID = useId();
+  const furnitureMovingFeeID = useId();
   const wallPaintGallonID = useId();
   const ceilingPaintGallonID = useId();
   const trimPaintGallonID = useId();
@@ -147,6 +152,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       crownMouldingLaborPerLF: parseFloat(crownMouldingLaborPerLF) || 0,
       secondCoatLaborMultiplier: parseFloat(secondCoatLaborMultiplier) || 2.0,
       accentWallLaborMultiplier: parseFloat(accentWallLaborMultiplier) || 1.25,
+      furnitureMovingFee: parseFloat(furnitureMovingFee) || 100,
       wallPaintPerGallon: parseFloat(wallPaintPerGallon) || 0,
       ceilingPaintPerGallon: parseFloat(ceilingPaintPerGallon) || 0,
       trimPaintPerGallon: parseFloat(trimPaintPerGallon) || 0,
@@ -480,6 +486,37 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
           </Card>
 
+          {/* Furniture Moving Fee */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
+              Furniture Moving Fee
+            </Text>
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+              Flat fee added to labor cost when furniture moving is enabled
+            </Text>
+
+            <View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Furniture Moving Fee ($)
+              </Text>
+              <View style={TextInputStyles.container}>
+                <TextInput
+                  ref={furnitureMovingFeeRef}
+                  value={furnitureMovingFee}
+                  onChangeText={setFurnitureMovingFee}
+                  placeholder="100"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+          </Card>
+
           {/* Material Prices */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
@@ -783,12 +820,18 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingAccentWallMultiplier-${accentWallMultiplierID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => secondCoatMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingFurnitureMovingFee-${furnitureMovingFeeID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => wallPaintGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingWallPaintGallon-${wallPaintGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => ceilingPaintGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
