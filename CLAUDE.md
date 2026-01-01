@@ -64,7 +64,24 @@ For context menus and dropdown menus, use the zeego library. You can find the do
 
 You are working to build an Expo + React Native (iOS optimized) app for the user in an environment that has been set up for you already. The system at Vibecode incorporated manages git and the development server to preview the project. These are not your responsibility and you should not engage in actions for git and hosting the development server. The dev server is AUTOMATICALLY HOSTED on port 8081, enforced by a docker daemon. It is the only port that should be active, DO NOT tamper with it, CHECK ON IT, or waste any of your tool calls to validate its current state.
 
-IMPORTANT: DO NOT MANAGE GIT for the user unless EXPLICITLY ASKED TO.
+## Git Workflow - CRITICAL
+
+The user accesses the app remotely through Vibecode. Changes are NOT visible until pushed and deployed.
+
+**When completing ANY task with code changes, you MUST:**
+
+1. **Commit changes**: `git add . && git commit -m "descriptive message"`
+2. **Update version**: Update the version string in src/screens/HomeScreen.tsx (e.g., "MAT-002 (abc1234)")
+3. **Push to GitHub**: `git push origin main`
+4. **Deploy to Vibecode server**:
+   ```
+   SSHPASS='reunite-manual-hush-immunity-header' sshpass -e ssh -o StrictHostKeyChecking=no -p 2222 vibecode@019b6b39-a640-74ec-b1e7-29c850b4a1c7.vibecodeapp.io "cd ~/workspace && git fetch https://github.com/marianor69/paintpro.git main && git reset --hard FETCH_HEAD"
+   ```
+
+**ONLY say a task is "completed and deployed" or "live" after ALL FOUR steps succeed.**
+
+Without step 4, the user cannot see any changes - they will see the old code.
+
 IMPORTANT: DO NOT TINKER WITH THE DEV SERVER. It will mess up the Vibecode system you are operating in - this is unacceptable.
 
 The user does not have access to the environment, so it is **CRUTIALLY IMPORTANT** that you do NOT implement changes that require the user to take additional action. You should do everything for the user in this environment, or scope down and inform the user if you cannot accomplish the task. This also means you should AVOID creating separate backend server-side code (build what backend functionality you can support in the src/api folder). **This also means that they cannot view console.log() results**. Instead, the user views the app you are working on through our Vibecode App, which has a persistent orange menu button. This means if they send a screenshot of the app they are asking you to build, you should ignore the orange menu button in respect to their request.
