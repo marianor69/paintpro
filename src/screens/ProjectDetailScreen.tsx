@@ -723,17 +723,17 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             {/* Two-column layout: Grey (items list) + Blue (labor/materials) */}
             <View style={{ flexDirection: "row", gap: Spacing.sm }}>
               {/* Left Column - Items List (Gray) */}
-              <View style={{ flex: 2, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+              <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                 {/* Empty row to align with blue section headers */}
                 <View style={{ marginBottom: Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
+                  <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                 </View>
 
                 {/* Rooms */}
                 {project.rooms.map((room) => (
                   <View key={room.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
                     <Ionicons name="bed-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {room.name || "Unnamed Room"}
                     </Text>
                   </View>
@@ -745,7 +745,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     <View style={{ marginRight: Spacing.xs }}>
                       <StaircaseIcon size={16} color={Colors.mediumGray} />
                     </View>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {staircase.name || `Staircase ${idx + 1}`}
                     </Text>
                   </View>
@@ -757,7 +757,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     <View style={{ marginRight: Spacing.xs }}>
                       <FireplaceIcon size={16} color={Colors.mediumGray} />
                     </View>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {fireplace.name || `Fireplace ${idx + 1}`}
                     </Text>
                   </View>
@@ -769,7 +769,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     <View style={{ marginRight: Spacing.xs }}>
                       <BuiltInIcon size={16} color={Colors.mediumGray} />
                     </View>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {builtIn.name || "Unnamed Built-In"}
                     </Text>
                   </View>
@@ -777,18 +777,18 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Empty state */}
                 {totalItems === 0 && (
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic" }}>
+                  <Text style={{ fontSize: 13, color: Colors.mediumGray, fontStyle: "italic" }}>
                     No items added yet
                   </Text>
                 )}
               </View>
 
               {/* Right Section - Pricing (Blue) with Labor and Mat columns */}
-              <View style={{ flex: 3, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+              <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                 {/* Header Row */}
                 <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                  <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                  <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                  <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                  <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                 </View>
 
                 {/* Rooms */}
@@ -796,10 +796,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   const roomPricing = displaySummary.itemizedPrices?.find(p => p.id === room.id);
                   return (
                     <View key={room.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(roomPricing?.laborCost || 0)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(roomPricing?.materialsCost || 0)}
                       </Text>
                     </View>
@@ -811,10 +811,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   const staircasePricing = displaySummary.itemizedPrices?.find(p => p.id === staircase.id);
                   return (
                     <View key={staircase.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(staircasePricing?.laborCost || 0)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(staircasePricing?.materialsCost || 0)}
                       </Text>
                     </View>
@@ -826,10 +826,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   const fireplacePricing = displaySummary.itemizedPrices?.find(p => p.id === fireplace.id);
                   return (
                     <View key={fireplace.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(fireplacePricing?.laborCost || 0)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(fireplacePricing?.materialsCost || 0)}
                       </Text>
                     </View>
@@ -841,10 +841,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   const builtInPricing = displaySummary.itemizedPrices?.find(p => p.id === builtIn.id);
                   return (
                     <View key={builtIn.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(builtInPricing?.laborCost || 0)}
                       </Text>
-                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(builtInPricing?.materialsCost || 0)}
                       </Text>
                     </View>
@@ -854,18 +854,18 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {/* Empty state */}
                 {totalItems === 0 && (
                   <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
+                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
+                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
                   </View>
                 )}
 
                 {/* Subtotal Row - with separator */}
                 <View style={{ borderTopWidth: 1, borderTopColor: Colors.primaryBlue, marginTop: Spacing.xs, paddingTop: Spacing.xs }}>
                   <View style={{ flexDirection: "row", gap: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                    <Text style={{ flex: 1, fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(displaySummary.totalLaborCost || 0)}
                     </Text>
-                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                    <Text style={{ flex: 1, fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
                       ${Math.round(displaySummary.totalMaterialCost || 0)}
                     </Text>
                   </View>
