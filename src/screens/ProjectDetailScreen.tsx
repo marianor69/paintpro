@@ -709,12 +709,24 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           keyboardDismissMode="on-drag"
         >
           {/* Running Estimate Summary */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{
+            marginBottom: Spacing.md,
+            ...(project.estimateBuildComplete && { borderWidth: 2, borderColor: Colors.success })
+          }}>
             {/* Total Estimate - Large and Prominent */}
             <View style={{ alignItems: "center", marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                Running Estimate
-              </Text>
+              {project.estimateBuildComplete ? (
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                  <Ionicons name="checkmark-circle" size={20} color={Colors.success} style={{ marginRight: Spacing.xs }} />
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.success, fontWeight: "600" as any }}>
+                    Estimate Complete
+                  </Text>
+                </View>
+              ) : (
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                  Running Estimate
+                </Text>
+              )}
               <Text style={{ fontSize: 36, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                 {formatCurrency(displaySummary.grandTotal)}
               </Text>
@@ -872,6 +884,29 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 </View>
               </View>
             </View>
+
+            {/* Edit Estimate Button - Show when estimate is complete */}
+            {project.estimateBuildComplete && (
+              <Pressable
+                onPress={handleReopenEstimate}
+                style={{
+                  backgroundColor: Colors.white,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  borderRadius: BorderRadius.default,
+                  paddingVertical: Spacing.md,
+                  alignItems: "center",
+                  marginTop: Spacing.md,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Ionicons name="pencil" size={18} color={Colors.darkCharcoal} style={{ marginRight: Spacing.xs }} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    Edit Estimate
+                  </Text>
+                </View>
+              </Pressable>
+            )}
           </Card>
 
           {/* Rooms and Structures - Combined */}
