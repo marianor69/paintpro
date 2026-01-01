@@ -7,6 +7,7 @@ import {
   Staircase,
   Fireplace,
   BuiltIn,
+  BrickWall,
   ClientInfo,
   QuoteBuilder,
   Quote,
@@ -114,6 +115,15 @@ interface ProjectStore {
     builtIn: Partial<BuiltIn>
   ) => void;
   deleteBuiltIn: (projectId: string, builtInId: string) => void;
+
+  // Brick Wall operations
+  addBrickWall: (projectId: string) => string;
+  updateBrickWall: (
+    projectId: string,
+    brickWallId: string,
+    brickWall: Partial<BrickWall>
+  ) => void;
+  deleteBrickWall: (projectId: string, brickWallId: string) => void;
 }
 
 export const useProjectStore = create<ProjectStore>()(
@@ -133,6 +143,7 @@ export const useProjectStore = create<ProjectStore>()(
           staircases: [],
           fireplaces: [],
           builtIns: [],
+          brickWalls: [],
           createdAt: now,
           updatedAt: now,
           floorCount: floorInfo?.floorCount || 1,
@@ -701,6 +712,60 @@ export const useProjectStore = create<ProjectStore>()(
           ),
         }));
       },
+
+      addBrickWall: (projectId) => {
+        const brickWallId = uuidv4();
+        const newBrickWall: BrickWall = {
+          id: brickWallId,
+          name: "",
+          width: 10,
+          height: 8,
+          includePrimer: true,
+          coats: 2,
+        };
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  brickWalls: [...p.brickWalls, newBrickWall],
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+        return brickWallId;
+      },
+
+      updateBrickWall: (projectId, brickWallId, brickWall) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  brickWalls: p.brickWalls.map((bw) =>
+                    bw.id === brickWallId ? { ...bw, ...brickWall } : bw
+                  ),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      deleteBrickWall: (projectId, brickWallId) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  brickWalls: p.brickWalls.filter((bw) => bw.id !== brickWallId),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
     }),
     {
       name: "project-storage",
@@ -745,6 +810,13 @@ export const useProjectStore = create<ProjectStore>()(
               return {
                 ...project,
                 activeQuoteId: project.quotes[0].id,
+              };
+            }
+            // Ensure brickWalls array exists (for projects created before this feature)
+            if (!project.brickWalls) {
+              return {
+                ...project,
+                brickWalls: [],
               };
             }
             return project;

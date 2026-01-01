@@ -18,6 +18,7 @@ import RoomEditorScreen from "../screens/RoomEditorScreen";
 import StaircaseEditorScreen from "../screens/StaircaseEditorScreen";
 import FireplaceEditorScreen from "../screens/FireplaceEditorScreen";
 import BuiltInEditorScreen from "../screens/BuiltInEditorScreen";
+import BrickWallEditorScreen from "../screens/BrickWallEditorScreen";
 import PricingSettingsScreen from "../screens/PricingSettingsScreen";
 import CalculationSettingsScreen from "../screens/CalculationSettingsScreen";
 import MaterialsSummaryScreen from "../screens/MaterialsSummaryScreen";
@@ -38,6 +39,7 @@ export type RootStackParamList = {
   StaircaseEditor: { projectId: string; staircaseId?: string };
   FireplaceEditor: { projectId: string; fireplaceId?: string };
   BuiltInEditor: { projectId: string; builtInId?: string };
+  BrickWallEditor: { projectId: string; brickWallId?: string };
   PricingSettings: undefined;
   CalculationSettings: undefined;
   MaterialsSummary: { projectId: string };
@@ -229,6 +231,11 @@ export default function RootNavigator() {
           name="BuiltInEditor"
           component={BuiltInEditorScreen}
           options={{ title: "Built-In" }}
+        />
+        <Stack.Screen
+          name="BrickWallEditor"
+          component={BrickWallEditorScreen}
+          options={{ title: "Brick Wall" }}
         />
         <Stack.Screen
           name="PricingSettings"

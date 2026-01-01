@@ -126,6 +126,17 @@ export interface BuiltIn {
   notes?: string;
 }
 
+export interface BrickWall {
+  id: string;
+  name: string; // Name/Location identifier (required)
+  width: number; // in feet
+  height: number; // in feet
+  includePrimer: boolean; // Toggle for primer (1 coat)
+  coats: number; // Number of coats of wall paint (1 or 2, default 2)
+  // Notes field (available without photos)
+  notes?: string;
+}
+
 export interface ClientInfo {
   name: string;
   address: string;
@@ -222,6 +233,7 @@ export interface Project {
   staircases: Staircase[];
   fireplaces: Fireplace[];
   builtIns: BuiltIn[];
+  brickWalls: BrickWall[];
   createdAt: number;
   updatedAt: number;
   // Floor information
@@ -324,6 +336,20 @@ export interface StaircaseCalculations {
 export interface FireplaceCalculations {
   paintableArea: number;
   totalGallons: number;
+  laborCost: number;
+  materialCost: number;
+  totalPrice: number;
+}
+
+export interface BrickWallCalculations {
+  paintableArea: number;
+  primerGallons: number;
+  paintGallons: number;
+  totalGallons: number;
+  primerLaborCost: number;
+  paintLaborCost: number;
+  primerMaterialCost: number;
+  paintMaterialCost: number;
   laborCost: number;
   materialCost: number;
   totalPrice: number;

@@ -2,10 +2,12 @@ import {
   Room,
   Staircase,
   Fireplace,
+  BrickWall,
   PricingSettings,
   RoomCalculations,
   StaircaseCalculations,
   FireplaceCalculations,
+  BrickWallCalculations,
   ProjectSummary,
   Project,
   QuoteBuilder,
@@ -15,7 +17,8 @@ import { useCalculationSettings } from "../state/calculationStore";
 import {
   computeRoomPricingSummary,
   computeStaircasePricingSummary,
-  computeFireplacePricingSummary
+  computeFireplacePricingSummary,
+  computeBrickWallPricingSummary
 } from "./pricingSummary";
 
 // Helper function to get calculation settings
@@ -845,6 +848,56 @@ export function calculateFireplaceMetrics(
   return {
     paintableArea,
     totalGallons,
+    laborCost,
+    materialCost,
+    totalPrice,
+  };
+}
+
+export function calculateBrickWallMetrics(
+  brickWall: BrickWall,
+  pricing: PricingSettings
+): BrickWallCalculations {
+  // Calculate paintable area (width × height)
+  const paintableArea = brickWall.width * brickWall.height;
+
+  // Calculate primer (if included)
+  let primerGallons = 0;
+  let primerLaborCost = 0;
+  let primerMaterialCost = 0;
+
+  if (brickWall.includePrimer) {
+    // Primer: 1 coat
+    primerGallons = paintableArea / pricing.wallCoverageSqFtPerGallon;
+    primerLaborCost = paintableArea * pricing.wallLaborPerSqFt;
+    primerMaterialCost = Math.ceil(primerGallons) * pricing.primerPerGallon;
+  }
+
+  // Calculate paint (1 or 2 coats)
+  const paintGallons = (paintableArea / pricing.wallCoverageSqFtPerGallon) * brickWall.coats;
+
+  // Paint labor: area × labor rate × coats multiplier
+  // If 2 coats, use secondCoatLaborMultiplier (default 2.0)
+  const laborMultiplier = brickWall.coats === 2 ? pricing.secondCoatLaborMultiplier : 1.0;
+  const paintLaborCost = paintableArea * pricing.wallLaborPerSqFt * laborMultiplier;
+
+  const paintMaterialCost = Math.ceil(paintGallons) * pricing.wallPaintPerGallon;
+
+  // Totals
+  const totalGallons = primerGallons + paintGallons;
+  const laborCost = primerLaborCost + paintLaborCost;
+  const materialCost = primerMaterialCost + paintMaterialCost;
+  const totalPrice = laborCost + materialCost;
+
+  return {
+    paintableArea,
+    primerGallons,
+    paintGallons,
+    totalGallons,
+    primerLaborCost,
+    paintLaborCost,
+    primerMaterialCost,
+    paintMaterialCost,
     laborCost,
     materialCost,
     totalPrice,
@@ -1713,6 +1766,37 @@ export function calculateFilteredProjectSummary(
     // Placeholder for when built-in pricing is implemented
     console.log("[calculateFilteredProjectSummary] Built-ins exist but pricing not yet implemented:", project.builtIns.length);
   }
+
+  // Calculate brick wall totals
+  console.log("[calculateFilteredProjectSummary] Processing brick walls:", {
+    brickWallCount: (project.brickWalls || []).length,
+    brickWalls: project.brickWalls
+  });
+  (project.brickWalls || []).forEach((brickWall, index) => {
+    const pricingSummary = computeBrickWallPricingSummary(brickWall, pricing);
+    console.log(`[BRICK WALL ${index + 1}]`, {
+      width: brickWall.width,
+      height: brickWall.height,
+      includePrimer: brickWall.includePrimer,
+      coats: brickWall.coats,
+      laborCost: pricingSummary.laborDisplayed,
+      materialsCost: pricingSummary.materialsDisplayed,
+      totalCost: pricingSummary.totalDisplayed
+    });
+    // Add primer gallons to total
+    totalPrimerGallons += safeNumber(pricingSummary.primerGallons);
+    // Add paint gallons to wall gallons
+    totalWallGallons += safeNumber(pricingSummary.paintGallons);
+    totalLaborCost += safeNumber(pricingSummary.laborDisplayed);
+    totalMaterialCost += safeNumber(pricingSummary.materialsDisplayed);
+    itemizedPrices.push({
+      id: brickWall.id,
+      name: brickWall.name || `Brick Wall ${index + 1}`,
+      price: safeNumber(pricingSummary.totalDisplayed),
+      laborCost: safeNumber(pricingSummary.laborDisplayed),
+      materialsCost: safeNumber(pricingSummary.materialsDisplayed),
+    });
+  });
 
   // Add furniture moving fee if enabled
   if (project.includeFurnitureMoving) {

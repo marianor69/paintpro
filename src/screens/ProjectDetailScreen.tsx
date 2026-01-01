@@ -147,6 +147,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     navigation.navigate("BuiltInEditor", { projectId });
   };
 
+  const handleAddBrickWall = () => {
+    // Don't create brick wall here - let BrickWallEditor create it on Save
+    navigation.navigate("BrickWallEditor", { projectId });
+  };
+
   // Room Details (Test Export) handler
   const handleExportRoomDetails = async () => {
     try {
@@ -694,7 +699,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const staircaseCount = project.staircases?.length || 0;
   const fireplaceCount = project.fireplaces?.length || 0;
   const builtInCount = project.builtIns?.length || 0;
-  const totalItems = roomCount + staircaseCount + fireplaceCount + builtInCount;
+  const brickWallCount = project.brickWalls?.length || 0;
+  const totalItems = roomCount + staircaseCount + fireplaceCount + builtInCount + brickWallCount;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }} edges={["bottom"]}>
@@ -794,6 +800,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 ))}
 
+                {/* Brick Walls */}
+                {project.brickWalls?.map((brickWall, idx) => (
+                  <View key={brickWall.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <Ionicons name="cube-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {brickWall.name || "Unnamed Brick Wall"}
+                    </Text>
+                  </View>
+                ))}
+
                 {/* Furniture Moving */}
                 {project.includeFurnitureMoving && (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
@@ -875,6 +891,21 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(builtInPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
+
+                {/* Brick Walls */}
+                {project.brickWalls?.map((brickWall) => {
+                  const brickWallPricing = displaySummary.itemizedPrices?.find(p => p.id === brickWall.id);
+                  return (
+                    <View key={brickWall.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(brickWallPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(brickWallPricing?.materialsCost || 0)}
                       </Text>
                     </View>
                   );
@@ -1441,6 +1472,30 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Built-In
+              </Text>
+            </Pressable>
+
+            {/* Brick Wall Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddBrickWall();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.md,
+              }}
+            >
+              <View style={{ marginRight: Spacing.md }}>
+                <Ionicons name="cube-outline" size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Brick Wall
               </Text>
             </Pressable>
 

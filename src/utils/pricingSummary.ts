@@ -11,7 +11,7 @@
  * - ProjectDetailScreen (Room Details test export)
  */
 
-import { Room, Staircase, Fireplace, PricingSettings, QuoteBuilder } from "../types/painting";
+import { Room, Staircase, Fireplace, BrickWall, PricingSettings, QuoteBuilder } from "../types/painting";
 import {
   safeNumber,
   getClosetInteriorMetrics,
@@ -129,6 +129,32 @@ export interface FireplacePricingSummary {
   totalCost: number;
 
   // UI-DISPLAYED VALUES (match what user sees in Fireplace Summary after rounding/formatting)
+  laborDisplayed: number;      // laborCost.toFixed(2) parsed back to number
+  materialsDisplayed: number;   // materialsCost.toFixed(2) parsed back to number
+  totalDisplayed: number;       // Math.round(totalCost)
+}
+
+export interface BrickWallPricingSummary {
+  id: string;
+  width: number;
+  height: number;
+  includePrimer: boolean;
+  coats: number;
+  paintableArea: number;
+  primerGallons: number;
+  paintGallons: number;
+  totalGallons: number;
+
+  // Pricing breakdown (raw values for internal use)
+  primerLaborCost: number;
+  paintLaborCost: number;
+  primerMaterialsCost: number;
+  paintMaterialsCost: number;
+  laborCost: number;
+  materialsCost: number;
+  totalCost: number;
+
+  // UI-DISPLAYED VALUES (match what user sees in Brick Wall Summary after rounding/formatting)
   laborDisplayed: number;      // laborCost.toFixed(2) parsed back to number
   materialsDisplayed: number;   // materialsCost.toFixed(2) parsed back to number
   totalDisplayed: number;       // Math.round(totalCost)
@@ -783,6 +809,72 @@ export function computeFireplacePricingSummary(
     totalCost,
 
     // UI-DISPLAYED VALUES (match what user sees in Fireplace Summary after rounding/formatting)
+    laborDisplayed: parseFloat(Math.max(0, safeNumber(laborCost)).toFixed(2)),
+    materialsDisplayed: parseFloat(Math.max(0, safeNumber(materialsCost)).toFixed(2)),
+    totalDisplayed: Math.round(totalCost),
+  };
+}
+
+// ============================================================================
+// BRICK WALL PRICING CALCULATION
+// ============================================================================
+
+export function computeBrickWallPricingSummary(
+  brickWall: BrickWall,
+  pricing: PricingSettings
+): BrickWallPricingSummary {
+  // Calculate paintable area (width × height)
+  const paintableArea = safeNumber(brickWall.width) * safeNumber(brickWall.height);
+
+  // Calculate primer (if included)
+  let primerGallons = 0;
+  let primerLaborCost = 0;
+  let primerMaterialsCost = 0;
+
+  if (brickWall.includePrimer) {
+    // Primer: 1 coat
+    primerGallons = paintableArea / safeNumber(pricing.wallCoverageSqFtPerGallon, 350);
+    primerLaborCost = paintableArea * safeNumber(pricing.wallLaborPerSqFt, 0);
+    primerMaterialsCost = Math.ceil(primerGallons) * safeNumber(pricing.primerPerGallon, 0);
+  }
+
+  // Calculate paint (1 or 2 coats)
+  const paintGallons = (paintableArea / safeNumber(pricing.wallCoverageSqFtPerGallon, 350)) * safeNumber(brickWall.coats, 2);
+
+  // Paint labor: area × labor rate × coats multiplier
+  // If 2 coats, use secondCoatLaborMultiplier (default 2.0)
+  const laborMultiplier = brickWall.coats === 2 ? safeNumber(pricing.secondCoatLaborMultiplier, 2.0) : 1.0;
+  const paintLaborCost = paintableArea * safeNumber(pricing.wallLaborPerSqFt, 0) * laborMultiplier;
+
+  const paintMaterialsCost = Math.ceil(paintGallons) * safeNumber(pricing.wallPaintPerGallon, 0);
+
+  // Totals
+  const totalGallons = primerGallons + paintGallons;
+  const laborCost = primerLaborCost + paintLaborCost;
+  const materialsCost = primerMaterialsCost + paintMaterialsCost;
+  const totalCost = Math.max(0, safeNumber(laborCost + materialsCost));
+
+  return {
+    id: brickWall.id,
+    width: safeNumber(brickWall.width),
+    height: safeNumber(brickWall.height),
+    includePrimer: brickWall.includePrimer,
+    coats: safeNumber(brickWall.coats, 2),
+    paintableArea: Math.max(0, safeNumber(paintableArea)),
+    primerGallons: Math.max(0, safeNumber(primerGallons)),
+    paintGallons: Math.max(0, safeNumber(paintGallons)),
+    totalGallons: Math.max(0, safeNumber(totalGallons)),
+
+    // Pricing breakdown (raw values for internal use)
+    primerLaborCost: Math.max(0, safeNumber(primerLaborCost)),
+    paintLaborCost: Math.max(0, safeNumber(paintLaborCost)),
+    primerMaterialsCost: Math.max(0, safeNumber(primerMaterialsCost)),
+    paintMaterialsCost: Math.max(0, safeNumber(paintMaterialsCost)),
+    laborCost: Math.max(0, safeNumber(laborCost)),
+    materialsCost: Math.max(0, safeNumber(materialsCost)),
+    totalCost,
+
+    // UI-DISPLAYED VALUES (match what user sees in Brick Wall Summary after rounding/formatting)
     laborDisplayed: parseFloat(Math.max(0, safeNumber(laborCost)).toFixed(2)),
     materialsDisplayed: parseFloat(Math.max(0, safeNumber(materialsCost)).toFixed(2)),
     totalDisplayed: Math.round(totalCost),
