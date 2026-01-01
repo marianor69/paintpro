@@ -813,7 +813,13 @@ export function calculateProjectSummary(
   let totalCeilingSqFt = 0;
   let totalTrimSqFt = 0;
   let totalDoorSqFt = 0;
-  const itemizedPrices: Array<{ name: string; price: number }> = [];
+  const itemizedPrices: Array<{
+    id: string;
+    name: string;
+    price: number;
+    laborCost: number;
+    materialsCost: number;
+  }> = [];
 
   // Calculate room totals - only include rooms marked as included (default: true)
   (project.rooms || []).forEach((room) => {
@@ -834,8 +840,11 @@ export function calculateProjectSummary(
     totalWallSqFt += safeNumber(calc.wallSqFt);
     totalCeilingSqFt += safeNumber(calc.ceilingSqFt);
     itemizedPrices.push({
+      id: room.id,
       name: room.name || "Unnamed Room",
       price: safeNumber(calc.totalPrice),
+      laborCost: safeNumber(calc.laborCost),
+      materialsCost: safeNumber(calc.materialCost),
     });
   });
 
@@ -846,8 +855,11 @@ export function calculateProjectSummary(
     totalLaborCost += safeNumber(calc.laborCost);
     totalMaterialCost += safeNumber(calc.materialCost);
     itemizedPrices.push({
+      id: staircase.id,
       name: `Staircase ${index + 1}`,
       price: safeNumber(calc.totalPrice),
+      laborCost: safeNumber(calc.laborCost),
+      materialsCost: safeNumber(calc.materialCost),
     });
   });
 
@@ -858,8 +870,11 @@ export function calculateProjectSummary(
     totalLaborCost += safeNumber(calc.laborCost);
     totalMaterialCost += safeNumber(calc.materialCost);
     itemizedPrices.push({
+      id: fireplace.id,
       name: `Fireplace ${index + 1}`,
       price: safeNumber(calc.totalPrice),
+      laborCost: safeNumber(calc.laborCost),
+      materialsCost: safeNumber(calc.materialCost),
     });
   });
 
@@ -1479,7 +1494,13 @@ export function calculateFilteredProjectSummary(
   let totalCeilingSqFt = 0;
   let totalTrimSqFt = 0;
   let totalDoorSqFt = 0;
-  const itemizedPrices: Array<{ name: string; price: number }> = [];
+  const itemizedPrices: Array<{
+    id: string;
+    name: string;
+    price: number;
+    laborCost: number;
+    materialsCost: number;
+  }> = [];
 
   let processedRoomCount = 0;
 
@@ -1543,8 +1564,11 @@ export function calculateFilteredProjectSummary(
     totalCeilingSqFt += safeNumber(pricingSummary.ceilingArea);
 
     itemizedPrices.push({
+      id: room.id,
       name: room.name || "Unnamed Room",
       price: roomTotalPrice,
+      laborCost: roomLaborCost,
+      materialsCost: roomMaterialCost,
     });
   });
 
@@ -1573,8 +1597,11 @@ export function calculateFilteredProjectSummary(
       totalLaborCost += safeNumber(pricingSummary.laborDisplayed);
       totalMaterialCost += safeNumber(pricingSummary.materialsDisplayed);
       itemizedPrices.push({
+        id: staircase.id,
         name: `Staircase ${index + 1}`,
         price: safeNumber(pricingSummary.totalDisplayed),
+        laborCost: safeNumber(pricingSummary.laborDisplayed),
+        materialsCost: safeNumber(pricingSummary.materialsDisplayed),
       });
     });
   }
@@ -1601,8 +1628,11 @@ export function calculateFilteredProjectSummary(
       totalLaborCost += safeNumber(pricingSummary.laborDisplayed);
       totalMaterialCost += safeNumber(pricingSummary.materialsDisplayed);
       itemizedPrices.push({
+        id: fireplace.id,
         name: `Fireplace ${index + 1}`,
         price: safeNumber(pricingSummary.totalDisplayed),
+        laborCost: safeNumber(pricingSummary.laborDisplayed),
+        materialsCost: safeNumber(pricingSummary.materialsDisplayed),
       });
     });
   }

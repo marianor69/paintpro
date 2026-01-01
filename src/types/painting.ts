@@ -334,7 +334,13 @@ export interface ProjectSummary {
   totalLaborCost: number;
   totalMaterialCost: number;
   grandTotal: number;
-  itemizedPrices: Array<{ name: string; price: number }>;
+  itemizedPrices: Array<{
+    id: string;
+    name: string;
+    price: number;
+    laborCost: number;
+    materialsCost: number;
+  }>;
   totalDoors: number;
   totalWindows: number;
   // Area totals for proper paint calculation
