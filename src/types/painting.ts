@@ -85,8 +85,8 @@ export interface Staircase {
   handrailLength: number;
   spindleCount: number;
   coats: number;
-  // Secondary stairwell fields
-  hasSecondaryStairwell?: boolean;
+  // Wall fields
+  hasWall?: boolean;
   tallWallHeight?: number; // in feet
   shortWallHeight?: number; // in feet
   doubleSidedWalls?: boolean;

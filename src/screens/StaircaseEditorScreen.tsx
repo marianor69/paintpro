@@ -61,8 +61,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [spindleCount, setSpindleCount] = useState(
     !isNewStaircase && staircase?.spindleCount && staircase.spindleCount > 0 ? staircase.spindleCount.toString() : ""
   );
-  const [hasSecondaryStairwell, setHasSecondaryStairwell] = useState(
-    !isNewStaircase && staircase?.hasSecondaryStairwell ? true : false
+  const [hasWall, setHasWall] = useState(
+    !isNewStaircase && staircase?.hasWall ? true : false
   );
   const [tallWallHeight, setTallWallHeight] = useState(
     !isNewStaircase && staircase?.tallWallHeight && staircase.tallWallHeight > 0 ? formatMeasurementValue(staircase.tallWallHeight, 'length', unitSystem, 2) : ""
@@ -115,7 +115,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         riserCount !== "" ||
         handrailLength !== "" ||
         spindleCount !== "" ||
-        (hasSecondaryStairwell && (tallWallHeight !== "" || shortWallHeight !== ""));
+        (hasWall && (tallWallHeight !== "" || shortWallHeight !== ""));
       setHasUnsavedChanges(hasChanges);
     } else {
       // For existing: changes are when values differ from stored data
@@ -126,7 +126,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         riserCount !== (staircase.riserCount && staircase.riserCount > 0 ? staircase.riserCount.toString() : "") ||
         handrailLength !== (staircase.handrailLength && staircase.handrailLength > 0 ? staircase.handrailLength.toString() : "") ||
         spindleCount !== (staircase.spindleCount && staircase.spindleCount > 0 ? staircase.spindleCount.toString() : "") ||
-        hasSecondaryStairwell !== (staircase.hasSecondaryStairwell ?? false) ||
+        hasWall !== (staircase.hasWall ?? false) ||
         tallWallHeight !== (staircase.tallWallHeight && staircase.tallWallHeight > 0 ? staircase.tallWallHeight.toString() : "") ||
         shortWallHeight !== (staircase.shortWallHeight && staircase.shortWallHeight > 0 ? staircase.shortWallHeight.toString() : "") ||
         doubleSidedWalls !== (staircase.doubleSidedWalls ?? false);
@@ -140,7 +140,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     riserCount,
     handrailLength,
     spindleCount,
-    hasSecondaryStairwell,
+    hasWall,
     tallWallHeight,
     shortWallHeight,
     doubleSidedWalls,
@@ -175,6 +175,22 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     return unsubscribe;
   }, [navigation, blurFocusedInput]);
 
+  // Set default wall heights when hasWall is toggled ON
+  useEffect(() => {
+    if (hasWall && tallWallHeight === "" && shortWallHeight === "") {
+      const firstFloor = project?.firstFloorHeight || project?.floorHeights?.[0] || 8;
+      const secondFloor = project?.secondFloorHeight || project?.floorHeights?.[1] || 8;
+
+      // Tall wall: first floor + second floor + 1 ft
+      const defaultTallWallHeight = firstFloor + secondFloor + 1;
+      // Short wall: second floor height
+      const defaultShortWallHeight = secondFloor;
+
+      setTallWallHeight(formatMeasurementValue(defaultTallWallHeight, 'length', unitSystem, 2));
+      setShortWallHeight(formatMeasurementValue(defaultShortWallHeight, 'length', unitSystem, 2));
+    }
+  }, [hasWall, project, unitSystem]);
+
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
@@ -205,7 +221,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       riserCount !== "" ||
       handrailLength !== "" ||
       spindleCount !== "" ||
-      (hasSecondaryStairwell && (tallWallHeight !== "" || shortWallHeight !== ""));
+      (hasWall && (tallWallHeight !== "" || shortWallHeight !== ""));
 
     if (!hasAnyData) {
       Alert.alert("No Data Entered", "Please enter at least one measurement before saving.");
@@ -236,7 +252,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
         coats: 2,
-        hasSecondaryStairwell,
+        hasWall,
         tallWallHeight: tallWallHeightFeet,
         shortWallHeight: shortWallHeightFeet,
         doubleSidedWalls,
@@ -252,7 +268,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
         coats: staircase?.coats || 2,
-        hasSecondaryStairwell,
+        hasWall,
         tallWallHeight: tallWallHeightFeet,
         shortWallHeight: shortWallHeightFeet,
         doubleSidedWalls,
@@ -297,7 +313,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             handrailLength: parseFloat(handrailLength) || 0,
             spindleCount: parseInt(spindleCount) || 0,
             coats: 2,
-            hasSecondaryStairwell,
+            hasWall,
             tallWallHeight: parseFloat(tallWallHeight) || 0,
             shortWallHeight: parseFloat(shortWallHeight) || 0,
             doubleSidedWalls,
@@ -314,7 +330,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             treadDepth: 0,
             handrailLength: parseFloat(handrailLength) || 0,
             spindleCount: parseInt(spindleCount) || 0,
-            hasSecondaryStairwell,
+            hasWall,
             tallWallHeight: parseFloat(tallWallHeight) || 0,
             shortWallHeight: parseFloat(shortWallHeight) || 0,
             doubleSidedWalls,
@@ -325,7 +341,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
   // Only show preview if at least riser count is entered
   const hasDataEntered = riserCount !== "" || handrailLength !== "" || spindleCount !== "" ||
-    (hasSecondaryStairwell && (tallWallHeight !== "" || shortWallHeight !== ""));
+    (hasWall && (tallWallHeight !== "" || shortWallHeight !== ""));
 
   // If existing staircase not found, show error
   if (!isNewStaircase && !staircase) {
@@ -429,15 +445,18 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </View>
             </Card>
 
-            {/* Secondary Stairwell Section */}
+            {/* Wall Section */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Toggle
-                label="Has Secondary Stairwell"
-                value={hasSecondaryStairwell}
-                onValueChange={setHasSecondaryStairwell}
+                label="Has Wall"
+                value={hasWall}
+                onValueChange={setHasWall}
               />
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Does stairwell have walls to paint?
+              </Text>
 
-              {hasSecondaryStairwell && (
+              {hasWall && (
                 <>
                   <View style={{ marginBottom: Spacing.md, marginTop: Spacing.md }}>
                     <FormInput
@@ -516,11 +535,11 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               const spindleLaborCost = parseFloat(spindleCount) > 0 ? parseFloat(spindleCount) * pricing.spindleLabor : 0;
               const handrailLaborCost = parseFloat(handrailLength) > 0 ? parseFloat(handrailLength) * pricing.handrailLaborPerLF : 0;
 
-              // Secondary stairwell labor
-              const secondaryWallArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
+              // Wall labor
+              const secondaryWallArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
                 ? ((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)
                 : 0;
-              const secondaryCeilingArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
+              const secondaryCeilingArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
               const secondaryWallLaborCost = secondaryWallArea * pricing.wallLaborPerSqFt;
               const secondaryCeilingLaborCost = secondaryCeilingArea * pricing.ceilingLaborPerSqFt;
 
@@ -695,10 +714,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               const spindleArea = parseInt(spindleCount) * 0.5;
               const handrailArea = parseFloat(handrailLength) * 0.5;
 
-              const secondaryWallArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
+              const secondaryWallArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
                 ? ((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)
                 : 0;
-              const secondaryCeilingArea = hasSecondaryStairwell && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
+              const secondaryCeilingArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
