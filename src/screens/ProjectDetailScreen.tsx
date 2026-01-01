@@ -821,40 +821,19 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
           {/* Rooms and Structures - Combined */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Rooms and Structures
-            </Text>
-
-            <View style={{ gap: Spacing.md }}>
-              {/* ROOMS SECTION */}
-              <View>
-                {project.rooms && project.rooms.length > 0 ? (
-                  <>
-                    {/* Header with count and Add button */}
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                        Rooms: {project.rooms.length}
-                      </Text>
-                      {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
-                        <Pressable
-                          onPress={() => handleAddRoom(1)}
-                          style={{
-                            backgroundColor: Colors.primaryBlue,
-                            borderRadius: 8,
-                            paddingHorizontal: Spacing.md,
-                            paddingVertical: 6,
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel="Add room"
-                        >
-                          <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                            Add
-                          </Text>
-                        </Pressable>
-                      ) : (
-                        <Pressable
-                          onPress={() => {
-                            const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Rooms and Structures
+              </Text>
+              <Pressable
+                onPress={() => {
+                  const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                  const roomOptions = floorCount === 1
+                    ? [{ text: "Room", onPress: () => handleAddRoom(1) }]
+                    : [
+                        {
+                          text: "Room",
+                          onPress: () => {
                             Alert.alert("Select Floor", "Choose which floor to add the room to:", [
                               ...Array.from({ length: floorCount }, (_, i) => ({
                                 text: `${getOrdinal(i + 1)} Floor`,
@@ -862,470 +841,283 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                               })),
                               { text: "Cancel", style: "cancel" },
                             ]);
-                          }}
-                          style={{
-                            backgroundColor: Colors.primaryBlue,
-                            borderRadius: 8,
-                            paddingHorizontal: Spacing.md,
-                            paddingVertical: 6,
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel="Add room"
-                        >
-                          <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                            Add
-                          </Text>
-                        </Pressable>
-                      )}
-                    </View>
+                          },
+                        },
+                      ];
 
-                    {/* Rooms list */}
-                    {project.rooms.map((room, idx) => (
-                      <View
-                        key={room.id}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: Spacing.sm,
-                          marginBottom: idx < project.rooms.length - 1 ? Spacing.xs : 0,
-                        }}
-                      >
-                        <Pressable
-                          onPress={() =>
-                            navigation.navigate("RoomEditor", {
-                              projectId,
-                              roomId: room.id,
-                              roomName: room.name || "Unnamed Room",
-                            })
-                          }
-                          style={{
-                            flex: 1,
-                            backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
-                            padding: Spacing.sm,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Edit room ${room.name || "Unnamed Room"}`}
-                        >
-                          <View>
-                            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                              {room.name || "Unnamed Room"}
-                            </Text>
-                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
-                              {getOrdinal(room.floor || 1)} floor
-                            </Text>
-                          </View>
-                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                        </Pressable>
-                        <Pressable
-                          onPress={() => {
-                            Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
-                              { text: "Cancel", style: "cancel" },
-                              {
-                                text: "Delete",
-                                style: "destructive",
-                                onPress: () => deleteRoom(projectId, room.id),
-                              },
-                            ]);
-                          }}
-                          style={{
-                            padding: Spacing.sm,
-                            backgroundColor: Colors.backgroundWarmGray,
-                            borderRadius: BorderRadius.default,
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Delete room ${room.name || "Unnamed Room"}`}
-                        >
-                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
-                        </Pressable>
-                      </View>
-                    ))}
-                  </>
-                ) : (
-                  /* Empty state: Show Add Room button */
-                  <>
-                    {(safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1) === 1) ? (
-                      <Pressable
-                        onPress={() => handleAddRoom(1)}
-                        style={{
-                          backgroundColor: Colors.white,
-                          borderRadius: BorderRadius.default,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          paddingVertical: Spacing.md,
-                          alignItems: "center",
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Add room"
-                      >
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                          Add Room
-                        </Text>
-                      </Pressable>
-                    ) : (
-                      <Pressable
-                        onPress={() => {
-                          const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
-                          Alert.alert("Select Floor", "Choose which floor to add the room to:", [
-                            ...Array.from({ length: floorCount }, (_, i) => ({
-                              text: `${getOrdinal(i + 1)} Floor`,
-                              onPress: () => handleAddRoom(i + 1),
-                            })),
-                            { text: "Cancel", style: "cancel" },
-                          ]);
-                        }}
-                        style={{
-                          backgroundColor: Colors.white,
-                          borderRadius: BorderRadius.default,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          paddingVertical: Spacing.md,
-                          alignItems: "center",
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Add room"
-                      >
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                          Add Room
-                        </Text>
-                      </Pressable>
-                    )}
-                  </>
-                )}
-              </View>
-
-              {/* STAIRCASES SECTION */}
-              <View>
-                {project.staircases && project.staircases.length > 0 ? (
-                  <>
-                    {/* Header with count and Add button */}
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                        Staircases: {project.staircases.length}
-                      </Text>
-                      <Pressable
-                        onPress={handleAddStaircase}
-                        style={{
-                          backgroundColor: Colors.primaryBlue,
-                          borderRadius: 8,
-                          paddingHorizontal: Spacing.md,
-                          paddingVertical: 6,
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Add staircase"
-                      >
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                          Add
-                        </Text>
-                      </Pressable>
-                    </View>
-
-                    {/* Staircases list */}
-                    {project.staircases.map((staircase, idx) => (
-                      <View
-                        key={staircase.id}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: Spacing.sm,
-                          marginBottom: idx < project.staircases.length - 1 ? Spacing.xs : 0,
-                        }}
-                      >
-                        <Pressable
-                          onPress={() =>
-                            navigation.navigate("StaircaseEditor", {
-                              projectId,
-                              staircaseId: staircase.id,
-                            })
-                          }
-                          style={{
-                            flex: 1,
-                            backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
-                            padding: Spacing.sm,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Edit staircase ${staircase.name || `Staircase ${idx + 1}`}`}
-                        >
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                            {staircase.name || `Staircase ${idx + 1}`}
-                          </Text>
-                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                        </Pressable>
-                        <Pressable
-                          onPress={() => {
-                            Alert.alert("Delete Staircase", "Are you sure you want to delete this staircase?", [
-                              { text: "Cancel", style: "cancel" },
-                              {
-                                text: "Delete",
-                                style: "destructive",
-                                onPress: () => deleteStaircase(projectId, staircase.id),
-                              },
-                            ]);
-                          }}
-                          style={{
-                            padding: Spacing.sm,
-                            backgroundColor: Colors.backgroundWarmGray,
-                            borderRadius: BorderRadius.default,
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Delete staircase ${staircase.name || `Staircase ${idx + 1}`}`}
-                        >
-                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
-                        </Pressable>
-                      </View>
-                    ))}
-                  </>
-                ) : (
-                  /* Empty state: Show Add Staircase button */
-                  <Pressable
-                    onPress={handleAddStaircase}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      paddingVertical: Spacing.md,
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Add staircase"
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                      Add Staircase
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-
-              {/* FIREPLACES SECTION */}
-              <View>
-                {project.fireplaces && project.fireplaces.length > 0 ? (
-                  <>
-                    {/* Header with count and Add button */}
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                        Fireplaces: {project.fireplaces.length}
-                      </Text>
-                      <Pressable
-                        onPress={handleAddFireplace}
-                        style={{
-                          backgroundColor: Colors.primaryBlue,
-                          borderRadius: 8,
-                          paddingHorizontal: Spacing.md,
-                          paddingVertical: 6,
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Add fireplace"
-                      >
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                          Add
-                        </Text>
-                      </Pressable>
-                    </View>
-
-                    {/* Fireplaces list */}
-                    {project.fireplaces.map((fireplace, idx) => (
-                      <View
-                        key={fireplace.id}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: Spacing.sm,
-                          marginBottom: idx < project.fireplaces.length - 1 ? Spacing.xs : 0,
-                        }}
-                      >
-                        <Pressable
-                          onPress={() =>
-                            navigation.navigate("FireplaceEditor", {
-                              projectId,
-                              fireplaceId: fireplace.id,
-                            })
-                          }
-                          style={{
-                            flex: 1,
-                            backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
-                            padding: Spacing.sm,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Edit fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
-                        >
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                            {fireplace.name || `Fireplace ${idx + 1}`}
-                          </Text>
-                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                        </Pressable>
-                        <Pressable
-                          onPress={() => {
-                            Alert.alert("Delete Fireplace", "Are you sure you want to delete this fireplace?", [
-                              { text: "Cancel", style: "cancel" },
-                              {
-                                text: "Delete",
-                                style: "destructive",
-                                onPress: () => deleteFireplace(projectId, fireplace.id),
-                              },
-                            ]);
-                          }}
-                          style={{
-                            padding: Spacing.sm,
-                            backgroundColor: Colors.backgroundWarmGray,
-                            borderRadius: BorderRadius.default,
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Delete fireplace ${fireplace.name || `Fireplace ${idx + 1}`}`}
-                        >
-                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
-                        </Pressable>
-                      </View>
-                    ))}
-                  </>
-                ) : (
-                  /* Empty state: Show Add Fireplace button */
-                  <Pressable
-                    onPress={handleAddFireplace}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      paddingVertical: Spacing.md,
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Add fireplace"
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                      Add Fireplace
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-
-              {/* BUILT-INS SECTION */}
-              <View>
-                {project.builtIns && project.builtIns.length > 0 ? (
-                  <>
-                    {/* Header with count and Add button */}
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                        Built-Ins: {project.builtIns.length}
-                      </Text>
-                      <Pressable
-                        onPress={handleAddBuiltIn}
-                        style={{
-                          backgroundColor: Colors.primaryBlue,
-                          borderRadius: 8,
-                          paddingHorizontal: Spacing.md,
-                          paddingVertical: 6,
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Add built-in"
-                      >
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                          Add
-                        </Text>
-                      </Pressable>
-                    </View>
-
-                    {/* Built-Ins list */}
-                    {project.builtIns.map((builtIn, idx) => (
-                      <View
-                        key={builtIn.id}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: Spacing.sm,
-                          marginBottom: idx < project.builtIns.length - 1 ? Spacing.xs : 0,
-                        }}
-                      >
-                        <Pressable
-                          onPress={() =>
-                            navigation.navigate("BuiltInEditor", {
-                              projectId,
-                              builtInId: builtIn.id,
-                            })
-                          }
-                          style={{
-                            flex: 1,
-                            backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
-                            padding: Spacing.sm,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Edit built-in ${builtIn.name || "Unnamed Built-In"}`}
-                        >
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                            {builtIn.name || "Unnamed Built-In"}
-                          </Text>
-                          <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
-                        </Pressable>
-                        <Pressable
-                          onPress={() => {
-                            Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
-                              { text: "Cancel", style: "cancel" },
-                              {
-                                text: "Delete",
-                                style: "destructive",
-                                onPress: () => deleteBuiltIn(projectId, builtIn.id),
-                              },
-                            ]);
-                          }}
-                          style={{
-                            padding: Spacing.sm,
-                            backgroundColor: Colors.backgroundWarmGray,
-                            borderRadius: BorderRadius.default,
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Delete built-in ${builtIn.name || "Unnamed Built-In"}`}
-                        >
-                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
-                        </Pressable>
-                      </View>
-                    ))}
-                  </>
-                ) : (
-                  /* Empty state: Show Add Built-In button */
-                  <Pressable
-                    onPress={handleAddBuiltIn}
-                    style={{
-                      backgroundColor: Colors.white,
-                      borderRadius: BorderRadius.default,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      paddingVertical: Spacing.md,
-                      alignItems: "center",
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Add built-in"
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                      Add Built-In
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
+                  Alert.alert("Add Item", "What would you like to add?", [
+                    ...roomOptions,
+                    { text: "Staircase", onPress: handleAddStaircase },
+                    { text: "Fireplace", onPress: handleAddFireplace },
+                    { text: "Built-In", onPress: handleAddBuiltIn },
+                    { text: "Cancel", style: "cancel" },
+                  ]);
+                }}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  borderRadius: 8,
+                  paddingHorizontal: Spacing.md,
+                  paddingVertical: 6,
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Add room or structure"
+              >
+                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Add
+                </Text>
+              </Pressable>
             </View>
+
+            {/* Unified List */}
+            {totalItems === 0 ? (
+              <View style={{ alignItems: "center", padding: Spacing.lg }}>
+                <Ionicons name="home-outline" size={48} color={Colors.mediumGray} />
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
+                  No rooms or structures yet
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
+                  Tap Add to get started
+                </Text>
+              </View>
+            ) : (
+              <View style={{ gap: Spacing.xs }}>
+                {/* Rooms */}
+                {project.rooms.map((room) => (
+                  <View
+                    key={room.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("RoomEditor", {
+                          projectId,
+                          roomId: room.id,
+                          roomName: room.name || "Unnamed Room",
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Ionicons name="bed-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {room.name || "Unnamed Room"}
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
+                          {getOrdinal(room.floor || 1)} floor
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteRoom(projectId, room.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
+
+                {/* Staircases */}
+                {project.staircases?.map((staircase, idx) => (
+                  <View
+                    key={staircase.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("StaircaseEditor", {
+                          projectId,
+                          staircaseId: staircase.id,
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Ionicons name="arrow-up-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {staircase.name || `Staircase ${idx + 1}`}
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Staircase", "Are you sure you want to delete this staircase?", [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteStaircase(projectId, staircase.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
+
+                {/* Fireplaces */}
+                {project.fireplaces?.map((fireplace, idx) => (
+                  <View
+                    key={fireplace.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("FireplaceEditor", {
+                          projectId,
+                          fireplaceId: fireplace.id,
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Ionicons name="flame-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {fireplace.name || `Fireplace ${idx + 1}`}
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Fireplace", "Are you sure you want to delete this fireplace?", [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteFireplace(projectId, fireplace.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
+
+                {/* Built-Ins */}
+                {project.builtIns?.map((builtIn, idx) => (
+                  <View
+                    key={builtIn.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("BuiltInEditor", {
+                          projectId,
+                          builtInId: builtIn.id,
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Ionicons name="cube-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {builtIn.name || "Unnamed Built-In"}
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Built-In", `Are you sure you want to delete "${builtIn.name || "Unnamed Built-In"}"?`, [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteBuiltIn(projectId, builtIn.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
+              </View>
+            )}
           </Card>
           {/* Show hint if no items yet */}
           {!canMarkStep2Complete && (
