@@ -493,18 +493,27 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             {/* Fireplace Summary */}
             {calculations && (() => {
               // Calculate costs per part (new 3-part structure)
-              const mantelLabor = hasMantel ? pricing.mantelLabor : 0;
-              const mantelMaterials = 0; // Fixed price, no materials
+              const coats = fireplace?.coats || 2;
 
+              // Mantel: 6ft x 1ft = 6 sq ft
+              const mantelLabor = hasMantel ? pricing.mantelLabor : 0;
+              const mantelArea = hasMantel ? 6 : 0;
+              const mantelGallons = mantelArea > 0 ? (mantelArea / pricing.wallCoverageSqFtPerGallon) * coats : 0;
+              const mantelMaterials = Math.ceil(mantelGallons) * pricing.wallPaintPerGallon;
+
+              // Legs: 6ft x 8" x 2 = 8 sq ft
               const legsLabor = hasLegs ? pricing.legsLabor : 0;
-              const legsMaterials = 0; // Fixed price, no materials
+              const legsArea = hasLegs ? 6 * (8 / 12) * 2 : 0;
+              const legsGallons = legsArea > 0 ? (legsArea / pricing.wallCoverageSqFtPerGallon) * coats : 0;
+              const legsMaterials = Math.ceil(legsGallons) * pricing.wallPaintPerGallon;
 
               // Over mantel: area-based
               const overMantelArea = hasOverMantel && overMantelWidth && overMantelHeight
                 ? parseFloat(overMantelWidth) * parseFloat(overMantelHeight)
                 : 0;
-              const overMantelLabor = overMantelArea > 0 ? (overMantelArea * pricing.wallLaborPerSqFt * 2) : 0; // Assuming 2 coats
-              const overMantelMaterials = calculations.materialsDisplayed; // All materials are for over mantel
+              const overMantelLabor = overMantelArea > 0 ? (overMantelArea * pricing.wallLaborPerSqFt * coats) : 0;
+              const overMantelGallons = overMantelArea > 0 ? (overMantelArea / pricing.wallCoverageSqFtPerGallon) * coats : 0;
+              const overMantelMaterials = Math.ceil(overMantelGallons) * pricing.wallPaintPerGallon;
 
               const anyPart = hasMantel || hasLegs || hasOverMantel;
 

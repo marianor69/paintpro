@@ -779,14 +779,32 @@ export function calculateFireplaceMetrics(
   if (usingNewStructure) {
     // NEW 3-PART STRUCTURE
 
-    // 1. Mantel: Fixed price
+    // 1. Mantel: Fixed labor + materials (6ft x 1ft = 6 sq ft)
     if (fireplace.hasMantel) {
+      const mantelArea = 6; // 6ft x 1ft
+      paintableArea += mantelArea;
+
+      // Fixed labor
       laborCost += pricing.mantelLabor;
+
+      // Calculate materials
+      const mantelGallons = (mantelArea / pricing.wallCoverageSqFtPerGallon) * fireplace.coats;
+      totalGallons += mantelGallons;
+      materialCost += Math.ceil(mantelGallons) * pricing.wallPaintPerGallon;
     }
 
-    // 2. Legs: Fixed price
+    // 2. Legs: Fixed labor + materials (6ft x 8" x 2 = 8 sq ft)
     if (fireplace.hasLegs) {
+      const legsArea = 6 * (8 / 12) * 2; // 6ft tall x 8" wide x 2 legs = 8 sq ft
+      paintableArea += legsArea;
+
+      // Fixed labor
       laborCost += pricing.legsLabor;
+
+      // Calculate materials
+      const legsGallons = (legsArea / pricing.wallCoverageSqFtPerGallon) * fireplace.coats;
+      totalGallons += legsGallons;
+      materialCost += Math.ceil(legsGallons) * pricing.wallPaintPerGallon;
     }
 
     // 3. Over Mantel: Measured area (width × height, 1 side only)
