@@ -51,7 +51,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   // Fireplace name/location
   const [name, setName] = useState(!isNewFireplace && fireplace?.name ? fireplace.name : "");
 
-  // Fireplace dimensions stored in feet, convert for display based on unit system
+  // Legacy dimensions (backward compatibility)
   const [width, setWidth] = useState(!isNewFireplace && fireplace?.width && fireplace.width > 0 ? formatMeasurementValue(fireplace.width, 'length', unitSystem, 2) : "");
   const [height, setHeight] = useState(!isNewFireplace && fireplace?.height && fireplace.height > 0 ? formatMeasurementValue(fireplace.height, 'length', unitSystem, 2) : "");
   const [depth, setDepth] = useState(!isNewFireplace && fireplace?.depth && fireplace.depth > 0 ? formatMeasurementValue(fireplace.depth, 'length', unitSystem, 2) : "");
@@ -59,6 +59,14 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const [trimLinearFeet, setTrimLinearFeet] = useState(
     !isNewFireplace && fireplace?.trimLinearFeet && fireplace.trimLinearFeet > 0 ? formatMeasurementValue(fireplace.trimLinearFeet, 'linearFeet', unitSystem, 2) : ""
   );
+
+  // New 3-part structure
+  const [hasMantel, setHasMantel] = useState(!isNewFireplace && fireplace?.hasMantel ? true : false);
+  const [hasLegs, setHasLegs] = useState(!isNewFireplace && fireplace?.hasLegs ? true : false);
+  const [hasOverMantel, setHasOverMantel] = useState(!isNewFireplace && fireplace?.hasOverMantel ? true : false);
+  const [overMantelWidth, setOverMantelWidth] = useState(!isNewFireplace && fireplace?.overMantelWidth && fireplace.overMantelWidth > 0 ? formatMeasurementValue(fireplace.overMantelWidth, 'length', unitSystem, 2) : "");
+  const [overMantelHeight, setOverMantelHeight] = useState(!isNewFireplace && fireplace?.overMantelHeight && fireplace.overMantelHeight > 0 ? formatMeasurementValue(fireplace.overMantelHeight, 'length', unitSystem, 2) : "");
+
   const [notes, setNotes] = useState(!isNewFireplace && fireplace?.notes ? fireplace.notes : "");
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -75,6 +83,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const heightRef = useRef<TextInput>(null);
   const depthRef = useRef<TextInput>(null);
   const trimLinearFeetRef = useRef<TextInput>(null);
+  const overMantelWidthRef = useRef<TextInput>(null);
+  const overMantelHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
 
@@ -94,9 +104,14 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   // Track unsaved changes
   useEffect(() => {
     if (isNewFireplace) {
-      // For new fireplace: changes are when user enters any data
+      // For new fireplace: changes are when user enters any data (new 3-part structure)
       const hasChanges =
         name !== "" ||
+        hasMantel ||
+        hasLegs ||
+        hasOverMantel ||
+        overMantelWidth !== "" ||
+        overMantelHeight !== "" ||
         width !== "" ||
         height !== "" ||
         depth !== "" ||
@@ -108,6 +123,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
       const hasChanges =
         name !== (fireplace.name || "") ||
+        hasMantel !== (fireplace.hasMantel ?? false) ||
+        hasLegs !== (fireplace.hasLegs ?? false) ||
+        hasOverMantel !== (fireplace.hasOverMantel ?? false) ||
+        overMantelWidth !== (fireplace.overMantelWidth && fireplace.overMantelWidth > 0 ? fireplace.overMantelWidth.toString() : "") ||
+        overMantelHeight !== (fireplace.overMantelHeight && fireplace.overMantelHeight > 0 ? fireplace.overMantelHeight.toString() : "") ||
         width !== (fireplace.width && fireplace.width > 0 ? fireplace.width.toString() : "") ||
         height !== (fireplace.height && fireplace.height > 0 ? fireplace.height.toString() : "") ||
         depth !== (fireplace.depth && fireplace.depth > 0 ? fireplace.depth.toString() : "") ||
@@ -121,6 +141,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     isNewFireplace,
     fireplace,
     name,
+    hasMantel,
+    hasLegs,
+    hasOverMantel,
+    overMantelWidth,
+    overMantelHeight,
     width,
     height,
     depth,
@@ -185,13 +210,24 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     if (isSaving) return;
 
     const hasAnyData =
+      hasMantel ||
+      hasLegs ||
+      hasOverMantel ||
+      overMantelWidth !== "" ||
+      overMantelHeight !== "" ||
       width !== "" ||
       height !== "" ||
       depth !== "" ||
       (hasTrim && trimLinearFeet !== "");
 
     if (!hasAnyData) {
-      Alert.alert("No Data Entered", "Please enter at least one measurement before saving.");
+      Alert.alert("No Data Entered", "Please select at least one fireplace part or enter measurements before saving.");
+      return;
+    }
+
+    // Validate over mantel: if enabled, must have both width and height
+    if (hasOverMantel && (overMantelWidth === "" || overMantelHeight === "")) {
+      Alert.alert("Missing Data", "Please enter both width and height for the over mantel.");
       return;
     }
 
@@ -206,6 +242,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     const heightFeet = parseDisplayValue(height, 'length', unitSystem);
     const depthFeet = parseDisplayValue(depth, 'length', unitSystem);
     const trimLinearFeetValue = parseDisplayValue(trimLinearFeet, 'linearFeet', unitSystem);
+    const overMantelWidthFeet = parseDisplayValue(overMantelWidth, 'length', unitSystem);
+    const overMantelHeightFeet = parseDisplayValue(overMantelHeight, 'length', unitSystem);
 
     if (isNewFireplace) {
       // CREATE new fireplace with data
@@ -214,11 +252,18 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       // Then immediately update it with the entered data
       updateFireplace(projectId, newFireplaceId, {
         name: name.trim(),
+        // Legacy fields (backward compatibility)
         width: widthFeet,
         height: heightFeet,
         depth: depthFeet,
         hasTrim,
         trimLinearFeet: trimLinearFeetValue,
+        // New 3-part structure
+        hasMantel,
+        hasLegs,
+        hasOverMantel,
+        overMantelWidth: overMantelWidthFeet,
+        overMantelHeight: overMantelHeightFeet,
         coats: 2,
         notes: notes.trim() || undefined,
       });
@@ -226,11 +271,18 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       // UPDATE existing fireplace
       updateFireplace(projectId, fireplaceId!, {
         name: name.trim(),
+        // Legacy fields (backward compatibility)
         width: widthFeet,
         height: heightFeet,
         depth: depthFeet,
         hasTrim,
         trimLinearFeet: trimLinearFeetValue,
+        // New 3-part structure
+        hasMantel,
+        hasLegs,
+        hasOverMantel,
+        overMantelWidth: overMantelWidthFeet,
+        overMantelHeight: overMantelHeightFeet,
         coats: fireplace?.coats || 2,
         notes: notes.trim() || undefined,
       });
@@ -324,8 +376,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           <View style={{ padding: Spacing.md }}>
             {/* Fireplace Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Fireplace Information
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                Select the parts of the fireplace to paint
               </Text>
 
               {/* Name/Location */}
@@ -336,78 +391,69 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   value={name}
                   onChangeText={setName}
                   placeholder="e.g., Living Room Fireplace, Master Bedroom"
-                  nextFieldRef={widthRef}
+                  nextFieldRef={hasOverMantel ? overMantelWidthRef : undefined}
                   returnKeyType="next"
                   className="mb-0"
                 />
               </View>
 
-              {/* Row: Width, Height, Depth - 3 columns */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <FormInput
-                    ref={widthRef}
-                    previousFieldRef={nameRef}
-                    label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                    value={width}
-                    onChangeText={setWidth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    nextFieldRef={heightRef}
-                    className="mb-0"
-                  />
-                </View>
-
-                <View style={{ flex: 1 }}>
-                  <FormInput
-                    ref={heightRef}
-                    previousFieldRef={widthRef}
-                    label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                    value={height}
-                    onChangeText={setHeight}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    nextFieldRef={depthRef}
-                    className="mb-0"
-                  />
-                </View>
-
-                <View style={{ flex: 1 }}>
-                  <FormInput
-                    ref={depthRef}
-                    previousFieldRef={heightRef}
-                    label={`Depth (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                    value={depth}
-                    onChangeText={setDepth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    nextFieldRef={hasTrim ? trimLinearFeetRef : undefined}
-                    className="mb-0"
-                  />
-                </View>
-              </View>
-
-              {/* Has Trim Toggle */}
-              <View style={{ marginBottom: hasTrim ? Spacing.md : 0 }}>
+              {/* PART 1: Mantel */}
+              <View style={{ marginBottom: Spacing.md }}>
                 <Toggle
-                  label="Has Trim"
-                  value={hasTrim}
-                  onValueChange={setHasTrim}
+                  label="Mantel"
+                  value={hasMantel}
+                  onValueChange={setHasMantel}
+                  description={`Fixed fee: ${formatCurrency(pricing.mantelLabor)}`}
                 />
               </View>
 
-              {hasTrim && (
-                <View>
-                  <FormInput
-                    ref={trimLinearFeetRef}
-                    previousFieldRef={depthRef}
-                    label={`Trim Linear (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                    value={trimLinearFeet}
-                    onChangeText={setTrimLinearFeet}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    className="mb-0"
-                  />
+              {/* PART 2: Legs */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <Toggle
+                  label="Legs"
+                  value={hasLegs}
+                  onValueChange={setHasLegs}
+                  description={`Fixed fee: ${formatCurrency(pricing.legsLabor)}`}
+                />
+              </View>
+
+              {/* PART 3: Over Mantel */}
+              <View style={{ marginBottom: hasOverMantel ? Spacing.md : 0 }}>
+                <Toggle
+                  label="Over Mantel"
+                  value={hasOverMantel}
+                  onValueChange={setHasOverMantel}
+                  description="Measured area (width × height)"
+                />
+              </View>
+
+              {hasOverMantel && (
+                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                  <View style={{ flex: 1 }}>
+                    <FormInput
+                      ref={overMantelWidthRef}
+                      previousFieldRef={nameRef}
+                      label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                      value={overMantelWidth}
+                      onChangeText={setOverMantelWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      nextFieldRef={overMantelHeightRef}
+                      className="mb-0"
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <FormInput
+                      ref={overMantelHeightRef}
+                      previousFieldRef={overMantelWidthRef}
+                      label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                      value={overMantelHeight}
+                      onChangeText={setOverMantelHeight}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      className="mb-0"
+                    />
+                  </View>
                 </View>
               )}
             </Card>
@@ -448,87 +494,65 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
             {/* Fireplace Summary */}
             {calculations && (() => {
-              // Calculate per-component areas and costs
-              const frontBackArea = 2 * parseFloat(width || '0') * parseFloat(height || '0');
-              const topArea = parseFloat(width || '0') * parseFloat(depth || '0');
-              const sideArea = parseFloat(height || '0') * parseFloat(depth || '0');
-              const trimArea = hasTrim && parseFloat(trimLinearFeet || '0') > 0
-                ? parseFloat(trimLinearFeet || '0') * (unitSystem === 'metric' ? 0.15 : 0.5)
+              // Calculate costs per part (new 3-part structure)
+              const mantelLabor = hasMantel ? pricing.mantelLabor : 0;
+              const mantelMaterials = 0; // Fixed price, no materials
+
+              const legsLabor = hasLegs ? pricing.legsLabor : 0;
+              const legsMaterials = 0; // Fixed price, no materials
+
+              // Over mantel: area-based
+              const overMantelArea = hasOverMantel && overMantelWidth && overMantelHeight
+                ? parseFloat(overMantelWidth) * parseFloat(overMantelHeight)
                 : 0;
+              const overMantelLabor = overMantelArea > 0 ? (overMantelArea * pricing.wallLaborPerSqFt * 2) : 0; // Assuming 2 coats
+              const overMantelMaterials = calculations.materialsDisplayed; // All materials are for over mantel
 
-              // Fireplace labor is fixed rate, materials distributed proportionally
-              const fireplaceLabor = pricing.fireplaceLabor;
-              const totalMaterials = calculations.materialsDisplayed;
-
-              // Distribute materials across surfaces
-              const totalComponents = (frontBackArea > 0 ? 1 : 0) +
-                                     (topArea > 0 ? 1 : 0) +
-                                     (sideArea > 0 ? 1 : 0) +
-                                     (trimArea > 0 ? 1 : 0);
-              const materialPerComponent = totalComponents > 0 ? totalMaterials / totalComponents : 0;
-
-              const frontBackMaterials = frontBackArea > 0 ? materialPerComponent : 0;
-              const topMaterials = topArea > 0 ? materialPerComponent : 0;
-              const sideMaterials = sideArea > 0 ? materialPerComponent : 0;
-              const trimMaterials = trimArea > 0 ? materialPerComponent : 0;
-
-              // Labor is fixed, but we'll show it as one row
-              const laborPerComponent = totalComponents > 0 ? fireplaceLabor / totalComponents : 0;
-              const frontBackLabor = frontBackArea > 0 ? laborPerComponent : 0;
-              const topLabor = topArea > 0 ? laborPerComponent : 0;
-              const sideLabor = sideArea > 0 ? laborPerComponent : 0;
-              const trimLabor = trimArea > 0 ? laborPerComponent : 0;
+              const anyPart = hasMantel || hasLegs || hasOverMantel;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
                   <Text style={Typography.h2}>Fireplace Summary</Text>
 
                   <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                    {/* Gray section - flex: 3, 2-column layout */}
+                    {/* Gray section - parts list */}
                     <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                       {/* Empty row for alignment */}
                       <View style={{ marginBottom: Spacing.xs }}>
                         <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                       </View>
 
-                      {frontBackArea > 0 && (
+                      {hasMantel && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Front/Back</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Mantel</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Fixed</Text>
+                        </View>
+                      )}
+
+                      {hasLegs && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Legs</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Fixed</Text>
+                        </View>
+                      )}
+
+                      {hasOverMantel && overMantelArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Over Mantel</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {formatMeasurement(Math.ceil(frontBackArea), 'area', unitSystem, 0)}
+                            {formatMeasurement(Math.ceil(overMantelArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
                       )}
 
-                      {topArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Top</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {formatMeasurement(Math.ceil(topArea), 'area', unitSystem, 0)}
-                          </Text>
-                        </View>
-                      )}
-
-                      {sideArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Side</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {formatMeasurement(Math.ceil(sideArea), 'area', unitSystem, 0)}
-                          </Text>
-                        </View>
-                      )}
-
-                      {trimArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Trim</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {formatMeasurement(Math.ceil(trimArea), 'area', unitSystem, 0)}
-                          </Text>
-                        </View>
+                      {!anyPart && (
+                        <Text style={{ fontSize: 13, color: Colors.mediumGray, fontStyle: "italic" }}>
+                          No parts selected
+                        </Text>
                       )}
                     </View>
 
-                    {/* Blue section - flex: 2, 2 columns right-aligned */}
+                    {/* Blue section - Labor and Materials */}
                     <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                       {/* Header Row */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
@@ -536,53 +560,49 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                         <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                       </View>
 
-                      {frontBackArea > 0 && (
+                      {hasMantel && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(frontBackLabor)}
+                            ${Math.round(mantelLabor)}
                           </Text>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(frontBackMaterials)}
+                            ${Math.round(mantelMaterials)}
                           </Text>
                         </View>
                       )}
 
-                      {topArea > 0 && (
+                      {hasLegs && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(topLabor)}
+                            ${Math.round(legsLabor)}
                           </Text>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(topMaterials)}
+                            ${Math.round(legsMaterials)}
                           </Text>
                         </View>
                       )}
 
-                      {sideArea > 0 && (
+                      {hasOverMantel && overMantelArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(sideLabor)}
+                            ${Math.round(overMantelLabor)}
                           </Text>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(sideMaterials)}
+                            ${Math.round(overMantelMaterials)}
                           </Text>
                         </View>
                       )}
 
-                      {trimArea > 0 && (
+                      {!anyPart && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(trimLabor)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(trimMaterials)}
-                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
                         </View>
                       )}
 
                       <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                      {/* Subtotals - without labels */}
+                      {/* Subtotals */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                         <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                           ${Math.round(calculations.laborDisplayed)}

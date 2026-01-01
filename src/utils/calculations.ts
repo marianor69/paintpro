@@ -768,22 +768,60 @@ export function calculateFireplaceMetrics(
   fireplace: Fireplace,
   pricing: PricingSettings
 ): FireplaceCalculations {
-  // Calculate fireplace area
-  let paintableArea = 2 * (fireplace.width * fireplace.height);
-  paintableArea += fireplace.width * fireplace.depth;
-  paintableArea += fireplace.height * fireplace.depth;
+  let paintableArea = 0;
+  let totalGallons = 0;
+  let laborCost = 0;
+  let materialCost = 0;
 
-  if (fireplace.hasTrim) {
-    paintableArea += fireplace.trimLinearFeet * 0.5; // Average trim width
+  // Check if using new 3-part structure or legacy structure
+  const usingNewStructure = fireplace.hasMantel !== undefined || fireplace.hasLegs !== undefined || fireplace.hasOverMantel !== undefined;
+
+  if (usingNewStructure) {
+    // NEW 3-PART STRUCTURE
+
+    // 1. Mantel: Fixed price
+    if (fireplace.hasMantel) {
+      laborCost += pricing.mantelLabor;
+    }
+
+    // 2. Legs: Fixed price
+    if (fireplace.hasLegs) {
+      laborCost += pricing.legsLabor;
+    }
+
+    // 3. Over Mantel: Measured area (width × height, 1 side only)
+    if (fireplace.hasOverMantel && fireplace.overMantelWidth && fireplace.overMantelHeight) {
+      const overMantelArea = fireplace.overMantelWidth * fireplace.overMantelHeight;
+      paintableArea += overMantelArea;
+
+      // Calculate paint gallons for over mantel
+      const overMantelGallons = (overMantelArea / pricing.wallCoverageSqFtPerGallon) * fireplace.coats;
+      totalGallons += overMantelGallons;
+
+      // Calculate labor cost for over mantel (area-based, like walls)
+      laborCost += overMantelArea * pricing.wallLaborPerSqFt * fireplace.coats;
+
+      // Calculate material cost for over mantel
+      materialCost += Math.ceil(overMantelGallons) * pricing.wallPaintPerGallon;
+    }
+  } else {
+    // LEGACY STRUCTURE (backward compatibility)
+    paintableArea = 2 * (fireplace.width * fireplace.height);
+    paintableArea += fireplace.width * fireplace.depth;
+    paintableArea += fireplace.height * fireplace.depth;
+
+    if (fireplace.hasTrim) {
+      paintableArea += fireplace.trimLinearFeet * 0.5; // Average trim width
+    }
+
+    // Calculate paint gallons
+    totalGallons = (paintableArea / pricing.wallCoverageSqFtPerGallon) * fireplace.coats;
+
+    // Calculate costs
+    laborCost = pricing.fireplaceLabor;
+    materialCost = Math.ceil(totalGallons) * pricing.wallPaintPerGallon;
   }
 
-  // Calculate paint gallons
-  const totalGallons =
-    (paintableArea / pricing.wallCoverageSqFtPerGallon) * fireplace.coats;
-
-  // Calculate costs
-  const laborCost = pricing.fireplaceLabor;
-  const materialCost = Math.ceil(totalGallons) * pricing.wallPaintPerGallon;
   const totalPrice = laborCost + materialCost;
 
   return {

@@ -19,7 +19,9 @@ const defaultPricing: PricingSettings = {
   riserLabor: 15,
   spindleLabor: 8,
   handrailLaborPerLF: 10,
-  fireplaceLabor: 150,
+  fireplaceLabor: 150, // Legacy
+  mantelLabor: 100,
+  legsLabor: 100,
   crownMouldingLaborPerLF: 1.5,
 
   // Second coat labor multiplier (1.5 = 2 coats cost 1.5x labor of 1 coat)

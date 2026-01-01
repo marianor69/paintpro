@@ -97,14 +97,21 @@ export interface Staircase {
 export interface Fireplace {
   id: string;
   name: string; // Name/Location identifier
+  // Legacy fields (backward compatibility)
   width: number;
   height: number;
   depth: number;
-  hasTrim: boolean;
-  trimLinearFeet: number;
+  hasTrim: boolean; // Deprecated - use hasLegs
+  trimLinearFeet: number; // Deprecated - no longer used
   coats: number;
   // Notes field (available without photos)
   notes?: string;
+  // New 3-part structure
+  hasMantel?: boolean; // Fixed price
+  hasLegs?: boolean; // Fixed price (replaces hasTrim)
+  hasOverMantel?: boolean; // Measured area
+  overMantelWidth?: number; // in feet
+  overMantelHeight?: number; // in feet
 }
 
 export interface BuiltIn {
@@ -255,7 +262,9 @@ export interface PricingSettings {
   riserLabor: number;
   spindleLabor: number;
   handrailLaborPerLF: number;
-  fireplaceLabor: number;
+  fireplaceLabor: number; // Legacy - kept for backward compatibility
+  mantelLabor: number; // Fixed price for mantel ($100 default)
+  legsLabor: number; // Fixed price for legs ($100 default)
   crownMouldingLaborPerLF: number;
 
   // Second coat labor multiplier (e.g., 1.5 means 2 coats = 1.5x labor of 1 coat)
