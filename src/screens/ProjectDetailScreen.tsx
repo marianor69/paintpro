@@ -718,105 +718,158 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: 36, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                 {formatCurrency(displaySummary.grandTotal)}
               </Text>
+            </View>
 
-              {/* DEBUG INFO - ST-001 & FP-002 */}
-              {appSettings.testMode && (() => {
-                const activeQuote = project.quotes?.find(q => q.id === project.activeQuoteId);
-                const qb = activeQuote?.quoteBuilder || project.quoteBuilder || getDefaultQuoteBuilder();
-                return (
-                  <View style={{ marginTop: Spacing.md, padding: Spacing.md, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default }}>
-                    <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.error, marginBottom: Spacing.sm }}>
-                      DEBUG: Aggregation
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                      Staircases: {(project.staircases || []).length}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                      Fireplaces: {(project.fireplaces || []).length}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                      Items in total: {(displaySummary.itemizedPrices || []).length}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                      Items: {(displaySummary.itemizedPrices || []).map(p => `${p.name}=$${p.price}`).join(", ") || "none"}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.primaryBlue, marginTop: Spacing.xs, fontWeight: "700" }}>
-                      QB Flags:
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
-                      includeStaircases: {String(qb.includeStaircases)}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
-                      includeFireplaces: {String(qb.includeFireplaces)}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: Colors.darkCharcoal }}>
-                      Test: !== false = {String(qb.includeStaircases !== false)}
+            {/* Two-column layout: Grey (items list) + Blue (labor/materials) */}
+            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+              {/* Left Column - Items List (Gray) */}
+              <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                {/* Empty row to align with blue section headers */}
+                <View style={{ marginBottom: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
+                </View>
+
+                {/* Rooms */}
+                {project.rooms.map((room) => (
+                  <View key={room.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <Ionicons name="bed-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      {room.name || "Unnamed Room"}
                     </Text>
                   </View>
-                );
-              })()}
-            </View>
+                ))}
 
-            {/* Running Stats Grid */}
-            <View style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              borderTopWidth: 1,
-              borderTopColor: Colors.neutralGray,
-              paddingTop: Spacing.md,
-            }}>
-              {/* Rooms */}
-              <View style={{ width: "50%", marginBottom: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Rooms</Text>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {roomCount}
-                </Text>
+                {/* Staircases */}
+                {project.staircases?.map((staircase, idx) => (
+                  <View key={staircase.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <StaircaseIcon size={16} color={Colors.mediumGray} />
+                    </View>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      {staircase.name || `Staircase ${idx + 1}`}
+                    </Text>
+                  </View>
+                ))}
+
+                {/* Fireplaces */}
+                {project.fireplaces?.map((fireplace, idx) => (
+                  <View key={fireplace.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <FireplaceIcon size={16} color={Colors.mediumGray} />
+                    </View>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      {fireplace.name || `Fireplace ${idx + 1}`}
+                    </Text>
+                  </View>
+                ))}
+
+                {/* Built-Ins */}
+                {project.builtIns?.map((builtIn, idx) => (
+                  <View key={builtIn.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <BuiltInIcon size={16} color={Colors.mediumGray} />
+                    </View>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      {builtIn.name || "Unnamed Built-In"}
+                    </Text>
+                  </View>
+                ))}
+
+                {/* Empty state */}
+                {totalItems === 0 && (
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic" }}>
+                    No items added yet
+                  </Text>
+                )}
               </View>
 
-              {/* Wall Area */}
-              <View style={{ width: "50%", marginBottom: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Wall Area</Text>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {formatMeasurement(displaySummary.totalWallSqFt || 0, 'area', appSettings.unitSystem)}
-                </Text>
-              </View>
+              {/* Right Section - Pricing (Blue) with Labor and Mat columns */}
+              <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                {/* Header Row */}
+                <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                  <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                  <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                </View>
 
-              {/* Doors */}
-              <View style={{ width: "50%", marginBottom: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Doors</Text>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {displaySummary.totalDoors || 0}
-                </Text>
-              </View>
+                {/* Rooms */}
+                {project.rooms.map((room) => {
+                  const roomPricing = displaySummary.itemizedPrices?.find(p => p.id === room.id);
+                  return (
+                    <View key={room.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(roomPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(roomPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
 
-              {/* Windows */}
-              <View style={{ width: "50%" }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Windows</Text>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {displaySummary.totalWindows || 0}
-                </Text>
-              </View>
-            </View>
+                {/* Staircases */}
+                {project.staircases?.map((staircase) => {
+                  const staircasePricing = displaySummary.itemizedPrices?.find(p => p.id === staircase.id);
+                  return (
+                    <View key={staircase.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(staircasePricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(staircasePricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
 
-            {/* Labor & Materials breakdown */}
-            <View style={{
-              flexDirection: "row",
-              borderTopWidth: 1,
-              borderTopColor: Colors.neutralGray,
-              paddingTop: Spacing.md,
-              marginTop: Spacing.sm,
-            }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Labor</Text>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {formatCurrency(displaySummary.totalLaborCost || 0)}
-                </Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Materials</Text>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                  {formatCurrency(displaySummary.totalMaterialCost || 0)}
-                </Text>
+                {/* Fireplaces */}
+                {project.fireplaces?.map((fireplace) => {
+                  const fireplacePricing = displaySummary.itemizedPrices?.find(p => p.id === fireplace.id);
+                  return (
+                    <View key={fireplace.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(fireplacePricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(fireplacePricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
+
+                {/* Built-Ins */}
+                {project.builtIns?.map((builtIn) => {
+                  const builtInPricing = displaySummary.itemizedPrices?.find(p => p.id === builtIn.id);
+                  return (
+                    <View key={builtIn.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(builtInPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(builtInPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
+
+                {/* Empty state */}
+                {totalItems === 0 && (
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
+                  </View>
+                )}
+
+                {/* Subtotal Row - with separator */}
+                <View style={{ borderTopWidth: 1, borderTopColor: Colors.primaryBlue, marginTop: Spacing.xs, paddingTop: Spacing.xs }}>
+                  <View style={{ flexDirection: "row", gap: Spacing.xs }}>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(displaySummary.totalLaborCost || 0)}
+                    </Text>
+                    <Text style={{ flex: 1, fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(displaySummary.totalMaterialCost || 0)}
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
           </Card>
