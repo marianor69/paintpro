@@ -73,41 +73,18 @@ export const StaircaseIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
 
 export const BuiltInIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill={color}>
-      {/* Left vertical support */}
-      <Rect x="10" y="10" width="4" height="80"/>
-      {/* Right vertical support */}
-      <Rect x="86" y="10" width="4" height="80"/>
+    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      {/* Outer frame */}
+      <Path d="M 15 15 L 15 90 L 85 90 L 85 15 Z"/>
 
-      {/* Shelves */}
-      <Rect x="14" y="10" width="72" height="3"/>
-      <Rect x="14" y="30" width="72" height="3"/>
-      <Rect x="14" y="50" width="72" height="3"/>
-      <Rect x="14" y="70" width="72" height="3"/>
-      <Rect x="14" y="87" width="72" height="3"/>
+      {/* Horizontal shelves */}
+      <Path d="M 15 30 L 85 30"/>
+      <Path d="M 15 45 L 85 45"/>
+      <Path d="M 15 60 L 85 60"/>
+      <Path d="M 15 75 L 85 75"/>
 
-      {/* Books on shelf 1 */}
-      <Rect x="18" y="13" width="8" height="15" transform="rotate(-5 22 20.5)"/>
-      <Rect x="28" y="13" width="6" height="16"/>
-      <Rect x="36" y="13" width="10" height="15" transform="rotate(3 41 20.5)"/>
-      <Rect x="48" y="13" width="7" height="14"/>
-
-      {/* Books on shelf 2 */}
-      <Rect x="18" y="33" width="9" height="16" transform="rotate(2 22.5 41)"/>
-      <Rect x="29" y="33" width="8" height="15"/>
-      <Rect x="39" y="33" width="6" height="16" transform="rotate(-4 42 41)"/>
-      <Rect x="47" y="33" width="10" height="15"/>
-
-      {/* Books on shelf 3 */}
-      <Rect x="18" y="53" width="7" height="16"/>
-      <Rect x="27" y="53" width="9" height="14" transform="rotate(3 31.5 60)"/>
-      <Rect x="38" y="53" width="8" height="16" transform="rotate(-2 42 61)"/>
-      <Rect x="48" y="53" width="6" height="15"/>
-
-      {/* Books on shelf 4 */}
-      <Rect x="18" y="73" width="10" height="13" transform="rotate(-3 23 79.5)"/>
-      <Rect x="30" y="73" width="7" height="14"/>
-      <Rect x="39" y="73" width="9" height="13" transform="rotate(4 43.5 79.5)"/>
+      {/* Vertical divider */}
+      <Path d="M 50 15 L 50 90"/>
     </G>
   </Svg>
 );
