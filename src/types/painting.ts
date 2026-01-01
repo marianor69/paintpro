@@ -76,6 +76,12 @@ export interface RoomPhoto {
   createdAt: number;
 }
 
+export interface StaircaseWall {
+  id: string;
+  tallHeight: number; // Height of tall side of wall (in feet)
+  shortHeight: number; // Height of short side of wall (in feet)
+}
+
 export interface Staircase {
   id: string;
   name: string; // Name/Location identifier
@@ -85,11 +91,8 @@ export interface Staircase {
   handrailLength: number;
   spindleCount: number;
   coats: number;
-  // Wall fields
-  hasWall?: boolean;
-  tallWallHeight?: number; // in feet
-  shortWallHeight?: number; // in feet
-  doubleSidedWalls?: boolean;
+  // Wall fields (up to 4 walls)
+  walls?: StaircaseWall[];
   // Notes field (available without photos)
   notes?: string;
 }

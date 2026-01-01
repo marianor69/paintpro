@@ -89,8 +89,7 @@ export interface StaircasePricingSummary {
   riserCount: number;
   spindleCount: number;
   handrailLength: number;
-  hasSecondaryStairwell: boolean;
-  doubleSidedWalls: boolean;
+  wallCount: number;
   paintableArea: number;
   // Breakdown by paint type
   trimArea: number;       // Risers, spindles, handrails
@@ -655,28 +654,29 @@ export function computeStaircasePricingSummary(
   // Total trim area (risers + spindles + handrails)
   const trimArea = riserArea + spindleArea + handrailArea;
 
-  // Calculate wall and ceiling areas for secondary stairwell
+  // Calculate wall and ceiling areas for all walls
   let wallArea = 0;
   let ceilingArea = 0;
 
-  if (staircase.hasSecondaryStairwell && staircase.tallWallHeight && staircase.shortWallHeight) {
+  if (staircase.walls && staircase.walls.length > 0) {
     const HORIZONTAL_RUN = 12; // feet
     const STAIR_WIDTH = 3.5; // feet
     const SLOPE_LENGTH = 15; // feet (approximate sloped ceiling length)
 
-    const Hmax = staircase.tallWallHeight;
-    const Hmin = staircase.shortWallHeight;
+    staircase.walls.forEach(wall => {
+      if (wall.tallHeight && wall.shortHeight) {
+        const Hmax = wall.tallHeight;
+        const Hmin = wall.shortHeight;
 
-    // Wall area calculation (trapezoid formula)
-    wallArea = ((Hmax + Hmin) / 2) * HORIZONTAL_RUN;
+        // Wall area calculation (trapezoid formula)
+        const thisWallArea = ((Hmax + Hmin) / 2) * HORIZONTAL_RUN;
+        wallArea += thisWallArea;
 
-    // Double the wall area if double-sided
-    if (staircase.doubleSidedWalls) {
-      wallArea *= 2;
-    }
-
-    // Ceiling area (sloped ceiling over stairwell)
-    ceilingArea = SLOPE_LENGTH * STAIR_WIDTH;
+        // Ceiling area (sloped ceiling over stairwell)
+        const thisCeilingArea = SLOPE_LENGTH * STAIR_WIDTH;
+        ceilingArea += thisCeilingArea;
+      }
+    });
   }
 
   // Total paintable area
@@ -739,8 +739,7 @@ export function computeStaircasePricingSummary(
     riserCount: staircase.riserCount,
     spindleCount: staircase.spindleCount,
     handrailLength: staircase.handrailLength,
-    hasSecondaryStairwell: staircase.hasSecondaryStairwell || false,
-    doubleSidedWalls: staircase.doubleSidedWalls || false,
+    wallCount: staircase.walls?.length || 0,
     paintableArea: Math.max(0, safeNumber(paintableArea)),
     // Breakdown by paint type
     trimArea: Math.max(0, safeNumber(trimArea)),

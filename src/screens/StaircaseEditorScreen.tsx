@@ -61,17 +61,14 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [spindleCount, setSpindleCount] = useState(
     !isNewStaircase && staircase?.spindleCount && staircase.spindleCount > 0 ? staircase.spindleCount.toString() : ""
   );
-  const [hasWall, setHasWall] = useState(
-    !isNewStaircase && staircase?.hasWall ? true : false
-  );
-  const [tallWallHeight, setTallWallHeight] = useState(
-    !isNewStaircase && staircase?.tallWallHeight && staircase.tallWallHeight > 0 ? formatMeasurementValue(staircase.tallWallHeight, 'length', unitSystem, 2) : ""
-  );
-  const [shortWallHeight, setShortWallHeight] = useState(
-    !isNewStaircase && staircase?.shortWallHeight && staircase.shortWallHeight > 0 ? formatMeasurementValue(staircase.shortWallHeight, 'length', unitSystem, 2) : ""
-  );
-  const [doubleSidedWalls, setDoubleSidedWalls] = useState(
-    !isNewStaircase && staircase?.doubleSidedWalls ? true : false
+  const [walls, setWalls] = useState<Array<{ id: string; tallHeight: string; shortHeight: string }>>(
+    !isNewStaircase && staircase?.walls && staircase.walls.length > 0
+      ? staircase.walls.map(w => ({
+          id: w.id,
+          tallHeight: formatMeasurementValue(w.tallHeight, 'length', unitSystem, 2),
+          shortHeight: formatMeasurementValue(w.shortHeight, 'length', unitSystem, 2),
+        }))
+      : []
   );
   const [notes, setNotes] = useState(!isNewStaircase && staircase?.notes ? staircase.notes : "");
 
@@ -88,8 +85,6 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const riserCountRef = useRef<TextInput>(null);
   const handrailLengthRef = useRef<TextInput>(null);
   const spindleCountRef = useRef<TextInput>(null);
-  const tallWallHeightRef = useRef<TextInput>(null);
-  const shortWallHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
 
@@ -106,6 +101,35 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     }
   }, []);
 
+  const addWall = () => {
+    if (walls.length >= 4) return;
+
+    const firstFloor = project?.firstFloorHeight || project?.floorHeights?.[0] || 8;
+    const secondFloor = project?.secondFloorHeight || project?.floorHeights?.[1] || 8;
+    const defaultTallHeight = firstFloor + secondFloor + 1;
+    const defaultShortHeight = secondFloor;
+
+    setWalls([
+      ...walls,
+      {
+        id: `wall-${Date.now()}`,
+        tallHeight: formatMeasurementValue(defaultTallHeight, 'length', unitSystem, 2),
+        shortHeight: formatMeasurementValue(defaultShortHeight, 'length', unitSystem, 2),
+      },
+    ]);
+  };
+
+  const removeWall = () => {
+    if (walls.length === 0) return;
+    setWalls(walls.slice(0, -1));
+  };
+
+  const updateWallHeight = (index: number, field: 'tallHeight' | 'shortHeight', value: string) => {
+    const newWalls = [...walls];
+    newWalls[index] = { ...newWalls[index], [field]: value };
+    setWalls(newWalls);
+  };
+
   // Track unsaved changes
   useEffect(() => {
     if (isNewStaircase) {
@@ -115,21 +139,29 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         riserCount !== "" ||
         handrailLength !== "" ||
         spindleCount !== "" ||
-        (hasWall && (tallWallHeight !== "" || shortWallHeight !== ""));
+        walls.length > 0;
       setHasUnsavedChanges(hasChanges);
     } else {
       // For existing: changes are when values differ from stored data
       if (!staircase) return;
+
+      const wallsChanged =
+        walls.length !== (staircase.walls?.length || 0) ||
+        walls.some((w, i) => {
+          const storedWall = staircase.walls?.[i];
+          if (!storedWall) return true;
+          return (
+            w.tallHeight !== formatMeasurementValue(storedWall.tallHeight, 'length', unitSystem, 2) ||
+            w.shortHeight !== formatMeasurementValue(storedWall.shortHeight, 'length', unitSystem, 2)
+          );
+        });
 
       const hasChanges =
         name !== (staircase.name || "") ||
         riserCount !== (staircase.riserCount && staircase.riserCount > 0 ? staircase.riserCount.toString() : "") ||
         handrailLength !== (staircase.handrailLength && staircase.handrailLength > 0 ? staircase.handrailLength.toString() : "") ||
         spindleCount !== (staircase.spindleCount && staircase.spindleCount > 0 ? staircase.spindleCount.toString() : "") ||
-        hasWall !== (staircase.hasWall ?? false) ||
-        tallWallHeight !== (staircase.tallWallHeight && staircase.tallWallHeight > 0 ? staircase.tallWallHeight.toString() : "") ||
-        shortWallHeight !== (staircase.shortWallHeight && staircase.shortWallHeight > 0 ? staircase.shortWallHeight.toString() : "") ||
-        doubleSidedWalls !== (staircase.doubleSidedWalls ?? false);
+        wallsChanged;
 
       setHasUnsavedChanges(hasChanges);
     }
@@ -140,10 +172,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     riserCount,
     handrailLength,
     spindleCount,
-    hasWall,
-    tallWallHeight,
-    shortWallHeight,
-    doubleSidedWalls,
+    walls,
+    unitSystem,
   ]);
 
   useEffect(() => {
@@ -175,22 +205,6 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     return unsubscribe;
   }, [navigation, blurFocusedInput]);
 
-  // Set default wall heights when hasWall is toggled ON
-  useEffect(() => {
-    if (hasWall && tallWallHeight === "" && shortWallHeight === "") {
-      const firstFloor = project?.firstFloorHeight || project?.floorHeights?.[0] || 8;
-      const secondFloor = project?.secondFloorHeight || project?.floorHeights?.[1] || 8;
-
-      // Tall wall: first floor + second floor + 1 ft
-      const defaultTallWallHeight = firstFloor + secondFloor + 1;
-      // Short wall: second floor height
-      const defaultShortWallHeight = secondFloor;
-
-      setTallWallHeight(formatMeasurementValue(defaultTallWallHeight, 'length', unitSystem, 2));
-      setShortWallHeight(formatMeasurementValue(defaultShortWallHeight, 'length', unitSystem, 2));
-    }
-  }, [hasWall, project, unitSystem]);
-
   // Prevent navigation when there are unsaved changes (but not while saving)
   usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
     if (!isSaving) {
@@ -221,7 +235,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       riserCount !== "" ||
       handrailLength !== "" ||
       spindleCount !== "" ||
-      (hasWall && (tallWallHeight !== "" || shortWallHeight !== ""));
+      walls.length > 0;
 
     if (!hasAnyData) {
       Alert.alert("No Data Entered", "Please enter at least one measurement before saving.");
@@ -236,8 +250,13 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
     // Convert display values back to imperial feet for storage
     const handrailLengthFeet = parseDisplayValue(handrailLength, 'length', unitSystem);
-    const tallWallHeightFeet = parseDisplayValue(tallWallHeight, 'length', unitSystem);
-    const shortWallHeightFeet = parseDisplayValue(shortWallHeight, 'length', unitSystem);
+
+    // Convert walls to storage format
+    const wallsData = walls.map(w => ({
+      id: w.id,
+      tallHeight: parseDisplayValue(w.tallHeight, 'length', unitSystem),
+      shortHeight: parseDisplayValue(w.shortHeight, 'length', unitSystem),
+    }));
 
     if (isNewStaircase) {
       // CREATE new staircase with data
@@ -252,10 +271,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
         coats: 2,
-        hasWall,
-        tallWallHeight: tallWallHeightFeet,
-        shortWallHeight: shortWallHeightFeet,
-        doubleSidedWalls,
+        walls: wallsData.length > 0 ? wallsData : undefined,
         notes: notes.trim() || undefined,
       });
     } else {
@@ -268,10 +284,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
         coats: staircase?.coats || 2,
-        hasWall,
-        tallWallHeight: tallWallHeightFeet,
-        shortWallHeight: shortWallHeightFeet,
-        doubleSidedWalls,
+        walls: wallsData.length > 0 ? wallsData : undefined,
         notes: notes.trim() || undefined,
       });
     }
@@ -307,16 +320,18 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       ? computeStaircasePricingSummary(
           {
             id: "",
+            name: "",
             riserCount: parseInt(riserCount) || 14,
             riserHeight: 7.5,
             treadDepth: 0,
             handrailLength: parseFloat(handrailLength) || 0,
             spindleCount: parseInt(spindleCount) || 0,
             coats: 2,
-            hasWall,
-            tallWallHeight: parseFloat(tallWallHeight) || 0,
-            shortWallHeight: parseFloat(shortWallHeight) || 0,
-            doubleSidedWalls,
+            walls: walls.map(w => ({
+              id: w.id,
+              tallHeight: parseFloat(w.tallHeight) || 0,
+              shortHeight: parseFloat(w.shortHeight) || 0,
+            })),
             notes: "",
           },
           pricing,
@@ -330,18 +345,18 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             treadDepth: 0,
             handrailLength: parseFloat(handrailLength) || 0,
             spindleCount: parseInt(spindleCount) || 0,
-            hasWall,
-            tallWallHeight: parseFloat(tallWallHeight) || 0,
-            shortWallHeight: parseFloat(shortWallHeight) || 0,
-            doubleSidedWalls,
+            walls: walls.map(w => ({
+              id: w.id,
+              tallHeight: parseFloat(w.tallHeight) || 0,
+              shortHeight: parseFloat(w.shortHeight) || 0,
+            })),
           },
           pricing,
           project?.projectCoats
         );
 
   // Only show preview if at least riser count is entered
-  const hasDataEntered = riserCount !== "" || handrailLength !== "" || spindleCount !== "" ||
-    (hasWall && (tallWallHeight !== "" || shortWallHeight !== ""));
+  const hasDataEntered = riserCount !== "" || handrailLength !== "" || spindleCount !== "" || walls.length > 0;
 
   // If existing staircase not found, show error
   if (!isNewStaircase && !staircase) {
@@ -445,53 +460,82 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </View>
             </Card>
 
-            {/* Wall Section */}
+            {/* Walls Section */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Toggle
-                label="Has Wall"
-                value={hasWall}
-                onValueChange={setHasWall}
-              />
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Does stairwell have walls to paint?
               </Text>
 
-              {hasWall && (
-                <>
-                  <View style={{ marginBottom: Spacing.md, marginTop: Spacing.md }}>
-                    <FormInput
-                      ref={tallWallHeightRef}
-                      previousFieldRef={spindleCountRef}
-                      label={`Tall Wall Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                      value={tallWallHeight}
-                      onChangeText={setTallWallHeight}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      nextFieldRef={shortWallHeightRef}
-                      className="mb-0"
-                    />
-                  </View>
+              {/* Wall Counter */}
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.md, marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                  Number of Walls:
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                  <Pressable
+                    onPress={removeWall}
+                    disabled={walls.length === 0}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: walls.length === 0 ? Colors.neutralGray : Colors.error,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: 24, color: Colors.white, fontWeight: "600" as any }}>−</Text>
+                  </Pressable>
+                  <Text style={{ fontSize: 20, fontWeight: "600" as any, color: Colors.darkCharcoal, minWidth: 30, textAlign: "center" }}>
+                    {walls.length}
+                  </Text>
+                  <Pressable
+                    onPress={addWall}
+                    disabled={walls.length >= 4}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: walls.length >= 4 ? Colors.neutralGray : Colors.primaryBlue,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: 24, color: Colors.white, fontWeight: "600" as any }}>+</Text>
+                  </Pressable>
+                </View>
+              </View>
 
-                  <View style={{ marginBottom: Spacing.md }}>
-                    <FormInput
-                      ref={shortWallHeightRef}
-                      previousFieldRef={tallWallHeightRef}
-                      label={`Short Wall Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                      value={shortWallHeight}
-                      onChangeText={setShortWallHeight}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      className="mb-0"
-                    />
+              {/* Wall Inputs */}
+              {walls.map((wall, index) => (
+                <View key={wall.id} style={{ marginBottom: Spacing.md, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.neutralGray }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                    Wall {index + 1}
+                  </Text>
+                  <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+                    <View style={{ flex: 1 }}>
+                      <FormInput
+                        label={`Tall Side (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                        value={wall.tallHeight}
+                        onChangeText={(value) => updateWallHeight(index, 'tallHeight', value)}
+                        keyboardType="numeric"
+                        placeholder="0"
+                        className="mb-0"
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <FormInput
+                        label={`Short Side (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                        value={wall.shortHeight}
+                        onChangeText={(value) => updateWallHeight(index, 'shortHeight', value)}
+                        keyboardType="numeric"
+                        placeholder="0"
+                        className="mb-0"
+                      />
+                    </View>
                   </View>
-
-                  <Toggle
-                    label="Double-Sided Stair Walls?"
-                    value={doubleSidedWalls}
-                    onValueChange={setDoubleSidedWalls}
-                  />
-                </>
-              )}
+                </View>
+              ))}
             </Card>
 
             {/* Notes Section */}
@@ -535,28 +579,45 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               const spindleLaborCost = parseFloat(spindleCount) > 0 ? parseFloat(spindleCount) * pricing.spindleLabor : 0;
               const handrailLaborCost = parseFloat(handrailLength) > 0 ? parseFloat(handrailLength) * pricing.handrailLaborPerLF : 0;
 
-              // Wall labor
-              const secondaryWallArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
-                ? ((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)
-                : 0;
-              const secondaryCeilingArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
-              const secondaryWallLaborCost = secondaryWallArea * pricing.wallLaborPerSqFt;
-              const secondaryCeilingLaborCost = secondaryCeilingArea * pricing.ceilingLaborPerSqFt;
+              // Wall labor - calculate for each wall
+              const wallsData = walls.map(w => {
+                const tallHeight = parseFloat(w.tallHeight) || 0;
+                const shortHeight = parseFloat(w.shortHeight) || 0;
+                const wallArea = tallHeight > 0 && shortHeight > 0 ? ((tallHeight + shortHeight) / 2) * 12 : 0;
+                const ceilingArea = tallHeight > 0 && shortHeight > 0 ? 15 * 3.5 : 0;
+                return {
+                  wallArea,
+                  ceilingArea,
+                  wallLaborCost: wallArea * pricing.wallLaborPerSqFt,
+                  ceilingLaborCost: ceilingArea * pricing.ceilingLaborPerSqFt,
+                };
+              });
+
+              const totalWallArea = wallsData.reduce((sum, w) => sum + w.wallArea, 0);
+              const totalCeilingArea = wallsData.reduce((sum, w) => sum + w.ceilingArea, 0);
+              const totalWallLaborCost = wallsData.reduce((sum, w) => sum + w.wallLaborCost, 0);
+              const totalCeilingLaborCost = wallsData.reduce((sum, w) => sum + w.ceilingLaborCost, 0);
 
               // Materials: paint is distributed proportionally (simplified: equal split for now)
+              const wallComponents = wallsData.reduce((count, w) => {
+                return count + (w.wallArea > 0 ? 1 : 0) + (w.ceilingArea > 0 ? 1 : 0);
+              }, 0);
+
               const totalComponents = (parseFloat(riserCount) > 0 ? 1 : 0) +
                                      (parseFloat(spindleCount) > 0 ? 1 : 0) +
                                      (parseFloat(handrailLength) > 0 ? 1 : 0) +
-                                     (secondaryWallArea > 0 ? 1 : 0) +
-                                     (secondaryCeilingArea > 0 ? 1 : 0);
+                                     wallComponents;
 
               const materialPerComponent = totalComponents > 0 ? calculations.materialsDisplayed / totalComponents : 0;
 
               const riserMaterialsCost = parseFloat(riserCount) > 0 ? materialPerComponent : 0;
               const spindleMaterialsCost = parseFloat(spindleCount) > 0 ? materialPerComponent : 0;
               const handrailMaterialsCost = parseFloat(handrailLength) > 0 ? materialPerComponent : 0;
-              const secondaryWallMaterialsCost = secondaryWallArea > 0 ? materialPerComponent : 0;
-              const secondaryCeilingMaterialsCost = secondaryCeilingArea > 0 ? materialPerComponent : 0;
+
+              const wallsMaterialsCost = wallsData.map(w => ({
+                wallMaterialsCost: w.wallArea > 0 ? materialPerComponent : 0,
+                ceilingMaterialsCost: w.ceilingArea > 0 ? materialPerComponent : 0,
+              }));
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -597,23 +658,26 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         </View>
                       )}
 
-                      {secondaryWallArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Sec Wall</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {formatMeasurement(Math.ceil(secondaryWallArea), 'area', unitSystem, 0)}
-                          </Text>
-                        </View>
-                      )}
-
-                      {secondaryCeilingArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Sec Ceiling</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {formatMeasurement(Math.ceil(secondaryCeilingArea), 'area', unitSystem, 0)}
-                          </Text>
-                        </View>
-                      )}
+                      {wallsData.map((wallData, idx) => (
+                        <React.Fragment key={idx}>
+                          {wallData.wallArea > 0 && (
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                              <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall {idx + 1}</Text>
+                              <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                                {formatMeasurement(Math.ceil(wallData.wallArea), 'area', unitSystem, 0)}
+                              </Text>
+                            </View>
+                          )}
+                          {wallData.ceilingArea > 0 && (
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                              <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>W{idx + 1} Ceiling</Text>
+                              <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                                {formatMeasurement(Math.ceil(wallData.ceilingArea), 'area', unitSystem, 0)}
+                              </Text>
+                            </View>
+                          )}
+                        </React.Fragment>
+                      ))}
                     </View>
 
                     {/* Blue section - flex: 2, 2 columns right-aligned */}
@@ -657,27 +721,30 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         </View>
                       )}
 
-                      {secondaryWallArea > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(secondaryWallLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(secondaryWallMaterialsCost)}
-                          </Text>
-                        </View>
-                      )}
-
-                      {secondaryCeilingArea > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(secondaryCeilingLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(secondaryCeilingMaterialsCost)}
-                          </Text>
-                        </View>
-                      )}
+                      {wallsData.map((wallData, idx) => (
+                        <React.Fragment key={idx}>
+                          {wallData.wallArea > 0 && (
+                            <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                                ${Math.round(wallData.wallLaborCost)}
+                              </Text>
+                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                                ${Math.round(wallsMaterialsCost[idx].wallMaterialsCost)}
+                              </Text>
+                            </View>
+                          )}
+                          {wallData.ceilingArea > 0 && (
+                            <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                                ${Math.round(wallData.ceilingLaborCost)}
+                              </Text>
+                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                                ${Math.round(wallsMaterialsCost[idx].ceilingMaterialsCost)}
+                              </Text>
+                            </View>
+                          )}
+                        </React.Fragment>
+                      ))}
 
                       <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
@@ -714,10 +781,19 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               const spindleArea = parseInt(spindleCount) * 0.5;
               const handrailArea = parseFloat(handrailLength) * 0.5;
 
-              const secondaryWallArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0
-                ? ((parseFloat(tallWallHeight) + parseFloat(shortWallHeight)) / 2) * 12 * (doubleSidedWalls ? 2 : 1)
-                : 0;
-              const secondaryCeilingArea = hasWall && parseFloat(tallWallHeight) > 0 && parseFloat(shortWallHeight) > 0 ? 15 * 3.5 : 0;
+              const testWallsData = walls.map((w, idx) => {
+                const tallHeight = parseFloat(w.tallHeight) || 0;
+                const shortHeight = parseFloat(w.shortHeight) || 0;
+                const wallArea = tallHeight > 0 && shortHeight > 0 ? ((tallHeight + shortHeight) / 2) * 12 : 0;
+                const ceilingArea = tallHeight > 0 && shortHeight > 0 ? 15 * 3.5 : 0;
+                return {
+                  wallIndex: idx + 1,
+                  tallHeight,
+                  shortHeight,
+                  wallArea,
+                  ceilingArea,
+                };
+              });
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -771,35 +847,38 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       </View>
                     )}
 
-                    {/* Secondary Wall */}
-                    {secondaryWallArea > 0 && (
-                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                          Secondary Stairwell - Wall
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: {secondaryWallArea.toFixed(2)} sqft (({tallWallHeight} + {shortWallHeight}) / 2 × 12 ft{doubleSidedWalls ? " × 2" : ""})
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Labor: {secondaryWallArea.toFixed(2)} × ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft = ${(secondaryWallArea * pricing.wallLaborPerSqFt).toFixed(2)}
-                        </Text>
-                      </View>
-                    )}
+                    {/* Walls */}
+                    {testWallsData.map((wallData) => (
+                      <React.Fragment key={wallData.wallIndex}>
+                        {wallData.wallArea > 0 && (
+                          <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                              Wall {wallData.wallIndex} - Wall Surface
+                            </Text>
+                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                              Area: {wallData.wallArea.toFixed(2)} sqft (({wallData.tallHeight} + {wallData.shortHeight}) / 2 × 12 ft)
+                            </Text>
+                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                              Labor: {wallData.wallArea.toFixed(2)} × ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft = ${(wallData.wallArea * pricing.wallLaborPerSqFt).toFixed(2)}
+                            </Text>
+                          </View>
+                        )}
 
-                    {/* Secondary Ceiling */}
-                    {secondaryCeilingArea > 0 && (
-                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                          Secondary Stairwell - Ceiling
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: {secondaryCeilingArea.toFixed(2)} sqft (15 ft × 3.5 ft)
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Labor: {secondaryCeilingArea.toFixed(2)} × ${pricing.ceilingLaborPerSqFt.toFixed(2)}/sqft = ${(secondaryCeilingArea * pricing.ceilingLaborPerSqFt).toFixed(2)}
-                        </Text>
-                      </View>
-                    )}
+                        {wallData.ceilingArea > 0 && (
+                          <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                              Wall {wallData.wallIndex} - Ceiling
+                            </Text>
+                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                              Area: {wallData.ceilingArea.toFixed(2)} sqft (15 ft × 3.5 ft)
+                            </Text>
+                            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                              Labor: {wallData.ceilingArea.toFixed(2)} × ${pricing.ceilingLaborPerSqFt.toFixed(2)}/sqft = ${(wallData.ceilingArea * pricing.ceilingLaborPerSqFt).toFixed(2)}
+                            </Text>
+                          </View>
+                        )}
+                      </React.Fragment>
+                    ))}
 
                     {/* Paint */}
                     <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
