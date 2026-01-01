@@ -794,6 +794,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 ))}
 
+                {/* Furniture Moving */}
+                {project.includeFurnitureMoving && (
+                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <Ionicons name="cube-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      Furniture Moving
+                    </Text>
+                  </View>
+                )}
+
                 {/* Empty state */}
                 {totalItems === 0 && (
                   <Text style={{ fontSize: 13, color: Colors.mediumGray, fontStyle: "italic" }}>
@@ -869,6 +879,21 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     </View>
                   );
                 })}
+
+                {/* Furniture Moving */}
+                {project.includeFurnitureMoving && (() => {
+                  const furnitureMovingPricing = displaySummary.itemizedPrices?.find(p => p.id === "furniture-moving");
+                  return (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(furnitureMovingPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(furnitureMovingPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })()}
 
                 {/* Empty state */}
                 {totalItems === 0 && (
