@@ -421,20 +421,8 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                       <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                     </View>
 
-                    {includePrimer && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Primer</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>1 coat</Text>
-                      </View>
-                    )}
-
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Paint</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{coats} {coats === 1 ? "coat" : "coats"}</Text>
-                    </View>
-
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Area</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                         {formatMeasurement(Math.ceil(calculations.paintableArea), 'area', unitSystem, 0)}
                       </Text>
@@ -449,34 +437,6 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                     </View>
 
-                    {includePrimer && (
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(calculations.primerLaborCost)}
-                        </Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(calculations.primerMaterialsCost)}
-                        </Text>
-                      </View>
-                    )}
-
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(calculations.paintLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(calculations.paintMaterialsCost)}
-                      </Text>
-                    </View>
-
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: "transparent", textAlign: "right" }}>-</Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: "transparent", textAlign: "right" }}>-</Text>
-                    </View>
-
-                    <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-
-                    {/* Subtotals */}
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(calculations.laborDisplayed)}
