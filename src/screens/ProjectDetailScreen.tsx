@@ -723,7 +723,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             {/* Two-column layout: Grey (items list) + Blue (labor/materials) */}
             <View style={{ flexDirection: "row", gap: Spacing.sm }}>
               {/* Left Column - Items List (Gray) */}
-              <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+              <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                 {/* Empty row to align with blue section headers */}
                 <View style={{ marginBottom: Spacing.xs }}>
                   <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
@@ -784,7 +784,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </View>
 
               {/* Right Section - Pricing (Blue) with Labor and Mat columns */}
-              <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+              <View style={{ flex: 1, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                 {/* Header Row */}
                 <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                   <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
