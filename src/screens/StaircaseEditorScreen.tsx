@@ -548,13 +548,13 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                       {/* Empty row for alignment */}
                       <View style={{ marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
+                        <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                       </View>
 
                       {parseFloat(riserCount) > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Risers</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Risers</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {Math.ceil(parseFloat(riserCount))}
                           </Text>
                         </View>
@@ -562,8 +562,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {parseFloat(spindleCount) > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Spindles</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Spindles</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {Math.ceil(parseFloat(spindleCount))}
                           </Text>
                         </View>
@@ -571,8 +571,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {parseFloat(handrailLength) > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Handrail</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Handrail</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(parseFloat(handrailLength)), 'length', unitSystem, 0)}
                           </Text>
                         </View>
@@ -580,8 +580,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {secondaryWallArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Sec Wall</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Sec Wall</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(secondaryWallArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
@@ -589,8 +589,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {secondaryCeilingArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Sec Ceiling</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Sec Ceiling</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(secondaryCeilingArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
@@ -601,16 +601,16 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                       {/* Header Row */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                       </View>
 
                       {parseFloat(riserCount) > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(riserLaborCost)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(riserMaterialsCost)}
                           </Text>
                         </View>
@@ -618,10 +618,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {parseFloat(spindleCount) > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(spindleLaborCost)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(spindleMaterialsCost)}
                           </Text>
                         </View>
@@ -629,10 +629,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {parseFloat(handrailLength) > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(handrailLaborCost)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(handrailMaterialsCost)}
                           </Text>
                         </View>
@@ -640,10 +640,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {secondaryWallArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(secondaryWallLaborCost)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(secondaryWallMaterialsCost)}
                           </Text>
                         </View>
@@ -651,10 +651,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {secondaryCeilingArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(secondaryCeilingLaborCost)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(secondaryCeilingMaterialsCost)}
                           </Text>
                         </View>
@@ -664,10 +664,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {/* Subtotals - without labels */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                           ${Math.round(calculations.laborDisplayed)}
                         </Text>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                           ${Math.round(calculations.materialsDisplayed)}
                         </Text>
                       </View>
@@ -676,7 +676,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
                       {/* Total */}
                       <View style={{ alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
                         <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                           ${calculations.totalDisplayed.toLocaleString()}
                         </Text>

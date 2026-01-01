@@ -413,8 +413,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                     {frontBackArea > 0 && (
                       <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Front/Back</Text>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Front/Back</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                           {formatMeasurement(Math.ceil(frontBackArea), 'area', unitSystem, 0)}
                         </Text>
                       </View>
@@ -422,8 +422,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
                     {leftRightArea > 0 && (
                       <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Left/Right</Text>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Left/Right</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                           {formatMeasurement(Math.ceil(leftRightArea), 'area', unitSystem, 0)}
                         </Text>
                       </View>
@@ -431,8 +431,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
                     {topBottomArea > 0 && (
                       <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Top/Bottom</Text>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Top/Bottom</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                           {formatMeasurement(Math.ceil(topBottomArea), 'area', unitSystem, 0)}
                         </Text>
                       </View>
@@ -440,8 +440,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
                     {shelvesArea > 0 && (
                       <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Shelves ({shelfCount})</Text>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelves ({shelfCount})</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                           {formatMeasurement(Math.ceil(shelvesArea), 'area', unitSystem, 0)}
                         </Text>
                       </View>
@@ -450,10 +450,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
 
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
                         Total Area:
                       </Text>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                      <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
                         {formatMeasurement(Math.ceil(totalPaintableArea), 'area', unitSystem, 0)}
                       </Text>
                     </View>

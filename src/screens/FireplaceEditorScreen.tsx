@@ -488,13 +488,13 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                       {/* Empty row for alignment */}
                       <View style={{ marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: "transparent" }}>-</Text>
+                        <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                       </View>
 
                       {frontBackArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Front/Back</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Front/Back</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(frontBackArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
@@ -502,8 +502,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {topArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Top</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Top</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(topArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
@@ -511,8 +511,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {sideArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Side</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Side</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(sideArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
@@ -520,8 +520,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {trimArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>Trim</Text>
-                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Trim</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                             {formatMeasurement(Math.ceil(trimArea), 'area', unitSystem, 0)}
                           </Text>
                         </View>
@@ -532,16 +532,16 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                       {/* Header Row */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                       </View>
 
                       {frontBackArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(frontBackLabor)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(frontBackMaterials)}
                           </Text>
                         </View>
@@ -549,10 +549,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {topArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(topLabor)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(topMaterials)}
                           </Text>
                         </View>
@@ -560,10 +560,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {sideArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(sideLabor)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(sideMaterials)}
                           </Text>
                         </View>
@@ -571,10 +571,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {trimArea > 0 && (
                         <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(trimLabor)}
                           </Text>
-                          <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(trimMaterials)}
                           </Text>
                         </View>
@@ -584,10 +584,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {/* Subtotals - without labels */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                           ${Math.round(calculations.laborDisplayed)}
                         </Text>
-                        <Text style={{ flex: 1, fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                           ${Math.round(calculations.materialsDisplayed)}
                         </Text>
                       </View>
@@ -596,7 +596,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                       {/* Total */}
                       <View style={{ alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
                         <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                           ${calculations.totalDisplayed.toLocaleString()}
                         </Text>
