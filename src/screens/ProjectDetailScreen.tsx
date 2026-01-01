@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, Pressable, ScrollView, Alert, KeyboardAvoidingView, Platform, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
@@ -41,6 +41,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const appSettings = useAppSettings();
   const calculationSettings = useCalculationSettings((s) => s.settings);
 
+  const [addMenuVisible, setAddMenuVisible] = React.useState(false);
 
   // Wrap project loading and preprocessing
   let summary: ReturnType<typeof calculateFilteredProjectSummary> | null = null;
@@ -827,33 +828,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 Rooms and Structures
               </Text>
               <Pressable
-                onPress={() => {
-                  const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
-                  const roomOptions = floorCount === 1
-                    ? [{ text: "Room", onPress: () => handleAddRoom(1) }]
-                    : [
-                        {
-                          text: "Room",
-                          onPress: () => {
-                            Alert.alert("Select Floor", "Choose which floor to add the room to:", [
-                              ...Array.from({ length: floorCount }, (_, i) => ({
-                                text: `${getOrdinal(i + 1)} Floor`,
-                                onPress: () => handleAddRoom(i + 1),
-                              })),
-                              { text: "Cancel", style: "cancel" },
-                            ]);
-                          },
-                        },
-                      ];
-
-                  Alert.alert("Add Item", "What would you like to add?", [
-                    ...roomOptions,
-                    { text: "Staircase", onPress: handleAddStaircase },
-                    { text: "Fireplace", onPress: handleAddFireplace },
-                    { text: "Built-In", onPress: handleAddBuiltIn },
-                    { text: "Cancel", style: "cancel" },
-                  ]);
-                }}
+                onPress={() => setAddMenuVisible(true)}
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   borderRadius: 8,
@@ -1315,6 +1290,150 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           )}
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Add Item Modal */}
+      <Modal
+        visible={addMenuVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setAddMenuVisible(false)}
+      >
+        <Pressable
+          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: "center", alignItems: "center" }}
+          onPress={() => setAddMenuVisible(false)}
+        >
+          <Pressable
+            style={{
+              backgroundColor: Colors.white,
+              borderRadius: BorderRadius.default,
+              padding: Spacing.lg,
+              width: "80%",
+              maxWidth: 400,
+            }}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+              Add Item
+            </Text>
+
+            {/* Room Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                if (floorCount === 1) {
+                  handleAddRoom(1);
+                } else {
+                  Alert.alert("Select Floor", "Choose which floor to add the room to:", [
+                    ...Array.from({ length: floorCount }, (_, i) => ({
+                      text: `${getOrdinal(i + 1)} Floor`,
+                      onPress: () => handleAddRoom(i + 1),
+                    })),
+                    { text: "Cancel", style: "cancel" },
+                  ]);
+                }
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.sm,
+              }}
+            >
+              <Ionicons name="bed-outline" size={24} color={Colors.primaryBlue} style={{ marginRight: Spacing.md }} />
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Room
+              </Text>
+            </Pressable>
+
+            {/* Staircase Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddStaircase();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.sm,
+              }}
+            >
+              <View style={{ marginRight: Spacing.md }}>
+                <StaircaseIcon size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Staircase
+              </Text>
+            </Pressable>
+
+            {/* Fireplace Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddFireplace();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.sm,
+              }}
+            >
+              <View style={{ marginRight: Spacing.md }}>
+                <FireplaceIcon size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Fireplace
+              </Text>
+            </Pressable>
+
+            {/* Built-In Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddBuiltIn();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.md,
+              }}
+            >
+              <View style={{ marginRight: Spacing.md }}>
+                <BuiltInIcon size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Built-In
+              </Text>
+            </Pressable>
+
+            {/* Cancel Button */}
+            <Pressable
+              onPress={() => setAddMenuVisible(false)}
+              style={{
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.neutralGray,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Cancel
+              </Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
