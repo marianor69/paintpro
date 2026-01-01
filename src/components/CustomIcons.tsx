@@ -51,26 +51,22 @@ export const FireplaceIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
 export const StaircaseIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-      {/* Staircase steps - ascending from bottom-left to top-right */}
-      {/* Bottom step */}
-      <Path d="M 15 85 L 35 85 L 35 75 L 15 75 Z" />
+      {/* Diagonal handrail */}
+      <Path d="M 10 70 L 90 10" />
 
-      {/* Second step */}
-      <Path d="M 35 75 L 55 75 L 55 60 L 35 60 Z" />
+      {/* Base line */}
+      <Path d="M 10 90 L 90 90" />
 
-      {/* Third step */}
-      <Path d="M 55 60 L 75 60 L 75 45 L 55 45 Z" />
+      {/* Step risers (vertical lines) */}
+      <Path d="M 30 90 L 30 55" />
+      <Path d="M 50 75 L 50 40" />
+      <Path d="M 70 60 L 70 25" />
+      <Path d="M 90 90 L 90 10" />
 
-      {/* Top step */}
-      <Path d="M 75 45 L 90 45 L 90 30 L 75 30 Z" />
-
-      {/* Handrail */}
-      <Path d="M 15 75 L 25 65 L 45 55 L 65 40 L 85 25" strokeWidth="2.5" />
-
-      {/* Handrail posts */}
-      <Line x1="25" y1="65" x2="25" y2="75" strokeWidth="2" />
-      <Line x1="45" y1="55" x2="45" y2="68" strokeWidth="2" />
-      <Line x1="65" y1="40" x2="65" y2="53" strokeWidth="2" />
+      {/* Step treads (horizontal lines) */}
+      <Path d="M 30 75 L 50 75" />
+      <Path d="M 50 60 L 70 60" />
+      <Path d="M 70 45 L 90 45" />
     </G>
   </Svg>
 );
