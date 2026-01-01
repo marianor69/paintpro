@@ -403,7 +403,6 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   label="Mantel"
                   value={hasMantel}
                   onValueChange={setHasMantel}
-                  description={`Fixed fee: ${formatCurrency(pricing.mantelLabor)}`}
                 />
               </View>
 
@@ -413,7 +412,6 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   label="Legs"
                   value={hasLegs}
                   onValueChange={setHasLegs}
-                  description={`Fixed fee: ${formatCurrency(pricing.legsLabor)}`}
                 />
               </View>
 
