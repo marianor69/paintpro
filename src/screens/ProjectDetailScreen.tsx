@@ -914,10 +914,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <Ionicons name="bed-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                          {room.name || "Unnamed Room"}
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 2 }}>
-                          {getOrdinal(room.floor || 1)} floor
+                          {room.name || "Unnamed Room"} - {getOrdinal(room.floor || 1)} floor
                         </Text>
                       </View>
                     </Pressable>
