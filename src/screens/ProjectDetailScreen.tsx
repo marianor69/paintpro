@@ -919,7 +919,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           {getOrdinal(room.floor || 1)} floor
                         </Text>
                       </View>
-                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
                     </Pressable>
                     <Pressable
                       onPress={() => {
@@ -977,7 +976,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           {staircase.name || `Staircase ${idx + 1}`}
                         </Text>
                       </View>
-                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
                     </Pressable>
                     <Pressable
                       onPress={() => {
@@ -1035,7 +1033,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           {fireplace.name || `Fireplace ${idx + 1}`}
                         </Text>
                       </View>
-                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
                     </Pressable>
                     <Pressable
                       onPress={() => {
@@ -1093,7 +1090,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           {builtIn.name || "Unnamed Built-In"}
                         </Text>
                       </View>
-                      <Ionicons name="chevron-forward" size={16} color={Colors.mediumGray} />
                     </Pressable>
                     <Pressable
                       onPress={() => {
