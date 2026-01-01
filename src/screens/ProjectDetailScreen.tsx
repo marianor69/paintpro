@@ -1312,7 +1312,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             }}
             onPress={(e) => e.stopPropagation()}
           >
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.md, textAlign: "center" }}>
               Add Item
             </Text>
 
@@ -1336,6 +1336,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
@@ -1357,6 +1358,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
@@ -1380,6 +1382,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
@@ -1403,6 +1406,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
