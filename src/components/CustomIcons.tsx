@@ -72,37 +72,18 @@ export const StaircaseIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
 );
 
 export const BuiltInIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
-  <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-      {/* Outer frame */}
-      <Rect x="15" y="20" width="70" height="65" rx="2" />
-
+  <Svg width={size} height={size} viewBox="0 0 500 500">
+    <G>
       {/* Shelves */}
-      <Line x1="15" y1="38" x2="85" y2="38" />
-      <Line x1="15" y1="52" x2="85" y2="52" />
-      <Line x1="15" y1="66" x2="85" y2="66" />
+      <Rect x="99.292" y="16.517" fill={color} width="319.868" height="80.392"/>
+      <Rect x="99.243" y="106.56" fill={color} width="319.868" height="80.646"/>
+      <Rect x="99.292" y="197.517" fill={color} width="319.868" height="80.393"/>
+      <Rect x="99.168" y="288.22" fill={color} width="319.868" height="80.393"/>
+      <Rect x="99.168" y="378.441" fill={color} width="319.868" height="80.393"/>
 
-      {/* Vertical divider in middle */}
-      <Line x1="50" y1="20" x2="50" y2="85" />
-
-      {/* Books on shelves (small rectangles) */}
-      {/* Top shelf - left */}
-      <Rect x="18" y="23" width="6" height="12" />
-      <Rect x="25" y="23" width="5" height="12" />
-      <Rect x="31" y="23" width="7" height="12" />
-
-      {/* Top shelf - right */}
-      <Rect x="53" y="23" width="6" height="12" />
-      <Rect x="60" y="23" width="8" height="12" />
-
-      {/* Second shelf - left */}
-      <Rect x="18" y="41" width="7" height="9" />
-      <Rect x="26" y="41" width="6" height="9" />
-
-      {/* Second shelf - right */}
-      <Rect x="53" y="41" width="5" height="9" />
-      <Rect x="59" y="41" width="7" height="9" />
-      <Rect x="67" y="41" width="6" height="9" />
+      {/* Vertical supports */}
+      <Rect x="88.734" y="6.957" fill={color} width="10.385" height="453.623"/>
+      <Rect x="419.066" y="7.005" fill={color} width="10.385" height="453.574"/>
     </G>
   </Svg>
 );

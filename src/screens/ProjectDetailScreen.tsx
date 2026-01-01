@@ -18,7 +18,7 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/des
 import { Card } from "../components/Card";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { calculateCurrentStep, getCompletedSteps, canCompleteStep2 } from "../utils/projectStepLogic";
-import { FireplaceIcon, StaircaseIcon, BrickWallIcon } from "../components/CustomIcons";
+import { FireplaceIcon, StaircaseIcon, BuiltInIcon, BrickWallIcon } from "../components/CustomIcons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -791,7 +791,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {/* Built-Ins */}
                 {project.builtIns?.map((builtIn, idx) => (
                   <View key={builtIn.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="albums-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <BuiltInIcon size={16} color={Colors.mediumGray} />
+                    </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {builtIn.name || "Unnamed Built-In"}
                     </Text>
@@ -1212,7 +1214,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                         alignItems: "center",
                       }}
                     >
-                      <Ionicons name="albums-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <BuiltInIcon size={20} color={Colors.primaryBlue} />
+                      </View>
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {builtIn.name || "Unnamed Built-In"}
@@ -1464,7 +1468,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               }}
             >
               <View style={{ width: 24, marginRight: Spacing.md }}>
-                <Ionicons name="albums-outline" size={24} color={Colors.primaryBlue} />
+                <BuiltInIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Built-In
