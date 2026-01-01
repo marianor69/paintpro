@@ -878,6 +878,19 @@ export function calculateProjectSummary(
     });
   });
 
+  // Add furniture moving fee if enabled
+  if (project.includeFurnitureMoving) {
+    const furnitureMovingFee = safeNumber(pricing.furnitureMovingFee, 0);
+    totalLaborCost += furnitureMovingFee;
+    itemizedPrices.push({
+      id: "furniture-moving",
+      name: "Furniture Moving",
+      price: furnitureMovingFee,
+      laborCost: furnitureMovingFee,
+      materialsCost: 0,
+    });
+  }
+
   // Ensure all totals are safe before final calculations
   totalWallGallons = Math.max(0, safeNumber(totalWallGallons));
   totalCeilingGallons = Math.max(0, safeNumber(totalCeilingGallons));
@@ -885,11 +898,6 @@ export function calculateProjectSummary(
   totalDoorGallons = Math.max(0, safeNumber(totalDoorGallons));
   totalLaborCost = Math.max(0, safeNumber(totalLaborCost));
   totalMaterialCost = Math.max(0, safeNumber(totalMaterialCost));
-
-  // Add furniture moving fee if enabled
-  if (project.includeFurnitureMoving) {
-    totalLaborCost += safeNumber(pricing.furnitureMovingFee, 0);
-  }
 
   // Calculate primer (20% of total paint)
   totalPrimerGallons = Math.max(0, safeNumber(
@@ -1650,6 +1658,19 @@ export function calculateFilteredProjectSummary(
     console.log("[calculateFilteredProjectSummary] Built-ins exist but pricing not yet implemented:", project.builtIns.length);
   }
 
+  // Add furniture moving fee if enabled
+  if (project.includeFurnitureMoving) {
+    const furnitureMovingFee = safeNumber(pricing.furnitureMovingFee, 0);
+    totalLaborCost += furnitureMovingFee;
+    itemizedPrices.push({
+      id: "furniture-moving",
+      name: "Furniture Moving",
+      price: furnitureMovingFee,
+      laborCost: furnitureMovingFee,
+      materialsCost: 0,
+    });
+  }
+
   // Ensure all totals are safe
   totalWallGallons = Math.max(0, safeNumber(totalWallGallons));
   totalCeilingGallons = Math.max(0, safeNumber(totalCeilingGallons));
@@ -1657,11 +1678,6 @@ export function calculateFilteredProjectSummary(
   totalDoorGallons = Math.max(0, safeNumber(totalDoorGallons));
   totalLaborCost = Math.max(0, safeNumber(totalLaborCost));
   totalMaterialCost = Math.max(0, safeNumber(totalMaterialCost));
-
-  // Add furniture moving fee if enabled
-  if (project.includeFurnitureMoving) {
-    totalLaborCost += safeNumber(pricing.furnitureMovingFee, 0);
-  }
 
   // Calculate primer (20% of total paint) - only for categories that have gallons
   // Note: These totals have already been filtered by room-level paint settings
