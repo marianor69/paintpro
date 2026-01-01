@@ -1392,14 +1392,15 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
                 marginBottom: Spacing.sm,
               }}
             >
-              <Ionicons name="bed-outline" size={24} color={Colors.primaryBlue} style={{ marginRight: Spacing.md }} />
+              <View style={{ width: 24, marginRight: Spacing.md }}>
+                <Ionicons name="bed-outline" size={24} color={Colors.primaryBlue} />
+              </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Room
               </Text>
@@ -1414,14 +1415,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
                 marginBottom: Spacing.sm,
               }}
             >
-              <View style={{ marginRight: Spacing.md }}>
+              <View style={{ width: 24, marginRight: Spacing.md }}>
                 <StaircaseIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
@@ -1438,14 +1438,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
                 marginBottom: Spacing.sm,
               }}
             >
-              <View style={{ marginRight: Spacing.md }}>
+              <View style={{ width: 24, marginRight: Spacing.md }}>
                 <FireplaceIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
@@ -1462,14 +1461,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
                 marginBottom: Spacing.md,
               }}
             >
-              <View style={{ marginRight: Spacing.md }}>
+              <View style={{ width: 24, marginRight: Spacing.md }}>
                 <BuiltInIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
@@ -1486,14 +1484,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
                 padding: Spacing.md,
                 borderRadius: BorderRadius.default,
                 backgroundColor: Colors.backgroundWarmGray,
                 marginBottom: Spacing.md,
               }}
             >
-              <View style={{ marginRight: Spacing.md }}>
+              <View style={{ width: 24, marginRight: Spacing.md }}>
                 <BrickWallIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
