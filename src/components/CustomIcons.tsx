@@ -1,0 +1,112 @@
+import React from "react";
+import Svg, { Path, Rect, Line, G } from "react-native-svg";
+
+interface IconProps {
+  size?: number;
+  color?: string;
+}
+
+export const FireplaceIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
+  <Svg width={size} height={size} viewBox="0 0 100 100">
+    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      {/* Top mantel */}
+      <Path d="M 15 20 L 85 20 L 85 28 L 15 28 Z" />
+
+      {/* Mantel support */}
+      <Path d="M 18 28 L 22 35 L 78 35 L 82 28" />
+
+      {/* Left column */}
+      <Path d="M 22 35 L 22 80 L 35 80 L 35 35" />
+
+      {/* Right column */}
+      <Path d="M 65 35 L 65 80 L 78 80 L 78 35" />
+
+      {/* Bottom base line */}
+      <Line x1="22" y1="80" x2="78" y2="80" />
+
+      {/* Left foot */}
+      <Rect x="18" y="80" width="20" height="8" rx="2" />
+
+      {/* Right foot */}
+      <Rect x="62" y="80" width="20" height="8" rx="2" />
+
+      {/* Arched opening */}
+      <Path d="M 35 80 L 35 55 A 15 15 0 0 1 65 55 L 65 80" />
+
+      {/* Center flame */}
+      <Path d="M 50 75 Q 45 65, 50 55 Q 55 65, 50 75" />
+
+      {/* Left flame */}
+      <Path d="M 43 75 Q 38 68, 43 60 Q 46 66, 45 70 Q 48 68, 43 75" />
+
+      {/* Right flame */}
+      <Path d="M 57 75 Q 62 68, 57 60 Q 54 66, 55 70 Q 52 68, 57 75" />
+
+      {/* Log */}
+      <Path d="M 42 77 Q 50 80, 58 77" />
+    </G>
+  </Svg>
+);
+
+export const StaircaseIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
+  <Svg width={size} height={size} viewBox="0 0 100 100">
+    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      {/* Staircase steps - ascending from bottom-left to top-right */}
+      {/* Bottom step */}
+      <Path d="M 15 85 L 35 85 L 35 75 L 15 75 Z" />
+
+      {/* Second step */}
+      <Path d="M 35 75 L 55 75 L 55 60 L 35 60 Z" />
+
+      {/* Third step */}
+      <Path d="M 55 60 L 75 60 L 75 45 L 55 45 Z" />
+
+      {/* Top step */}
+      <Path d="M 75 45 L 90 45 L 90 30 L 75 30 Z" />
+
+      {/* Handrail */}
+      <Path d="M 15 75 L 25 65 L 45 55 L 65 40 L 85 25" strokeWidth="2.5" />
+
+      {/* Handrail posts */}
+      <Line x1="25" y1="65" x2="25" y2="75" strokeWidth="2" />
+      <Line x1="45" y1="55" x2="45" y2="68" strokeWidth="2" />
+      <Line x1="65" y1="40" x2="65" y2="53" strokeWidth="2" />
+    </G>
+  </Svg>
+);
+
+export const BuiltInIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
+  <Svg width={size} height={size} viewBox="0 0 100 100">
+    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      {/* Outer frame */}
+      <Rect x="15" y="20" width="70" height="65" rx="2" />
+
+      {/* Shelves */}
+      <Line x1="15" y1="38" x2="85" y2="38" />
+      <Line x1="15" y1="52" x2="85" y2="52" />
+      <Line x1="15" y1="66" x2="85" y2="66" />
+
+      {/* Vertical divider in middle */}
+      <Line x1="50" y1="20" x2="50" y2="85" />
+
+      {/* Books on shelves (small rectangles) */}
+      {/* Top shelf - left */}
+      <Rect x="18" y="23" width="6" height="12" />
+      <Rect x="25" y="23" width="5" height="12" />
+      <Rect x="31" y="23" width="7" height="12" />
+
+      {/* Top shelf - right */}
+      <Rect x="53" y="23" width="6" height="12" />
+      <Rect x="60" y="23" width="8" height="12" />
+
+      {/* Second shelf - left */}
+      <Rect x="18" y="41" width="7" height="9" />
+      <Rect x="26" y="41" width="6" height="9" />
+
+      {/* Second shelf - right */}
+      <Rect x="53" y="41" width="5" height="9" />
+      <Rect x="59" y="41" width="7" height="9" />
+      <Rect x="67" y="41" width="6" height="9" />
+    </G>
+  </Svg>
+);

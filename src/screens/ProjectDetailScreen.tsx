@@ -18,6 +18,7 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/des
 import { Card } from "../components/Card";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { calculateCurrentStep, getCompletedSteps, canCompleteStep2 } from "../utils/projectStepLogic";
+import { FireplaceIcon, StaircaseIcon, BuiltInIcon } from "../components/CustomIcons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -970,7 +971,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                         alignItems: "center",
                       }}
                     >
-                      <Ionicons name="stats-chart-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <StaircaseIcon size={20} color={Colors.primaryBlue} />
+                      </View>
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {staircase.name || `Staircase ${idx + 1}`}
@@ -1027,7 +1030,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                         alignItems: "center",
                       }}
                     >
-                      <Ionicons name="flame-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <FireplaceIcon size={20} color={Colors.primaryBlue} />
+                      </View>
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {fireplace.name || `Fireplace ${idx + 1}`}
@@ -1084,7 +1089,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                         alignItems: "center",
                       }}
                     >
-                      <Ionicons name="cube-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <BuiltInIcon size={20} color={Colors.primaryBlue} />
+                      </View>
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {builtIn.name || "Unnamed Built-In"}
