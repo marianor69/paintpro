@@ -970,7 +970,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                         alignItems: "center",
                       }}
                     >
-                      <Ionicons name="arrow-up-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <Ionicons name="stats-chart-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {staircase.name || `Staircase ${idx + 1}`}
