@@ -18,7 +18,7 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/des
 import { Card } from "../components/Card";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { calculateCurrentStep, getCompletedSteps, canCompleteStep2 } from "../utils/projectStepLogic";
-import { FireplaceIcon, StaircaseIcon, BuiltInIcon } from "../components/CustomIcons";
+import { FireplaceIcon, StaircaseIcon, BuiltInIcon, BrickWallIcon } from "../components/CustomIcons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -803,7 +803,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {/* Brick Walls */}
                 {project.brickWalls?.map((brickWall, idx) => (
                   <View key={brickWall.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="cube-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <BrickWallIcon size={16} color={Colors.mediumGray} />
+                    </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {brickWall.name || "Unnamed Brick Wall"}
                     </Text>
@@ -1492,7 +1494,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               }}
             >
               <View style={{ marginRight: Spacing.md }}>
-                <Ionicons name="cube-outline" size={24} color={Colors.primaryBlue} />
+                <BrickWallIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Brick Wall

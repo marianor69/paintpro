@@ -106,3 +106,31 @@ export const BuiltInIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) 
     </G>
   </Svg>
 );
+
+export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
+  <Svg width={size} height={size} viewBox="0 0 100 100">
+    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      {/* Row 1 - Full bricks */}
+      <Rect x="15" y="15" width="30" height="12" rx="1" />
+      <Rect x="48" y="15" width="30" height="12" rx="1" />
+
+      {/* Row 2 - Offset bricks */}
+      <Rect x="15" y="30" width="15" height="12" rx="1" />
+      <Rect x="33" y="30" width="30" height="12" rx="1" />
+      <Rect x="66" y="30" width="12" height="12" rx="1" />
+
+      {/* Row 3 - Full bricks */}
+      <Rect x="15" y="45" width="30" height="12" rx="1" />
+      <Rect x="48" y="45" width="30" height="12" rx="1" />
+
+      {/* Row 4 - Offset bricks */}
+      <Rect x="15" y="60" width="15" height="12" rx="1" />
+      <Rect x="33" y="60" width="30" height="12" rx="1" />
+      <Rect x="66" y="60" width="12" height="12" rx="1" />
+
+      {/* Row 5 - Full bricks */}
+      <Rect x="15" y="75" width="30" height="12" rx="1" />
+      <Rect x="48" y="75" width="30" height="12" rx="1" />
+    </G>
+  </Svg>
+);
