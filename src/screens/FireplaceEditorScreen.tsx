@@ -376,11 +376,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           <View style={{ padding: Spacing.md }}>
             {/* Fireplace Information Card */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
                 Fireplace Information
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-                Select the parts of the fireplace to paint
               </Text>
 
               {/* Name/Location */}
@@ -398,32 +395,27 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               </View>
 
               {/* PART 1: Mantel */}
-              <View style={{ marginBottom: Spacing.md }}>
-                <Toggle
-                  label="Mantel"
-                  value={hasMantel}
-                  onValueChange={setHasMantel}
-                />
-              </View>
+              <Toggle
+                label="Mantel"
+                value={hasMantel}
+                onValueChange={setHasMantel}
+              />
 
               {/* PART 2: Legs */}
-              <View style={{ marginBottom: Spacing.md }}>
-                <Toggle
-                  label="Legs"
-                  value={hasLegs}
-                  onValueChange={setHasLegs}
-                />
-              </View>
+              <Toggle
+                label="Legs"
+                value={hasLegs}
+                onValueChange={setHasLegs}
+              />
 
               {/* PART 3: Over Mantel */}
-              <View style={{ marginBottom: hasOverMantel ? Spacing.md : 0 }}>
-                <Toggle
-                  label="Over Mantel"
-                  value={hasOverMantel}
-                  onValueChange={setHasOverMantel}
-                  description="Measured area (width × height)"
-                />
-              </View>
+              <Toggle
+                label="Over Mantel"
+                value={hasOverMantel}
+                onValueChange={setHasOverMantel}
+                description="Measured area (width × height)"
+                className={hasOverMantel ? "mb-4" : "mb-0"}
+              />
 
               {hasOverMantel && (
                 <View style={{ flexDirection: "row", gap: Spacing.sm }}>
