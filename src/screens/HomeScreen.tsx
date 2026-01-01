@@ -90,7 +90,7 @@ export default function HomeScreen({ navigation }: Props) {
               New Interface
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              ST-005 (8e13479) - Jan 1, 2026
+              ST-006 (72ab041) - Jan 1, 2026
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
