@@ -284,22 +284,10 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
                           fontWeight: "500" as any,
                           color: Colors.darkCharcoal,
                         }}
-                        numberOfLines={1}
+                        numberOfLines={2}
                       >
-                        {suggestion.main_text}
+                        {suggestion.description}
                       </Text>
-                      {suggestion.secondary_text && (
-                        <Text
-                          style={{
-                            fontSize: Typography.caption.fontSize,
-                            color: Colors.mediumGray,
-                            marginTop: 2,
-                          }}
-                          numberOfLines={1}
-                        >
-                          {suggestion.secondary_text}
-                        </Text>
-                      )}
                     </View>
                   </View>
                 </Pressable>
