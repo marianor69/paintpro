@@ -131,12 +131,12 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const emailAccessoryID = useId();
 
   // Refs for field containers (to scroll field into view)
-  const nameContainerRef = useRef<View>(null);
-  const addressContainerRef = useRef<View>(null);
-  const cityContainerRef = useRef<View>(null);
-  const countryContainerRef = useRef<View>(null);
-  const phoneContainerRef = useRef<View>(null);
-  const emailContainerRef = useRef<View>(null);
+  const nameContainerRef = useRef<View | null>(null);
+  const addressContainerRef = useRef<View | null>(null);
+  const cityContainerRef = useRef<View | null>(null);
+  const countryContainerRef = useRef<View | null>(null);
+  const phoneContainerRef = useRef<View | null>(null);
+  const emailContainerRef = useRef<View | null>(null);
 
   // Floor Config State
   let effectiveFloorCount = 1;
@@ -198,13 +198,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   }
 
   // Handler to scroll field into view when focused
-  const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View>) => {
+  const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
     if (!scrollViewRef.current || !fieldContainerRef.current) return;
 
     setTimeout(() => {
       fieldContainerRef.current?.measureLayout(
         scrollViewRef.current as any,
-        (x, y) => {
+        (x: number, y: number) => {
           scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
         },
         () => {}
@@ -380,14 +380,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   return (
     <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
-      <View
-        ref={stepIndicatorRef}
-        onLayout={() => {
-          stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
-            stepIndicatorBottomRef.current = y + height;
-          });
-        }}
-      >
+      <View>
         <StepProgressIndicator
           currentStep={1}
           completedSteps={completedSteps}
@@ -406,10 +399,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           automaticallyAdjustKeyboardInsets={true}
-          onScroll={(event) => {
-            scrollYRef.current = event.nativeEvent.contentOffset.y;
-          }}
-          scrollEventThrottle={16}
         >
           {/* CLIENT INFORMATION SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>
