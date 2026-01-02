@@ -19,6 +19,7 @@ import { useProjectStore } from "../state/projectStore";
 import { useAppSettings } from "../state/appSettings";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
+import { AddressAutocomplete } from "../components/AddressAutocomplete";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 // import { t } from "../i18n";
@@ -467,29 +468,26 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   </View>
                 </View>
 
-                {/* Address */}
+                {/* Address with Autocomplete */}
                 <View ref={addressLabelRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.address")} *
                   </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      ref={addressRef}
-                      value={address}
-                      onChangeText={setAddress}
-                      placeholder={t("screens.projectSetup.clientInfo.addressPlaceholder")}
-                      placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => cityRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(addressLabelRef)}
-                      blurOnSubmit={false}
-                      style={TextInputStyles.base}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `projectAddress-${addressAccessoryID}` : undefined}
-                      cursorColor={Colors.primaryBlue}
-                      selectionColor={Colors.primaryBlue}
-                      accessibilityLabel="Address input"
-                    />
-                  </View>
+                  <AddressAutocomplete
+                    ref={addressRef}
+                    value={address}
+                    onChangeText={setAddress}
+                    onSelectAddress={(addr, selectedCity, selectedCountry) => {
+                      setAddress(addr);
+                      if (selectedCity) setCity(selectedCity);
+                      if (selectedCountry) setCountry(selectedCountry);
+                    }}
+                    placeholder={t("screens.projectSetup.clientInfo.addressPlaceholder")}
+                    returnKeyType="next"
+                    onSubmitEditing={() => cityRef.current?.focus()}
+                    onFocus={() => handleFieldFocus(addressLabelRef)}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `projectAddress-${addressAccessoryID}` : undefined}
+                  />
                 </View>
 
                 {/* City */}
