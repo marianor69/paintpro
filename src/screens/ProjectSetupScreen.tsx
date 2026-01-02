@@ -133,6 +133,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const phoneAccessoryID = useId();
   const emailAccessoryID = useId();
 
+  // Ref for Client Information card
+  const clientInfoCardRef = useRef<View>(null);
+
   // Refs for field labels (to prevent them from hiding behind StepProgressIndicator)
   const clientNameLabelRef = useRef<View>(null);
   const addressLabelRef = useRef<View>(null);
@@ -440,7 +443,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
             </Pressable>
 
             {expandedSections.clientInfo && (
-              <>
+              <View ref={clientInfoCardRef}>
                 <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
                 {/* Client Name */}
@@ -688,7 +691,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     </View>
                   )}
                 </View>
-              </>
+              </View>
             )}
           </Card>
 
