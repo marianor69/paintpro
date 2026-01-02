@@ -201,8 +201,16 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
     if (!scrollViewRef.current || !fieldContainerRef.current) return;
 
-    // Just test if scrolling works at all
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+    setTimeout(() => {
+      fieldContainerRef.current?.measureLayout(
+        scrollViewRef.current as any,
+        (x: number, y: number) => {
+          // Use raw y position without offset
+          scrollViewRef.current?.scrollTo({ y: y, animated: true });
+        },
+        () => {}
+      );
+    }, 100);
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
