@@ -114,9 +114,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
 
   // Refs for form field navigation
-  const stepIndicatorRef = useRef<View>(null);
-  const stepIndicatorBottomRef = useRef(0);
-  const scrollYRef = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const nameRef = useRef<TextInput>(null);
   const addressRef = useRef<TextInput>(null);
@@ -133,16 +130,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const phoneAccessoryID = useId();
   const emailAccessoryID = useId();
 
-  // Ref for Client Information card
-  const clientInfoCardRef = useRef<View>(null);
-
-  // Refs for field labels (to prevent them from hiding behind StepProgressIndicator)
-  const clientNameLabelRef = useRef<View>(null);
-  const addressLabelRef = useRef<View>(null);
-  const cityLabelRef = useRef<View>(null);
-  const countryLabelRef = useRef<View>(null);
-  const phoneLabelRef = useRef<View>(null);
-  const emailLabelRef = useRef<View>(null);
+  // Refs for field containers (to scroll field into view)
+  const nameContainerRef = useRef<View>(null);
+  const addressContainerRef = useRef<View>(null);
+  const cityContainerRef = useRef<View>(null);
+  const countryContainerRef = useRef<View>(null);
+  const phoneContainerRef = useRef<View>(null);
+  const emailContainerRef = useRef<View>(null);
 
   // Floor Config State
   let effectiveFloorCount = 1;
@@ -203,28 +197,19 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     );
   }
 
-  // Handler to scroll field label into view when focused (CF-001 fix)
-  // Ensures labels don't hide behind StepProgressIndicator when keyboard appears
-  const handleFieldFocus = (labelRef: React.RefObject<View>) => {
-    if (!scrollViewRef.current || !labelRef.current) return;
+  // Handler to scroll field into view when focused
+  const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View>) => {
+    if (!scrollViewRef.current || !fieldContainerRef.current) return;
 
-    requestAnimationFrame(() => {
-      labelRef.current?.measureInWindow((lx, ly, lw, lh) => {
-        scrollViewRef.current?.measureInWindow((sx, sy) => {
-          const minGapBelowIndicator = 16;
-          const labelYInScroll = ly - sy + scrollYRef.current;
-          const scrollToY = Math.max(
-            0,
-            labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator
-          );
-
-          scrollViewRef.current?.scrollTo({
-            y: scrollToY,
-            animated: true,
-          });
-        });
-      });
-    });
+    setTimeout(() => {
+      fieldContainerRef.current?.measureLayout(
+        scrollViewRef.current as any,
+        (x, y) => {
+          scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+        },
+        () => {}
+      );
+    }, 100);
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -443,11 +428,11 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
             </Pressable>
 
             {expandedSections.clientInfo && (
-              <View ref={clientInfoCardRef}>
+              <>
                 <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
                 {/* Client Name */}
-                <View ref={clientNameLabelRef} style={{ marginBottom: Spacing.md }}>
+                <View ref={nameContainerRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.clientName")} *
                   </Text>
@@ -460,7 +445,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => addressRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(clientNameLabelRef)}
+                      onFocus={() => scrollFieldIntoView(nameContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectClientName-${nameAccessoryID}` : undefined}
@@ -472,7 +457,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Address with Autocomplete */}
-                <View ref={addressLabelRef} style={{ marginBottom: Spacing.md }}>
+                <View ref={addressContainerRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.address")} *
                   </Text>
@@ -488,13 +473,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     placeholder={t("screens.projectSetup.clientInfo.addressPlaceholder")}
                     returnKeyType="next"
                     onSubmitEditing={() => cityRef.current?.focus()}
-                    onFocus={() => handleFieldFocus(addressLabelRef)}
+                    onFocus={() => scrollFieldIntoView(addressContainerRef)}
                     inputAccessoryViewID={Platform.OS === "ios" ? `projectAddress-${addressAccessoryID}` : undefined}
                   />
                 </View>
 
                 {/* City */}
-                <View ref={cityLabelRef} style={{ marginBottom: Spacing.md }}>
+                <View ref={cityContainerRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.city")}
                   </Text>
@@ -507,7 +492,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => countryRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(cityLabelRef)}
+                      onFocus={() => scrollFieldIntoView(cityContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectCity-${cityAccessoryID}` : undefined}
@@ -519,7 +504,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Country */}
-                <View ref={countryLabelRef} style={{ marginBottom: Spacing.md }}>
+                <View ref={countryContainerRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.country")}
                   </Text>
@@ -532,7 +517,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => phoneRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(countryLabelRef)}
+                      onFocus={() => scrollFieldIntoView(countryContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectCountry-${countryAccessoryID}` : undefined}
@@ -544,7 +529,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Phone */}
-                <View ref={phoneLabelRef} style={{ marginBottom: Spacing.md }}>
+                <View ref={phoneContainerRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.phone")}
                   </Text>
@@ -558,7 +543,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       keyboardType="phone-pad"
                       returnKeyType="next"
                       onSubmitEditing={() => emailRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(phoneLabelRef)}
+                      onFocus={() => scrollFieldIntoView(phoneContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectPhone-${phoneAccessoryID}` : undefined}
@@ -570,7 +555,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Email */}
-                <View ref={emailLabelRef} style={{ marginBottom: Spacing.md }}>
+                <View ref={emailContainerRef} style={{ marginBottom: Spacing.md }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                     {t("screens.projectSetup.clientInfo.email")}
                   </Text>
@@ -585,7 +570,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       autoCapitalize="none"
                       returnKeyType="done"
                       onSubmitEditing={() => Keyboard.dismiss()}
-                      onFocus={() => handleFieldFocus(emailLabelRef)}
+                      onFocus={() => scrollFieldIntoView(emailContainerRef)}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectEmail-${emailAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
@@ -691,7 +676,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     </View>
                   )}
                 </View>
-              </View>
+              </>
             )}
           </Card>
 
