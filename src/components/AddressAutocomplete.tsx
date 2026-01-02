@@ -40,7 +40,7 @@ interface AddressAutocompleteProps {
   ref?: React.RefObject<TextInput>;
 }
 
-const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
+const API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocompleteProps>(
   (
