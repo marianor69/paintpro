@@ -205,7 +205,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       fieldContainerRef.current?.measureLayout(
         scrollViewRef.current as any,
         (x: number, y: number) => {
-          scrollViewRef.current?.scrollTo({ y: y - 5, animated: true });
+          scrollViewRef.current?.scrollTo({ y: y + 100, animated: true });
         },
         () => {}
       );
