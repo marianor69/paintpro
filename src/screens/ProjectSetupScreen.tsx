@@ -114,6 +114,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
 
   // Refs for form field navigation
+  const stepIndicatorRef = useRef<View>(null);
+  const stepIndicatorBottomRef = useRef(0);
+  const scrollYRef = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const nameRef = useRef<TextInput>(null);
   const addressRef = useRef<TextInput>(null);
@@ -197,10 +200,27 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     );
   }
 
-  // Handler for field focus - let KeyboardAvoidingView handle scrolling
+  // Handler for field focus - scroll label just below StepProgressIndicator
   const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
-    // KeyboardAvoidingView should handle automatic scrolling when keyboard appears
-    // No manual scroll needed
+    if (!scrollViewRef.current || !fieldContainerRef.current) return;
+
+    requestAnimationFrame(() => {
+      fieldContainerRef.current?.measureInWindow((lx, ly) => {
+        scrollViewRef.current?.measureInWindow((sx, sy) => {
+          const minGapBelowIndicator = 16;
+          const labelYInScroll = ly - sy + scrollYRef.current;
+          const scrollToY = Math.max(
+            0,
+            labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator
+          );
+
+          scrollViewRef.current?.scrollTo({
+            y: scrollToY,
+            animated: true,
+          });
+        });
+      });
+    });
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -372,11 +392,20 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
       <View>
+      <View
+        ref={stepIndicatorRef}
+        onLayout={() => {
+          stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
+            stepIndicatorBottomRef.current = y + height;
+          });
+        }}
+      >
         <StepProgressIndicator
           currentStep={1}
           completedSteps={completedSteps}
           disabledSteps={[2, 3]}
         />
+      </View>
       </View>
 
       <KeyboardAvoidingView
@@ -389,7 +418,11 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
-          automaticallyAdjustKeyboardInsets={true}
+          automaticallyAdjustKeyboardInsets={false}
+          onScroll={(event) => {
+            scrollYRef.current = event.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
         >
           {/* CLIENT INFORMATION SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>
