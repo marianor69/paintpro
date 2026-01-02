@@ -35,7 +35,7 @@ interface AddressAutocompleteProps {
   returnKeyType?: "next" | "done" | "search" | "send" | "go";
   onSubmitEditing?: () => void;
   nextFieldRef?: React.RefObject<TextInput>;
-  onFocus?: (ref: React.RefObject<View>) => void;
+  onFocus?: () => void;
   inputAccessoryViewID?: string;
   ref?: React.RefObject<TextInput>;
 }
@@ -212,7 +212,7 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
             returnKeyType={returnKeyType}
             onSubmitEditing={onSubmitEditing}
             onFocus={() => {
-              if (onFocus) onFocus(containerRef);
+              if (onFocus) onFocus();
               if (value.length >= 3 && suggestions.length > 0) {
                 setShowSuggestions(true);
               }
