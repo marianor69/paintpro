@@ -197,20 +197,10 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     );
   }
 
-  // Handler to scroll field into view when focused
+  // Handler for field focus - let KeyboardAvoidingView handle scrolling
   const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
-    if (!scrollViewRef.current || !fieldContainerRef.current) return;
-
-    setTimeout(() => {
-      fieldContainerRef.current?.measureLayout(
-        scrollViewRef.current as any,
-        (x: number, y: number) => {
-          // Use raw y position without offset
-          scrollViewRef.current?.scrollTo({ y: y, animated: true });
-        },
-        () => {}
-      );
-    }, 100);
+    // KeyboardAvoidingView should handle automatic scrolling when keyboard appears
+    // No manual scroll needed
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
