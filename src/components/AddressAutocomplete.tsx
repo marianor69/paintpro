@@ -66,24 +66,35 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
 
     // Fetch address predictions from Google Places API
     const fetchSuggestions = async (input: string) => {
-      if (!input.trim() || !API_KEY) {
+      if (!input.trim()) {
+        setSuggestions([]);
+        return;
+      }
+
+      if (!API_KEY) {
+        console.warn("Google Places API key not found");
         setSuggestions([]);
         return;
       }
 
       setLoading(true);
       try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-            input
-          )}&key=${API_KEY}&components=country:us`
-        );
+        const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
+          input
+        )}&key=${API_KEY}&components=country:us`;
 
+        console.log("Fetching suggestions from Google Places API...");
+        const response = await fetch(url);
         const data = await response.json();
 
-        if (data.predictions) {
+        console.log("Google Places API Response:", data);
+
+        if (data.predictions && data.predictions.length > 0) {
           setSuggestions(data.predictions.slice(0, 8)); // Limit to 8 suggestions
           setShowSuggestions(true);
+        } else {
+          console.log("No predictions found in response");
+          setSuggestions([]);
         }
       } catch (error) {
         console.error("Address autocomplete error:", error);
