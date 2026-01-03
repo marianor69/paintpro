@@ -201,7 +201,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   }
 
   const minGapBelowIndicator = 16;
-  const focusOffset = 150;
+  const focusOffset = 5;
   const [topInset, setTopInset] = useState(0);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
