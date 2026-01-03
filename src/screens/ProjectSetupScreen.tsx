@@ -202,6 +202,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
   const minGapBelowIndicator = 16;
   const focusOffset = 200;
+  const maxOffset = 200;
   const [topInset, setTopInset] = useState(0);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
@@ -421,7 +422,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         onLayout={() => {
           stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
             stepIndicatorBottomRef.current = y + height;
-            setTopInset(stepIndicatorBottomRef.current + minGapBelowIndicator + focusOffset);
+            setTopInset(stepIndicatorBottomRef.current + minGapBelowIndicator + maxOffset);
           });
         }}
       >
