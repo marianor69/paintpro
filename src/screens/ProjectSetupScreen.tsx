@@ -201,7 +201,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   }
 
   const minGapBelowIndicator = 16;
-  const focusOffset = 2;
+  const focusOffset = 50;
   const [topInset, setTopInset] = useState(0);
 
   useEffect(() => {
