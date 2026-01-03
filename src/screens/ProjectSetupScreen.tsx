@@ -421,7 +421,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         onLayout={() => {
           stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
             stepIndicatorBottomRef.current = y + height;
-            setTopInset(stepIndicatorBottomRef.current + minGapBelowIndicator);
+            setTopInset(stepIndicatorBottomRef.current + minGapBelowIndicator + focusOffset);
           });
         }}
       >
