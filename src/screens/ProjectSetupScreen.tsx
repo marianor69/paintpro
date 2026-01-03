@@ -203,10 +203,27 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const minGapBelowIndicator = 16;
   const focusOffset = 50;
   const [topInset, setTopInset] = useState(0);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   useEffect(() => {
     scrollYRef.current = -topInset;
   }, [topInset]);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const showSub = Keyboard.addListener(showEvent, () => {
+      setIsKeyboardVisible(true);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   // Handler for field focus - scroll label just below StepProgressIndicator
   const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
@@ -427,8 +444,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           automaticallyAdjustKeyboardInsets={false}
-          contentInset={Platform.OS === "ios" ? { top: topInset } : undefined}
-          contentOffset={Platform.OS === "ios" ? { y: -topInset } : undefined}
+          contentInset={Platform.OS === "ios" && isKeyboardVisible ? { top: topInset } : undefined}
+          contentOffset={Platform.OS === "ios" && isKeyboardVisible ? { y: -topInset } : undefined}
           onScroll={(event) => {
             scrollYRef.current = event.nativeEvent.contentOffset.y;
           }}
