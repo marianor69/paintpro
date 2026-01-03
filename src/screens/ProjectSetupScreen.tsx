@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useId } from "react";
+import React, { useState, useMemo, useRef, useId, useEffect } from "react";
 import {
   View,
   Text,
@@ -200,6 +200,14 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     );
   }
 
+  const minGapBelowIndicator = 16;
+  const focusOffset = 24;
+  const [topInset, setTopInset] = useState(0);
+
+  useEffect(() => {
+    scrollYRef.current = -topInset;
+  }, [topInset]);
+
   // Handler for field focus - scroll label just below StepProgressIndicator
   const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
     if (!scrollViewRef.current || !fieldContainerRef.current) return;
@@ -207,11 +215,10 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     requestAnimationFrame(() => {
       fieldContainerRef.current?.measureInWindow((lx, ly) => {
         scrollViewRef.current?.measureInWindow((sx, sy) => {
-          const minGapBelowIndicator = 16;
           const labelYInScroll = ly - sy + scrollYRef.current;
           const scrollToY = Math.max(
-            0,
-            labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator
+            -topInset,
+            labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator - focusOffset
           );
 
           scrollViewRef.current?.scrollTo({
@@ -397,6 +404,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         onLayout={() => {
           stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
             stepIndicatorBottomRef.current = y + height;
+            setTopInset(stepIndicatorBottomRef.current + minGapBelowIndicator + focusOffset);
           });
         }}
       >
@@ -419,6 +427,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           automaticallyAdjustKeyboardInsets={false}
+          contentInset={Platform.OS === "ios" ? { top: topInset } : undefined}
+          contentOffset={Platform.OS === "ios" ? { y: -topInset } : undefined}
           onScroll={(event) => {
             scrollYRef.current = event.nativeEvent.contentOffset.y;
           }}
