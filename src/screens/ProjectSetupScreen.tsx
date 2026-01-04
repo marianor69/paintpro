@@ -191,7 +191,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
   const minGapBelowIndicator = 16;
   // Increase to move label higher (closer to StepProgressIndicator)
-  const focusOffset = 5;
+  const focusOffset = -20;
 
   // Handler for field focus - scroll label to a fixed target Y
   const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
