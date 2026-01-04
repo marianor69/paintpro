@@ -43,3 +43,6 @@ expo.log
 
 ios/
 android/
+
+# Claude Code local settings
+.claude/
