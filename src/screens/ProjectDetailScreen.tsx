@@ -107,10 +107,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     totalDoorSqFt: 0,
   };
 
-  // Set navigation title to project address
+  // Set navigation title to project address (street only, no city/state/country)
   useEffect(() => {
+    const streetAddress = project.clientInfo.address?.split(",")[0] || project.clientInfo.address;
     navigation.setOptions({
-      title: project.clientInfo.address,
+      title: streetAddress,
     });
   }, [navigation, project.clientInfo.address]);
 
