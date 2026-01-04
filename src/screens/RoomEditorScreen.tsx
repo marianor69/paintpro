@@ -218,7 +218,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   useEffect(() => {
     const displayName = name || "Unnamed Room";
     navigation.setOptions({
-      title: `Edit Room: ${displayName}`,
+      title: displayName + "'s Detail",
     });
   }, [name, navigation]);
 
