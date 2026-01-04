@@ -63,7 +63,6 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
     const [suggestions, setSuggestions] = useState<AddressPrediction[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [debugMessage, setDebugMessage] = useState<string>("");
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const [inputBottomY, setInputBottomY] = useState(0);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -80,18 +79,15 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
     const fetchSuggestions = async (input: string) => {
       if (!input.trim()) {
         setSuggestions([]);
-        setDebugMessage("");
         return;
       }
 
       if (!API_KEY) {
-        setDebugMessage("❌ API Key Missing: EXPO_PUBLIC_GOOGLE_PLACES_API_KEY not found");
         setSuggestions([]);
         return;
       }
 
       setLoading(true);
-      setDebugMessage(`🔄 Searching for "${input}"...`);
 
       try {
         const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
@@ -102,18 +98,14 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
         const data = await response.json();
 
         if (data.error_message) {
-          setDebugMessage(`❌ API Error: ${data.error_message}`);
           setSuggestions([]);
         } else if (data.predictions && data.predictions.length > 0) {
-          setDebugMessage(`✅ Found ${data.predictions.length} results`);
           setSuggestions(data.predictions.slice(0, 8));
           setShowSuggestions(true);
         } else {
-          setDebugMessage(`❌ No addresses found for "${input}"`);
           setSuggestions([]);
         }
       } catch (error) {
-        setDebugMessage(`❌ Error: ${error instanceof Error ? error.message : "Network error"}`);
         setSuggestions([]);
       } finally {
         setLoading(false);
@@ -209,30 +201,6 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
         style={{ position: "relative" }}
         onLayout={measureInputBottom}
       >
-        {/* Debug Message */}
-        {debugMessage && (
-          <View
-            style={{
-              backgroundColor: debugMessage.includes("❌") ? "#FFE5E5" : "#E8F5E9",
-              borderLeftWidth: 4,
-              borderLeftColor: debugMessage.includes("❌") ? Colors.error : Colors.success,
-              paddingVertical: Spacing.sm,
-              paddingHorizontal: Spacing.md,
-              marginBottom: Spacing.md,
-              borderRadius: BorderRadius.default,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: Typography.caption.fontSize,
-                color: debugMessage.includes("❌") ? Colors.error : Colors.success,
-              }}
-            >
-              {debugMessage}
-            </Text>
-          </View>
-        )}
-
         {/* Input Field */}
         <View style={TextInputStyles.container}>
           <TextInput
