@@ -37,10 +37,6 @@ const t = (key: string): string => {
     "screens.projectSetup.clientInfo.clientName": "Client Name",
     "screens.projectSetup.clientInfo.address": "Address",
     "screens.projectSetup.clientInfo.addressPlaceholder": "Enter address",
-    "screens.projectSetup.clientInfo.city": "City",
-    "screens.projectSetup.clientInfo.cityPlaceholder": "Enter city",
-    "screens.projectSetup.clientInfo.country": "Country",
-    "screens.projectSetup.clientInfo.countryPlaceholder": "Enter country",
     "screens.projectSetup.clientInfo.phone": "Phone",
     "screens.projectSetup.clientInfo.phonePlaceholder": "Enter phone",
     "screens.projectSetup.clientInfo.email": "Email",
@@ -106,8 +102,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   // Client Info State (for new projects)
   const [name, setName] = useState(project?.clientInfo?.name || "");
   const [address, setAddress] = useState(project?.clientInfo?.address || "");
-  const [city, setCity] = useState(project?.clientInfo?.city || "");
-  const [country, setCountry] = useState(project?.clientInfo?.country || "");
   const [phone, setPhone] = useState(project?.clientInfo?.phone || "");
   const [email, setEmail] = useState(project?.clientInfo?.email || "");
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
@@ -121,24 +115,18 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const scrollViewRef = useRef<ScrollView>(null);
   const nameRef = useRef<TextInput>(null);
   const addressRef = useRef<TextInput>(null);
-  const cityRef = useRef<TextInput>(null);
-  const countryRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
 
   // KB-004: Unique IDs for InputAccessoryViews
   const nameAccessoryID = useId();
   const addressAccessoryID = useId();
-  const cityAccessoryID = useId();
-  const countryAccessoryID = useId();
   const phoneAccessoryID = useId();
   const emailAccessoryID = useId();
 
   // Refs for field containers (to scroll field into view)
   const nameContainerRef = useRef<View | null>(null);
   const addressContainerRef = useRef<View | null>(null);
-  const cityContainerRef = useRef<View | null>(null);
-  const countryContainerRef = useRef<View | null>(null);
   const phoneContainerRef = useRef<View | null>(null);
   const emailContainerRef = useRef<View | null>(null);
 
@@ -372,8 +360,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         {
           name: name.trim(),
           address: address.trim(),
-          city: city.trim(),
-          country: country.trim(),
           phone: phone.trim(),
           email: email.trim(),
         },
@@ -400,8 +386,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         updateClientInfo(project.id, {
           name: name.trim(),
           address: address.trim(),
-          city: city.trim(),
-          country: country.trim(),
           phone: phone.trim(),
           email: email.trim(),
         });
@@ -500,67 +484,15 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     ref={addressRef}
                     value={address}
                     onChangeText={setAddress}
-                    onSelectAddress={(addr, selectedCity, selectedCountry) => {
+                    onSelectAddress={(addr) => {
                       setAddress(addr);
-                      if (selectedCity) setCity(selectedCity);
-                      if (selectedCountry) setCountry(selectedCountry);
                     }}
                     placeholder={t("screens.projectSetup.clientInfo.addressPlaceholder")}
                     returnKeyType="next"
-                    onSubmitEditing={() => cityRef.current?.focus()}
+                    onSubmitEditing={() => phoneRef.current?.focus()}
                     onFocus={() => handleFieldFocus(addressContainerRef)}
                     inputAccessoryViewID={Platform.OS === "ios" ? `projectAddress-${addressAccessoryID}` : undefined}
                   />
-                </View>
-
-                {/* City */}
-                <View ref={cityContainerRef} style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    {t("screens.projectSetup.clientInfo.city")}
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      ref={cityRef}
-                      value={city}
-                      onChangeText={setCity}
-                      placeholder={t("screens.projectSetup.clientInfo.cityPlaceholder")}
-                      placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => countryRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(cityContainerRef)}
-                      blurOnSubmit={false}
-                      style={TextInputStyles.base}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `projectCity-${cityAccessoryID}` : undefined}
-                      cursorColor={Colors.primaryBlue}
-                      selectionColor={Colors.primaryBlue}
-                      accessibilityLabel="City input"
-                    />
-                  </View>
-                </View>
-
-                {/* Country */}
-                <View ref={countryContainerRef} style={{ marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    {t("screens.projectSetup.clientInfo.country")}
-                  </Text>
-                  <View style={TextInputStyles.container}>
-                    <TextInput
-                      ref={countryRef}
-                      value={country}
-                      onChangeText={setCountry}
-                      placeholder={t("screens.projectSetup.clientInfo.countryPlaceholder")}
-                      placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => phoneRef.current?.focus()}
-                      onFocus={() => handleFieldFocus(countryContainerRef)}
-                      blurOnSubmit={false}
-                      style={TextInputStyles.base}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `projectCountry-${countryAccessoryID}` : undefined}
-                      cursorColor={Colors.primaryBlue}
-                      selectionColor={Colors.primaryBlue}
-                      accessibilityLabel="Country input"
-                    />
-                  </View>
                 </View>
 
                 {/* Phone */}
@@ -1086,106 +1018,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => cityRef.current?.focus()}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                  borderRadius: BorderRadius.default,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: Colors.white,
-                    fontWeight: "600",
-                  }}
-                >
-                  Next
-                </Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-
-          {/* City - Previous/Next */}
-          <InputAccessoryView nativeID={`projectCity-${cityAccessoryID}`}>
-            <View
-              style={{
-                backgroundColor: "#f1f1f1",
-                paddingHorizontal: Spacing.md,
-                paddingVertical: Spacing.sm,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Pressable
-                onPress={() => addressRef.current?.focus()}
-                style={{
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: "#007AFF",
-                    fontWeight: "400",
-                  }}
-                >
-                  Previous
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => countryRef.current?.focus()}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                  borderRadius: BorderRadius.default,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: Colors.white,
-                    fontWeight: "600",
-                  }}
-                >
-                  Next
-                </Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-
-          {/* Country - Previous/Next */}
-          <InputAccessoryView nativeID={`projectCountry-${countryAccessoryID}`}>
-            <View
-              style={{
-                backgroundColor: "#f1f1f1",
-                paddingHorizontal: Spacing.md,
-                paddingVertical: Spacing.sm,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Pressable
-                onPress={() => cityRef.current?.focus()}
-                style={{
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: "#007AFF",
-                    fontWeight: "400",
-                  }}
-                >
-                  Previous
-                </Text>
-              </Pressable>
-              <Pressable
                 onPress={() => phoneRef.current?.focus()}
                 style={{
                   backgroundColor: Colors.primaryBlue,
@@ -1219,7 +1051,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               }}
             >
               <Pressable
-                onPress={() => countryRef.current?.focus()}
+                onPress={() => addressRef.current?.focus()}
                 style={{
                   paddingHorizontal: Spacing.lg,
                   paddingVertical: Spacing.sm,
