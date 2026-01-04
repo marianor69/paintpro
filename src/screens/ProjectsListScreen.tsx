@@ -62,7 +62,7 @@ export default function ProjectsListScreen({ navigation }: Props) {
           <Text style={{ fontSize: Typography.h1.fontSize, fontWeight: "700", color: Colors.darkCharcoal }}>
             Projects
           </Text>
-          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
             {projects.length} {projects.length === 1 ? "project" : "projects"}
           </Text>
         </View>
