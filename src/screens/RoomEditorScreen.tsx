@@ -777,7 +777,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 placeholder="Enter room name"
                 placeholderTextColor={Colors.mediumGray}
                 returnKeyType="next"
-                onSubmitEditing={() => lengthRef.current?.focus()}
+                onSubmitEditing={() => manualAreaRef.current?.focus()}
                 blurOnSubmit={false}
                 style={TextInputStyles.base}
                 inputAccessoryViewID={Platform.OS === "ios" ? `roomName-${nameAccessoryID}` : undefined}
@@ -787,13 +787,32 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {/* Row: Length & Width */}
+          {/* Manual Area - First option if user knows the area */}
+          <View style={{ marginBottom: Spacing.md }}>
+            <FormInput
+              ref={manualAreaRef}
+              previousFieldRef={nameRef}
+              label={`Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'})`}
+              value={manualArea}
+              onChangeText={setManualArea}
+              keyboardType="numeric"
+              placeholder="0"
+              nextFieldRef={lengthRef}
+              accessibilityLabel="Room area input"
+              className="mb-0"
+            />
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              Enter area directly, or use Length × Width below
+            </Text>
+          </View>
+
+          {/* Row: Length & Width - Alternative to manual area */}
           <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
             {/* Length */}
             <View style={{ flex: 1 }}>
               <FormInput
                 ref={lengthRef}
-                previousFieldRef={nameRef}
+                previousFieldRef={manualAreaRef}
                 label={`Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={length}
                 onChangeText={setLength}
@@ -815,30 +834,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 onChangeText={setWidth}
                 keyboardType="numeric"
                 placeholder="0"
-                nextFieldRef={manualAreaRef}
+                nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
                 accessibilityLabel="Room width input"
                 className="mb-0"
               />
             </View>
-          </View>
-
-          {/* Manual Area */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <FormInput
-              ref={manualAreaRef}
-              previousFieldRef={widthRef}
-              label={`Manual Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional`}
-              value={manualArea}
-              onChangeText={setManualArea}
-              keyboardType="numeric"
-              placeholder="0"
-              nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
-              accessibilityLabel="Manual area input"
-              className="mb-0"
-            />
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-              If entered, this will override Length × Width for ceiling area
-            </Text>
           </View>
 
           {/* Cathedral Ceiling Toggle */}
@@ -852,7 +852,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View style={{ marginTop: Spacing.md }}>
               <FormInput
                 ref={cathedralPeakHeightRef}
-                previousFieldRef={manualAreaRef}
+                previousFieldRef={widthRef}
                 label={`Peak Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={cathedralPeakHeight}
                 onChangeText={setCathedralPeakHeight}
@@ -2049,7 +2049,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             }}
           >
             <Pressable
-              onPress={() => lengthRef.current?.focus()}
+              onPress={() => manualAreaRef.current?.focus()}
               style={{
                 backgroundColor: Colors.primaryBlue,
                 paddingHorizontal: Spacing.lg,
