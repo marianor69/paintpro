@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   Pressable,
-  KeyboardAvoidingView,
   Platform,
   ScrollView,
   Keyboard,
@@ -117,6 +116,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const stepIndicatorRef = useRef<View>(null);
   const stepIndicatorBottomRef = useRef(0);
   const scrollYRef = useRef(0);
+  const keyboardVisibleRef = useRef(false);
+  const pendingFocusRef = useRef<React.RefObject<View | null> | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const nameRef = useRef<TextInput>(null);
   const addressRef = useRef<TextInput>(null);
@@ -188,6 +189,55 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const completedSteps = useMemo(() => getCompletedSteps(project), [project]);
   const step1Errors = useMemo(() => getStepValidationErrors(project, 1), [project]);
 
+  const minGapBelowIndicator = 16;
+  // Increase to move label higher (closer to StepProgressIndicator)
+  const focusOffset = 0;
+
+  // Handler for field focus - scroll label to a fixed target Y
+  const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
+    if (!scrollViewRef.current || !fieldContainerRef.current) return;
+    if (stepIndicatorBottomRef.current === 0) return;
+
+    requestAnimationFrame(() => {
+      fieldContainerRef.current?.measureInWindow((lx, ly) => {
+        const targetY = Math.max(0, stepIndicatorBottomRef.current + minGapBelowIndicator - focusOffset);
+        const delta = ly - targetY;
+        const scrollToY = Math.max(0, scrollYRef.current + delta);
+
+        scrollViewRef.current?.scrollTo({
+          y: scrollToY,
+          animated: true,
+        });
+      });
+    });
+  };
+
+  const handleFieldFocus = (fieldContainerRef: React.RefObject<View | null>) => {
+    pendingFocusRef.current = fieldContainerRef;
+    if (keyboardVisibleRef.current) {
+      scrollFieldIntoView(fieldContainerRef);
+      pendingFocusRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () => {
+      keyboardVisibleRef.current = true;
+      if (pendingFocusRef.current) {
+        scrollFieldIntoView(pendingFocusRef.current);
+        pendingFocusRef.current = null;
+      }
+    });
+    const hideSub = Keyboard.addListener("keyboardDidHide", () => {
+      keyboardVisibleRef.current = false;
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   if (!project && !isNew) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
@@ -199,54 +249,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       </SafeAreaView>
     );
   }
-
-  const minGapBelowIndicator = 16;
-  const focusOffset = 200;
-  const maxOffset = 200;
-  const [topInset, setTopInset] = useState(0);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    scrollYRef.current = -topInset;
-  }, [topInset]);
-
-  useEffect(() => {
-    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
-    const showSub = Keyboard.addListener(showEvent, () => {
-      setIsKeyboardVisible(true);
-    });
-    const hideSub = Keyboard.addListener(hideEvent, () => {
-      setIsKeyboardVisible(false);
-    });
-
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
-
-  // Handler for field focus - scroll label just below StepProgressIndicator
-  const scrollFieldIntoView = (fieldContainerRef: React.RefObject<View | null>) => {
-    if (!scrollViewRef.current || !fieldContainerRef.current) return;
-
-    requestAnimationFrame(() => {
-      fieldContainerRef.current?.measureInWindow((lx, ly) => {
-        scrollViewRef.current?.measureInWindow((sx, sy) => {
-          const labelYInScroll = ly - sy + scrollYRef.current;
-          const scrollToY = Math.max(
-            -topInset,
-            labelYInScroll - stepIndicatorBottomRef.current - minGapBelowIndicator - focusOffset
-          );
-
-          scrollViewRef.current?.scrollTo({
-            y: scrollToY,
-            animated: true,
-          });
-        });
-      });
-    });
-  };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({
@@ -422,7 +424,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         onLayout={() => {
           stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
             stepIndicatorBottomRef.current = y + height;
-            setTopInset(stepIndicatorBottomRef.current + minGapBelowIndicator + maxOffset);
           });
         }}
       >
@@ -434,24 +435,17 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       </View>
       </View>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        automaticallyAdjustKeyboardInsets={false}
+        onScroll={(event) => {
+          scrollYRef.current = event.nativeEvent.contentOffset.y;
+        }}
+        scrollEventThrottle={16}
       >
-        <ScrollView
-          ref={scrollViewRef}
-          contentContainerStyle={{ padding: Spacing.md, paddingBottom: 200 }}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          automaticallyAdjustKeyboardInsets={false}
-          contentInset={Platform.OS === "ios" && isKeyboardVisible ? { top: topInset } : undefined}
-          contentOffset={Platform.OS === "ios" && isKeyboardVisible ? { y: -topInset } : undefined}
-          onScroll={(event) => {
-            scrollYRef.current = event.nativeEvent.contentOffset.y;
-          }}
-          scrollEventThrottle={16}
-        >
           {/* CLIENT INFORMATION SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Pressable
@@ -486,7 +480,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => addressRef.current?.focus()}
-                      onFocus={() => scrollFieldIntoView(nameContainerRef)}
+                      onFocus={() => handleFieldFocus(nameContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectClientName-${nameAccessoryID}` : undefined}
@@ -514,7 +508,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     placeholder={t("screens.projectSetup.clientInfo.addressPlaceholder")}
                     returnKeyType="next"
                     onSubmitEditing={() => cityRef.current?.focus()}
-                    onFocus={() => scrollFieldIntoView(addressContainerRef)}
+                    onFocus={() => handleFieldFocus(addressContainerRef)}
                     inputAccessoryViewID={Platform.OS === "ios" ? `projectAddress-${addressAccessoryID}` : undefined}
                   />
                 </View>
@@ -533,7 +527,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => countryRef.current?.focus()}
-                      onFocus={() => scrollFieldIntoView(cityContainerRef)}
+                      onFocus={() => handleFieldFocus(cityContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectCity-${cityAccessoryID}` : undefined}
@@ -558,7 +552,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       onSubmitEditing={() => phoneRef.current?.focus()}
-                      onFocus={() => scrollFieldIntoView(countryContainerRef)}
+                      onFocus={() => handleFieldFocus(countryContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectCountry-${countryAccessoryID}` : undefined}
@@ -584,7 +578,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       keyboardType="phone-pad"
                       returnKeyType="next"
                       onSubmitEditing={() => emailRef.current?.focus()}
-                      onFocus={() => scrollFieldIntoView(phoneContainerRef)}
+                      onFocus={() => handleFieldFocus(phoneContainerRef)}
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectPhone-${phoneAccessoryID}` : undefined}
@@ -611,7 +605,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       autoCapitalize="none"
                       returnKeyType="done"
                       onSubmitEditing={() => Keyboard.dismiss()}
-                      onFocus={() => scrollFieldIntoView(emailContainerRef)}
+                      onFocus={() => handleFieldFocus(emailContainerRef)}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectEmail-${emailAccessoryID}` : undefined}
                       cursorColor={Colors.primaryBlue}
@@ -1025,8 +1019,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               {t("screens.projectSetup.buttons.saveAndContinue")}
             </Text>
           </Pressable>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </ScrollView>
 
       {/* KB-004: InputAccessoryViews for Client Info fields */}
       {Platform.OS === "ios" && (
