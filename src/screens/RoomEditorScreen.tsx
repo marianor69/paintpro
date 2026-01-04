@@ -815,31 +815,33 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 onChangeText={setWidth}
                 keyboardType="numeric"
                 placeholder="0"
-                nextFieldRef={manualAreaRef}
+                nextFieldRef={(length.trim() && width.trim()) ? (isCathedral ? cathedralPeakHeightRef : undefined) : manualAreaRef}
                 accessibilityLabel="Room width input"
                 className="mb-0"
               />
             </View>
           </View>
 
-          {/* Manual Area */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <FormInput
-              ref={manualAreaRef}
-              previousFieldRef={widthRef}
-              label={`Manual Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional`}
-              value={manualArea}
-              onChangeText={setManualArea}
-              keyboardType="numeric"
-              placeholder="0"
-              nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
-              accessibilityLabel="Manual area input"
-              className="mb-0"
-            />
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-              If entered, this will override Length × Width for ceiling area
-            </Text>
-          </View>
+          {/* Manual Area - only show if length or width is missing */}
+          {(!length.trim() || !width.trim()) && (
+            <View style={{ marginBottom: Spacing.md }}>
+              <FormInput
+                ref={manualAreaRef}
+                previousFieldRef={widthRef}
+                label={`Manual Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'}) - Optional`}
+                value={manualArea}
+                onChangeText={setManualArea}
+                keyboardType="numeric"
+                placeholder="0"
+                nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
+                accessibilityLabel="Manual area input"
+                className="mb-0"
+              />
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                If entered, this will override Length × Width for ceiling area
+              </Text>
+            </View>
+          )}
 
           {/* Cathedral Ceiling Toggle */}
           <Toggle
@@ -852,7 +854,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View style={{ marginTop: Spacing.md }}>
               <FormInput
                 ref={cathedralPeakHeightRef}
-                previousFieldRef={manualAreaRef}
+                previousFieldRef={(length.trim() && width.trim()) ? widthRef : manualAreaRef}
                 label={`Peak Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={cathedralPeakHeight}
                 onChangeText={setCathedralPeakHeight}
