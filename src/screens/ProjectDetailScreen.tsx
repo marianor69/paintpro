@@ -976,11 +976,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             )}
           </Card>
 
-          {/* Rooms and Structures - Combined */}
+          {/* Rooms & Structures - Combined */}
           <Card style={{ marginBottom: Spacing.md }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                Rooms and Structures
+                Rooms & Structures
               </Text>
               <Pressable
                 onPress={() => setAddMenuVisible(true)}
