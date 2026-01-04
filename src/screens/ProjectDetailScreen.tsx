@@ -751,9 +751,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             <View style={{ flexDirection: "row", gap: Spacing.sm }}>
               {/* Left Column - Items List (Gray) */}
               <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
-                {/* Empty row to align with blue section headers */}
+                {/* Section Title */}
                 <View style={{ marginBottom: Spacing.xs }}>
-                  <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
+                  <Text style={{ fontSize: 13, color: Colors.mediumGray }}>Rooms & Structures</Text>
                 </View>
 
                 {/* Rooms */}
