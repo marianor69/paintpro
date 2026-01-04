@@ -7,6 +7,8 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
+  Keyboard,
+  useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, TextInputStyles } from "../utils/designSystem";
@@ -62,8 +64,17 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [loading, setLoading] = useState(false);
     const [debugMessage, setDebugMessage] = useState<string>("");
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const [inputBottomY, setInputBottomY] = useState(0);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
     const containerRef = useRef<View>(null);
+    const { height: windowHeight } = useWindowDimensions();
+
+    const measureInputBottom = () => {
+      containerRef.current?.measureInWindow((x, y, width, height) => {
+        setInputBottomY(y + height);
+      });
+    };
 
     // Fetch address predictions from Google Places API
     const fetchSuggestions = async (input: string) => {
@@ -174,8 +185,30 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
       };
     }, []);
 
+    useEffect(() => {
+      const showSub = Keyboard.addListener("keyboardDidShow", (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+        measureInputBottom();
+      });
+      const hideSub = Keyboard.addListener("keyboardDidHide", () => {
+        setKeyboardHeight(0);
+      });
+
+      return () => {
+        showSub.remove();
+        hideSub.remove();
+      };
+    }, []);
+
+    const availableHeight = windowHeight - keyboardHeight - inputBottomY - Spacing.md;
+    const suggestionsMaxHeight = Math.max(60, availableHeight);
+
     return (
-      <View ref={containerRef} style={{ position: "relative" }}>
+      <View
+        ref={containerRef}
+        style={{ position: "relative" }}
+        onLayout={measureInputBottom}
+      >
         {/* Debug Message */}
         {debugMessage && (
           <View
@@ -212,6 +245,7 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
             returnKeyType={returnKeyType}
             onSubmitEditing={onSubmitEditing}
             onFocus={() => {
+              measureInputBottom();
               if (onFocus) onFocus();
               if (value.length >= 3 && suggestions.length > 0) {
                 setShowSuggestions(true);
@@ -248,7 +282,7 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
               borderWidth: 1,
               borderColor: Colors.neutralGray,
               zIndex: 1000,
-              maxHeight: 250,
+              maxHeight: suggestionsMaxHeight,
               shadowColor: Colors.darkCharcoal,
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.1,
@@ -256,7 +290,7 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
               elevation: 3,
             }}
           >
-            <ScrollView scrollEnabled={suggestions.length > 4}>
+            <ScrollView scrollEnabled={suggestions.length > 4} keyboardShouldPersistTaps="always">
               {suggestions.map((suggestion, index) => (
                 <Pressable
                   key={suggestion.place_id}
