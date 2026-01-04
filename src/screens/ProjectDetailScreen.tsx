@@ -752,14 +752,14 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               {/* Left Column - Items List (Gray) */}
               <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
                 {/* Section Title */}
-                <View style={{ marginBottom: Spacing.xs }}>
+                <View style={{ height: 18, marginBottom: Spacing.xs }}>
                   <Text style={{ fontSize: 13, color: Colors.mediumGray }}>Rooms & Structures</Text>
                 </View>
 
                 {/* Rooms */}
                 {project.rooms.map((room) => (
-                  <View key={room.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="bed-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                  <View key={room.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
+                    <Ionicons name="bed-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {room.name || "Unnamed Room"}
                     </Text>
@@ -768,9 +768,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Staircases */}
                 {project.staircases?.map((staircase, idx) => (
-                  <View key={staircase.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                  <View key={staircase.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
                     <View style={{ marginRight: Spacing.xs }}>
-                      <StaircaseIcon size={16} color={Colors.mediumGray} />
+                      <StaircaseIcon size={14} color={Colors.mediumGray} />
                     </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {staircase.name || `Staircase ${idx + 1}`}
@@ -780,9 +780,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Fireplaces */}
                 {project.fireplaces?.map((fireplace, idx) => (
-                  <View key={fireplace.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                  <View key={fireplace.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
                     <View style={{ marginRight: Spacing.xs }}>
-                      <FireplaceIcon size={16} color={Colors.mediumGray} />
+                      <FireplaceIcon size={14} color={Colors.mediumGray} />
                     </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {fireplace.name || `Fireplace ${idx + 1}`}
@@ -792,9 +792,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Built-Ins */}
                 {project.builtIns?.map((builtIn, idx) => (
-                  <View key={builtIn.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                  <View key={builtIn.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
                     <View style={{ marginRight: Spacing.xs }}>
-                      <BuiltInIcon size={16} color={Colors.mediumGray} />
+                      <BuiltInIcon size={14} color={Colors.mediumGray} />
                     </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {builtIn.name || "Unnamed Built-In"}
@@ -804,9 +804,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Brick Walls */}
                 {project.brickWalls?.map((brickWall, idx) => (
-                  <View key={brickWall.id} style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                  <View key={brickWall.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
                     <View style={{ marginRight: Spacing.xs }}>
-                      <BrickWallIcon size={16} color={Colors.mediumGray} />
+                      <BrickWallIcon size={14} color={Colors.mediumGray} />
                     </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {brickWall.name || "Unnamed Brick Wall"}
@@ -816,8 +816,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Furniture Moving */}
                 {project.includeFurnitureMoving && (
-                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="cube-outline" size={16} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                  <View style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
+                    <Ionicons name="cube-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       Furniture Moving
                     </Text>
@@ -835,7 +835,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               {/* Right Section - Pricing (Blue) with Labor and Mat columns */}
               <View style={{ flex: 1, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
                 {/* Header Row */}
-                <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                <View style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                   <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
                   <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                 </View>
@@ -844,7 +844,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.rooms.map((room) => {
                   const roomPricing = displaySummary.itemizedPrices?.find(p => p.id === room.id);
                   return (
-                    <View key={room.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <View key={room.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(roomPricing?.laborCost || 0)}
                       </Text>
@@ -859,7 +859,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.staircases?.map((staircase) => {
                   const staircasePricing = displaySummary.itemizedPrices?.find(p => p.id === staircase.id);
                   return (
-                    <View key={staircase.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <View key={staircase.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(staircasePricing?.laborCost || 0)}
                       </Text>
@@ -874,7 +874,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.fireplaces?.map((fireplace) => {
                   const fireplacePricing = displaySummary.itemizedPrices?.find(p => p.id === fireplace.id);
                   return (
-                    <View key={fireplace.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <View key={fireplace.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(fireplacePricing?.laborCost || 0)}
                       </Text>
@@ -889,7 +889,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.builtIns?.map((builtIn) => {
                   const builtInPricing = displaySummary.itemizedPrices?.find(p => p.id === builtIn.id);
                   return (
-                    <View key={builtIn.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <View key={builtIn.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(builtInPricing?.laborCost || 0)}
                       </Text>
@@ -904,7 +904,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.brickWalls?.map((brickWall) => {
                   const brickWallPricing = displaySummary.itemizedPrices?.find(p => p.id === brickWall.id);
                   return (
-                    <View key={brickWall.id} style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <View key={brickWall.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(brickWallPricing?.laborCost || 0)}
                       </Text>
@@ -919,7 +919,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {project.includeFurnitureMoving && (() => {
                   const furnitureMovingPricing = displaySummary.itemizedPrices?.find(p => p.id === "furniture-moving");
                   return (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(furnitureMovingPricing?.laborCost || 0)}
                       </Text>
@@ -932,7 +932,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
                 {/* Empty state */}
                 {totalItems === 0 && (
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
                     <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
                   </View>
