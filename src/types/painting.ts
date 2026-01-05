@@ -140,12 +140,17 @@ export interface BrickWall {
   notes?: string;
 }
 
+export interface IrregularRoomWall {
+  id: string;
+  width: number; // wall length in feet
+  height: number; // wall height in feet
+}
+
 export interface IrregularRoom {
   id: string;
   name: string;
-  // Area dimensions (width × height = wall area)
-  width: number; // in feet
-  height: number; // in feet - wall height
+  // Multiple walls for irregular/non-rectangular rooms
+  walls: IrregularRoomWall[];
   // Cathedral ceiling
   ceilingType: "flat" | "cathedral";
   cathedralPeakHeight?: number;

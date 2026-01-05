@@ -28,10 +28,16 @@ import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { NumericInput } from "../components/NumericInput";
 import { FormInput } from "../components/FormInput";
-import { RoomPhoto } from "../types/painting";
+import { RoomPhoto, IrregularRoomWall } from "../types/painting";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = NativeStackScreenProps<RootStackParamList, "IrregularRoomEditor">;
+
+interface WallState {
+  id: string;
+  width: string;
+  height: string;
+}
 
 export default function IrregularRoomEditorScreen({ route, navigation }: Props) {
   const { projectId, irregularRoomId } = route.params;
@@ -49,11 +55,24 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const unitSystem = useCalculationSettings((s) => s.unitSystem);
   const testMode = useAppSettings((s) => s.testMode);
 
+  // Default wall height from project
+  const defaultHeight = project?.floorHeights?.[0] || 8;
+
   // Form state
   const [name, setName] = useState(!isNew && irregularRoom?.name ? irregularRoom.name : "");
-  const [width, setWidth] = useState(!isNew && irregularRoom?.width && irregularRoom.width > 0 ? formatMeasurementValue(irregularRoom.width, "length", unitSystem, 2) : "");
-  const [height, setHeight] = useState(!isNew && irregularRoom?.height && irregularRoom.height > 0 ? formatMeasurementValue(irregularRoom.height, "length", unitSystem, 2) : "");
-  const [area, setArea] = useState("");
+
+  // Walls state - array of walls with width and height
+  const [walls, setWalls] = useState<WallState[]>(() => {
+    if (!isNew && irregularRoom?.walls && irregularRoom.walls.length > 0) {
+      return irregularRoom.walls.map(w => ({
+        id: w.id,
+        width: w.width > 0 ? formatMeasurementValue(w.width, "length", unitSystem, 2) : "",
+        height: w.height > 0 ? formatMeasurementValue(w.height, "length", unitSystem, 2) : "",
+      }));
+    }
+    // Start with one empty wall
+    return [{ id: uuidv4(), width: "", height: formatMeasurementValue(defaultHeight, "length", unitSystem, 2) }];
+  });
 
   // Cathedral ceiling
   const [isCathedral, setIsCathedral] = useState(!isNew && irregularRoom?.ceilingType === "cathedral" ? true : false);
@@ -90,22 +109,17 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   // Refs
   const nameRef = useRef<TextInput>(null);
-  const widthRef = useRef<TextInput>(null);
-  const heightRef = useRef<TextInput>(null);
-  const areaRef = useRef<TextInput>(null);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
   const nameAccessoryID = useId();
 
-  // Calculate area when width/height change
-  useEffect(() => {
-    const w = parseFloat(width);
-    const h = parseFloat(height);
-    if (!isNaN(w) && w > 0 && !isNaN(h) && h > 0) {
-      setArea((w * h).toFixed(1));
-    }
-  }, [width, height]);
+  // Calculate total area from all walls
+  const totalArea = walls.reduce((sum, wall) => {
+    const w = parseFloat(wall.width) || 0;
+    const h = parseFloat(wall.height) || 0;
+    return sum + (w * h);
+  }, 0);
 
   // Update header title
   useEffect(() => {
@@ -115,15 +129,44 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     });
   }, [name, navigation]);
 
+  // Wall management functions
+  const handleAddWall = () => {
+    setWalls([...walls, {
+      id: uuidv4(),
+      width: "",
+      height: formatMeasurementValue(defaultHeight, "length", unitSystem, 2)
+    }]);
+  };
+
+  const handleRemoveWall = (wallId: string) => {
+    if (walls.length <= 1) {
+      Alert.alert("Cannot Remove", "You need at least one wall.");
+      return;
+    }
+    setWalls(walls.filter(w => w.id !== wallId));
+  };
+
+  const handleWallWidthChange = (wallId: string, value: string) => {
+    setWalls(walls.map(w => w.id === wallId ? { ...w, width: value } : w));
+  };
+
+  const handleWallHeightChange = (wallId: string, value: string) => {
+    setWalls(walls.map(w => w.id === wallId ? { ...w, height: value } : w));
+  };
+
   const handleSave = useCallback(() => {
-    const widthValue = parseDisplayValue(width, "length", unitSystem);
-    const heightValue = parseDisplayValue(height, "length", unitSystem);
+    // Convert walls to the proper format
+    const wallsData: IrregularRoomWall[] = walls.map(w => ({
+      id: w.id,
+      width: parseDisplayValue(w.width, "length", unitSystem),
+      height: parseDisplayValue(w.height, "length", unitSystem),
+    }));
+
     const cathedralPeakValue = isCathedral ? parseDisplayValue(cathedralPeakHeight, "length", unitSystem) : undefined;
 
     const data = {
       name,
-      width: widthValue,
-      height: heightValue,
+      walls: wallsData,
       ceilingType: isCathedral ? "cathedral" as const : "flat" as const,
       cathedralPeakHeight: cathedralPeakValue,
       windowCount: parseInt(windowCount) || 0,
@@ -155,7 +198,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
     navigation.goBack();
   }, [
-    name, width, height, isCathedral, cathedralPeakHeight,
+    name, walls, isCathedral, cathedralPeakHeight,
     windowCount, doorCount, hasCloset, singleDoorClosets, doubleDoorClosets,
     includeClosetInteriorInQuote, paintWalls, paintCeilings, paintWindowFrames,
     paintDoorFrames, paintWindows, paintDoors, paintJambs, paintBaseboard,
@@ -286,7 +329,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     placeholder="Enter room name"
                     placeholderTextColor={Colors.mediumGray}
                     returnKeyType="next"
-                    onSubmitEditing={() => widthRef.current?.focus()}
                     blurOnSubmit={false}
                     style={TextInputStyles.base}
                     inputAccessoryViewID={Platform.OS === "ios" ? `irregularRoomName-${nameAccessoryID}` : undefined}
@@ -294,74 +336,158 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 </View>
               </View>
 
-              {/* Room Dimensions: Width × Height = Area */}
+              {/* Walls Section */}
               <View style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Wall Area ({unitSystem === "metric" ? "m / m²" : "ft / sq ft"})
-                </Text>
-                {/* Labels row */}
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>Width</Text>
-                  </View>
-                  <Text style={{ fontSize: 18, color: "transparent" }}>×</Text>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>Height</Text>
-                  </View>
-                  <Text style={{ fontSize: 18, color: "transparent" }}>=</Text>
-                  <View style={{ flex: 1.2 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>Area</Text>
-                  </View>
-                </View>
-                {/* Input fields row */}
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                  {/* Width */}
-                  <View style={{ flex: 1 }}>
-                    <FormInput
-                      ref={widthRef}
-                      previousFieldRef={nameRef}
-                      label=""
-                      value={width}
-                      onChangeText={setWidth}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      nextFieldRef={heightRef}
-                      textAlign="right"
-                      className="mb-0"
-                    />
-                  </View>
-                  <Text style={{ fontSize: 18, color: Colors.mediumGray, fontWeight: "600" }}>×</Text>
-                  {/* Height */}
-                  <View style={{ flex: 1 }}>
-                    <FormInput
-                      ref={heightRef}
-                      previousFieldRef={widthRef}
-                      label=""
-                      value={height}
-                      onChangeText={setHeight}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
-                      textAlign="right"
-                      className="mb-0"
-                    />
-                  </View>
-                  <Text style={{ fontSize: 18, color: Colors.mediumGray, fontWeight: "600" }}>=</Text>
-                  {/* Area (read-only) */}
-                  <View style={{ flex: 1.2 }}>
-                    <View style={{
-                      backgroundColor: Colors.neutralGray,
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Walls ({unitSystem === "metric" ? "m" : "ft"})
+                  </Text>
+                  <Pressable
+                    onPress={handleAddWall}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      paddingHorizontal: Spacing.sm,
+                      paddingVertical: Spacing.xs,
                       borderRadius: BorderRadius.default,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      paddingHorizontal: Spacing.md,
-                      paddingVertical: Spacing.sm + 4,
-                    }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        {area || "0"}
-                      </Text>
-                    </View>
+                    }}
+                  >
+                    <Ionicons name="add" size={16} color={Colors.primaryBlue} />
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.primaryBlue, fontWeight: "600", marginLeft: 2 }}>
+                      Add Wall
+                    </Text>
+                  </Pressable>
+                </View>
+
+                {/* Column Headers */}
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                  <View style={{ width: 30 }} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>
+                      Length
+                    </Text>
                   </View>
+                  <Text style={{ fontSize: 14, color: "transparent" }}>×</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>
+                      Height
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 14, color: "transparent" }}>=</Text>
+                  <View style={{ width: 70 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" }}>
+                      Area
+                    </Text>
+                  </View>
+                  <View style={{ width: 36 }} />
+                </View>
+
+                {/* Wall Rows */}
+                {walls.map((wall, index) => {
+                  const wallArea = (parseFloat(wall.width) || 0) * (parseFloat(wall.height) || 0);
+                  return (
+                    <View key={wall.id} style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: Spacing.sm }}>
+                      {/* Wall number */}
+                      <View style={{ width: 30 }}>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          #{index + 1}
+                        </Text>
+                      </View>
+
+                      {/* Width/Length */}
+                      <View style={{ flex: 1 }}>
+                        <TextInput
+                          value={wall.width}
+                          onChangeText={(val) => handleWallWidthChange(wall.id, val)}
+                          keyboardType="numeric"
+                          placeholder="0"
+                          placeholderTextColor={Colors.mediumGray}
+                          style={{
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            paddingHorizontal: Spacing.md,
+                            paddingVertical: Spacing.sm,
+                            fontSize: Typography.body.fontSize,
+                            color: Colors.darkCharcoal,
+                            textAlign: "right",
+                          }}
+                        />
+                      </View>
+
+                      <Text style={{ fontSize: 14, color: Colors.mediumGray, fontWeight: "600" }}>×</Text>
+
+                      {/* Height */}
+                      <View style={{ flex: 1 }}>
+                        <TextInput
+                          value={wall.height}
+                          onChangeText={(val) => handleWallHeightChange(wall.id, val)}
+                          keyboardType="numeric"
+                          placeholder="0"
+                          placeholderTextColor={Colors.mediumGray}
+                          style={{
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            paddingHorizontal: Spacing.md,
+                            paddingVertical: Spacing.sm,
+                            fontSize: Typography.body.fontSize,
+                            color: Colors.darkCharcoal,
+                            textAlign: "right",
+                          }}
+                        />
+                      </View>
+
+                      <Text style={{ fontSize: 14, color: Colors.mediumGray, fontWeight: "600" }}>=</Text>
+
+                      {/* Area (calculated) */}
+                      <View style={{ width: 70 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          {wallArea > 0 ? wallArea.toFixed(0) : "0"}
+                        </Text>
+                      </View>
+
+                      {/* Delete button */}
+                      <Pressable
+                        onPress={() => handleRemoveWall(wall.id)}
+                        style={{
+                          width: 36,
+                          height: 36,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: walls.length > 1 ? Colors.error + "15" : Colors.neutralGray,
+                          borderRadius: BorderRadius.default,
+                        }}
+                      >
+                        <Ionicons
+                          name="trash-outline"
+                          size={18}
+                          color={walls.length > 1 ? Colors.error : Colors.mediumGray}
+                        />
+                      </Pressable>
+                    </View>
+                  );
+                })}
+
+                {/* Total Area */}
+                <View style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  paddingTop: Spacing.sm,
+                  borderTopWidth: 1,
+                  borderTopColor: Colors.neutralGray,
+                  marginTop: Spacing.xs,
+                }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600", color: Colors.darkCharcoal, marginRight: Spacing.sm }}>
+                    Total Area:
+                  </Text>
+                  <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "700", color: Colors.primaryBlue }}>
+                    {totalArea.toFixed(0)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                  </Text>
                 </View>
               </View>
 
@@ -376,7 +502,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 <View style={{ marginTop: Spacing.md }}>
                   <FormInput
                     ref={cathedralPeakHeightRef}
-                    previousFieldRef={heightRef}
                     label={`Peak Height (${unitSystem === "metric" ? "m" : "ft"})`}
                     value={cathedralPeakHeight}
                     onChangeText={setCathedralPeakHeight}
@@ -706,7 +831,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               }}
             >
               <Pressable
-                onPress={() => widthRef.current?.focus()}
+                onPress={() => Keyboard.dismiss()}
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
@@ -721,7 +846,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     fontWeight: "600",
                   }}
                 >
-                  Next
+                  Done
                 </Text>
               </Pressable>
             </View>

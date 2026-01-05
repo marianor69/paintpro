@@ -784,8 +784,7 @@ export const useProjectStore = create<ProjectStore>()(
         const newIrregularRoom: IrregularRoom = {
           id: irregularRoomId,
           name: "",
-          width: 0,
-          height: project?.floorHeights?.[0] || 8,
+          walls: [],
           ceilingType: "flat",
           windowCount: 0,
           doorCount: 0,
