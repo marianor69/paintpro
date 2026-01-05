@@ -777,7 +777,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 placeholder="Enter room name"
                 placeholderTextColor={Colors.mediumGray}
                 returnKeyType="next"
-                onSubmitEditing={() => manualAreaRef.current?.focus()}
+                onSubmitEditing={() => lengthRef.current?.focus()}
                 blurOnSubmit={false}
                 style={TextInputStyles.base}
                 inputAccessoryViewID={Platform.OS === "ios" ? `roomName-${nameAccessoryID}` : undefined}
@@ -787,57 +787,88 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {/* Manual Area - First option if user knows the area */}
+          {/* Room Dimensions: Length × Width = Area */}
           <View style={{ marginBottom: Spacing.md }}>
-            <FormInput
-              ref={manualAreaRef}
-              previousFieldRef={nameRef}
-              label={`Area (${unitSystem === 'metric' ? 'm²' : 'sq ft'})`}
-              value={manualArea}
-              onChangeText={setManualArea}
-              keyboardType="numeric"
-              placeholder="0"
-              nextFieldRef={lengthRef}
-              accessibilityLabel="Room area input"
-              className="mb-0"
-            />
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-              Enter area directly, or use Length × Width below
+            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              Room Size ({unitSystem === 'metric' ? 'm / m²' : 'ft / sq ft'})
             </Text>
-          </View>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+              {/* Length */}
+              <View style={{ flex: 1 }}>
+                <FormInput
+                  ref={lengthRef}
+                  previousFieldRef={nameRef}
+                  label=""
+                  value={length}
+                  onChangeText={(val) => {
+                    setLength(val);
+                    // Auto-calculate area when both L and W have values
+                    const l = parseFloat(val);
+                    const w = parseFloat(width);
+                    if (!isNaN(l) && l > 0 && !isNaN(w) && w > 0) {
+                      setManualArea((l * w).toFixed(1));
+                    }
+                  }}
+                  keyboardType="numeric"
+                  placeholder="L"
+                  nextFieldRef={widthRef}
+                  accessibilityLabel="Room length"
+                  className="mb-0"
+                />
+              </View>
 
-          {/* Row: Length & Width - Alternative to manual area */}
-          <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-            {/* Length */}
-            <View style={{ flex: 1 }}>
-              <FormInput
-                ref={lengthRef}
-                previousFieldRef={manualAreaRef}
-                label={`Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={length}
-                onChangeText={setLength}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={widthRef}
-                accessibilityLabel="Room length input"
-                className="mb-0"
-              />
-            </View>
+              {/* × symbol */}
+              <Text style={{ fontSize: 18, color: Colors.mediumGray, fontWeight: "600" }}>×</Text>
 
-            {/* Width */}
-            <View style={{ flex: 1 }}>
-              <FormInput
-                ref={widthRef}
-                previousFieldRef={lengthRef}
-                label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                value={width}
-                onChangeText={setWidth}
-                keyboardType="numeric"
-                placeholder="0"
-                nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
-                accessibilityLabel="Room width input"
-                className="mb-0"
-              />
+              {/* Width */}
+              <View style={{ flex: 1 }}>
+                <FormInput
+                  ref={widthRef}
+                  previousFieldRef={lengthRef}
+                  label=""
+                  value={width}
+                  onChangeText={(val) => {
+                    setWidth(val);
+                    // Auto-calculate area when both L and W have values
+                    const l = parseFloat(length);
+                    const w = parseFloat(val);
+                    if (!isNaN(l) && l > 0 && !isNaN(w) && w > 0) {
+                      setManualArea((l * w).toFixed(1));
+                    }
+                  }}
+                  keyboardType="numeric"
+                  placeholder="W"
+                  nextFieldRef={manualAreaRef}
+                  accessibilityLabel="Room width"
+                  className="mb-0"
+                />
+              </View>
+
+              {/* = symbol */}
+              <Text style={{ fontSize: 18, color: Colors.mediumGray, fontWeight: "600" }}>=</Text>
+
+              {/* Area */}
+              <View style={{ flex: 1.2 }}>
+                <FormInput
+                  ref={manualAreaRef}
+                  previousFieldRef={widthRef}
+                  label=""
+                  value={manualArea}
+                  onChangeText={(val) => {
+                    setManualArea(val);
+                    // If user enters area directly, clear L and W
+                    if (val.trim() && (!length.trim() || !width.trim())) {
+                      setLength("");
+                      setWidth("");
+                    }
+                  }}
+                  keyboardType="numeric"
+                  placeholder="Area"
+                  nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
+                  accessibilityLabel="Room area"
+                  className="mb-0"
+                />
+              </View>
             </View>
           </View>
 
@@ -852,7 +883,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View style={{ marginTop: Spacing.md }}>
               <FormInput
                 ref={cathedralPeakHeightRef}
-                previousFieldRef={widthRef}
+                previousFieldRef={manualAreaRef}
                 label={`Peak Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
                 value={cathedralPeakHeight}
                 onChangeText={setCathedralPeakHeight}
@@ -2049,7 +2080,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             }}
           >
             <Pressable
-              onPress={() => manualAreaRef.current?.focus()}
+              onPress={() => lengthRef.current?.focus()}
               style={{
                 backgroundColor: Colors.primaryBlue,
                 paddingHorizontal: Spacing.lg,
