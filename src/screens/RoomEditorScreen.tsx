@@ -792,6 +792,21 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
               Room Size ({unitSystem === 'metric' ? 'm / m²' : 'ft / sq ft'})
             </Text>
+            {/* Labels row */}
+            <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Length</Text>
+              </View>
+              <Text style={{ fontSize: 18, color: "transparent" }}>×</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Width</Text>
+              </View>
+              <Text style={{ fontSize: 18, color: "transparent" }}>=</Text>
+              <View style={{ flex: 1.2 }}>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>Area</Text>
+              </View>
+            </View>
+            {/* Input fields row */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
               {/* Length */}
               <View style={{ flex: 1 }}>
@@ -810,7 +825,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     }
                   }}
                   keyboardType="numeric"
-                  placeholder="L"
+                  placeholder="0"
                   nextFieldRef={widthRef}
                   accessibilityLabel="Room length"
                   className="mb-0"
@@ -837,7 +852,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     }
                   }}
                   keyboardType="numeric"
-                  placeholder="W"
+                  placeholder="0"
                   nextFieldRef={manualAreaRef}
                   accessibilityLabel="Room width"
                   className="mb-0"
@@ -863,7 +878,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     }
                   }}
                   keyboardType="numeric"
-                  placeholder="Area"
+                  placeholder="0"
                   nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
                   accessibilityLabel="Room area"
                   className="mb-0"
