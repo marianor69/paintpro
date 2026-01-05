@@ -14,6 +14,7 @@ import {
   InputAccessoryView,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { usePreventRemove } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProjectStore } from "../state/projectStore";
 import { usePricingStore } from "../state/pricingStore";
@@ -28,6 +29,7 @@ import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { NumericInput } from "../components/NumericInput";
 import { FormInput } from "../components/FormInput";
+import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto, IrregularRoomWall } from "../types/painting";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -107,6 +109,14 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [photoNote, setPhotoNote] = useState("");
 
+  // Unsaved changes tracking
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const isKeyboardVisibleRef = useRef(false);
+  const pendingSavePromptRef = useRef(false);
+  const preventedNavigationActionRef = useRef<any>(null);
+
   // Refs
   const nameRef = useRef<TextInput>(null);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
@@ -120,6 +130,96 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     const h = parseFloat(wall.height) || 0;
     return sum + (w * h);
   }, 0);
+
+  // Blur focused input helper
+  const blurFocusedInput = useCallback(() => {
+    const focusedInput = TextInput.State?.currentlyFocusedInput?.();
+    if (focusedInput && "blur" in focusedInput) {
+      (focusedInput as { blur?: () => void }).blur?.();
+      return;
+    }
+    const focusedField = TextInput.State?.currentlyFocusedField?.();
+    if (focusedField != null && TextInput.State?.blurTextInput) {
+      TextInput.State.blurTextInput(focusedField);
+    }
+  }, []);
+
+  // Track unsaved changes
+  useEffect(() => {
+    if (isNew) {
+      // For new: changes are when user enters any data
+      const hasChanges =
+        name !== "" ||
+        walls.some(w => w.width !== "" || w.height !== formatMeasurementValue(defaultHeight, "length", unitSystem, 2)) ||
+        isCathedral ||
+        cathedralPeakHeight !== "" ||
+        windowCount !== "" ||
+        doorCount !== "" ||
+        hasCloset ||
+        notes !== "" ||
+        photos.length > 0;
+      setHasUnsavedChanges(hasChanges);
+    } else {
+      // For existing: changes when values differ from stored data
+      if (!irregularRoom) return;
+      const hasChanges =
+        name !== (irregularRoom.name || "") ||
+        JSON.stringify(walls.map(w => ({ width: w.width, height: w.height }))) !==
+        JSON.stringify(irregularRoom.walls.map(w => ({
+          width: w.width > 0 ? formatMeasurementValue(w.width, "length", unitSystem, 2) : "",
+          height: w.height > 0 ? formatMeasurementValue(w.height, "length", unitSystem, 2) : ""
+        }))) ||
+        isCathedral !== (irregularRoom.ceilingType === "cathedral") ||
+        notes !== (irregularRoom.notes || "") ||
+        photos.length !== (irregularRoom.photos?.length || 0);
+      setHasUnsavedChanges(hasChanges);
+    }
+  }, [isNew, irregularRoom, name, walls, isCathedral, cathedralPeakHeight, windowCount, doorCount, hasCloset, notes, photos, unitSystem, defaultHeight]);
+
+  // Keyboard listeners
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      isKeyboardVisibleRef.current = true;
+    });
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      isKeyboardVisibleRef.current = false;
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  // Gesture listener - blur inputs on back swipe
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("gestureStart", () => {
+      if (isKeyboardVisibleRef.current) {
+        blurFocusedInput();
+        Keyboard.dismiss();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, blurFocusedInput]);
+
+  // Prevent navigation when there are unsaved changes
+  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
+    if (!isSaving) {
+      preventedNavigationActionRef.current = data.action;
+
+      if (isKeyboardVisibleRef.current) {
+        pendingSavePromptRef.current = true;
+        Keyboard.dismiss();
+      } else {
+        setShowSavePrompt(true);
+      }
+    }
+  });
 
   // Update header title
   useEffect(() => {
@@ -155,6 +255,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   };
 
   const handleSave = useCallback(() => {
+    setIsSaving(true);
+
     // Convert walls to the proper format
     const wallsData: IrregularRoomWall[] = walls.map(w => ({
       id: w.id,
@@ -196,6 +298,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       updateIrregularRoom(projectId, irregularRoomId!, data);
     }
 
+    setHasUnsavedChanges(false);
     navigation.goBack();
   }, [
     name, walls, isCathedral, cathedralPeakHeight,
@@ -281,6 +384,23 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     setSelectedPhotoIndex(null);
     setPhotoNote("");
   };
+
+  // Save prompt handlers
+  const handleSaveFromPrompt = useCallback(() => {
+    setShowSavePrompt(false);
+    handleSave();
+  }, [handleSave]);
+
+  const handleDiscardFromPrompt = useCallback(() => {
+    setShowSavePrompt(false);
+    setHasUnsavedChanges(false);
+
+    // Dispatch the prevented navigation action
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+    }
+  }, [navigation]);
 
   if (!isNew && !irregularRoom) {
     return (
@@ -853,6 +973,14 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           </InputAccessoryView>
         )}
       </KeyboardAvoidingView>
+
+      {/* Save Prompt Modal */}
+      <SavePromptModal
+        visible={showSavePrompt}
+        onSave={handleSaveFromPrompt}
+        onDiscard={handleDiscardFromPrompt}
+        onCancel={() => setShowSavePrompt(false)}
+      />
     </SafeAreaView>
   );
 }
