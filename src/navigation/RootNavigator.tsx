@@ -235,7 +235,7 @@ export default function RootNavigator() {
         <Stack.Screen
           name="BrickWallEditor"
           component={BrickWallEditorScreen}
-          options={{ title: "Brick Wall" }}
+          options={{ title: "Brick/Panel" }}
         />
         <Stack.Screen
           name="PricingSettings"

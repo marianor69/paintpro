@@ -809,7 +809,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <BrickWallIcon size={14} color={Colors.mediumGray} />
                     </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                      {brickWall.name || "Unnamed Brick Wall"}
+                      {brickWall.name || "Unnamed Brick/Panel"}
                     </Text>
                   </View>
                 ))}
@@ -1280,13 +1280,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                          {brickWall.name || "Unnamed Brick Wall"}
+                          {brickWall.name || "Unnamed Brick/Panel"}
                         </Text>
                       </View>
                     </Pressable>
                     <Pressable
                       onPress={() => {
-                        Alert.alert("Delete Brick Wall", `Are you sure you want to delete "${brickWall.name || "Unnamed Brick Wall"}"?`, [
+                        Alert.alert("Delete Brick/Panel", `Are you sure you want to delete "${brickWall.name || "Unnamed Brick/Panel"}"?`, [
                           { text: "Cancel", style: "cancel" },
                           {
                             text: "Delete",
@@ -1555,7 +1555,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 <BrickWallIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                Brick Wall
+                Brick/Panel
               </Text>
             </Pressable>
 

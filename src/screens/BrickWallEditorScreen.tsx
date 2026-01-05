@@ -278,7 +278,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
   if (!isNewBrickWall && !brickWall) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: Colors.backgroundWarmGray }}>
-        <Text style={{ fontSize: Typography.h3.fontSize, color: Colors.mediumGray }}>Brick Wall not found</Text>
+        <Text style={{ fontSize: Typography.h3.fontSize, color: Colors.mediumGray }}>Brick/Panel not found</Text>
       </View>
     );
   }
@@ -316,7 +316,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                   label="Name/Location"
                   value={name}
                   onChangeText={setName}
-                  placeholder="e.g., Front Yard Brick Wall, Garden Wall"
+                  placeholder="e.g., Front Yard Brick, Garden Panel"
                   nextFieldRef={widthRef}
                   returnKeyType="next"
                   className="mb-0"
@@ -407,7 +407,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
             {/* Brick Wall Summary */}
             {calculations && (
               <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={Typography.h2}>Brick Wall Summary</Text>
+                <Text style={Typography.h2}>Brick/Panel Summary</Text>
 
                 <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                   {/* Gray section - breakdown list */}
@@ -470,7 +470,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               accessibilityHint="Save all changes to this brick wall"
             >
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Save Brick Wall
+                Save Brick/Panel
               </Text>
             </Pressable>
           </View>
