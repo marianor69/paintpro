@@ -37,6 +37,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const deleteFireplace = useProjectStore((s) => s.deleteFireplace);
   const deleteBuiltIn = useProjectStore((s) => s.deleteBuiltIn);
   const deleteBrickWall = useProjectStore((s) => s.deleteBrickWall);
+  const deleteIrregularRoom = useProjectStore((s) => s.deleteIrregularRoom);
   const setEstimateBuildComplete = useProjectStore((s) => s.setEstimateBuildComplete);
   const pricing = usePricingStore();
   const appSettings = useAppSettings();
@@ -152,6 +153,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const handleAddBrickWall = () => {
     // Don't create brick wall here - let BrickWallEditor create it on Save
     navigation.navigate("BrickWallEditor", { projectId });
+  };
+
+  const handleAddIrregularRoom = () => {
+    // Don't create irregular room here - let IrregularRoomEditor create it on Save
+    navigation.navigate("IrregularRoomEditor", { projectId });
   };
 
   // Room Details (Test Export) handler
@@ -814,6 +820,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 ))}
 
+                {/* Irregular Rooms */}
+                {project.irregularRooms?.map((irregularRoom, idx) => (
+                  <View key={irregularRoom.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
+                    <Ionicons name="shapes-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {irregularRoom.name || "Unnamed Irregular Room"}
+                    </Text>
+                  </View>
+                ))}
+
                 {/* Furniture Moving */}
                 {project.includeFurnitureMoving && (
                   <View style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
@@ -1305,6 +1321,65 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     </Pressable>
                   </View>
                 ))}
+
+                {/* Irregular Rooms */}
+                {project.irregularRooms?.map((irregularRoom, idx) => (
+                  <View
+                    key={irregularRoom.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("IrregularRoomEditor", {
+                          projectId,
+                          irregularRoomId: irregularRoom.id,
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <Ionicons name="shapes-outline" size={20} color={Colors.primaryBlue} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {irregularRoom.name || "Unnamed Irregular Room"}
+                        </Text>
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Irregular Room", `Are you sure you want to delete "${irregularRoom.name || "Unnamed Irregular Room"}"?`, [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteIrregularRoom(projectId, irregularRoom.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
               </View>
             )}
           </Card>
@@ -1556,6 +1631,29 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Brick/Panel
+              </Text>
+            </Pressable>
+
+            {/* Irregular Room Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddIrregularRoom();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.md,
+              }}
+            >
+              <View style={{ width: 24, marginRight: Spacing.md }}>
+                <Ionicons name="shapes-outline" size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Irregular Room
               </Text>
             </Pressable>
 

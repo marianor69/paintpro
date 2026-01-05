@@ -140,6 +140,49 @@ export interface BrickWall {
   notes?: string;
 }
 
+export interface IrregularRoom {
+  id: string;
+  name: string;
+  // Area dimensions (width × height = wall area)
+  width: number; // in feet
+  height: number; // in feet - wall height
+  // Cathedral ceiling
+  ceilingType: "flat" | "cathedral";
+  cathedralPeakHeight?: number;
+  // Openings & Closets
+  windowCount: number;
+  doorCount: number;
+  hasCloset: boolean;
+  singleDoorClosets?: number;
+  doubleDoorClosets?: number;
+  includeClosetInteriorInQuote?: boolean;
+  // Paint options
+  paintWalls?: boolean;
+  paintCeilings?: boolean;
+  paintWindowFrames?: boolean;
+  paintDoorFrames?: boolean;
+  paintWindows?: boolean;
+  paintDoors?: boolean;
+  paintJambs?: boolean;
+  paintBaseboard?: boolean;
+  hasCrownMoulding?: boolean;
+  hasAccentWall?: boolean;
+  // Coats
+  coatsWalls: number;
+  coatsCeiling: number;
+  coatsTrim: number;
+  coatsDoors: number;
+  // Floor selection
+  floor?: number;
+  // Photos and notes
+  photos?: RoomPhoto[];
+  notes?: string;
+  // Totals
+  laborTotal?: number;
+  materialsTotal?: number;
+  grandTotal?: number;
+}
+
 export interface ClientInfo {
   name: string;
   address: string;
@@ -237,6 +280,7 @@ export interface Project {
   fireplaces: Fireplace[];
   builtIns: BuiltIn[];
   brickWalls: BrickWall[];
+  irregularRooms: IrregularRoom[];
   createdAt: number;
   updatedAt: number;
   // Floor information

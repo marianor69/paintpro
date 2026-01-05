@@ -8,6 +8,7 @@ import {
   Fireplace,
   BuiltIn,
   BrickWall,
+  IrregularRoom,
   ClientInfo,
   QuoteBuilder,
   Quote,
@@ -124,6 +125,15 @@ interface ProjectStore {
     brickWall: Partial<BrickWall>
   ) => void;
   deleteBrickWall: (projectId: string, brickWallId: string) => void;
+
+  // Irregular Room operations
+  addIrregularRoom: (projectId: string) => string;
+  updateIrregularRoom: (
+    projectId: string,
+    irregularRoomId: string,
+    irregularRoom: Partial<IrregularRoom>
+  ) => void;
+  deleteIrregularRoom: (projectId: string, irregularRoomId: string) => void;
 }
 
 export const useProjectStore = create<ProjectStore>()(
@@ -144,6 +154,7 @@ export const useProjectStore = create<ProjectStore>()(
           fireplaces: [],
           builtIns: [],
           brickWalls: [],
+          irregularRooms: [],
           createdAt: now,
           updatedAt: now,
           floorCount: floorInfo?.floorCount || 1,
@@ -760,6 +771,77 @@ export const useProjectStore = create<ProjectStore>()(
               ? {
                   ...p,
                   brickWalls: p.brickWalls.filter((bw) => bw.id !== brickWallId),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      addIrregularRoom: (projectId) => {
+        const project = get().projects.find((p) => p.id === projectId);
+        const irregularRoomId = uuidv4();
+        const newIrregularRoom: IrregularRoom = {
+          id: irregularRoomId,
+          name: "",
+          width: 0,
+          height: project?.floorHeights?.[0] || 8,
+          ceilingType: "flat",
+          windowCount: 0,
+          doorCount: 0,
+          hasCloset: false,
+          paintWalls: project?.globalPaintDefaults?.paintWalls ?? true,
+          paintCeilings: project?.globalPaintDefaults?.paintCeilings ?? true,
+          paintWindowFrames: project?.globalPaintDefaults?.paintWindowFrames ?? true,
+          paintDoorFrames: project?.globalPaintDefaults?.paintDoorFrames ?? true,
+          paintWindows: project?.globalPaintDefaults?.paintWindows ?? false,
+          paintDoors: project?.globalPaintDefaults?.paintDoors ?? true,
+          paintJambs: project?.globalPaintDefaults?.paintDoorJambs ?? true,
+          paintBaseboard: project?.globalPaintDefaults?.paintBaseboards ?? true,
+          hasCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? true,
+          coatsWalls: project?.globalPaintDefaults?.defaultWallCoats ?? 2,
+          coatsCeiling: project?.globalPaintDefaults?.defaultCeilingCoats ?? 2,
+          coatsTrim: project?.globalPaintDefaults?.defaultTrimCoats ?? 2,
+          coatsDoors: project?.globalPaintDefaults?.defaultDoorCoats ?? 2,
+          floor: 1,
+        };
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  irregularRooms: [...(p.irregularRooms || []), newIrregularRoom],
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+        return irregularRoomId;
+      },
+
+      updateIrregularRoom: (projectId, irregularRoomId, irregularRoom) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  irregularRooms: (p.irregularRooms || []).map((ir) =>
+                    ir.id === irregularRoomId ? { ...ir, ...irregularRoom } : ir
+                  ),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      deleteIrregularRoom: (projectId, irregularRoomId) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  irregularRooms: (p.irregularRooms || []).filter((ir) => ir.id !== irregularRoomId),
                   updatedAt: Date.now(),
                 }
               : p
