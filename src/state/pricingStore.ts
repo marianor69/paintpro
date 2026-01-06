@@ -33,6 +33,9 @@ const defaultPricing: PricingSettings = {
   // Furniture moving fee (flat fee per project)
   furnitureMovingFee: 100,
 
+  // Nails/screws removal fee (flat fee per project)
+  nailsRemovalFee: 75,
+
   // Material prices - single gallons
   wallPaintPerGallon: 45,
   ceilingPaintPerGallon: 40,

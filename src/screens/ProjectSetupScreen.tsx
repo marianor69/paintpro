@@ -10,6 +10,7 @@ import {
   Image,
   Alert,
   InputAccessoryView,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -97,6 +98,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const updateGlobalPaintDefaults = useProjectStore((s) => s.updateGlobalPaintDefaults);
   const updateProjectCoverPhoto = useProjectStore((s) => s.updateProjectCoverPhoto);
   const updateFurnitureMoving = useProjectStore((s) => s.updateFurnitureMoving);
+  const updateNailsRemoval = useProjectStore((s) => s.updateNailsRemoval);
   const { unitSystem } = useAppSettings();
 
   // Client Info State (for new projects)
@@ -164,6 +166,12 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
   // Furniture Moving State
   const [includeFurnitureMoving, setIncludeFurnitureMoving] = useState(project?.includeFurnitureMoving ?? false);
+
+  // Nails/Screws Removal State
+  const [includeNailsRemoval, setIncludeNailsRemoval] = useState(project?.includeNailsRemoval ?? false);
+
+  // Validation modal state
+  const [showValidationModal, setShowValidationModal] = useState(false);
 
   // Collapsible sections state
   const [expandedSections, setExpandedSections] = useState({
@@ -354,6 +362,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       return;
     }
 
+    // Show validation modal asking if all questions were answered
+    setShowValidationModal(true);
+  };
+
+  const handleValidationYes = () => {
+    setShowValidationModal(false);
+
     // For new projects, create the project
     if (isNew) {
       const newProjectId = createProject(
@@ -376,8 +391,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         updateProjectCoverPhoto(newProjectId, coverPhotoUri);
       }
 
-      // Apply furniture moving setting
+      // Apply furniture moving and nails removal settings
       updateFurnitureMoving(newProjectId, includeFurnitureMoving);
+      updateNailsRemoval(newProjectId, includeNailsRemoval);
 
       navigation.replace("ProjectDetail", { projectId: newProjectId });
     } else {
@@ -394,9 +410,17 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           updateProjectCoverPhoto(project.id, coverPhotoUri);
         }
 
+        // Update nails removal setting
+        updateNailsRemoval(project.id, includeNailsRemoval);
+
         navigation.replace("ProjectDetail", { projectId: project.id });
       }
     }
+  };
+
+  const handleValidationNo = () => {
+    setShowValidationModal(false);
+    // Just close the modal, user stays on ProjectSetup screen
   };
 
   return (
@@ -772,7 +796,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
             >
               <View>
                 <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                  {t("screens.projectSetup.projectDefaults.title")}
+                  Initial Project Questions
                 </Text>
                 <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                   {t("screens.projectSetup.projectDefaults.subtitle")}
@@ -912,13 +936,13 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
             )}
           </Card>
 
-          {/* FURNITURE MOVING SECTION */}
+          {/* FURNITURE, PICTURES & NAILS REMOVAL SECTION */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Furniture Moving
+              Furniture, Pictures & Nails
             </Text>
             <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              Include furniture moving service in quote
+              Include additional services in quote
             </Text>
 
             <Toggle
@@ -930,6 +954,18 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               }}
               description="Adds furniture moving fee to labor cost"
             />
+
+            <View style={{ marginTop: Spacing.md }}>
+              <Toggle
+                label="Include Nails/Screws Removal"
+                value={includeNailsRemoval}
+                onValueChange={(value) => {
+                  setIncludeNailsRemoval(value);
+                  if (project) updateNailsRemoval(project.id, value);
+                }}
+                description="Adds nails and screws removal fee to labor cost"
+              />
+            </View>
           </Card>
 
           {/* Save & Continue Button */}
@@ -945,10 +981,10 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
               ...Shadows.card,
             }}
             accessibilityRole="button"
-            accessibilityLabel={t("screens.projectSetup.buttons.saveAndContinue")}
+            accessibilityLabel="Save and continue with step 2"
           >
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-              {t("screens.projectSetup.buttons.saveAndContinue")}
+              Save & Continue with step 2 - Build Estimate
             </Text>
           </Pressable>
       </ScrollView>
@@ -1140,6 +1176,101 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           </InputAccessoryView>
         </>
       )}
+
+      {/* Validation Modal - Ask if all questions were answered */}
+      <Modal
+        visible={showValidationModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowValidationModal(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: Spacing.lg,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: Colors.white,
+              borderRadius: BorderRadius.default,
+              padding: Spacing.lg,
+              width: "90%",
+              maxWidth: 380,
+              ...Shadows.card,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: Typography.h2.fontSize,
+                fontWeight: "700" as any,
+                color: Colors.darkCharcoal,
+                marginBottom: Spacing.md,
+              }}
+            >
+              All Questions Answered?
+            </Text>
+            <Text
+              style={{
+                fontSize: Typography.body.fontSize,
+                color: Colors.mediumGray,
+                marginBottom: Spacing.lg,
+              }}
+            >
+              Please confirm you've answered all the initial project questions before proceeding to Step 2 - Build Estimate.
+            </Text>
+
+            <View style={{ gap: Spacing.sm }}>
+              <Pressable
+                onPress={handleValidationYes}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  borderRadius: BorderRadius.default,
+                  paddingVertical: Spacing.md,
+                  alignItems: "center",
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Yes, continue to step 2"
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    fontWeight: "600" as any,
+                    color: Colors.white,
+                  }}
+                >
+                  Yes, Continue to Step 2
+                </Text>
+              </Pressable>
+
+              <Pressable
+                onPress={handleValidationNo}
+                style={{
+                  backgroundColor: Colors.neutralGray,
+                  borderRadius: BorderRadius.default,
+                  paddingVertical: Spacing.md,
+                  alignItems: "center",
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="No, go back and review"
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    fontWeight: "600" as any,
+                    color: Colors.darkCharcoal,
+                  }}
+                >
+                  No, Let Me Review
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

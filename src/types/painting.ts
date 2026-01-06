@@ -313,6 +313,8 @@ export interface Project {
   proposalSent?: boolean; // User successfully shared/sent the proposal (Step 3 complete)
   // Furniture moving
   includeFurnitureMoving?: boolean; // Whether to include furniture moving fee in quote (default: false)
+  // Nails/screws removal
+  includeNailsRemoval?: boolean; // Whether to include nails/screws removal fee in quote (default: false)
 }
 
 export interface PricingSettings {
@@ -342,6 +344,10 @@ export interface PricingSettings {
   // Furniture moving fee (flat fee per project)
   // Default: 100
   furnitureMovingFee: number;
+
+  // Nails/screws removal fee (flat fee per project)
+  // Default: 75
+  nailsRemovalFee: number;
 
   // Material prices - single gallons
   wallPaintPerGallon: number;

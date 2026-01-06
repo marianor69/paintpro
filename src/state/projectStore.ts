@@ -72,6 +72,7 @@ interface ProjectStore {
   updateGlobalPaintDefaults: (projectId: string, defaults: Partial<GlobalPaintDefaults>) => void;
   updateProjectCoverPhoto: (projectId: string, coverPhotoUri: string | undefined) => void;
   updateFurnitureMoving: (projectId: string, includeFurnitureMoving: boolean) => void;
+  updateNailsRemoval: (projectId: string, includeNailsRemoval: boolean) => void;
   setEstimateBuildComplete: (projectId: string, complete: boolean) => void;
   setProposalSent: (projectId: string, sent: boolean) => void;
   setCurrentProject: (projectId: string | null) => void;
@@ -292,6 +293,20 @@ export const useProjectStore = create<ProjectStore>()(
               ? {
                   ...p,
                   includeFurnitureMoving,
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      updateNailsRemoval: (projectId, includeNailsRemoval) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  includeNailsRemoval,
                   updatedAt: Date.now(),
                 }
               : p
