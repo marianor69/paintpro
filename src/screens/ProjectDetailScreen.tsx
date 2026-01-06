@@ -931,6 +931,21 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   );
                 })}
 
+                {/* Irregular Rooms */}
+                {project.irregularRooms?.map((irregularRoom) => {
+                  const irregularRoomPricing = displaySummary.itemizedPrices?.find(p => p.id === irregularRoom.id);
+                  return (
+                    <View key={irregularRoom.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(irregularRoomPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(irregularRoomPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
+
                 {/* Furniture Moving */}
                 {project.includeFurnitureMoving && (() => {
                   const furnitureMovingPricing = displaySummary.itemizedPrices?.find(p => p.id === "furniture-moving");
