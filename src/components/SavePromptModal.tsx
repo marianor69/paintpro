@@ -9,6 +9,7 @@ interface SavePromptModalProps {
   onCancel: () => void;
   title?: string;
   message?: string;
+  isLoading?: boolean;
 }
 
 export function SavePromptModal({
@@ -18,6 +19,7 @@ export function SavePromptModal({
   onCancel,
   title = "Save Changes?",
   message = "You have unsaved changes. Do you want to save them before leaving?",
+  isLoading = false,
 }: SavePromptModalProps) {
   return (
     <Modal
@@ -68,11 +70,13 @@ export function SavePromptModal({
         <View style={{ gap: Spacing.sm }}>
           <Pressable
             onPress={onSave}
+            disabled={isLoading}
             style={{
-              backgroundColor: Colors.primaryBlue,
+              backgroundColor: isLoading ? Colors.mediumGray : Colors.primaryBlue,
               borderRadius: BorderRadius.default,
               paddingVertical: Spacing.md,
               alignItems: "center",
+              opacity: isLoading ? 0.6 : 1,
             }}
             accessibilityRole="button"
             accessibilityLabel="Save changes and leave"
@@ -84,7 +88,7 @@ export function SavePromptModal({
                 color: Colors.white,
               }}
             >
-              Save Changes
+              {isLoading ? "Saving..." : "Save Changes"}
             </Text>
           </Pressable>
 

@@ -101,7 +101,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [paintCeilings, setPaintCeilings] = useState(!isNew ? irregularRoom?.paintCeilings ?? true : project?.globalPaintDefaults?.paintCeilings ?? true);
   const [paintWindowFrames, setPaintWindowFrames] = useState(!isNew ? irregularRoom?.paintWindowFrames ?? true : project?.globalPaintDefaults?.paintWindowFrames ?? true);
   const [paintDoorFrames, setPaintDoorFrames] = useState(!isNew ? irregularRoom?.paintDoorFrames ?? true : project?.globalPaintDefaults?.paintDoorFrames ?? true);
-  const [paintWindows, setPaintWindows] = useState(!isNew ? irregularRoom?.paintWindows ?? true : project?.globalPaintDefaults?.paintWindows ?? true);
+  const [paintWindows, setPaintWindows] = useState(!isNew ? irregularRoom?.paintWindows ?? false : project?.globalPaintDefaults?.paintWindows ?? false);
   const [paintDoors, setPaintDoors] = useState(!isNew ? irregularRoom?.paintDoors ?? true : project?.globalPaintDefaults?.paintDoors ?? true);
   const [paintJambs, setPaintJambs] = useState(!isNew ? irregularRoom?.paintJambs ?? true : project?.globalPaintDefaults?.paintDoorJambs ?? true);
   const [paintBaseboard, setPaintBaseboard] = useState(!isNew ? irregularRoom?.paintBaseboard ?? true : project?.globalPaintDefaults?.paintBaseboards ?? true);
@@ -536,7 +536,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   // Save prompt handlers
   const handleSaveFromPrompt = useCallback(() => {
-    // Don't close modal yet - let handleSave do it via navigation
+    // Close modal immediately to prevent double-clicks
+    setShowSavePrompt(false);
     handleSave();
   }, [handleSave]);
 
@@ -854,7 +855,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               </Text>
 
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md, alignItems: "flex-end" }}>
-                <View style={{ flex: 0.8 }}>
+                <View style={{ flex: 0.6 }}>
                   <NumericInput
                     label="Windows"
                     value={windowCount}
@@ -863,7 +864,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     max={20}
                   />
                 </View>
-                <View style={{ flex: 0.8 }}>
+                <View style={{ flex: 0.6 }}>
                   <NumericInput
                     label="Doors"
                     value={doorCount}
@@ -931,73 +932,206 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Card>
 
             {/* Room Summary Section */}
-            {totalArea > 0 && (
-              <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                  Room Summary
-                </Text>
+            {totalArea > 0 && (() => {
+              // Calculate pricing summary for irregular room
+              const wallsCount = walls.length;
+              const windowsCount = parseInt(windowCount) || 0;
+              const doorsCount = parseInt(doorCount) || 0;
 
-                {/* Grey Section - Details */}
-                <View style={{
-                  backgroundColor: Colors.backgroundWarmGray,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  marginBottom: Spacing.md
-                }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>Wall Count</Text>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                      {walls.length}
-                    </Text>
-                  </View>
-                  {parseInt(windowCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {windowCount}
-                      </Text>
-                    </View>
-                  )}
-                  {parseInt(doorCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {doorCount}
-                      </Text>
-                    </View>
-                  )}
-                  {hasCloset && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {(parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0)}
-                      </Text>
-                    </View>
-                  )}
-                </View>
+              // Calculate costs based on pricing settings
+              const wallArea = totalArea;
+              const wallLaborPerSqFt = safeNumber(pricing.wallLaborPerSqFt, 0);
+              const wallPaintPerGallon = safeNumber(pricing.wallPaintPerGallon, 0);
+              const wallPaintCoverage = 350; // standard coverage
 
-                {/* Blue Section - Total */}
-                <View style={{
-                  backgroundColor: Colors.primaryBlue + "15",
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  borderLeftWidth: 4,
-                  borderLeftColor: Colors.primaryBlue
-                }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    Total Wall Area
+              // Window costs
+              const windowLaborEach = safeNumber(pricing.windowLaborEach, 0);
+              const windowMaterialsEach = safeNumber(pricing.windowMaterialsEach, 0);
+
+              // Door costs
+              const doorLaborEach = safeNumber(pricing.doorLaborEach, 0);
+              const doorMaterialsEach = safeNumber(pricing.doorMaterialsEach, 0);
+
+              // Calculate individual component costs
+              const wallLaborCost = paintWalls ? wallArea * wallLaborPerSqFt : 0;
+              const wallMaterialsCost = paintWalls ? Math.ceil(wallArea / wallPaintCoverage) * wallPaintPerGallon : 0;
+
+              const windowLaborCost = paintWindows && paintWindowFrames ? windowsCount * windowLaborEach : 0;
+              const windowMaterialsCost = paintWindows && paintWindowFrames ? windowsCount * windowMaterialsEach : 0;
+
+              const doorLaborCost = paintDoors && paintDoorFrames ? doorsCount * doorLaborEach : 0;
+              const doorMaterialsCost = paintDoors && paintDoorFrames ? doorsCount * doorMaterialsEach : 0;
+
+              // Baseboard - estimate based on room perimeter (simplified)
+              const baseboardLaborPerLF = safeNumber(pricing.baseboardLaborPerLF, 0);
+              const baseboardMaterialsPerLF = safeNumber(pricing.baseboardMaterialsPerLF, 0);
+              // Estimate perimeter: for each wall, assume width is the dimension shown
+              const estimatedPerimeter = walls.reduce((sum, wall) => {
+                const w = parseFloat(wall.width) || 0;
+                return sum + w;
+              }, 0) * 2;
+
+              const baseboardLaborCost = paintBaseboard ? estimatedPerimeter * baseboardLaborPerLF : 0;
+              const baseboardMaterialsCost = paintBaseboard ? estimatedPerimeter * baseboardMaterialsPerLF : 0;
+
+              // Crown moulding
+              const crownLaborPerLF = safeNumber(pricing.crownMouldingLaborPerLF, 0);
+              const crownMaterialsPerLF = safeNumber(pricing.crownMouldingMaterialsPerLF, 0);
+              const crownLaborCost = hasCrownMoulding ? estimatedPerimeter * crownLaborPerLF : 0;
+              const crownMaterialsCost = hasCrownMoulding ? estimatedPerimeter * crownMaterialsPerLF : 0;
+
+              // Totals
+              const totalLaborCost = wallLaborCost + windowLaborCost + doorLaborCost + baseboardLaborCost + crownLaborCost;
+              const totalMaterialsCost = wallMaterialsCost + windowMaterialsCost + doorMaterialsCost + baseboardMaterialsCost + crownMaterialsCost;
+              const grandTotal = totalLaborCost + totalMaterialsCost;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                    Room Summary
                   </Text>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" }}>
-                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                      {totalArea.toFixed(0)}
-                    </Text>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
-                      {unitSystem === "metric" ? "m²" : "sq ft"}
-                    </Text>
+
+                  <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                    {/* Left Column - Measurements (Gray) */}
+                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                      {/* Empty row to align with blue section headers */}
+                      <View style={{ marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
+                      </View>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                          {Math.ceil(wallArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                        </Text>
+                      </View>
+                      {windowsCount > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {windowsCount}
+                          </Text>
+                        </View>
+                      )}
+                      {doorsCount > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {doorsCount}
+                          </Text>
+                        </View>
+                      )}
+                      {paintBaseboard && estimatedPerimeter > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Baseboard</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {Math.ceil(estimatedPerimeter)} {unitSystem === "metric" ? "m" : "ft"}
+                          </Text>
+                        </View>
+                      )}
+                      {hasCrownMoulding && estimatedPerimeter > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Crown Mld</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {Math.ceil(estimatedPerimeter)} {unitSystem === "metric" ? "m" : "ft"}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    {/* Right Column - Pricing (Blue) */}
+                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                      {/* Header Row */}
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                      </View>
+
+                      {/* Walls */}
+                      {paintWalls && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(wallLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(wallMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {/* Windows */}
+                      {windowsCount > 0 && paintWindows && paintWindowFrames && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(windowLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(windowMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {/* Doors */}
+                      {doorsCount > 0 && paintDoors && paintDoorFrames && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(doorLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(doorMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {/* Baseboard */}
+                      {paintBaseboard && estimatedPerimeter > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(baseboardLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(baseboardMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {/* Crown Moulding */}
+                      {hasCrownMoulding && estimatedPerimeter > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(crownLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(crownMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      {/* Subtotals */}
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(totalLaborCost)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(totalMaterialsCost)}
+                        </Text>
+                      </View>
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      {/* Total */}
+                      <View style={{ alignItems: "flex-end" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${grandTotal.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
-              </Card>
-            )}
+                </Card>
+              );
+            })()}
 
             {/* Notes */}
             <Card style={{ marginBottom: Spacing.md }}>
@@ -1320,6 +1454,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
         onSave={handleSaveFromPrompt}
         onDiscard={handleDiscardFromPrompt}
         onCancel={() => setShowSavePrompt(false)}
+        isLoading={isSaving}
       />
     </SafeAreaView>
   );
