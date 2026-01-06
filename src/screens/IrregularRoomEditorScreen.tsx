@@ -101,7 +101,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [paintCeilings, setPaintCeilings] = useState(!isNew ? irregularRoom?.paintCeilings ?? true : project?.globalPaintDefaults?.paintCeilings ?? true);
   const [paintWindowFrames, setPaintWindowFrames] = useState(!isNew ? irregularRoom?.paintWindowFrames ?? true : project?.globalPaintDefaults?.paintWindowFrames ?? true);
   const [paintDoorFrames, setPaintDoorFrames] = useState(!isNew ? irregularRoom?.paintDoorFrames ?? true : project?.globalPaintDefaults?.paintDoorFrames ?? true);
-  const [paintWindows, setPaintWindows] = useState(!isNew ? irregularRoom?.paintWindows ?? false : project?.globalPaintDefaults?.paintWindows ?? false);
+  const [paintWindows, setPaintWindows] = useState(!isNew ? irregularRoom?.paintWindows ?? true : project?.globalPaintDefaults?.paintWindows ?? true);
   const [paintDoors, setPaintDoors] = useState(!isNew ? irregularRoom?.paintDoors ?? true : project?.globalPaintDefaults?.paintDoors ?? true);
   const [paintJambs, setPaintJambs] = useState(!isNew ? irregularRoom?.paintJambs ?? true : project?.globalPaintDefaults?.paintDoorJambs ?? true);
   const [paintBaseboard, setPaintBaseboard] = useState(!isNew ? irregularRoom?.paintBaseboard ?? true : project?.globalPaintDefaults?.paintBaseboards ?? true);
@@ -536,7 +536,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   // Save prompt handlers
   const handleSaveFromPrompt = useCallback(() => {
-    setShowSavePrompt(false);
+    // Don't close modal yet - let handleSave do it via navigation
     handleSave();
   }, [handleSave]);
 
@@ -648,7 +648,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                   <Text style={{ fontSize: 14, color: "transparent" }}>=</Text>
                   <View style={{ width: 70 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.sm }}>
                       Area
                     </Text>
                   </View>
@@ -774,23 +774,31 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       </View>
 
                       {/* Delete button */}
-                      <Pressable
-                        onPress={() => handleRemoveWall(wall.id)}
-                        style={{
-                          width: 36,
-                          height: 36,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: walls.length > 1 ? Colors.error + "15" : Colors.neutralGray,
-                          borderRadius: BorderRadius.default,
-                        }}
-                      >
-                        <Ionicons
-                          name="trash-outline"
-                          size={18}
-                          color={walls.length > 1 ? Colors.error : Colors.mediumGray}
-                        />
-                      </Pressable>
+                      {(() => {
+                        const hasValues = wall.width || wall.height || wall.area;
+                        const canDelete = walls.length > 1;
+                        return (
+                          <Pressable
+                            onPress={() => handleRemoveWall(wall.id)}
+                            disabled={!canDelete}
+                            style={{
+                              width: 36,
+                              height: 36,
+                              alignItems: "center",
+                              justifyContent: "center",
+                              backgroundColor: hasValues && canDelete ? Colors.error + "15" : Colors.neutralGray,
+                              borderRadius: BorderRadius.default,
+                              opacity: canDelete ? 1 : 0.5,
+                            }}
+                          >
+                            <Ionicons
+                              name="trash-outline"
+                              size={18}
+                              color={hasValues && canDelete ? Colors.error : Colors.mediumGray}
+                            />
+                          </Pressable>
+                        );
+                      })()}
                     </View>
                   );
                 })}
@@ -846,7 +854,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               </Text>
 
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md, alignItems: "flex-end" }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 0.8 }}>
                   <NumericInput
                     label="Windows"
                     value={windowCount}
@@ -855,7 +863,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     max={20}
                   />
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 0.8 }}>
                   <NumericInput
                     label="Doors"
                     value={doorCount}
@@ -864,7 +872,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     max={10}
                   />
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, justifyContent: "flex-end" }}>
                   <Toggle
                     label="Closet"
                     value={hasCloset}
@@ -929,68 +937,62 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   Room Summary
                 </Text>
 
-                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                  {/* Left Column - Areas */}
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall Area</Text>
+                {/* Grey Section - Details */}
+                <View style={{
+                  backgroundColor: Colors.backgroundWarmGray,
+                  borderRadius: BorderRadius.default,
+                  padding: Spacing.md,
+                  marginBottom: Spacing.md
+                }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>Wall Count</Text>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {walls.length}
+                    </Text>
+                  </View>
+                  {parseInt(windowCount) > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(totalArea), "area", unitSystem, 0)}
+                        {windowCount}
                       </Text>
                     </View>
-                    {paintCeilings && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling Area</Text>
-                        <Text style={{ fontSize: 13, color: Colors.mediumGray, fontStyle: "italic" }}>
-                          (based on walls)
-                        </Text>
-                      </View>
-                    )}
-                    {parseInt(windowCount) > 0 && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {windowCount}
-                        </Text>
-                      </View>
-                    )}
-                    {parseInt(doorCount) > 0 && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {doorCount}
-                        </Text>
-                      </View>
-                    )}
-                    {hasCloset && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {(parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0)}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-
-                  {/* Right Column - Summary */}
-                  <View style={{ flex: 1 }}>
-                    <View style={{
-                      borderTopWidth: 1,
-                      borderTopColor: Colors.neutralGray,
-                      paddingTop: Spacing.sm,
-                      marginTop: Spacing.sm
-                    }}>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
-                          Total Wall Area:
-                        </Text>
-                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          {formatMeasurement(Math.ceil(totalArea), "area", unitSystem, 0)}
-                        </Text>
-                      </View>
+                  )}
+                  {parseInt(doorCount) > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {doorCount}
+                      </Text>
                     </View>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", marginTop: Spacing.xs }}>
-                      {walls.length} {walls.length === 1 ? "wall" : "walls"} total
+                  )}
+                  {hasCloset && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {(parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0)}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* Blue Section - Total */}
+                <View style={{
+                  backgroundColor: Colors.primaryBlue + "15",
+                  borderRadius: BorderRadius.default,
+                  padding: Spacing.md,
+                  borderLeftWidth: 4,
+                  borderLeftColor: Colors.primaryBlue
+                }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                    Total Wall Area
+                  </Text>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                      {totalArea.toFixed(0)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
+                      {unitSystem === "metric" ? "m²" : "sq ft"}
                     </Text>
                   </View>
                 </View>
