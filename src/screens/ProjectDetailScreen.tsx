@@ -755,13 +755,15 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 </Text>
               </View>
 
-              {/* Right Side: Done Building Button (when applicable) */}
-              {canMarkStep2Complete && !project.estimateBuildComplete && (
+              {/* Right Side: Done/Edit Button */}
+              {canMarkStep2Complete && (
                 <Pressable
-                  onPress={handleDoneBuilding}
+                  onPress={project.estimateBuildComplete ? handleReopenEstimate : handleDoneBuilding}
                   style={{
-                    backgroundColor: Colors.success,
+                    backgroundColor: project.estimateBuildComplete ? Colors.white : Colors.success,
                     borderRadius: BorderRadius.default,
+                    borderWidth: project.estimateBuildComplete ? 1 : 0,
+                    borderColor: project.estimateBuildComplete ? Colors.neutralGray : undefined,
                     paddingVertical: Spacing.md,
                     paddingHorizontal: Spacing.md,
                     alignItems: "center",
@@ -770,12 +772,12 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     ...Shadows.card,
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel="Done building estimate"
+                  accessibilityLabel={project.estimateBuildComplete ? "Edit estimate" : "Done building estimate"}
                 >
                   <View style={{ alignItems: "center" }}>
-                    <Ionicons name="checkmark-circle" size={20} color={Colors.white} style={{ marginBottom: Spacing.xs }} />
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
-                      Done
+                    <Ionicons name={project.estimateBuildComplete ? "pencil" : "checkmark-circle"} size={20} color={project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white} style={{ marginBottom: Spacing.xs }} />
+                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white, textAlign: "center" }}>
+                      {project.estimateBuildComplete ? "Edit\nEstimate" : "Click\nwhen Done"}
                     </Text>
                   </View>
                 </Pressable>
@@ -1011,29 +1013,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 </View>
               </View>
             </View>
-
-            {/* Edit Estimate Button - Show when estimate is complete */}
-            {project.estimateBuildComplete && (
-              <Pressable
-                onPress={handleReopenEstimate}
-                style={{
-                  backgroundColor: Colors.white,
-                  borderWidth: 1,
-                  borderColor: Colors.neutralGray,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.md,
-                  alignItems: "center",
-                  marginTop: Spacing.md,
-                }}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Ionicons name="pencil" size={18} color={Colors.darkCharcoal} style={{ marginRight: Spacing.xs }} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                    Edit Estimate
-                  </Text>
-                </View>
-              </Pressable>
-            )}
           </Card>
 
           {/* Rooms & Structures - Combined */}
