@@ -846,15 +846,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     No items added yet
                   </Text>
                 )}
-
-                {/* Total Row - matches blue section's subtotal row */}
-                {totalItems > 0 && (
-                  <View style={{ borderTopWidth: 1, borderTopColor: Colors.neutralGray, marginTop: Spacing.xs, paddingTop: Spacing.xs }}>
-                    <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
-                      Total
-                    </Text>
-                  </View>
-                )}
               </View>
 
               {/* Right Section - Pricing (Blue) with Labor and Mat columns */}
