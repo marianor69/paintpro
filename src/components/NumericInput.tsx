@@ -1,5 +1,5 @@
 import React, { RefObject } from "react";
-import { TextInput } from "react-native";
+import { TextInput, TextInputProps } from "react-native";
 import { FormInput } from "./FormInput";
 
 interface NumericInputProps {
@@ -13,6 +13,7 @@ interface NumericInputProps {
   previousFieldRef?: RefObject<TextInput>;
   nextFieldRef?: RefObject<TextInput>;
   inputRef?: RefObject<TextInput>;
+  onFocus?: TextInputProps["onFocus"];
 }
 
 export function NumericInput({
@@ -26,6 +27,7 @@ export function NumericInput({
   previousFieldRef,
   nextFieldRef,
   inputRef,
+  onFocus,
 }: NumericInputProps) {
   return (
     <FormInput
@@ -40,6 +42,7 @@ export function NumericInput({
       keyboardType="numeric"
       previousFieldRef={previousFieldRef}
       nextFieldRef={nextFieldRef}
+      onFocus={onFocus}
     />
   );
 }

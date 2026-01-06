@@ -129,6 +129,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const preventedNavigationActionRef = useRef<any>(null);
 
   // Refs
+  const scrollYRef = useRef(0);
+  const topAnchorRef = useRef<View>(null);
+  const pendingFocusRef = useRef(false);
   const nameRef = useRef<TextInput>(null);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -229,7 +232,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     if (focusedField != null && TextInput.State?.blurTextInput) {
       TextInput.State.blurTextInput(focusedField);
     }
-  }, []);
+  }, [scrollFocusedInputIntoView]);
 
   // Track unsaved changes
   useEffect(() => {
@@ -268,6 +271,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
       isKeyboardVisibleRef.current = true;
+      if (pendingFocusRef.current) {
+        pendingFocusRef.current = false;
+        scrollFocusedInputIntoView();
+      }
     });
     const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
       isKeyboardVisibleRef.current = false;
@@ -440,6 +447,32 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     );
     return currentIndex === sequence.length - 1;
   }, [focusedWall, getWallInputSequence]);
+
+  const focusOffset = 16;
+  const scrollFocusedInputIntoView = useCallback(() => {
+    const focusedInput = TextInput.State?.currentlyFocusedInput?.();
+    if (!focusedInput || !scrollViewRef.current || !topAnchorRef.current) {
+      return;
+    }
+
+    topAnchorRef.current.measureInWindow((topX, topY) => {
+      focusedInput.measureInWindow((inputX, inputY) => {
+        const targetY = topY + focusOffset;
+        const delta = inputY - targetY;
+        const scrollToY = Math.max(0, scrollYRef.current + delta);
+        scrollViewRef.current?.scrollTo({ y: scrollToY, animated: true });
+      });
+    });
+  }, []);
+
+  const handleFieldFocus = useCallback(() => {
+    if (isKeyboardVisibleRef.current) {
+      scrollFocusedInputIntoView();
+      return;
+    }
+
+    pendingFocusRef.current = true;
+  }, [scrollFocusedInputIntoView]);
 
   const handleSave = useCallback(() => {
     if (isSavingRef.current) {
@@ -657,6 +690,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           contentContainerStyle={{ paddingBottom: 400 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          onScroll={(event) => {
+            scrollYRef.current = event.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
         >
           {/* Page Name Indicator - only in test mode */}
           {testMode && (
@@ -667,7 +704,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </View>
           )}
 
-          <View style={{ padding: Spacing.md }}>
+          <View ref={topAnchorRef} style={{ padding: Spacing.md }}>
             {/* Main Info Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               {/* Room Name */}
@@ -684,6 +721,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     placeholderTextColor={Colors.mediumGray}
                     returnKeyType="next"
                     blurOnSubmit={false}
+                    onFocus={handleFieldFocus}
                     style={TextInputStyles.base}
                     inputAccessoryViewID={Platform.OS === "ios" ? `irregularRoomName-${nameAccessoryID}` : undefined}
                     // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
@@ -767,7 +805,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           returnKeyType="next"
                           blurOnSubmit={false}
                           onSubmitEditing={handleWallNext}
-                          onFocus={() => setFocusedWall({ wallId: wall.id, field: "width" })}
+                          onFocus={() => {
+                            setFocusedWall({ wallId: wall.id, field: "width" });
+                            handleFieldFocus();
+                          }}
                           inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
@@ -803,7 +844,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           returnKeyType="next"
                           blurOnSubmit={false}
                           onSubmitEditing={handleWallNext}
-                          onFocus={() => setFocusedWall({ wallId: wall.id, field: "height" })}
+                          onFocus={() => {
+                            setFocusedWall({ wallId: wall.id, field: "height" });
+                            handleFieldFocus();
+                          }}
                           inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
@@ -839,7 +883,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           returnKeyType={isLastWall ? "done" : "next"}
                           blurOnSubmit={isLastWall}
                           onSubmitEditing={isLastWall ? () => Keyboard.dismiss() : handleWallNext}
-                          onFocus={() => setFocusedWall({ wallId: wall.id, field: "area" })}
+                          onFocus={() => {
+                            setFocusedWall({ wallId: wall.id, field: "area" });
+                            handleFieldFocus();
+                          }}
                           inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
@@ -923,6 +970,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     onChangeText={setCathedralPeakHeight}
                     keyboardType="numeric"
                     placeholder="0"
+                    onFocus={handleFieldFocus}
                     className="mb-0"
                   />
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -946,6 +994,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     onChangeText={setWindowCount}
                     min={0}
                     max={20}
+                    onFocus={handleFieldFocus}
                   />
                 </View>
                 <View style={{ flex: 0.4 }}>
@@ -955,6 +1004,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     onChangeText={setDoorCount}
                     min={0}
                     max={10}
+                    onFocus={handleFieldFocus}
                   />
                 </View>
                 <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -976,6 +1026,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         onChangeText={setSingleDoorClosets}
                         min={0}
                         max={10}
+                        onFocus={handleFieldFocus}
                       />
                     </View>
                     <View style={{ flex: 1 }}>
@@ -985,6 +1036,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         onChangeText={setDoubleDoorClosets}
                         min={0}
                         max={10}
+                        onFocus={handleFieldFocus}
                       />
                     </View>
                   </View>
@@ -1141,6 +1193,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
+                onFocus={handleFieldFocus}
                 // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                 cursorColor={Colors.primaryBlue}
                 selectionColor={Colors.primaryBlue}
