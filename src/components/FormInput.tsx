@@ -114,8 +114,6 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
           onSubmitEditing={effectiveOnSubmitEditing}
           inputAccessoryViewID={accessoryID}
           placeholderTextColor={textInputProps.placeholderTextColor || Colors.mediumGray}
-          cursorColor={Colors.primaryBlue}
-          selectionColor={Colors.primaryBlue}
           style={{
             flex: 1,
             fontSize: Typography.body.fontSize,
