@@ -123,6 +123,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const isSavingRef = useRef(false);
+  const isMountedRef = useRef(true);
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
   const preventedNavigationActionRef = useRef<any>(null);
@@ -282,6 +283,12 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   // Gesture listener - blur inputs on back swipe
   useEffect(() => {
     const unsubscribe = navigation.addListener("gestureStart", () => {
@@ -295,16 +302,19 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   }, [navigation, blurFocusedInput]);
 
   // Prevent navigation when there are unsaved changes
-  usePreventRemove(hasUnsavedChanges && !isSaving, ({ data }) => {
-    if (!isSaving) {
-      preventedNavigationActionRef.current = data.action;
+  usePreventRemove(hasUnsavedChanges, ({ data }) => {
+    if (isSavingRef.current) {
+      navigation.dispatch(data.action);
+      return;
+    }
 
-      if (isKeyboardVisibleRef.current) {
-        pendingSavePromptRef.current = true;
-        Keyboard.dismiss();
-      } else {
-        setShowSavePrompt(true);
-      }
+    preventedNavigationActionRef.current = data.action;
+
+    if (isKeyboardVisibleRef.current) {
+      pendingSavePromptRef.current = true;
+      Keyboard.dismiss();
+    } else {
+      setShowSavePrompt(true);
     }
   });
 
@@ -505,7 +515,21 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     }
 
     setHasUnsavedChanges(false);
-    navigation.goBack();
+
+    const pendingAction = preventedNavigationActionRef.current;
+    preventedNavigationActionRef.current = null;
+    if (pendingAction) {
+      navigation.dispatch(pendingAction);
+    } else {
+      navigation.goBack();
+    }
+
+    requestAnimationFrame(() => {
+      isSavingRef.current = false;
+      if (isMountedRef.current) {
+        setIsSaving(false);
+      }
+    });
   }, [
     name, walls, isCathedral, cathedralPeakHeight,
     windowCount, doorCount, hasCloset, singleDoorClosets, doubleDoorClosets,
