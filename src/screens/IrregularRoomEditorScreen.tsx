@@ -938,6 +938,42 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               const windowsCount = parseInt(windowCount) || 0;
               const doorsCount = parseInt(doorCount) || 0;
 
+              // Safety check for pricing data
+              if (!pricing) {
+                return (
+                  <Card style={{ marginBottom: Spacing.md }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                      Room Summary
+                    </Text>
+                    <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                      <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                        <View style={{ marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                          </Text>
+                        </View>
+                        {windowsCount > 0 && (
+                          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                            <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                            <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{windowsCount}</Text>
+                          </View>
+                        )}
+                        {doorsCount > 0 && (
+                          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                            <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                            <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{doorsCount}</Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                  </Card>
+                );
+              }
+
               // Calculate costs based on pricing settings
               const wallArea = totalArea;
               const wallLaborPerSqFt = safeNumber(pricing.wallLaborPerSqFt, 0);
