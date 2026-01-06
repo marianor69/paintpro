@@ -452,6 +452,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     blurOnSubmit={false}
                     style={TextInputStyles.base}
                     inputAccessoryViewID={Platform.OS === "ios" ? `irregularRoomName-${nameAccessoryID}` : undefined}
+                    // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                    cursorColor={Colors.primaryBlue}
+                    selectionColor={Colors.primaryBlue}
                   />
                 </View>
               </View>
@@ -523,6 +526,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           keyboardType="numeric"
                           placeholder="0"
                           placeholderTextColor={Colors.mediumGray}
+                          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                          cursorColor={Colors.primaryBlue}
+                          selectionColor={Colors.primaryBlue}
                           style={{
                             backgroundColor: Colors.white,
                             borderRadius: BorderRadius.default,
@@ -547,6 +553,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           keyboardType="numeric"
                           placeholder="0"
                           placeholderTextColor={Colors.mediumGray}
+                          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                          cursorColor={Colors.primaryBlue}
+                          selectionColor={Colors.primaryBlue}
                           style={{
                             backgroundColor: Colors.white,
                             borderRadius: BorderRadius.default,
@@ -731,6 +740,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
+                // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                cursorColor={Colors.primaryBlue}
+                selectionColor={Colors.primaryBlue}
                 style={{
                   backgroundColor: Colors.backgroundWarmGray,
                   borderRadius: BorderRadius.default,
@@ -893,6 +905,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     multiline
                     numberOfLines={3}
                     textAlignVertical="top"
+                    // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                    cursorColor={Colors.primaryBlue}
+                    selectionColor={Colors.primaryBlue}
                     style={{
                       backgroundColor: Colors.backgroundWarmGray,
                       borderRadius: BorderRadius.default,
