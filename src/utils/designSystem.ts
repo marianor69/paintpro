@@ -103,6 +103,13 @@ export const TextInputStyles = {
     fontSize: Typography.body.fontSize,
     color: Colors.darkCharcoal,
     padding: 0, // CRITICAL: padding: 0 ensures cursor visibility
+    // ╔════════════════════════════════════════════════════════════════════╗
+    // ║  ⛔ DO NOT REMOVE OR MODIFY THE LINES BELOW ⛔                      ║
+    // ║  These are REQUIRED for proper iOS cursor and text selection.      ║
+    // ║  Removing them breaks: cursor visibility, text selection,          ║
+    // ║  selection handles, and magnifier loupe.                           ║
+    // ║  See: KB-003, ADDR-098                                             ║
+    // ╚════════════════════════════════════════════════════════════════════╝
     cursorColor: Colors.primaryBlue,
     selectionColor: Colors.primaryBlue,
   } as const,
@@ -122,6 +129,7 @@ export const TextInputStyles = {
     fontSize: Typography.body.fontSize,
     color: Colors.darkCharcoal,
     padding: 0, // CRITICAL: padding: 0 ensures cursor visibility
+    // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
     cursorColor: Colors.primaryBlue,
     selectionColor: Colors.primaryBlue,
     minHeight: 80,

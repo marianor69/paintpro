@@ -107,6 +107,7 @@ export function DimensionInput({
               onSubmitEditing={() => inchesRef.current?.focus()}
               inputAccessoryViewID={accessoryID}
               onFocus={() => setFocusedField("feet")}
+              // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{
@@ -155,6 +156,7 @@ export function DimensionInput({
               onSubmitEditing={handleInchesSubmit}
               inputAccessoryViewID={accessoryID}
               onFocus={() => setFocusedField("inches")}
+              // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
               cursorColor={Colors.primaryBlue}
               selectionColor={Colors.primaryBlue}
               style={{

@@ -114,6 +114,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
           onSubmitEditing={effectiveOnSubmitEditing}
           inputAccessoryViewID={accessoryID}
           placeholderTextColor={textInputProps.placeholderTextColor || Colors.mediumGray}
+          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
           cursorColor={Colors.primaryBlue}
           selectionColor={Colors.primaryBlue}
           style={{
