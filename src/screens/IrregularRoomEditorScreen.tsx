@@ -32,6 +32,7 @@ import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto, IrregularRoomWall } from "../types/painting";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { formatCurrency, safeNumber } from "../utils/calculations";
 
 type Props = NativeStackScreenProps<RootStackParamList, "IrregularRoomEditor">;
 
@@ -39,6 +40,7 @@ interface WallState {
   id: string;
   width: string;
   height: string;
+  area: string;
 }
 
 export default function IrregularRoomEditorScreen({ route, navigation }: Props) {
@@ -63,17 +65,23 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   // Form state
   const [name, setName] = useState(!isNew && irregularRoom?.name ? irregularRoom.name : "");
 
-  // Walls state - array of walls with width and height
+  // Walls state - array of walls with width, height, and area
   const [walls, setWalls] = useState<WallState[]>(() => {
     if (!isNew && irregularRoom?.walls && irregularRoom.walls.length > 0) {
-      return irregularRoom.walls.map(w => ({
-        id: w.id,
-        width: w.width > 0 ? formatMeasurementValue(w.width, "length", unitSystem, 2) : "",
-        height: w.height > 0 ? formatMeasurementValue(w.height, "length", unitSystem, 2) : "",
-      }));
+      return irregularRoom.walls.map(w => {
+        const widthVal = w.width > 0 ? formatMeasurementValue(w.width, "length", unitSystem, 2) : "";
+        const heightVal = w.height > 0 ? formatMeasurementValue(w.height, "length", unitSystem, 2) : "";
+        const areaVal = w.width > 0 && w.height > 0 ? (w.width * w.height).toFixed(1) : "";
+        return {
+          id: w.id,
+          width: widthVal,
+          height: heightVal,
+          area: areaVal,
+        };
+      });
     }
-    // Start with one empty wall
-    return [{ id: uuidv4(), width: "", height: formatMeasurementValue(defaultHeight, "length", unitSystem, 2) }];
+    // Start with one empty wall - use raw defaultHeight value (already in imperial feet)
+    return [{ id: uuidv4(), width: "", height: defaultHeight.toString(), area: "" }];
   });
 
   // Cathedral ceiling
@@ -125,19 +133,36 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   // Wall input refs - stored by wall id
   const wallWidthRefs = useRef<Map<string, TextInput>>(new Map());
   const wallHeightRefs = useRef<Map<string, TextInput>>(new Map());
+  const wallAreaRefs = useRef<Map<string, TextInput>>(new Map());
 
   // Track focused wall input
-  const [focusedWall, setFocusedWall] = useState<{ wallId: string; field: "width" | "height" } | null>(null);
+  const [focusedWall, setFocusedWall] = useState<{ wallId: string; field: "width" | "height" | "area" } | null>(null);
 
   const nameAccessoryID = useId();
   const wallInputAccessoryID = useId();
 
-  // Calculate total area from all walls
+  // Calculate total area from all walls - use area field directly (may be from width×height or manual entry)
   const totalArea = walls.reduce((sum, wall) => {
-    const w = parseFloat(wall.width) || 0;
-    const h = parseFloat(wall.height) || 0;
-    return sum + (w * h);
+    const areaVal = parseFloat(wall.area) || 0;
+    return sum + areaVal;
   }, 0);
+
+  // Navigate from room name to first wall's width
+  const handleNameNextPress = useCallback(() => {
+    if (walls.length > 0) {
+      const firstWallId = walls[0].id;
+      wallWidthRefs.current.get(firstWallId)?.focus();
+    } else {
+      Keyboard.dismiss();
+    }
+  }, [walls]);
+
+  // Validation: check if all walls have valid dimensions
+  const hasValidDimensions = walls.every(wall => {
+    const hasWidthAndHeight = parseFloat(wall.width) > 0 && parseFloat(wall.height) > 0;
+    const hasArea = parseFloat(wall.area) > 0;
+    return hasWidthAndHeight || hasArea;
+  });
 
   // Blur focused input helper
   const blurFocusedInput = useCallback(() => {
@@ -158,7 +183,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       // For new: changes are when user enters any data
       const hasChanges =
         name !== "" ||
-        walls.some(w => w.width !== "" || w.height !== formatMeasurementValue(defaultHeight, "length", unitSystem, 2)) ||
+        walls.some(w => w.width !== "" || w.height !== defaultHeight.toString() || w.area !== "") ||
         isCathedral ||
         cathedralPeakHeight !== "" ||
         windowCount !== "" ||
@@ -172,10 +197,11 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       if (!irregularRoom) return;
       const hasChanges =
         name !== (irregularRoom.name || "") ||
-        JSON.stringify(walls.map(w => ({ width: w.width, height: w.height }))) !==
+        JSON.stringify(walls.map(w => ({ width: w.width, height: w.height, area: w.area }))) !==
         JSON.stringify(irregularRoom.walls.map(w => ({
           width: w.width > 0 ? formatMeasurementValue(w.width, "length", unitSystem, 2) : "",
-          height: w.height > 0 ? formatMeasurementValue(w.height, "length", unitSystem, 2) : ""
+          height: w.height > 0 ? formatMeasurementValue(w.height, "length", unitSystem, 2) : "",
+          area: w.width > 0 && w.height > 0 ? (w.width * w.height).toFixed(1) : ""
         }))) ||
         isCathedral !== (irregularRoom.ceilingType === "cathedral") ||
         notes !== (irregularRoom.notes || "") ||
@@ -242,7 +268,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     setWalls([...walls, {
       id: uuidv4(),
       width: "",
-      height: formatMeasurementValue(defaultHeight, "length", unitSystem, 2)
+      height: defaultHeight.toString(),
+      area: ""
     }]);
   };
 
@@ -255,21 +282,52 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   };
 
   const handleWallWidthChange = (wallId: string, value: string) => {
-    setWalls(walls.map(w => w.id === wallId ? { ...w, width: value } : w));
+    setWalls(walls.map(w => {
+      if (w.id !== wallId) return w;
+      // Auto-calculate area when both width and height have values
+      const newWidth = value;
+      const widthNum = parseFloat(newWidth);
+      const heightNum = parseFloat(w.height);
+      const newArea = (!isNaN(widthNum) && widthNum > 0 && !isNaN(heightNum) && heightNum > 0)
+        ? (widthNum * heightNum).toFixed(1)
+        : "";
+      return { ...w, width: newWidth, area: newArea };
+    }));
   };
 
   const handleWallHeightChange = (wallId: string, value: string) => {
-    setWalls(walls.map(w => w.id === wallId ? { ...w, height: value } : w));
+    setWalls(walls.map(w => {
+      if (w.id !== wallId) return w;
+      // Auto-calculate area when both width and height have values
+      const newHeight = value;
+      const widthNum = parseFloat(w.width);
+      const heightNum = parseFloat(newHeight);
+      const newArea = (!isNaN(widthNum) && widthNum > 0 && !isNaN(heightNum) && heightNum > 0)
+        ? (widthNum * heightNum).toFixed(1)
+        : "";
+      return { ...w, height: newHeight, area: newArea };
+    }));
+  };
+
+  const handleWallAreaChange = (wallId: string, value: string) => {
+    setWalls(walls.map(w => {
+      if (w.id !== wallId) return w;
+      // If user enters area directly, clear width and height
+      if (value.trim()) {
+        return { ...w, width: "", height: "", area: value };
+      }
+      return { ...w, area: value };
+    }));
   };
 
   // Wall keyboard navigation helpers
   const getWallInputSequence = useCallback(() => {
-    // Returns flat array of {wallId, field} in order: width0, height0, width1, height1, ...
-    // Area is skipped since it's calculated and non-editable
-    const sequence: { wallId: string; field: "width" | "height" }[] = [];
+    // Returns flat array of {wallId, field} in order: width0, height0, area0, width1, height1, area1, ...
+    const sequence: { wallId: string; field: "width" | "height" | "area" }[] = [];
     walls.forEach(wall => {
       sequence.push({ wallId: wall.id, field: "width" });
       sequence.push({ wallId: wall.id, field: "height" });
+      sequence.push({ wallId: wall.id, field: "area" });
     });
     return sequence;
   }, [walls]);
@@ -282,7 +340,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     );
     if (currentIndex > 0) {
       const prev = sequence[currentIndex - 1];
-      const refMap = prev.field === "width" ? wallWidthRefs : wallHeightRefs;
+      const refMap = prev.field === "width" ? wallWidthRefs : prev.field === "height" ? wallHeightRefs : wallAreaRefs;
       refMap.current.get(prev.wallId)?.focus();
     }
   }, [focusedWall, getWallInputSequence]);
@@ -295,7 +353,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     );
     if (currentIndex < sequence.length - 1) {
       const next = sequence[currentIndex + 1];
-      const refMap = next.field === "width" ? wallWidthRefs : wallHeightRefs;
+      const refMap = next.field === "width" ? wallWidthRefs : next.field === "height" ? wallHeightRefs : wallAreaRefs;
       refMap.current.get(next.wallId)?.focus();
     } else {
       Keyboard.dismiss();
@@ -321,14 +379,39 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   }, [focusedWall, getWallInputSequence]);
 
   const handleSave = useCallback(() => {
+    // Validate dimensions before saving
+    if (!hasValidDimensions) {
+      Alert.alert(
+        "Missing Dimensions",
+        "Each wall must have either Width and Height, or Area entered.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
     setIsSaving(true);
 
     // Convert walls to the proper format
-    const wallsData: IrregularRoomWall[] = walls.map(w => ({
-      id: w.id,
-      width: parseDisplayValue(w.width, "length", unitSystem),
-      height: parseDisplayValue(w.height, "length", unitSystem),
-    }));
+    // If only area was entered, we'll store the area value as width×1 for calculations
+    const wallsData: IrregularRoomWall[] = walls.map(w => {
+      const widthVal = parseDisplayValue(w.width, "length", unitSystem);
+      const heightVal = parseDisplayValue(w.height, "length", unitSystem);
+      const areaVal = parseFloat(w.area) || 0;
+
+      // If width and height are both 0 but area exists, use area as width with height=1
+      if (widthVal === 0 && heightVal === 0 && areaVal > 0) {
+        return {
+          id: w.id,
+          width: areaVal,
+          height: 1,
+        };
+      }
+      return {
+        id: w.id,
+        width: widthVal,
+        height: heightVal,
+      };
+    });
 
     const cathedralPeakValue = isCathedral ? parseDisplayValue(cathedralPeakHeight, "length", unitSystem) : undefined;
 
@@ -372,7 +455,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     includeClosetInteriorInQuote, paintWalls, paintCeilings, paintWindowFrames,
     paintDoorFrames, paintWindows, paintDoors, paintJambs, paintBaseboard,
     hasCrownMoulding, hasAccentWall, notes, photos,
-    isNew, projectId, irregularRoomId, unitSystem, addIrregularRoom, updateIrregularRoom, navigation
+    isNew, projectId, irregularRoomId, unitSystem, addIrregularRoom, updateIrregularRoom, navigation, hasValidDimensions
   ]);
 
   // Photo functions
@@ -574,7 +657,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
                 {/* Wall Rows */}
                 {walls.map((wall, index) => {
-                  const wallArea = (parseFloat(wall.width) || 0) * (parseFloat(wall.height) || 0);
+                  const isLastWall = index === walls.length - 1;
                   return (
                     <View key={wall.id} style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: Spacing.sm }}>
                       {/* Wall number */}
@@ -656,13 +739,28 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
                       <Text style={{ fontSize: 14, color: Colors.mediumGray, fontWeight: "600" }}>=</Text>
 
-                      {/* Area (calculated - displayed as bubble) */}
+                      {/* Area (editable - can be entered directly or calculated from width×height) */}
                       <View style={{ width: 70 }}>
                         <TextInput
-                          value={wallArea > 0 ? wallArea.toFixed(0) : "0"}
-                          editable={false}
+                          ref={(ref) => {
+                            if (ref) wallAreaRefs.current.set(wall.id, ref);
+                            else wallAreaRefs.current.delete(wall.id);
+                          }}
+                          value={wall.area}
+                          onChangeText={(val) => handleWallAreaChange(wall.id, val)}
+                          keyboardType="numeric"
+                          placeholder="0"
+                          placeholderTextColor={Colors.mediumGray}
+                          returnKeyType={isLastWall ? "done" : "next"}
+                          blurOnSubmit={isLastWall}
+                          onSubmitEditing={isLastWall ? () => Keyboard.dismiss() : handleWallNext}
+                          onFocus={() => setFocusedWall({ wallId: wall.id, field: "area" })}
+                          inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
+                          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                          cursorColor={Colors.primaryBlue}
+                          selectionColor={Colors.primaryBlue}
                           style={{
-                            backgroundColor: Colors.neutralGray + "40",
+                            backgroundColor: Colors.white,
                             borderRadius: BorderRadius.default,
                             borderWidth: 1,
                             borderColor: Colors.neutralGray,
@@ -747,7 +845,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 Openings & Closets
               </Text>
 
-              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md, alignItems: "flex-end" }}>
                 <View style={{ flex: 1 }}>
                   <NumericInput
                     label="Windows"
@@ -766,13 +864,14 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     max={10}
                   />
                 </View>
+                <View style={{ flex: 1 }}>
+                  <Toggle
+                    label="Closet"
+                    value={hasCloset}
+                    onValueChange={setHasCloset}
+                  />
+                </View>
               </View>
-
-              <Toggle
-                label="Has Closet"
-                value={hasCloset}
-                onValueChange={setHasCloset}
-              />
 
               {hasCloset && (
                 <View style={{ marginTop: Spacing.md }}>
@@ -822,6 +921,81 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               <Toggle label="Crown Moulding" value={hasCrownMoulding} onValueChange={setHasCrownMoulding} />
               <Toggle label="Accent Wall (Multiple Colors)" value={hasAccentWall} onValueChange={setHasAccentWall} />
             </Card>
+
+            {/* Room Summary Section */}
+            {totalArea > 0 && (
+              <Card style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                  Room Summary
+                </Text>
+
+                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                  {/* Left Column - Areas */}
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall Area</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(totalArea), "area", unitSystem, 0)}
+                      </Text>
+                    </View>
+                    {paintCeilings && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling Area</Text>
+                        <Text style={{ fontSize: 13, color: Colors.mediumGray, fontStyle: "italic" }}>
+                          (based on walls)
+                        </Text>
+                      </View>
+                    )}
+                    {parseInt(windowCount) > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                          {windowCount}
+                        </Text>
+                      </View>
+                    )}
+                    {parseInt(doorCount) > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                          {doorCount}
+                        </Text>
+                      </View>
+                    )}
+                    {hasCloset && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                          {(parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0)}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Right Column - Summary */}
+                  <View style={{ flex: 1 }}>
+                    <View style={{
+                      borderTopWidth: 1,
+                      borderTopColor: Colors.neutralGray,
+                      paddingTop: Spacing.sm,
+                      marginTop: Spacing.sm
+                    }}>
+                      <View style={{ alignItems: "flex-end" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          Total Wall Area:
+                        </Text>
+                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          {formatMeasurement(Math.ceil(totalArea), "area", unitSystem, 0)}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", marginTop: Spacing.xs }}>
+                      {walls.length} {walls.length === 1 ? "wall" : "walls"} total
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            )}
 
             {/* Notes */}
             <Card style={{ marginBottom: Spacing.md }}>
@@ -1062,7 +1236,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               }}
             >
               <Pressable
-                onPress={() => Keyboard.dismiss()}
+                onPress={handleNameNextPress}
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
@@ -1077,7 +1251,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     fontWeight: "600",
                   }}
                 >
-                  Done
+                  Next
                 </Text>
               </Pressable>
             </View>
