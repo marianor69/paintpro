@@ -941,9 +941,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                   Pass-Through Openings
                 </Text>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                  Without doors (subtracts wall area)
-                </Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
                 <Pressable
