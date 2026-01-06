@@ -1131,7 +1131,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
           {/* Windows Counter */}
           <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Windows
               </Text>
@@ -1185,7 +1185,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
           {/* Doors Counter */}
           <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Doors
               </Text>
@@ -1239,7 +1239,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
           {/* Closets Counters */}
           <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Single Door Closet
               </Text>

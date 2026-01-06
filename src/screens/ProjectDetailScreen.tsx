@@ -734,23 +734,52 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             marginBottom: Spacing.md,
             ...(project.estimateBuildComplete && { borderWidth: 2, borderColor: Colors.success })
           }}>
-            {/* Total Estimate - Large and Prominent */}
-            <View style={{ alignItems: "center", marginBottom: Spacing.md }}>
-              {project.estimateBuildComplete ? (
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                  <Ionicons name="checkmark-circle" size={22} color={Colors.success} style={{ marginRight: Spacing.xs }} />
-                  <Text style={{ fontSize: 18, color: Colors.success, fontWeight: "600" as any }}>
-                    Estimate Complete
+            {/* Header Row: Title/Amount on left, Button on right */}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: Spacing.md, gap: Spacing.md }}>
+              {/* Left Side: Title and Amount */}
+              <View style={{ flex: 1 }}>
+                {project.estimateBuildComplete ? (
+                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <Ionicons name="checkmark-circle" size={22} color={Colors.success} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 18, color: Colors.success, fontWeight: "600" as any }}>
+                      Estimate Complete
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={{ fontSize: 18, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Running Estimate
                   </Text>
-                </View>
-              ) : (
-                <Text style={{ fontSize: 18, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                  Running Estimate
+                )}
+                <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                  {formatCurrency(displaySummary.grandTotal)}
                 </Text>
+              </View>
+
+              {/* Right Side: Done Building Button (when applicable) */}
+              {canMarkStep2Complete && !project.estimateBuildComplete && (
+                <Pressable
+                  onPress={handleDoneBuilding}
+                  style={{
+                    backgroundColor: Colors.success,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    paddingHorizontal: Spacing.md,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: 140,
+                    ...Shadows.card,
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Done building estimate"
+                >
+                  <View style={{ alignItems: "center" }}>
+                    <Ionicons name="checkmark-circle" size={20} color={Colors.white} style={{ marginBottom: Spacing.xs }} />
+                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
+                      Done
+                    </Text>
+                  </View>
+                </Pressable>
               )}
-              <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                {formatCurrency(displaySummary.grandTotal)}
-              </Text>
             </View>
 
             {/* Two-column layout: Grey (items list) + Blue (labor/materials) */}
@@ -1407,34 +1436,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   Add at least one room, staircase, fireplace, or built-in to complete your estimate
                 </Text>
               </View>
-            </Card>
-          )}
-
-          {/* Done Building Estimate Button - Only show when items exist and not already complete */}
-          {canMarkStep2Complete && !project.estimateBuildComplete && (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Pressable
-                onPress={handleDoneBuilding}
-                style={{
-                  backgroundColor: Colors.success,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.lg,
-                  alignItems: "center",
-                  ...Shadows.card,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Done building estimate"
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Ionicons name="checkmark-circle" size={24} color={Colors.white} style={{ marginRight: Spacing.sm }} />
-                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.white }}>
-                    Done Building Estimate
-                  </Text>
-                </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, marginTop: Spacing.xs, opacity: 0.9 }}>
-                  Review your estimate before sending
-                </Text>
-              </Pressable>
             </Card>
           )}
 
