@@ -122,7 +122,15 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const cathedralPeakHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // Wall input refs - stored by wall id
+  const wallWidthRefs = useRef<Map<string, TextInput>>(new Map());
+  const wallHeightRefs = useRef<Map<string, TextInput>>(new Map());
+
+  // Track focused wall input
+  const [focusedWall, setFocusedWall] = useState<{ wallId: string; field: "width" | "height" } | null>(null);
+
   const nameAccessoryID = useId();
+  const wallInputAccessoryID = useId();
 
   // Calculate total area from all walls
   const totalArea = walls.reduce((sum, wall) => {
@@ -253,6 +261,64 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const handleWallHeightChange = (wallId: string, value: string) => {
     setWalls(walls.map(w => w.id === wallId ? { ...w, height: value } : w));
   };
+
+  // Wall keyboard navigation helpers
+  const getWallInputSequence = useCallback(() => {
+    // Returns flat array of {wallId, field} in order: width0, height0, width1, height1, ...
+    // Area is skipped since it's calculated and non-editable
+    const sequence: { wallId: string; field: "width" | "height" }[] = [];
+    walls.forEach(wall => {
+      sequence.push({ wallId: wall.id, field: "width" });
+      sequence.push({ wallId: wall.id, field: "height" });
+    });
+    return sequence;
+  }, [walls]);
+
+  const handleWallPrevious = useCallback(() => {
+    if (!focusedWall) return;
+    const sequence = getWallInputSequence();
+    const currentIndex = sequence.findIndex(
+      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
+    );
+    if (currentIndex > 0) {
+      const prev = sequence[currentIndex - 1];
+      const refMap = prev.field === "width" ? wallWidthRefs : wallHeightRefs;
+      refMap.current.get(prev.wallId)?.focus();
+    }
+  }, [focusedWall, getWallInputSequence]);
+
+  const handleWallNext = useCallback(() => {
+    if (!focusedWall) return;
+    const sequence = getWallInputSequence();
+    const currentIndex = sequence.findIndex(
+      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
+    );
+    if (currentIndex < sequence.length - 1) {
+      const next = sequence[currentIndex + 1];
+      const refMap = next.field === "width" ? wallWidthRefs : wallHeightRefs;
+      refMap.current.get(next.wallId)?.focus();
+    } else {
+      Keyboard.dismiss();
+    }
+  }, [focusedWall, getWallInputSequence]);
+
+  const isFirstWallInput = useCallback(() => {
+    if (!focusedWall) return true;
+    const sequence = getWallInputSequence();
+    const currentIndex = sequence.findIndex(
+      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
+    );
+    return currentIndex === 0;
+  }, [focusedWall, getWallInputSequence]);
+
+  const isLastWallInput = useCallback(() => {
+    if (!focusedWall) return false;
+    const sequence = getWallInputSequence();
+    const currentIndex = sequence.findIndex(
+      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
+    );
+    return currentIndex === sequence.length - 1;
+  }, [focusedWall, getWallInputSequence]);
 
   const handleSave = useCallback(() => {
     setIsSaving(true);
@@ -488,7 +554,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   <View style={{ width: 30 }} />
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>
-                      Length
+                      Width
                     </Text>
                   </View>
                   <Text style={{ fontSize: 14, color: "transparent" }}>×</Text>
@@ -518,14 +584,23 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         </Text>
                       </View>
 
-                      {/* Width/Length */}
+                      {/* Width */}
                       <View style={{ flex: 1 }}>
                         <TextInput
+                          ref={(ref) => {
+                            if (ref) wallWidthRefs.current.set(wall.id, ref);
+                            else wallWidthRefs.current.delete(wall.id);
+                          }}
                           value={wall.width}
                           onChangeText={(val) => handleWallWidthChange(wall.id, val)}
                           keyboardType="numeric"
                           placeholder="0"
                           placeholderTextColor={Colors.mediumGray}
+                          returnKeyType="next"
+                          blurOnSubmit={false}
+                          onSubmitEditing={handleWallNext}
+                          onFocus={() => setFocusedWall({ wallId: wall.id, field: "width" })}
+                          inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
@@ -548,11 +623,20 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       {/* Height */}
                       <View style={{ flex: 1 }}>
                         <TextInput
+                          ref={(ref) => {
+                            if (ref) wallHeightRefs.current.set(wall.id, ref);
+                            else wallHeightRefs.current.delete(wall.id);
+                          }}
                           value={wall.height}
                           onChangeText={(val) => handleWallHeightChange(wall.id, val)}
                           keyboardType="numeric"
                           placeholder="0"
                           placeholderTextColor={Colors.mediumGray}
+                          returnKeyType="next"
+                          blurOnSubmit={false}
+                          onSubmitEditing={handleWallNext}
+                          onFocus={() => setFocusedWall({ wallId: wall.id, field: "height" })}
+                          inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
@@ -572,11 +656,23 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
                       <Text style={{ fontSize: 14, color: Colors.mediumGray, fontWeight: "600" }}>=</Text>
 
-                      {/* Area (calculated) */}
+                      {/* Area (calculated - displayed as bubble) */}
                       <View style={{ width: 70 }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          {wallArea > 0 ? wallArea.toFixed(0) : "0"}
-                        </Text>
+                        <TextInput
+                          value={wallArea > 0 ? wallArea.toFixed(0) : "0"}
+                          editable={false}
+                          style={{
+                            backgroundColor: Colors.neutralGray + "40",
+                            borderRadius: BorderRadius.default,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            paddingHorizontal: Spacing.sm,
+                            paddingVertical: Spacing.sm,
+                            fontSize: Typography.body.fontSize,
+                            color: Colors.darkCharcoal,
+                            textAlign: "right",
+                          }}
+                        />
                       </View>
 
                       {/* Delete button */}
@@ -982,6 +1078,59 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   }}
                 >
                   Done
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+        )}
+
+        {/* InputAccessoryView for Wall inputs with Previous/Next/Done navigation */}
+        {Platform.OS === "ios" && (
+          <InputAccessoryView nativeID={`wallInputs-${wallInputAccessoryID}`}>
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                paddingHorizontal: Spacing.md,
+                paddingVertical: Spacing.sm,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Pressable
+                onPress={handleWallPrevious}
+                disabled={isFirstWallInput()}
+                style={{
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: isFirstWallInput() ? "#c7c7c7" : "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={isLastWallInput() ? () => Keyboard.dismiss() : handleWallNext}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  {isLastWallInput() ? "Done" : "Next"}
                 </Text>
               </Pressable>
             </View>
