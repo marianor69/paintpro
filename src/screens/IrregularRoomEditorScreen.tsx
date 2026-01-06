@@ -57,6 +57,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   const pricing = usePricingStore((s) => s.settings);
   const unitSystem = useCalculationSettings((s) => s.unitSystem);
+  const calcSettings = useCalculationSettings((s) => s.settings);
   const testMode = useAppSettings((s) => s.testMode);
 
   // Default wall height from project
@@ -121,6 +122,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const isSavingRef = useRef(false);
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
   const preventedNavigationActionRef = useRef<any>(null);
@@ -146,6 +148,57 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     const areaVal = parseFloat(wall.area) || 0;
     return sum + areaVal;
   }, 0);
+
+  const windowCountValue = parseInt(windowCount) || 0;
+  const doorCountValue = parseInt(doorCount) || 0;
+  const projectCoats = safeNumber(project?.projectCoats, 2);
+  const secondCoatMultiplier = safeNumber(pricing?.secondCoatLaborMultiplier, 2.0);
+  const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
+
+  const wallCoverage = Math.max(1, safeNumber(pricing?.wallCoverageSqFtPerGallon, 350));
+  const trimCoverage = Math.max(1, safeNumber(pricing?.trimCoverageSqFtPerGallon, 400));
+  const wallLaborRate = safeNumber(pricing?.wallLaborPerSqFt, 0);
+  const wallPaintRate = safeNumber(pricing?.wallPaintPerGallon, 0);
+  const windowLaborRate = safeNumber(pricing?.windowLabor, 0);
+  const doorLaborRate = safeNumber(pricing?.doorLabor, 0);
+  const trimPaintRate = safeNumber(pricing?.trimPaintPerGallon, 0);
+  const doorPaintRate = safeNumber(pricing?.doorPaintPerGallon, 0);
+
+  const hasPricingData = [
+    pricing?.wallLaborPerSqFt,
+    pricing?.wallPaintPerGallon,
+    pricing?.wallCoverageSqFtPerGallon,
+    pricing?.windowLabor,
+    pricing?.doorLabor,
+    pricing?.trimPaintPerGallon,
+    pricing?.doorPaintPerGallon,
+  ].every((val) => Number.isFinite(val));
+
+  const wallLaborCost = paintWalls
+    ? totalArea * wallLaborRate * getCoatLaborMultiplier(projectCoats)
+    : 0;
+  const wallGallons = paintWalls ? (totalArea / wallCoverage) * projectCoats : 0;
+  const wallMaterialsCost = paintWalls ? Math.ceil(wallGallons) * wallPaintRate : 0;
+
+  const windowTrimWidthFt = safeNumber(calcSettings?.windowTrimWidth, 3.5) / 12;
+  const windowPerimeter = 2 * (safeNumber(calcSettings?.windowWidth, 3) + safeNumber(calcSettings?.windowHeight, 5));
+  const windowTrimSqFt = windowCountValue * windowPerimeter * windowTrimWidthFt;
+  const windowGallons = paintWindows ? (windowTrimSqFt / trimCoverage) * projectCoats : 0;
+  const windowLaborCost = paintWindows
+    ? windowCountValue * windowLaborRate * getCoatLaborMultiplier(projectCoats)
+    : 0;
+  const windowMaterialsCost = paintWindows ? Math.ceil(windowGallons) * trimPaintRate : 0;
+
+  const doorFacesSqFt = doorCountValue * (safeNumber(calcSettings?.doorWidth, 3) * safeNumber(calcSettings?.doorHeight, 7)) * 2;
+  const doorGallons = paintDoors ? (doorFacesSqFt / wallCoverage) * projectCoats : 0;
+  const doorLaborCost = paintDoors
+    ? doorCountValue * doorLaborRate * getCoatLaborMultiplier(projectCoats)
+    : 0;
+  const doorMaterialsCost = paintDoors ? Math.ceil(doorGallons) * doorPaintRate : 0;
+
+  const totalLaborCost = wallLaborCost + windowLaborCost + doorLaborCost;
+  const totalMaterialsCost = wallMaterialsCost + windowMaterialsCost + doorMaterialsCost;
+  const totalRoomCost = totalLaborCost + totalMaterialsCost;
 
   // Navigate from room name to first wall's width
   const handleNameNextPress = useCallback(() => {
@@ -379,6 +432,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   }, [focusedWall, getWallInputSequence]);
 
   const handleSave = useCallback(() => {
+    if (isSavingRef.current) {
+      return;
+    }
     // Validate dimensions before saving
     if (!hasValidDimensions) {
       Alert.alert(
@@ -389,6 +445,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       return;
     }
 
+    isSavingRef.current = true;
     setIsSaving(true);
 
     // Convert walls to the proper format
@@ -536,6 +593,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   // Save prompt handlers
   const handleSaveFromPrompt = useCallback(() => {
+    if (isSavingRef.current) {
+      return;
+    }
     // Close modal immediately to prevent double-clicks
     setShowSavePrompt(false);
     handleSave();
@@ -855,7 +915,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               </Text>
 
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md, alignItems: "flex-end" }}>
-                <View style={{ flex: 0.6 }}>
+                <View style={{ flex: 0.4 }}>
                   <NumericInput
                     label="Windows"
                     value={windowCount}
@@ -864,7 +924,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     max={20}
                   />
                 </View>
-                <View style={{ flex: 0.6 }}>
+                <View style={{ flex: 0.4 }}>
                   <NumericInput
                     label="Doors"
                     value={doorCount}
@@ -938,42 +998,109 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   Room Summary
                 </Text>
 
-                <View style={{
-                  backgroundColor: Colors.backgroundWarmGray,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
-                      {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                {!hasPricingData ? (
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
+                      Pricing data unavailable. Please check Settings.
                     </Text>
                   </View>
-                  {walls.length > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {walls.length}
-                      </Text>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      borderRadius: BorderRadius.default,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
+                          {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                        </Text>
+                      </View>
+                      {walls.length > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {walls.length}
+                          </Text>
+                        </View>
+                      )}
+                      {windowCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {windowCountValue}
+                          </Text>
+                        </View>
+                      )}
+                      {doorCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {doorCountValue}
+                          </Text>
+                        </View>
+                      )}
                     </View>
-                  )}
-                  {parseInt(windowCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {windowCount}
-                      </Text>
+
+                    <View style={{ flex: 1, backgroundColor: Colors.primaryBlueLight, padding: Spacing.md }}>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Materials</Text>
+                      </View>
+
+                      {paintWalls && totalArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(wallLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(wallMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {paintWindows && windowCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(windowLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(windowMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {paintDoors && doorCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(doorLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(doorMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(totalLaborCost)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(totalMaterialsCost)}
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: Spacing.xs }}>
+                        <Text style={{ fontSize: 14, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${Math.round(totalRoomCost).toLocaleString()}
+                        </Text>
+                      </View>
                     </View>
-                  )}
-                  {parseInt(doorCount) > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {doorCount}
-                      </Text>
-                    </View>
-                  )}
-                </View>
+                  </View>
+                )}
               </Card>
             )}
 
@@ -1088,8 +1215,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             {/* Save Button */}
             <Pressable
               onPress={handleSave}
+              disabled={isSaving}
               style={{
-                backgroundColor: Colors.primaryBlue,
+                backgroundColor: isSaving ? Colors.mediumGray : Colors.primaryBlue,
                 borderRadius: BorderRadius.default,
                 paddingVertical: Spacing.md,
                 alignItems: "center",
@@ -1097,7 +1225,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Save Irregular Room
+                {isSaving ? "Saving..." : "Save Irregular Room"}
               </Text>
             </Pressable>
           </View>
