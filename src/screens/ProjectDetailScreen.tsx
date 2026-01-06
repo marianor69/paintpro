@@ -871,6 +871,15 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 )}
 
+                {project.includeNailsRemoval && (
+                  <View style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
+                    <Ionicons name="hammer-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      Nails/Screws Removal
+                    </Text>
+                  </View>
+                )}
+
                 {/* Empty state */}
                 {totalItems === 0 && (
                   <Text style={{ fontSize: 13, color: Colors.mediumGray, fontStyle: "italic" }}>
@@ -987,6 +996,20 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(furnitureMovingPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })()}
+
+                {project.includeNailsRemoval && (() => {
+                  const nailsRemovalPricing = displaySummary.itemizedPrices?.find(p => p.id === "nails-removal");
+                  return (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(nailsRemovalPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(nailsRemovalPricing?.materialsCost || 0)}
                       </Text>
                     </View>
                   );

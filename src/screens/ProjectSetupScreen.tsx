@@ -963,7 +963,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   setIncludeNailsRemoval(value);
                   if (project) updateNailsRemoval(project.id, value);
                 }}
-                description="Adds nails and screws removal fee to labor cost"
+                description="Let customer know nails and screws won't be replaced"
               />
             </View>
           </Card>

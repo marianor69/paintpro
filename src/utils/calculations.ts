@@ -1000,6 +1000,19 @@ export function calculateProjectSummary(
     });
   }
 
+  // Add nails/screws removal fee if enabled
+  if (project.includeNailsRemoval) {
+    const nailsRemovalFee = safeNumber(pricing.nailsRemovalFee, 0);
+    totalLaborCost += nailsRemovalFee;
+    itemizedPrices.push({
+      id: "nails-removal",
+      name: "Nails/Screws Removal",
+      price: nailsRemovalFee,
+      laborCost: nailsRemovalFee,
+      materialsCost: 0,
+    });
+  }
+
   // Ensure all totals are safe before final calculations
   totalWallGallons = Math.max(0, safeNumber(totalWallGallons));
   totalCeilingGallons = Math.max(0, safeNumber(totalCeilingGallons));
@@ -1807,6 +1820,19 @@ export function calculateFilteredProjectSummary(
       name: "Furniture Moving",
       price: furnitureMovingFee,
       laborCost: furnitureMovingFee,
+      materialsCost: 0,
+    });
+  }
+
+  // Add nails/screws removal fee if enabled
+  if (project.includeNailsRemoval) {
+    const nailsRemovalFee = safeNumber(pricing.nailsRemovalFee, 0);
+    totalLaborCost += nailsRemovalFee;
+    itemizedPrices.push({
+      id: "nails-removal",
+      name: "Nails/Screws Removal",
+      price: nailsRemovalFee,
+      laborCost: nailsRemovalFee,
       materialsCost: 0,
     });
   }
