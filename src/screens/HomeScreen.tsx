@@ -93,7 +93,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.2 - 47b1dda - Running Estimate button flow
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v1.0.3 - 477efd3 - IrregularRoom save fix
+              GPT - v1.0.4 - b7b4c11 - IrregularRoom focus scroll
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
