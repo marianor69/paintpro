@@ -79,15 +79,9 @@ export const Shadows = {
  * DO NOT create custom input styling anywhere in the codebase.
  *
  * Using these constants guarantees:
- * - Consistent cursor color across all inputs
- * - Consistent selection highlight color
+ * - Native iOS cursor behavior (standard blinking, selection handles, magnifier)
  * - Proper cursor visibility (padding: 0 on TextInput, paddingH/V on container)
  * - Consistent typography and spacing
- *
- * These define:
- * - Text styling (fontSize, color, padding: 0 for optimal cursor visibility)
- * - Cursor color (primaryBlue)
- * - Selection color (primaryBlue)
  *
  * USAGE PATTERN:
  * <View style={TextInputStyles.container}>
@@ -103,8 +97,6 @@ export const TextInputStyles = {
     fontSize: Typography.body.fontSize,
     color: Colors.darkCharcoal,
     padding: 0, // CRITICAL: padding: 0 ensures cursor visibility
-    cursorColor: Colors.primaryBlue,
-    selectionColor: Colors.primaryBlue,
   } as const,
 
   // Container style for inputs (provides the border and background)
@@ -122,8 +114,6 @@ export const TextInputStyles = {
     fontSize: Typography.body.fontSize,
     color: Colors.darkCharcoal,
     padding: 0, // CRITICAL: padding: 0 ensures cursor visibility
-    cursorColor: Colors.primaryBlue,
-    selectionColor: Colors.primaryBlue,
     minHeight: 80,
     textAlignVertical: "top" as const,
   } as const,
