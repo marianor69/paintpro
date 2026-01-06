@@ -226,6 +226,8 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
             blurOnSubmit={false}
             style={TextInputStyles.base}
             inputAccessoryViewID={Platform.OS === "ios" ? inputAccessoryViewID : undefined}
+            cursorColor={Colors.primaryBlue}
+            selectionColor={Colors.primaryBlue}
             accessibilityLabel="Address input"
           />
           {loading && (

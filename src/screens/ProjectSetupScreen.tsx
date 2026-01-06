@@ -468,6 +468,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectClientName-${nameAccessoryID}` : undefined}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Client name input"
                     />
                   </View>
@@ -512,6 +514,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       blurOnSubmit={false}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectPhone-${phoneAccessoryID}` : undefined}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Phone number input"
                     />
                   </View>
@@ -536,6 +540,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       onFocus={() => handleFieldFocus(emailContainerRef)}
                       style={TextInputStyles.base}
                       inputAccessoryViewID={Platform.OS === "ios" ? `projectEmail-${emailAccessoryID}` : undefined}
+                      cursorColor={Colors.primaryBlue}
+                      selectionColor={Colors.primaryBlue}
                       accessibilityLabel="Email input"
                     />
                   </View>
@@ -745,7 +751,9 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                         placeholder="8"
                         placeholderTextColor={Colors.mediumGray}
                         returnKeyType="done"
-                        style={TextInputStyles.base}
+                          style={TextInputStyles.base}
+                        cursorColor={Colors.primaryBlue}
+                        selectionColor={Colors.primaryBlue}
                         accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
                       />
                     </View>

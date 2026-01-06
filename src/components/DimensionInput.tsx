@@ -107,6 +107,8 @@ export function DimensionInput({
               onSubmitEditing={() => inchesRef.current?.focus()}
               inputAccessoryViewID={accessoryID}
               onFocus={() => setFocusedField("feet")}
+              cursorColor={Colors.primaryBlue}
+              selectionColor={Colors.primaryBlue}
               style={{
                 flex: 1,
                 fontSize: Typography.body.fontSize,
@@ -153,6 +155,8 @@ export function DimensionInput({
               onSubmitEditing={handleInchesSubmit}
               inputAccessoryViewID={accessoryID}
               onFocus={() => setFocusedField("inches")}
+              cursorColor={Colors.primaryBlue}
+              selectionColor={Colors.primaryBlue}
               style={{
                 flex: 1,
                 fontSize: Typography.body.fontSize,
