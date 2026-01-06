@@ -197,9 +197,20 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const lengthRef = useRef<TextInput>(null);
   const widthRef = useRef<TextInput>(null);
   const manualAreaRef = useRef<TextInput>(null);
+  const openingRefs = useRef<Array<{ width: React.RefObject<TextInput>; height: React.RefObject<TextInput> }>>([]);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
+
+  const getOpeningRefs = (index: number) => {
+    if (!openingRefs.current[index]) {
+      openingRefs.current[index] = {
+        width: React.createRef<TextInput>(),
+        height: React.createRef<TextInput>(),
+      };
+    }
+    return openingRefs.current[index];
+  };
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -985,6 +996,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.md }}>
                 {openings.map((opening, index) => (
                   <View key={opening.id} style={{ marginBottom: index < openings.length - 1 ? Spacing.md : 0, paddingBottom: index < openings.length - 1 ? Spacing.md : 0, borderBottomWidth: index < openings.length - 1 ? 1 : 0, borderBottomColor: Colors.neutralGray }}>
+                    {/** Keyboard Navigation Toolbar (standard) for opening fields */}
+                    {(() => {
+                      const openingFieldRefs = getOpeningRefs(index);
+                      const previousOpeningRefs = index > 0 ? getOpeningRefs(index - 1) : null;
+                      const nextOpeningRefs = index < openings.length - 1 ? getOpeningRefs(index + 1) : null;
+
+                      return (
+                        <>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
                       <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray }}>
                         Opening {index + 1}
@@ -1002,40 +1021,46 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                         <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
                           Width (in)
                         </Text>
-                        <View style={TextInputStyles.container}>
-                          <TextInput
-                            value={opening.width}
-                            onChangeText={(text) => {
-                              const updated = [...openings];
-                              updated[index].width = text;
-                              setOpenings(updated);
-                            }}
-                            placeholder="36"
-                            placeholderTextColor={Colors.mediumGray}
-                            keyboardType="numeric"
-                            style={TextInputStyles.base}
-                          />
-                        </View>
+                        <FormInput
+                          ref={openingFieldRefs.width}
+                          previousFieldRef={previousOpeningRefs?.height}
+                          nextFieldRef={openingFieldRefs.height}
+                          label=""
+                          value={opening.width}
+                          onChangeText={(text) => {
+                            const updated = [...openings];
+                            updated[index].width = text;
+                            setOpenings(updated);
+                          }}
+                          placeholder="36"
+                          placeholderTextColor={Colors.mediumGray}
+                          keyboardType="numeric"
+                          textAlign="left"
+                          className="mb-0"
+                        />
                       </View>
 
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
                           Height (in)
                         </Text>
-                        <View style={TextInputStyles.container}>
-                          <TextInput
-                            value={opening.height}
-                            onChangeText={(text) => {
-                              const updated = [...openings];
-                              updated[index].height = text;
-                              setOpenings(updated);
-                            }}
-                            placeholder="80"
-                            placeholderTextColor={Colors.mediumGray}
-                            keyboardType="numeric"
-                            style={TextInputStyles.base}
-                          />
-                        </View>
+                        <FormInput
+                          ref={openingFieldRefs.height}
+                          previousFieldRef={openingFieldRefs.width}
+                          nextFieldRef={nextOpeningRefs?.width}
+                          label=""
+                          value={opening.height}
+                          onChangeText={(text) => {
+                            const updated = [...openings];
+                            updated[index].height = text;
+                            setOpenings(updated);
+                          }}
+                          placeholder="80"
+                          placeholderTextColor={Colors.mediumGray}
+                          keyboardType="numeric"
+                          textAlign="left"
+                          className="mb-0"
+                        />
                       </View>
                     </View>
 
@@ -1098,6 +1123,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                         </Text>
                       </Pressable>
                     </View>
+                        </>
+                      );
+                    })()}
                   </View>
                 ))}
               </View>

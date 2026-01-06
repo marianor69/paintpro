@@ -148,7 +148,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         </Text>
       )}
 
-      {/* iOS InputAccessoryView for all keyboards with navigation */}
+      {/* Keyboard Navigation Toolbar (standard) */}
       {Platform.OS === "ios" && accessoryID && (
         <InputAccessoryView nativeID={accessoryID}>
           <View
