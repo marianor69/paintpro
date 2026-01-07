@@ -77,7 +77,7 @@ export default function CalculationSettingsScreen() {
   const baseboardWidthID = useId();
   const crownMouldingWidthID = useId();
 
-  const inputContainerStyle = [TextInputStyles.container, { minWidth: 96 }];
+  const inputContainerStyle = [TextInputStyles.container, { width: 96, alignSelf: "flex-start" }];
 
   const handleSave = () => {
     const newSettings = {
