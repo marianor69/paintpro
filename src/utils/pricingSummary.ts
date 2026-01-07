@@ -493,7 +493,8 @@ export function computeRoomPricingSummary(
   // Add closet labor only if closets are included via combined rule
   if (includedClosets && (singleClosets > 0 || doubleClosets > 0)) {
     // Closet labor applies the wall coat multiplier since closet interiors are walls
-    const closetLaborMultiplier = getCoatLaborMultiplier(coatsWalls);
+    const closetLaborMultiplier =
+      getCoatLaborMultiplier(coatsWalls) * safeNumber(pricing.closetLaborMultiplier, 1.0);
     laborCost += (singleClosets + doubleClosets) * safeNumber(pricing.closetLabor, 0) * closetLaborMultiplier;
   }
 

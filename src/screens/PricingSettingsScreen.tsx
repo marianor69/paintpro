@@ -1,4 +1,4 @@
-import React, { useRef, useId } from "react";
+import React, { useRef, useId, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -65,6 +65,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [accentWallLaborMultiplier, setAccentWallLaborMultiplier] = React.useState(
     (pricing.accentWallLaborMultiplier || 1.25).toString()
   );
+  const [bathroomLaborMultiplier, setBathroomLaborMultiplier] = React.useState(
+    (pricing.bathroomLaborMultiplier || 1.0).toString()
+  );
+  const [closetLaborMultiplier, setClosetLaborMultiplier] = React.useState(
+    (pricing.closetLaborMultiplier || 1.0).toString()
+  );
   const [furnitureMovingFee, setFurnitureMovingFee] = React.useState(
     (pricing.furnitureMovingFee || 100).toString()
   );
@@ -115,6 +121,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const crownMouldingRef = useRef<TextInput>(null);
   const secondCoatMultiplierRef = useRef<TextInput>(null);
   const accentWallMultiplierRef = useRef<TextInput>(null);
+  const bathroomMultiplierRef = useRef<TextInput>(null);
+  const closetMultiplierRef = useRef<TextInput>(null);
   const furnitureMovingFeeRef = useRef<TextInput>(null);
   const nailsRemovalFeeRef = useRef<TextInput>(null);
   const wallPaintGallonRef = useRef<TextInput>(null);
@@ -142,6 +150,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const crownMouldingID = useId();
   const secondCoatMultiplierID = useId();
   const accentWallMultiplierID = useId();
+  const bathroomMultiplierID = useId();
+  const closetMultiplierID = useId();
   const furnitureMovingFeeID = useId();
   const nailsRemovalFeeID = useId();
   const wallPaintGallonID = useId();
@@ -152,6 +162,52 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const ceilingPaint5GallonID = useId();
   const trimPaint5GallonID = useId();
   const primer5GallonID = useId();
+
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollYRef = useRef(0);
+  const isKeyboardVisibleRef = useRef(false);
+  const pendingFocusRef = useRef(false);
+  const focusTargetY = 160;
+
+  const scrollFocusedInputIntoView = useCallback(() => {
+    const focusedInput = TextInput.State?.currentlyFocusedInput?.();
+    if (!focusedInput || !scrollViewRef.current) {
+      return;
+    }
+
+    focusedInput.measureInWindow((inputX, inputY) => {
+      const delta = inputY - focusTargetY;
+      const scrollToY = Math.max(0, scrollYRef.current + delta);
+      scrollViewRef.current?.scrollTo({ y: scrollToY, animated: true });
+    });
+  }, []);
+
+  const handleFieldFocus = useCallback(() => {
+    if (isKeyboardVisibleRef.current) {
+      scrollFocusedInputIntoView();
+      return;
+    }
+
+    pendingFocusRef.current = true;
+  }, [scrollFocusedInputIntoView]);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      isKeyboardVisibleRef.current = true;
+      if (pendingFocusRef.current) {
+        pendingFocusRef.current = false;
+        scrollFocusedInputIntoView();
+      }
+    });
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      isKeyboardVisibleRef.current = false;
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, [scrollFocusedInputIntoView]);
 
   const handleSave = () => {
     pricing.updatePricing({
@@ -170,6 +226,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       crownMouldingLaborPerLF: parseFloat(crownMouldingLaborPerLF) || 0,
       secondCoatLaborMultiplier: parseFloat(secondCoatLaborMultiplier) || 2.0,
       accentWallLaborMultiplier: parseFloat(accentWallLaborMultiplier) || 1.25,
+      bathroomLaborMultiplier: parseFloat(bathroomLaborMultiplier) || 1.0,
+      closetLaborMultiplier: parseFloat(closetLaborMultiplier) || 1.0,
       furnitureMovingFee: parseFloat(furnitureMovingFee) || 100,
       nailsRemovalFee: parseFloat(nailsRemovalFee) || 75,
       wallPaintPerGallon: parseFloat(wallPaintPerGallon) || 0,
@@ -186,6 +244,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     navigation.goBack();
   };
 
+  const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
+  const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", gap: Spacing.sm };
+  const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
+  const inputContainerStyle = { ...TextInputStyles.container, width: 110 };
 
   return (
     <SafeAreaView
@@ -198,9 +260,14 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         keyboardVerticalOffset={90}
       >
         <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={{ padding: Spacing.md }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          onScroll={(event) => {
+            scrollYRef.current = event.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
         >
           {/* Labor Rates */}
           <Card style={{ marginBottom: Spacing.md }}>
@@ -208,53 +275,50 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               Labor Rates
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Wall Labor ($/sq ft)
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={wallLaborRef}
-                  value={wallLaborPerSqFt}
-                  onChangeText={setWallLaborPerSqFt}
-                  placeholder="1.50"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => ceilingLaborRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallLabor-${wallLaborID}` : undefined}
-                  style={TextInputStyles.base}
-                />
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Wall ($/sq ft)</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={wallLaborRef}
+                    value={wallLaborPerSqFt}
+                    onChangeText={setWallLaborPerSqFt}
+                    placeholder="1.50"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => ceilingLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallLabor-${wallLaborID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Ceiling ($/sq ft)</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={ceilingLaborRef}
+                    value={ceilingLaborPerSqFt}
+                    onChangeText={setCeilingLaborPerSqFt}
+                    placeholder="1.75"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => baseboardLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingLabor-${ceilingLaborID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Ceiling Labor ($/sq ft)
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={ceilingLaborRef}
-                  value={ceilingLaborPerSqFt}
-                  onChangeText={setCeilingLaborPerSqFt}
-                  placeholder="1.75"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => baseboardLaborRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingLabor-${ceilingLaborID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
-            </View>
-
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Baseboard Labor ($/LF)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Baseboard ($/LF)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={baseboardLaborRef}
                   value={baseboardLaborPerLF}
@@ -264,6 +328,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => doorLaborRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingBaseboardLabor-${baseboardLaborID}` : undefined}
                   style={TextInputStyles.base}
@@ -271,12 +336,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Door Labor ($)
-                </Text>
-                <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Door ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={doorLaborRef}
                     value={doorLabor}
@@ -286,17 +349,16 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => windowLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingDoorLabor-${doorLaborID}` : undefined}
                     style={TextInputStyles.base}
                   />
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Window Labor ($)
-                </Text>
-                <View style={TextInputStyles.container}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Window ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={windowLaborRef}
                     value={windowLabor}
@@ -306,6 +368,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => closetLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingWindowLabor-${windowLaborID}` : undefined}
                     style={TextInputStyles.base}
@@ -314,11 +377,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Closet Labor ($)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Closet ($)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={closetLaborRef}
                   value={closetLabor}
@@ -328,6 +389,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => riserLaborRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetLabor-${closetLaborID}` : undefined}
                   style={TextInputStyles.base}
@@ -335,12 +397,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Riser Labor ($)
-                </Text>
-                <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Riser ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={riserLaborRef}
                     value={riserLabor}
@@ -350,17 +410,16 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => spindleLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingRiserLabor-${riserLaborID}` : undefined}
                     style={TextInputStyles.base}
                   />
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Spindle Labor ($)
-                </Text>
-                <View style={TextInputStyles.container}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Spindle ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={spindleLaborRef}
                     value={spindleLabor}
@@ -370,6 +429,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => handrailLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingSpindleLabor-${spindleLaborID}` : undefined}
                     style={TextInputStyles.base}
@@ -378,12 +438,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Handrail Labor ($/LF)
-                </Text>
-                <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Handrail ($/LF)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={handrailLaborRef}
                     value={handrailLaborPerLF}
@@ -393,17 +451,16 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => fireplaceRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
                     style={TextInputStyles.base}
                   />
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Fireplace Labor ($) [Legacy]
-                </Text>
-                <View style={TextInputStyles.container}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Fireplace ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={fireplaceRef}
                     value={fireplaceLabor}
@@ -413,6 +470,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => mantelLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingFireplace-${fireplaceID}` : undefined}
                     style={TextInputStyles.base}
@@ -422,12 +480,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             {/* New Fireplace Labor Inputs */}
-            <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Mantel Labor ($)
-                </Text>
-                <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Mantel ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={mantelLaborRef}
                     value={mantelLabor}
@@ -437,17 +493,16 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => legsLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingMantelLabor-${mantelLaborID}` : undefined}
                     style={TextInputStyles.base}
                   />
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Legs Labor ($)
-                </Text>
-                <View style={TextInputStyles.container}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Legs ($)</Text>
+                <View style={inputContainerStyle}>
                   <TextInput
                     ref={legsLaborRef}
                     value={legsLabor}
@@ -457,6 +512,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     keyboardType="numeric"
                     returnKeyType="next"
                     onSubmitEditing={() => crownMouldingRef.current?.focus()}
+                    onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingLegsLabor-${legsLaborID}` : undefined}
                     style={TextInputStyles.base}
@@ -465,11 +521,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Crown Moulding Labor ($/LF)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Crowns ($/LF)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={crownMouldingRef}
                   value={crownMouldingLaborPerLF}
@@ -479,6 +533,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => secondCoatMultiplierRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCrownMoulding-${crownMouldingID}` : undefined}
                   style={TextInputStyles.base}
@@ -487,82 +542,104 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
           </Card>
 
-          {/* Second Coat Labor Multiplier */}
+          {/* Multipliers */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
-              2-Coat Labor Multiplier
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              When 2 coats are selected, labor is multiplied by this value. Example: 1.5 means 2 coats costs 1.5x the labor of 1 coat.
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Multipliers
             </Text>
 
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Labor Multiplier for 2 Coats
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={secondCoatMultiplierRef}
-                  value={secondCoatLaborMultiplier}
-                  onChangeText={setSecondCoatLaborMultiplier}
-                  placeholder="2.0"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => accentWallMultiplierRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricing2CoatMultiplier-${secondCoatMultiplierID}` : undefined}
-                  style={TextInputStyles.base}
-                />
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>2-Coat Multiplier</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={secondCoatMultiplierRef}
+                    value={secondCoatLaborMultiplier}
+                    onChangeText={setSecondCoatLaborMultiplier}
+                    placeholder="2.0"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => accentWallMultiplierRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricing2CoatMultiplier-${secondCoatMultiplierID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Accent Wall Multiplier</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={accentWallMultiplierRef}
+                    value={accentWallLaborMultiplier}
+                    onChangeText={setAccentWallLaborMultiplier}
+                    placeholder="1.25"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => bathroomMultiplierRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingAccentWallMultiplier-${accentWallMultiplierID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+            </View>
+
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Bathroom Multiplier</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={bathroomMultiplierRef}
+                    value={bathroomLaborMultiplier}
+                    onChangeText={setBathroomLaborMultiplier}
+                    placeholder="1.0"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => closetMultiplierRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomMultiplier-${bathroomMultiplierID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Closet Multiplier</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={closetMultiplierRef}
+                    value={closetLaborMultiplier}
+                    onChangeText={setClosetLaborMultiplier}
+                    placeholder="1.0"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetMultiplier-${closetMultiplierID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
               </View>
             </View>
           </Card>
 
-          {/* Accent Wall Labor Multiplier */}
+          {/* Fixed Fees */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
-              Accent Wall Labor Multiplier
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              When multiple colors or accent walls are selected, labor is multiplied by this value. Example: 1.25 means 25% more labor.
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Fixed Fees
             </Text>
 
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Labor Multiplier for Accent Walls
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={accentWallMultiplierRef}
-                  value={accentWallLaborMultiplier}
-                  onChangeText={setAccentWallLaborMultiplier}
-                  placeholder="1.25"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingAccentWallMultiplier-${accentWallMultiplierID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
-            </View>
-          </Card>
-
-          {/* Furniture Moving Fee */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
-              Furniture Moving Fee
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              Flat fee added to labor cost when furniture moving is enabled
-            </Text>
-
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Furniture Moving Fee ($)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Furniture Moving ($)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={furnitureMovingFeeRef}
                   value={furnitureMovingFee}
@@ -571,29 +648,18 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   placeholderTextColor={Colors.mediumGray}
                   keyboardType="numeric"
                   returnKeyType="next"
-                  onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
+                  onSubmitEditing={() => nailsRemovalFeeRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
             </View>
-          </Card>
 
-          {/* Nails/Screws Removal Fee */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.xs }}>
-              Nails/Screws Removal Fee
-            </Text>
-            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              Flat fee added to labor cost when nails/screws removal is enabled
-            </Text>
-
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Nails/Screws Removal Fee ($)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Nails/Screws Removal ($)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={nailsRemovalFeeRef}
                   value={nailsRemovalFee}
@@ -603,6 +669,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingNailsRemovalFee-${nailsRemovalFeeID}` : undefined}
                   style={TextInputStyles.base}
@@ -617,11 +684,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               Material Prices
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Wall Paint ($/gallon)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Wall Paint ($/gallon)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={wallPaintGallonRef}
                   value={wallPaintPerGallon}
@@ -631,6 +696,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => ceilingPaintGallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaintGallon-${wallPaintGallonID}` : undefined}
                   style={TextInputStyles.base}
@@ -638,11 +704,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Ceiling Paint ($/gallon)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Ceiling Paint ($/gallon)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={ceilingPaintGallonRef}
                   value={ceilingPaintPerGallon}
@@ -652,6 +716,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => trimPaintGallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaintGallon-${ceilingPaintGallonID}` : undefined}
                   style={TextInputStyles.base}
@@ -660,34 +725,33 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Trim Paint ($/gallon)
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+              <View style={rowStyle}>
+                <Text style={labelStyle}>Trim Paint ($/gallon)</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={trimPaintGallonRef}
+                    value={trimPaintPerGallon}
+                    onChangeText={setTrimPaintPerGallon}
+                    placeholder="50"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => primerGallonRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                 Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
               </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={trimPaintGallonRef}
-                  value={trimPaintPerGallon}
-                  onChangeText={setTrimPaintPerGallon}
-                  placeholder="50"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => primerGallonRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
             </View>
 
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Primer ($/gallon)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Primer ($/gallon)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={primerGallonRef}
                   value={primerPerGallon}
@@ -697,6 +761,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => wallPaint5GallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimerGallon-${primerGallonID}` : undefined}
                   style={TextInputStyles.base}
@@ -711,11 +776,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               5-Gallon Bucket Prices
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Wall Paint ($/5-gallon bucket)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Wall Paint ($/5-gallon)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={wallPaint5GallonRef}
                   value={wallPaintPer5Gallon}
@@ -725,6 +788,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => ceilingPaint5GallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaint5Gallon-${wallPaint5GallonID}` : undefined}
                   style={TextInputStyles.base}
@@ -732,11 +796,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Ceiling Paint ($/5-gallon bucket)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Ceiling Paint ($/5-gallon)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={ceilingPaint5GallonRef}
                   value={ceilingPaintPer5Gallon}
@@ -746,6 +808,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="next"
                   onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaint5Gallon-${ceilingPaint5GallonID}` : undefined}
                   style={TextInputStyles.base}
@@ -754,34 +817,33 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Trim Paint ($/5-gallon bucket)
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+              <View style={rowStyle}>
+                <Text style={labelStyle}>Trim Paint ($/5-gallon)</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={trimPaint5GallonRef}
+                    value={trimPaintPer5Gallon}
+                    onChangeText={setTrimPaintPer5Gallon}
+                    placeholder="225"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => primer5GallonRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
+              </View>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                 Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
               </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={trimPaint5GallonRef}
-                  value={trimPaintPer5Gallon}
-                  onChangeText={setTrimPaintPer5Gallon}
-                  placeholder="225"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => primer5GallonRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
             </View>
 
-            <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Primer ($/5-gallon bucket)
-              </Text>
-              <View style={TextInputStyles.container}>
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Primer ($/5-gallon)</Text>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={primer5GallonRef}
                   value={primerPer5Gallon}
@@ -791,6 +853,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   keyboardType="numeric"
                   returnKeyType="done"
                   onSubmitEditing={() => Keyboard.dismiss()}
+                  onFocus={handleFieldFocus}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimer5Gallon-${primer5GallonID}` : undefined}
                   style={TextInputStyles.base}
                 />
@@ -926,12 +989,24 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingAccentWallMultiplier-${accentWallMultiplierID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => secondCoatMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBathroomMultiplier-${bathroomMultiplierID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingClosetMultiplier-${closetMultiplierID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => bathroomMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingFurnitureMovingFee-${furnitureMovingFeeID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => nailsRemovalFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Project,
   Room,
+  Bathroom,
   Staircase,
   Fireplace,
   BuiltIn,
@@ -90,6 +91,11 @@ interface ProjectStore {
   addRoom: (projectId: string, floorNumber?: number) => string;
   updateRoom: (projectId: string, roomId: string, room: Partial<Room>) => void;
   deleteRoom: (projectId: string, roomId: string) => void;
+
+  // Bathroom operations
+  addBathroom: (projectId: string, floorNumber?: number) => string;
+  updateBathroom: (projectId: string, bathroomId: string, bathroom: Partial<Bathroom>) => void;
+  deleteBathroom: (projectId: string, bathroomId: string) => void;
 
   // Staircase operations
   addStaircase: (projectId: string) => string;
@@ -563,6 +569,82 @@ export const useProjectStore = create<ProjectStore>()(
               ? {
                   ...p,
                   rooms: p.rooms.filter((r) => r.id !== roomId),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      addBathroom: (projectId, floorNumber) => {
+        const bathroomId = uuidv4();
+        const state = get();
+        const project = state.projects.find((p) => p.id === projectId);
+
+        // Get global paint defaults or use fallback defaults
+        const globalDefaults = project?.globalPaintDefaults || getDefaultGlobalPaintDefaults();
+
+        const newBathroom: Bathroom = {
+          id: bathroomId,
+          name: "",
+          length: 0,
+          width: 0,
+          height: 0,
+          ceilingType: "flat",
+          windowCount: 0,
+          doorCount: 0,
+          hasCloset: false,
+          coatsWalls: globalDefaults.defaultWallCoats ?? 2,
+          coatsCeiling: globalDefaults.defaultCeilingCoats ?? 2,
+          coatsTrim: globalDefaults.defaultTrimCoats ?? 2,
+          coatsDoors: globalDefaults.defaultDoorCoats ?? 2,
+          floor: floorNumber || 1, // Use provided floor or default to first floor
+          // Copy global paint defaults to bathroom
+          paintWalls: globalDefaults.paintWalls,
+          paintCeilings: globalDefaults.paintCeilings,
+          paintTrim: globalDefaults.paintTrim,
+          paintWindowFrames: globalDefaults.paintWindowFrames,
+          paintDoorFrames: globalDefaults.paintDoorFrames,
+          paintBaseboard: globalDefaults.paintBaseboards,
+          paintWindows: globalDefaults.paintWindows,
+          paintDoors: globalDefaults.paintDoors,
+          paintJambs: globalDefaults.paintDoorJambs,
+          hasCrownMoulding: globalDefaults.paintCrownMoulding,
+          includeClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
+        };
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? { ...p, bathrooms: [...p.bathrooms, newBathroom], updatedAt: Date.now() }
+              : p
+          ),
+        }));
+        return bathroomId;
+      },
+
+      updateBathroom: (projectId, bathroomId, bathroom) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  bathrooms: p.bathrooms.map((b) =>
+                    b.id === bathroomId ? { ...b, ...bathroom } : b
+                  ),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      deleteBathroom: (projectId, bathroomId) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  bathrooms: p.bathrooms.filter((b) => b.id !== bathroomId),
                   updatedAt: Date.now(),
                 }
               : p

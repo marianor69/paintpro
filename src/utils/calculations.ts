@@ -556,7 +556,8 @@ export function calculateRoomMetrics(
 
   // Add closet labor based on quantity (reuse variables from earlier)
   if (singleClosets > 0 || doubleClosets > 0) {
-    laborCost += (singleClosets + doubleClosets) * safeNumber(pricing.closetLabor, 0) * wallLaborMultiplier;
+    const closetMultiplier = safeNumber(pricing.closetLaborMultiplier, 1.0);
+    laborCost += (singleClosets + doubleClosets) * safeNumber(pricing.closetLabor, 0) * wallLaborMultiplier * closetMultiplier;
   }
 
   // Add crown moulding labor (only if trim is included)
@@ -1441,7 +1442,8 @@ export function calculateFilteredRoomMetrics(
 
   // Closet labor - only if includeClosets
   if (true && (singleClosets > 0 || doubleClosets > 0)) {
-    laborCost += (singleClosets + doubleClosets) * safeNumber(pricing.closetLabor, 0) * wallLaborMultiplier;
+    const closetMultiplier = safeNumber(pricing.closetLaborMultiplier, 1.0);
+    laborCost += (singleClosets + doubleClosets) * safeNumber(pricing.closetLabor, 0) * wallLaborMultiplier * closetMultiplier;
   }
 
   // Crown moulding labor - only if includeCrown

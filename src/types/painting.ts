@@ -60,6 +60,66 @@ export interface Room {
   notes?: string;
 }
 
+export interface Bathroom {
+  id: string;
+  name: string;
+  length: number;
+  width: number;
+  height: number;
+  // Manual area override (optional)
+  manualArea?: number;
+  ceilingType: "flat" | "cathedral";
+  // Cathedral ceiling dimensions
+  cathedralPeakHeight?: number; // Height at the peak for cathedral ceilings
+  windowCount: number;
+  doorCount: number;
+  hasCloset: boolean;
+  // Closet details
+  singleDoorClosets?: number;
+  doubleDoorClosets?: number;
+  includeClosetInteriorInQuote?: boolean; // Whether to include closet interior area in calculations (default: true)
+  // Bathroom-level paint options (override global defaults)
+  paintWalls?: boolean; // Whether to paint walls in this bathroom
+  paintCeilings?: boolean; // Whether to paint ceilings in this bathroom
+  paintTrim?: boolean; // Whether to paint trim in this bathroom (deprecated - use paintWindowFrames and paintDoorFrames)
+  paintWindowFrames?: boolean; // Whether to paint window frames/trim
+  paintDoorFrames?: boolean; // Whether to paint door frames/trim (includes closet doors)
+  paintWindows?: boolean;
+  paintDoors?: boolean;
+  paintJambs?: boolean;
+  paintBaseboard?: boolean;
+  hasCrownMoulding?: boolean;
+  hasAccentWall?: boolean; // Multiple colors / accent wall - adds labor multiplier
+  coatsWalls: number;
+  coatsCeiling: number;
+  coatsTrim: number;
+  coatsDoors: number;
+  // Floor selection (1 or 2)
+  floor?: number;
+  // Include/exclude from calculations
+  included?: boolean; // Whether to include this bathroom in calculations (default: true)
+  includeWindows?: boolean; // Whether to include windows in calculations (default: true)
+  includeDoors?: boolean; // Whether to include doors in calculations (default: true)
+  includeTrim?: boolean; // Whether to include trim (baseboard/crown) in calculations (default: true)
+  // Openings (e.g., pass-through openings without doors)
+  openings?: Opening[];
+  // Per-bathroom gallon usage (stored as decimals for accurate totaling)
+  gallonUsage?: {
+    wall: number;
+    ceiling: number;
+    trim: number;
+    door: number;
+  };
+  // Single source of truth for bathroom totals (computed and persisted)
+  laborTotal?: number;
+  materialsTotal?: number;
+  grandTotal?: number;
+  // Photos for documentation (with notes)
+  photos?: RoomPhoto[];
+  // Standalone notes field (available without photos)
+  notes?: string;
+}
+
 export interface Opening {
   id: string;
   width: number; // in inches
@@ -281,6 +341,7 @@ export interface Project {
   id: string;
   clientInfo: ClientInfo;
   rooms: Room[];
+  bathrooms: Bathroom[];
   staircases: Staircase[];
   fireplaces: Fireplace[];
   builtIns: BuiltIn[];
@@ -340,6 +401,8 @@ export interface PricingSettings {
   // Accent wall / multiple colors labor multiplier
   // Default: 1.25 (25% more labor for cutting in different colors)
   accentWallLaborMultiplier: number;
+  bathroomLaborMultiplier: number;
+  closetLaborMultiplier: number;
 
   // Furniture moving fee (flat fee per project)
   // Default: 100

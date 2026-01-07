@@ -15,6 +15,7 @@ import ProjectSetupScreen from "../screens/ProjectSetupScreen";
 import ProjectActionsScreen from "../screens/ProjectActionsScreen";
 import ProjectsListScreen from "../screens/ProjectsListScreen";
 import RoomEditorScreen from "../screens/RoomEditorScreen";
+import BathroomEditorScreen from "../screens/BathroomEditorScreen";
 import StaircaseEditorScreen from "../screens/StaircaseEditorScreen";
 import FireplaceEditorScreen from "../screens/FireplaceEditorScreen";
 import BuiltInEditorScreen from "../screens/BuiltInEditorScreen";
@@ -37,6 +38,7 @@ export type RootStackParamList = {
   ProjectSetup: { projectId?: string; isNew?: boolean };
   ProjectActions: { projectId: string };
   RoomEditor: { projectId: string; roomId?: string; roomName?: string; floor?: number };
+  BathroomEditor: { projectId: string; bathroomId?: string; bathroomName?: string; floor?: number };
   StaircaseEditor: { projectId: string; staircaseId?: string };
   FireplaceEditor: { projectId: string; fireplaceId?: string };
   BuiltInEditor: { projectId: string; builtInId?: string };
@@ -214,6 +216,18 @@ export default function RootNavigator() {
             const roomName = route.params?.roomName || "Edit Room";
             return {
               title: `Edit Room: ${roomName}`,
+              headerShown: true,
+              gestureEnabled: true,
+            };
+          }}
+        />
+        <Stack.Screen
+          name="BathroomEditor"
+          component={BathroomEditorScreen}
+          options={({ route }) => {
+            const bathroomName = route.params?.bathroomName || "Edit Bathroom";
+            return {
+              title: `Edit Bathroom: ${bathroomName}`,
               headerShown: true,
               gestureEnabled: true,
             };

@@ -121,6 +121,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     navigation.navigate("RoomEditor", { projectId, floor: floorNumber });
   };
 
+  const handleAddBathroom = (floorNumber?: number) => {
+    // Don't create bathroom here - let BathroomEditor create it on Save
+    navigation.navigate("BathroomEditor", { projectId, floor: floorNumber });
+  };
+
   // Helper functions to check if items have actual data
   const hasStaircaseData = (staircase: Staircase): boolean => {
     return !!(
@@ -493,7 +498,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               ? pricingSummary.windowsCount * pricing.windowLabor * pricingSummary.coatsTrim
               : 0,
             laborClosetsRaw: pricingSummary.includedClosets
-              ? (pricingSummary.singleDoorClosets + pricingSummary.doubleDoorClosets) * pricing.closetLabor
+              ? (pricingSummary.singleDoorClosets + pricingSummary.doubleDoorClosets)
+                * pricing.closetLabor
+                * safeNumber(pricing.closetLaborMultiplier, 1.0)
+                * (pricingSummary.coatsWalls > 1 ? safeNumber(pricing.secondCoatLaborMultiplier, 2.0) : 1.0)
               : 0,
             laborCrownMouldingRaw: pricingSummary.includedTrim && room.hasCrownMoulding
               ? pricingSummary.crownMouldingLF * pricing.crownMouldingLaborPerLF
@@ -1557,6 +1565,40 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Room
+              </Text>
+            </Pressable>
+
+            {/* Bathroom Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                const floorCount = safeNumber(project.floorCount, project.hasTwoFloors ? 2 : 1);
+                if (floorCount === 1) {
+                  handleAddBathroom(1);
+                } else {
+                  Alert.alert("Select Floor", "Choose which floor to add the bathroom to:", [
+                    ...Array.from({ length: floorCount }, (_, i) => ({
+                      text: `${getOrdinal(i + 1)} Floor`,
+                      onPress: () => handleAddBathroom(i + 1),
+                    })),
+                    { text: "Cancel", style: "cancel" },
+                  ]);
+                }
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.sm,
+              }}
+            >
+              <View style={{ width: 24, marginRight: Spacing.md }}>
+                <Ionicons name="water-outline" size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Bathroom
               </Text>
             </Pressable>
 
