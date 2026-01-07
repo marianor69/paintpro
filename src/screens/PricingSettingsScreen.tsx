@@ -47,9 +47,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [handrailLaborPerLF, setHandrailLaborPerLF] = React.useState(
     pricing.handrailLaborPerLF.toString()
   );
-  const [fireplaceLabor, setFireplaceLabor] = React.useState(
-    pricing.fireplaceLabor.toString()
-  );
+  const [fireplaceLabor] = React.useState(pricing.fireplaceLabor.toString());
   const [mantelLabor, setMantelLabor] = React.useState(
     pricing.mantelLabor.toString()
   );
@@ -115,7 +113,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const riserLaborRef = useRef<TextInput>(null);
   const spindleLaborRef = useRef<TextInput>(null);
   const handrailLaborRef = useRef<TextInput>(null);
-  const fireplaceRef = useRef<TextInput>(null);
   const mantelLaborRef = useRef<TextInput>(null);
   const legsLaborRef = useRef<TextInput>(null);
   const crownMouldingRef = useRef<TextInput>(null);
@@ -144,7 +141,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const riserLaborID = useId();
   const spindleLaborID = useId();
   const handrailLaborID = useId();
-  const fireplaceID = useId();
   const mantelLaborID = useId();
   const legsLaborID = useId();
   const crownMouldingID = useId();
@@ -247,7 +243,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
   const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", gap: Spacing.sm };
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
-  const inputContainerStyle = { ...TextInputStyles.container, width: 68 };
+  const inputWidth = 68;
+  const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
+  const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
+  const columnLabelStyle = { width: inputWidth, textAlign: "center", fontSize: Typography.caption.fontSize, color: Colors.mediumGray };
 
   return (
     <SafeAreaView
@@ -306,33 +305,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     placeholderTextColor={Colors.mediumGray}
                     keyboardType="numeric"
                     returnKeyType="next"
-                    onSubmitEditing={() => baseboardLaborRef.current?.focus()}
+                    onSubmitEditing={() => doorLaborRef.current?.focus()}
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingLabor-${ceilingLaborID}` : undefined}
                     style={TextInputStyles.base}
                   />
                 </View>
-              </View>
-            </View>
-
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Baseboard ($/LF)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={baseboardLaborRef}
-                  value={baseboardLaborPerLF}
-                  onChangeText={setBaseboardLaborPerLF}
-                  placeholder="1.25"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => doorLaborRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingBaseboardLabor-${baseboardLaborID}` : undefined}
-                  style={TextInputStyles.base}
-                />
               </View>
             </View>
 
@@ -367,13 +346,53 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     placeholderTextColor={Colors.mediumGray}
                     keyboardType="numeric"
                     returnKeyType="next"
-                    onSubmitEditing={() => closetLaborRef.current?.focus()}
+                    onSubmitEditing={() => baseboardLaborRef.current?.focus()}
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingWindowLabor-${windowLaborID}` : undefined}
                     style={TextInputStyles.base}
                   />
                 </View>
+              </View>
+            </View>
+
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Baseboard ($/LF)</Text>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={baseboardLaborRef}
+                  value={baseboardLaborPerLF}
+                  onChangeText={setBaseboardLaborPerLF}
+                  placeholder="1.25"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => crownMouldingRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingBaseboardLabor-${baseboardLaborID}` : undefined}
+                  style={TextInputStyles.base}
+                />
+              </View>
+            </View>
+
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Crowns ($/LF)</Text>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={crownMouldingRef}
+                  value={crownMouldingLaborPerLF}
+                  onChangeText={setCrownMouldingLaborPerLF}
+                  placeholder="1.50"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => closetLaborRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCrownMoulding-${crownMouldingID}` : undefined}
+                  style={TextInputStyles.base}
+                />
               </View>
             </View>
 
@@ -396,6 +415,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 />
               </View>
             </View>
+
+            <Text style={{ ...Typography.h3, marginBottom: Spacing.sm, marginTop: Spacing.xs }}>
+              Staircases
+            </Text>
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
@@ -439,47 +462,29 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Handrail ($/LF)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={handrailLaborRef}
-                    value={handrailLaborPerLF}
-                    onChangeText={setHandrailLaborPerLF}
-                    placeholder="10"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => fireplaceRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
-                    style={TextInputStyles.base}
-                  />
-                </View>
-              </View>
-              <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Fireplace ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={fireplaceRef}
-                    value={fireplaceLabor}
-                    onChangeText={setFireplaceLabor}
-                    placeholder="150"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => mantelLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingFireplace-${fireplaceID}` : undefined}
-                    style={TextInputStyles.base}
-                  />
-                </View>
+              <Text style={labelStyle}>Handrail ($/LF)</Text>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={handrailLaborRef}
+                  value={handrailLaborPerLF}
+                  onChangeText={setHandrailLaborPerLF}
+                  placeholder="10"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => mantelLaborRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
+                  style={TextInputStyles.base}
+                />
               </View>
             </View>
 
-            {/* New Fireplace Labor Inputs */}
+            <Text style={{ ...Typography.h3, marginBottom: Spacing.sm, marginTop: Spacing.xs }}>
+              Fireplaces
+            </Text>
+
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Mantel ($)</Text>
@@ -511,7 +516,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     placeholderTextColor={Colors.mediumGray}
                     keyboardType="numeric"
                     returnKeyType="next"
-                    onSubmitEditing={() => crownMouldingRef.current?.focus()}
+                    onSubmitEditing={() => secondCoatMultiplierRef.current?.focus()}
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingLegsLabor-${legsLaborID}` : undefined}
@@ -520,32 +525,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
             </View>
-
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Crowns ($/LF)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={crownMouldingRef}
-                  value={crownMouldingLaborPerLF}
-                  onChangeText={setCrownMouldingLaborPerLF}
-                  placeholder="1.50"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => secondCoatMultiplierRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCrownMoulding-${crownMouldingID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
-            </View>
           </Card>
 
           {/* Multipliers */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Multipliers
+              Labor Multipliers
             </Text>
 
             <View style={rowStyle}>
@@ -678,14 +663,20 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
           </Card>
 
-          {/* Material Prices */}
+          {/* Material Costs */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Material Prices
+              Material Costs
             </Text>
 
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Wall Paint ($/gallon)</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.sm }}>
+              <Text style={{ ...labelStyle, color: Colors.mediumGray }}>Material</Text>
+              <Text style={columnLabelStyle}>1 gal</Text>
+              <Text style={columnLabelStyle}>5 gal</Text>
+            </View>
+
+            <View style={materialRowStyle}>
+              <Text style={labelStyle}>Wall Paint</Text>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={wallPaintGallonRef}
@@ -695,89 +686,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   placeholderTextColor={Colors.mediumGray}
                   keyboardType="numeric"
                   returnKeyType="next"
-                  onSubmitEditing={() => ceilingPaintGallonRef.current?.focus()}
+                  onSubmitEditing={() => wallPaint5GallonRef.current?.focus()}
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaintGallon-${wallPaintGallonID}` : undefined}
                   style={TextInputStyles.base}
                 />
               </View>
-            </View>
-
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Ceiling Paint ($/gallon)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={ceilingPaintGallonRef}
-                  value={ceilingPaintPerGallon}
-                  onChangeText={setCeilingPaintPerGallon}
-                  placeholder="40"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => trimPaintGallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaintGallon-${ceilingPaintGallonID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
-            </View>
-
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={rowStyle}>
-                <Text style={labelStyle}>Trim Paint ($/gallon)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={trimPaintGallonRef}
-                    value={trimPaintPerGallon}
-                    onChangeText={setTrimPaintPerGallon}
-                    placeholder="50"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => primerGallonRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
-                    style={TextInputStyles.base}
-                  />
-                </View>
-              </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
-              </Text>
-            </View>
-
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Primer ($/gallon)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={primerGallonRef}
-                  value={primerPerGallon}
-                  onChangeText={setPrimerPerGallon}
-                  placeholder="35"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => wallPaint5GallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimerGallon-${primerGallonID}` : undefined}
-                  style={TextInputStyles.base}
-                />
-              </View>
-            </View>
-          </Card>
-
-          {/* 5-Gallon Bucket Prices */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              5-Gallon Bucket Prices
-            </Text>
-
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Wall Paint ($/5-gallon)</Text>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={wallPaint5GallonRef}
@@ -787,7 +702,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   placeholderTextColor={Colors.mediumGray}
                   keyboardType="numeric"
                   returnKeyType="next"
-                  onSubmitEditing={() => ceilingPaint5GallonRef.current?.focus()}
+                  onSubmitEditing={() => ceilingPaintGallonRef.current?.focus()}
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaint5Gallon-${wallPaint5GallonID}` : undefined}
@@ -796,8 +711,24 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Ceiling Paint ($/5-gallon)</Text>
+            <View style={materialRowStyle}>
+              <Text style={labelStyle}>Ceiling Paint</Text>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={ceilingPaintGallonRef}
+                  value={ceilingPaintPerGallon}
+                  onChangeText={setCeilingPaintPerGallon}
+                  placeholder="40"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => ceilingPaint5GallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaintGallon-${ceilingPaintGallonID}` : undefined}
+                  style={TextInputStyles.base}
+                />
+              </View>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={ceilingPaint5GallonRef}
@@ -807,7 +738,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   placeholderTextColor={Colors.mediumGray}
                   keyboardType="numeric"
                   returnKeyType="next"
-                  onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
+                  onSubmitEditing={() => trimPaintGallonRef.current?.focus()}
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaint5Gallon-${ceilingPaint5GallonID}` : undefined}
@@ -817,8 +748,24 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={rowStyle}>
-                <Text style={labelStyle}>Trim Paint ($/5-gallon)</Text>
+              <View style={materialRowStyle}>
+                <Text style={labelStyle}>Trim Paint</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={trimPaintGallonRef}
+                    value={trimPaintPerGallon}
+                    onChangeText={setTrimPaintPerGallon}
+                    placeholder="50"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={trimPaint5GallonRef}
@@ -828,7 +775,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     placeholderTextColor={Colors.mediumGray}
                     keyboardType="numeric"
                     returnKeyType="next"
-                    onSubmitEditing={() => primer5GallonRef.current?.focus()}
+                    onSubmitEditing={() => primerGallonRef.current?.focus()}
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
@@ -841,8 +788,24 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </Text>
             </View>
 
-            <View style={rowStyle}>
-              <Text style={labelStyle}>Primer ($/5-gallon)</Text>
+            <View style={materialRowStyle}>
+              <Text style={labelStyle}>Primer</Text>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={primerGallonRef}
+                  value={primerPerGallon}
+                  onChangeText={setPrimerPerGallon}
+                  placeholder="35"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => primer5GallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimerGallon-${primerGallonID}` : undefined}
+                  style={TextInputStyles.base}
+                />
+              </View>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={primer5GallonRef}
@@ -911,30 +874,30 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingCeilingLabor-${ceilingLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => wallLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => baseboardLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => doorLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingBaseboardLabor-${baseboardLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => ceilingLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => doorLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => windowLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => crownMouldingRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingDoorLabor-${doorLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => baseboardLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => ceilingLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => windowLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingWindowLabor-${windowLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => doorLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => closetLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => baseboardLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingClosetLabor-${closetLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => windowLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => crownMouldingRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => riserLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
@@ -953,36 +916,30 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingHandrailLabor-${handrailLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => spindleLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => fireplaceRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
-          </View>
-        </InputAccessoryView>
-        <InputAccessoryView nativeID={`pricingFireplace-${fireplaceID}`}>
-          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => handrailLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => mantelLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingMantelLabor-${mantelLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => fireplaceRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => handrailLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => legsLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingLegsLabor-${legsLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => mantelLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => crownMouldingRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => secondCoatMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingCrownMoulding-${crownMouldingID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => legsLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => secondCoatMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => baseboardLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => closetLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricing2CoatMultiplier-${secondCoatMultiplierID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => crownMouldingRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => legsLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
@@ -1019,48 +976,48 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingWallPaintGallon-${wallPaintGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => nailsRemovalFeeRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => ceilingPaintGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => wallPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingCeilingPaintGallon-${ceilingPaintGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => wallPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => trimPaintGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => wallPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => ceilingPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingTrimPaintGallon-${trimPaintGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => ceilingPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => primerGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => ceilingPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => trimPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingPrimerGallon-${primerGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => trimPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => wallPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => trimPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => primer5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingWallPaint5Gallon-${wallPaint5GallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => primerGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => ceilingPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => wallPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => ceilingPaintGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingCeilingPaint5Gallon-${ceilingPaint5GallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => wallPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => trimPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => ceilingPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => trimPaintGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingTrimPaint5Gallon-${trimPaint5GallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => ceilingPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => primer5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => trimPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => primerGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingPrimer5Gallon-${primer5GallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => trimPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => primerGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => Keyboard.dismiss()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Done</Text></Pressable>
           </View>
         </InputAccessoryView>

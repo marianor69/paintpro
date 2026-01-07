@@ -93,7 +93,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.6 - bdcac4a - Bathrooms in Running Estimate
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v1.1.0 - 9f9ab90 - Pricing bubbles smaller
+              GPT - v1.1.1 - 6cd222c - Pricing layout cleanup
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
