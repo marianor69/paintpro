@@ -447,7 +447,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     return currentIndex === sequence.length - 1;
   }, [focusedWall, getWallInputSequence]);
 
-  const focusTargetY = 160;
+  const focusTargetY = 180;
   const scrollFocusedInputIntoView = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
     if (!focusedInput || !scrollViewRef.current) {
