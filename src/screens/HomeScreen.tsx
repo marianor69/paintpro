@@ -93,7 +93,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.4 - ea1568e - Nails removal in Running Estimate
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v1.0.5 - b91e828 - IrregularRoom fixed focus target
+              GPT - v1.0.6 - fb192d9 - IrregularRoom focus target 160
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
