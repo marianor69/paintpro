@@ -670,7 +670,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               Material Costs
             </Text>
 
-            <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.sm }}>
+            <View style={materialRowStyle}>
               <View style={{ flex: 1 }} />
               <Text style={columnLabelStyle}>1 gal</Text>
               <Text style={columnLabelStyle}>5 gal</Text>
