@@ -247,7 +247,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
   const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", gap: Spacing.sm };
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
-  const inputContainerStyle = { ...TextInputStyles.container, width: 110 };
+  const inputContainerStyle = { ...TextInputStyles.container, width: 80 };
 
   return (
     <SafeAreaView
