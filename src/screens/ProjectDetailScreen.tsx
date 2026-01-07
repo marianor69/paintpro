@@ -29,10 +29,12 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     s.projects.find((p) => p.id === projectId)
   );
   const addRoom = useProjectStore((s) => s.addRoom);
+  const addBathroom = useProjectStore((s) => s.addBathroom);
   const addStaircase = useProjectStore((s) => s.addStaircase);
   const addFireplace = useProjectStore((s) => s.addFireplace);
   const addBuiltIn = useProjectStore((s) => s.addBuiltIn);
   const deleteRoom = useProjectStore((s) => s.deleteRoom);
+  const deleteBathroom = useProjectStore((s) => s.deleteBathroom);
   const deleteStaircase = useProjectStore((s) => s.deleteStaircase);
   const deleteFireplace = useProjectStore((s) => s.deleteFireplace);
   const deleteBuiltIn = useProjectStore((s) => s.deleteBuiltIn);
@@ -182,6 +184,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
         )
       );
 
+      const bathroomSummaries = (project.bathrooms || []).map(bathroom =>
+        computeRoomPricingSummary(
+          bathroom,
+          quoteBuilder,
+          pricing,
+          project.projectCoats,
+          project.projectIncludeClosetInteriorInQuote
+        )
+      );
+
       const staircaseSummaries = (project.staircases || []).map(stair =>
         computeStaircasePricingSummary(stair, pricing, project.projectCoats)
       );
@@ -205,15 +217,18 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
         quoteBuilder,
         summaries: {
           rooms: roomSummaries,
+          bathrooms: bathroomSummaries,
           staircases: staircaseSummaries,
           fireplaces: fireplaceSummaries,
         },
         totals: {
           roomsTotal: roomSummaries.reduce((sum, r) => sum + r.totalDisplayed, 0),
+          bathroomsTotal: bathroomSummaries.reduce((sum, b) => sum + b.totalDisplayed, 0),
           staircasesTotal: staircaseSummaries.reduce((sum, s) => sum + s.totalDisplayed, 0),
           fireplacesTotal: fireplaceSummaries.reduce((sum, f) => sum + f.totalDisplayed, 0),
           grandTotal:
             roomSummaries.reduce((sum, r) => sum + r.totalDisplayed, 0) +
+            bathroomSummaries.reduce((sum, b) => sum + b.totalDisplayed, 0) +
             staircaseSummaries.reduce((sum, s) => sum + s.totalDisplayed, 0) +
             fireplaceSummaries.reduce((sum, f) => sum + f.totalDisplayed, 0),
         },
@@ -712,11 +727,12 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
   // Calculate running stats for display
   const roomCount = project.rooms?.length || 0;
+  const bathroomCount = project.bathrooms?.length || 0;
   const staircaseCount = project.staircases?.length || 0;
   const fireplaceCount = project.fireplaces?.length || 0;
   const builtInCount = project.builtIns?.length || 0;
   const brickWallCount = project.brickWalls?.length || 0;
-  const totalItems = roomCount + staircaseCount + fireplaceCount + builtInCount + brickWallCount;
+  const totalItems = roomCount + bathroomCount + staircaseCount + fireplaceCount + builtInCount + brickWallCount;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }} edges={["bottom"]}>
@@ -807,6 +823,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     <Ionicons name="bed-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {room.name || "Unnamed Room"}
+                    </Text>
+                  </View>
+                ))}
+
+                {/* Bathrooms */}
+                {project.bathrooms?.map((bathroom) => (
+                  <View key={bathroom.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
+                    <Ionicons name="water-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {bathroom.name || "Unnamed Bathroom"}
                     </Text>
                   </View>
                 ))}
@@ -914,6 +940,21 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(roomPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
+
+                {/* Bathrooms */}
+                {project.bathrooms?.map((bathroom) => {
+                  const bathroomPricing = displaySummary.itemizedPrices?.find(p => p.id === bathroom.id);
+                  return (
+                    <View key={bathroom.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(bathroomPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(bathroomPricing?.materialsCost || 0)}
                       </Text>
                     </View>
                   );
@@ -1126,6 +1167,64 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                             text: "Delete",
                             style: "destructive",
                             onPress: () => deleteRoom(projectId, room.id),
+                          },
+                        ]);
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                ))}
+
+                {/* Bathrooms */}
+                {project.bathrooms?.map((bathroom) => (
+                  <View
+                    key={bathroom.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("BathroomEditor", {
+                          projectId,
+                          bathroomId: bathroom.id,
+                          bathroomName: bathroom.name || "Unnamed Bathroom",
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Ionicons name="water-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {bathroom.name || "Unnamed Bathroom"} - {getOrdinal(bathroom.floor || 1)} floor
+                        </Text>
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert("Delete Bathroom", `Are you sure you want to delete "${bathroom.name || "Unnamed Bathroom"}"?`, [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: () => deleteBathroom(projectId, bathroom.id),
                           },
                         ]);
                       }}

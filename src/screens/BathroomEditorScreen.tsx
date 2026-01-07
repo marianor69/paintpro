@@ -115,25 +115,25 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
   const [name, setName] = useState(bathroom?.name || "");
   // Room dimensions stored in feet, convert for display based on unit system
-  const [length, setLength] = useState(bathroom?.length && room.length > 0 ? formatMeasurementValue(room.length, 'length', unitSystem, 2) : "");
-  const [width, setWidth] = useState(bathroom?.width && room.width > 0 ? formatMeasurementValue(room.width, 'length', unitSystem, 2) : "");
+  const [length, setLength] = useState(bathroom?.length && bathroom.length > 0 ? formatMeasurementValue(bathroom.length, 'length', unitSystem, 2) : "");
+  const [width, setWidth] = useState(bathroom?.width && bathroom.width > 0 ? formatMeasurementValue(bathroom.width, 'length', unitSystem, 2) : "");
   const floor = bathroom?.floor || initialFloor || 1;
   const [manualArea, setManualArea] = useState(
-    bathroom?.manualArea && room.manualArea > 0 ? formatMeasurementValue(room.manualArea, 'area', unitSystem, 2) : ""
+    bathroom?.manualArea && bathroom.manualArea > 0 ? formatMeasurementValue(bathroom.manualArea, 'area', unitSystem, 2) : ""
   );
   const [isCathedral, setIsCathedral] = useState(bathroom?.ceilingType === "cathedral");
   const [windowCount, setWindowCount] = useState(
-    bathroom?.windowCount && room.windowCount > 0 ? room.windowCount.toString() : ""
+    bathroom?.windowCount && bathroom.windowCount > 0 ? bathroom.windowCount.toString() : ""
   );
   const [doorCount, setDoorCount] = useState(
-    bathroom?.doorCount && room.doorCount > 0 ? room.doorCount.toString() : ""
+    bathroom?.doorCount && bathroom.doorCount > 0 ? bathroom.doorCount.toString() : ""
   );
   const [hasCloset, setHasCloset] = useState(bathroom?.hasCloset || false);
   const [singleDoorClosets, setSingleDoorClosets] = useState(
-    bathroom?.singleDoorClosets && room.singleDoorClosets > 0 ? room.singleDoorClosets.toString() : ""
+    bathroom?.singleDoorClosets && bathroom.singleDoorClosets > 0 ? bathroom.singleDoorClosets.toString() : ""
   );
   const [doubleDoorClosets, setDoubleDoorClosets] = useState(
-    bathroom?.doubleDoorClosets && room.doubleDoorClosets > 0 ? room.doubleDoorClosets.toString() : ""
+    bathroom?.doubleDoorClosets && bathroom.doubleDoorClosets > 0 ? bathroom.doubleDoorClosets.toString() : ""
   );
   const [includeClosetInteriorInQuote, setIncludeClosetInteriorInQuote] = useState(
     bathroom?.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
@@ -154,7 +154,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const [hasCrownMoulding, setHasCrownMoulding] = useState(bathroom?.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true);
   const [hasAccentWall, setHasAccentWall] = useState(bathroom?.hasAccentWall ?? false);
   const [cathedralPeakHeight, setCathedralPeakHeight] = useState(
-    bathroom?.cathedralPeakHeight && room.cathedralPeakHeight > 0 ? formatMeasurementValue(room.cathedralPeakHeight, 'length', unitSystem, 2) : ""
+    bathroom?.cathedralPeakHeight && bathroom.cathedralPeakHeight > 0 ? formatMeasurementValue(bathroom.cathedralPeakHeight, 'length', unitSystem, 2) : ""
   );
 
   // Room photos state
@@ -314,31 +314,31 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
     // Create initial snapshot of all editable fields
     initialStateRef.current = serializeBathroomState(
-      room.name || "",
-      room.length && room.length > 0 ? room.length.toString() : "",
-      room.width && room.width > 0 ? room.width.toString() : "",
-      room.manualArea && room.manualArea > 0 ? room.manualArea.toString() : "",
-      room.ceilingType === "cathedral",
-      room.cathedralPeakHeight && room.cathedralPeakHeight > 0 ? room.cathedralPeakHeight.toString() : "",
-      room.windowCount && room.windowCount > 0 ? room.windowCount.toString() : "",
-      room.doorCount && room.doorCount > 0 ? room.doorCount.toString() : "",
-      room.hasCloset || false,
-      room.singleDoorClosets && room.singleDoorClosets > 0 ? room.singleDoorClosets.toString() : "",
-      room.doubleDoorClosets && room.doubleDoorClosets > 0 ? room.doubleDoorClosets.toString() : "",
-      room.paintWalls ?? project?.globalPaintDefaults?.paintWalls ?? true,
-      room.paintCeilings ?? project?.globalPaintDefaults?.paintCeilings ?? true,
-      room.paintTrim ?? project?.globalPaintDefaults?.paintTrim ?? true,
-      room.paintWindowFrames ?? project?.globalPaintDefaults?.paintWindowFrames ?? true,
-      room.paintDoorFrames ?? project?.globalPaintDefaults?.paintDoorFrames ?? true,
-      room.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? true,
-      room.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? true,
-      room.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? true,
-      room.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
-      room.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true,
-      room.hasAccentWall ?? false,
-      room.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
+      bathroom.name || "",
+      bathroom.length && bathroom.length > 0 ? bathroom.length.toString() : "",
+      bathroom.width && bathroom.width > 0 ? bathroom.width.toString() : "",
+      bathroom.manualArea && bathroom.manualArea > 0 ? bathroom.manualArea.toString() : "",
+      bathroom.ceilingType === "cathedral",
+      bathroom.cathedralPeakHeight && bathroom.cathedralPeakHeight > 0 ? bathroom.cathedralPeakHeight.toString() : "",
+      bathroom.windowCount && bathroom.windowCount > 0 ? bathroom.windowCount.toString() : "",
+      bathroom.doorCount && bathroom.doorCount > 0 ? bathroom.doorCount.toString() : "",
+      bathroom.hasCloset || false,
+      bathroom.singleDoorClosets && bathroom.singleDoorClosets > 0 ? bathroom.singleDoorClosets.toString() : "",
+      bathroom.doubleDoorClosets && bathroom.doubleDoorClosets > 0 ? bathroom.doubleDoorClosets.toString() : "",
+      bathroom.paintWalls ?? project?.globalPaintDefaults?.paintWalls ?? true,
+      bathroom.paintCeilings ?? project?.globalPaintDefaults?.paintCeilings ?? true,
+      bathroom.paintTrim ?? project?.globalPaintDefaults?.paintTrim ?? true,
+      bathroom.paintWindowFrames ?? project?.globalPaintDefaults?.paintWindowFrames ?? true,
+      bathroom.paintDoorFrames ?? project?.globalPaintDefaults?.paintDoorFrames ?? true,
+      bathroom.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? true,
+      bathroom.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? true,
+      bathroom.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? true,
+      bathroom.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
+      bathroom.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true,
+      bathroom.hasAccentWall ?? false,
+      bathroom.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
     );
-  }, [room, project]);
+  }, [bathroom, project]);
 
   // Check for changes by comparing current state to initial snapshot
   useEffect(() => {
@@ -1378,7 +1378,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             <TextInput
               value={notes}
               onChangeText={setNotes}
-              placeholder="Add notes about this room..."
+              placeholder="Add notes about this bathroom..."
               placeholderTextColor={Colors.mediumGray}
               multiline
               numberOfLines={3}
