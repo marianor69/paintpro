@@ -525,13 +525,13 @@ export default function CalculationSettingsScreen() {
             </View>
           </Card>
 
-          {/* Baseboard Width */}
+          {/* Trim Width Assumptions */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Baseboard Width
+              Trim Width Assumptions
             </Text>
 
-            <View>
+            <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Baseboard Width (inches)
               </Text>
@@ -554,13 +554,6 @@ export default function CalculationSettingsScreen() {
                 Width of baseboard trim along walls (default: 5.5 inches)
               </Text>
             </View>
-          </Card>
-
-          {/* Crown Moulding Width */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Crown Moulding Width
-            </Text>
 
             <View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
