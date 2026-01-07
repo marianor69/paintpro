@@ -77,6 +77,8 @@ export default function CalculationSettingsScreen() {
   const baseboardWidthID = useId();
   const crownMouldingWidthID = useId();
 
+  const inputContainerStyle = [TextInputStyles.container, { minWidth: 96 }];
+
   const handleSave = () => {
     const newSettings = {
       doorHeight: parseFloat(doorHeight) || settings.doorHeight,
@@ -177,7 +179,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
                     Height (ft)
                   </Text>
-                  <View style={TextInputStyles.container}>
+                  <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorHeightRef}
                       value={doorHeight}
@@ -197,7 +199,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
                     Width (ft)
                   </Text>
-                  <View style={TextInputStyles.container}>
+                  <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorWidthRef}
                       value={doorWidth}
@@ -223,7 +225,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Door Trim Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={doorTrimWidthRef}
                   value={doorTrimWidth}
@@ -247,7 +249,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Door Jamb Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={doorJambWidthRef}
                   value={doorJambWidth}
@@ -283,7 +285,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
                     Width (ft)
                   </Text>
-                  <View style={TextInputStyles.container}>
+                  <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowWidthRef}
                       value={windowWidth}
@@ -303,7 +305,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
                     Height (ft)
                   </Text>
-                  <View style={TextInputStyles.container}>
+                  <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowHeightRef}
                       value={windowHeight}
@@ -329,7 +331,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Window Trim Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={windowTrimWidthRef}
                   value={windowTrimWidth}
@@ -357,23 +359,25 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Closet Cavity Depth (feet)
-              </Text>
-              <View style={TextInputStyles.container}>
-                <TextInput
-                  ref={closetCavityDepthRef}
-                  value={closetCavityDepth}
-                  onChangeText={setClosetCavityDepth}
-                  keyboardType="numeric"
-                  placeholder="2"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
-                  style={TextInputStyles.base}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Closet Cavity Depth (feet)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={closetCavityDepthRef}
+                    value={closetCavityDepth}
+                    onChangeText={setClosetCavityDepth}
+                    keyboardType="numeric"
+                    placeholder="2"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Depth of closet interior for wall area calculation
@@ -390,7 +394,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Door Opening Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={singleClosetWidthRef}
                   value={singleClosetWidth}
@@ -411,7 +415,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Trim Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={singleClosetTrimWidthRef}
                   value={singleClosetTrimWidth}
@@ -432,7 +436,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Baseboard Perimeter (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={singleClosetBaseboardRef}
                   value={singleClosetBaseboardPerimeter}
@@ -462,7 +466,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Door Opening Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={doubleClosetWidthRef}
                   value={doubleClosetWidth}
@@ -483,7 +487,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Trim Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={doubleClosetTrimWidthRef}
                   value={doubleClosetTrimWidth}
@@ -504,7 +508,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Baseboard Perimeter (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={doubleClosetBaseboardRef}
                   value={doubleClosetBaseboardPerimeter}
@@ -535,7 +539,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Baseboard Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={baseboardWidthRef}
                   value={baseboardWidth}
@@ -559,7 +563,7 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Crown Moulding Width (inches)
               </Text>
-              <View style={TextInputStyles.container}>
+              <View style={inputContainerStyle}>
                 <TextInput
                   ref={crownMouldingWidthRef}
                   value={crownMouldingWidth}

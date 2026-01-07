@@ -245,8 +245,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
   const inputWidth = 68;
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
+  const inputTextStyle = { textAlign: "right" as const };
   const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
-  const columnLabelStyle = { width: inputWidth, textAlign: "center", fontSize: Typography.caption.fontSize, color: Colors.mediumGray };
+  const columnLabelStyle = { width: inputWidth, textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray };
 
   return (
     <SafeAreaView
@@ -290,7 +291,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallLabor-${wallLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -309,7 +310,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingLabor-${ceilingLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -331,7 +332,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingDoorLabor-${doorLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -350,7 +351,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingWindowLabor-${windowLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -371,7 +372,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingBaseboardLabor-${baseboardLaborID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -391,7 +392,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCrownMoulding-${crownMouldingID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -411,7 +412,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetLabor-${closetLaborID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -436,7 +437,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingRiserLabor-${riserLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -455,7 +456,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingSpindleLabor-${spindleLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -476,7 +477,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -501,7 +502,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingMantelLabor-${mantelLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -520,7 +521,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingLegsLabor-${legsLaborID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -549,7 +550,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricing2CoatMultiplier-${secondCoatMultiplierID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -568,7 +569,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingAccentWallMultiplier-${accentWallMultiplierID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -590,7 +591,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomMultiplier-${bathroomMultiplierID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -609,7 +610,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetMultiplier-${closetMultiplierID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -637,7 +638,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -657,7 +658,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingNailsRemovalFee-${nailsRemovalFeeID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -670,7 +671,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </Text>
 
             <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.sm }}>
-              <Text style={{ ...labelStyle, color: Colors.mediumGray }}>Material</Text>
+              <View style={{ flex: 1 }} />
               <Text style={columnLabelStyle}>1 gal</Text>
               <Text style={columnLabelStyle}>5 gal</Text>
             </View>
@@ -690,7 +691,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaintGallon-${wallPaintGallonID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
               <View style={inputContainerStyle}>
@@ -706,7 +707,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaint5Gallon-${wallPaint5GallonID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -726,7 +727,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaintGallon-${ceilingPaintGallonID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
               <View style={inputContainerStyle}>
@@ -742,7 +743,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaint5Gallon-${ceilingPaint5GallonID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
@@ -763,7 +764,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
                 <View style={inputContainerStyle}>
@@ -779,7 +780,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     onFocus={handleFieldFocus}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={inputTextStyle}
                   />
                 </View>
               </View>
@@ -803,7 +804,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimerGallon-${primerGallonID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
               <View style={inputContainerStyle}>
@@ -818,7 +819,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   onSubmitEditing={() => Keyboard.dismiss()}
                   onFocus={handleFieldFocus}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimer5Gallon-${primer5GallonID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={inputTextStyle}
                 />
               </View>
             </View>
