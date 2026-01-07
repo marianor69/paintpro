@@ -130,7 +130,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   // Refs
   const scrollYRef = useRef(0);
-  const topAnchorRef = useRef<View>(null);
   const pendingFocusRef = useRef(false);
   const nameRef = useRef<TextInput>(null);
   const cathedralPeakHeightRef = useRef<TextInput>(null);
@@ -448,20 +447,17 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     return currentIndex === sequence.length - 1;
   }, [focusedWall, getWallInputSequence]);
 
-  const focusOffset = 16;
+  const focusTargetY = 140;
   const scrollFocusedInputIntoView = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
-    if (!focusedInput || !scrollViewRef.current || !topAnchorRef.current) {
+    if (!focusedInput || !scrollViewRef.current) {
       return;
     }
 
-    topAnchorRef.current.measureInWindow((topX, topY) => {
-      focusedInput.measureInWindow((inputX, inputY) => {
-        const targetY = topY + focusOffset;
-        const delta = inputY - targetY;
-        const scrollToY = Math.max(0, scrollYRef.current + delta);
-        scrollViewRef.current?.scrollTo({ y: scrollToY, animated: true });
-      });
+    focusedInput.measureInWindow((inputX, inputY) => {
+      const delta = inputY - focusTargetY;
+      const scrollToY = Math.max(0, scrollYRef.current + delta);
+      scrollViewRef.current?.scrollTo({ y: scrollToY, animated: true });
     });
   }, []);
 
@@ -704,7 +700,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </View>
           )}
 
-          <View ref={topAnchorRef} style={{ padding: Spacing.md }}>
+          <View style={{ padding: Spacing.md }}>
             {/* Main Info Card */}
             <Card style={{ marginBottom: Spacing.md }}>
               {/* Room Name */}
