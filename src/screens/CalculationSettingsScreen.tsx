@@ -188,11 +188,16 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.sm }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Door
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Door
+                  </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                    Standard door dimensions for surface area calculation
+                  </Text>
+                </View>
                 <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
                     Height (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -212,7 +217,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
                     Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -232,16 +237,18 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Standard door dimensions for surface area calculation
-              </Text>
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Door Trim Width (inches)
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Door Trim Width (inches)
+                  </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                    Width of trim molding around doors
+                  </Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={doorTrimWidthRef}
@@ -258,16 +265,18 @@ export default function CalculationSettingsScreen() {
                   />
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Width of trim molding around doors
-              </Text>
             </View>
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Door Jamb Width (inches)
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Door Jamb Width (inches)
+                  </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                    Width of door jamb (inside frame)
+                  </Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={doorJambWidthRef}
@@ -284,9 +293,6 @@ export default function CalculationSettingsScreen() {
                   />
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Width of door jamb (inside frame)
-              </Text>
             </View>
           </Card>
 
@@ -301,9 +307,9 @@ export default function CalculationSettingsScreen() {
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
                   Window Size (ft)
                 </Text>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    W
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                    Width
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -321,9 +327,9 @@ export default function CalculationSettingsScreen() {
                     />
                   </View>
                 </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    H
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                    Height
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
