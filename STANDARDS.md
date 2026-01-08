@@ -55,3 +55,10 @@ Rule:
 Notes:
 - Use `alignItems: "center"` when there is no helper text.
 - Use `alignItems: "flex-start"` and offset the label block when helper text exists.
+
+## CardNumbering
+
+Rule:
+- Cards are numbered per screen for reference only (no UI labels).
+- Order is top-to-bottom, left-to-right as they appear on screen.
+- Example: "CalculationSettings Card 1" refers to the first visible card from the top.
