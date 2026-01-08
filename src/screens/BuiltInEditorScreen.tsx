@@ -299,7 +299,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                 />
               </View>
 
-              {/* Row 1: Width, Height, Depth */}
+              {/* Row 1: Width, Height, Depth, Shelves */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <FormInput
@@ -345,10 +345,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     className="mb-0"
                   />
                 </View>
-              </View>
-
-              {/* Row 2: Shelves */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                 <View style={{ flex: 1 }}>
                   <FormInput
                     ref={shelfCountRef}
