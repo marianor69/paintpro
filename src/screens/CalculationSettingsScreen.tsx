@@ -549,7 +549,7 @@ export default function CalculationSettingsScreen() {
             <View style={{ marginBottom: Spacing.sm }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Closet Door Width
+                  Door Width
                 </Text>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
@@ -598,7 +598,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Closet Baseboard Perimeter
+                    Baseboard Perimeter
                   </Text>
                   <Text style={helperTextStyle}>
                     Total baseboard length inside closet (back + 2 sides)
