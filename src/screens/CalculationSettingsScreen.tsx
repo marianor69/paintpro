@@ -171,12 +171,12 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Door Size
-              </Text>
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Door
+                </Text>
+                <View>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
                     Height (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -195,8 +195,8 @@ export default function CalculationSettingsScreen() {
                     />
                   </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                <View>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
                     Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
