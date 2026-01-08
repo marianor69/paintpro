@@ -8,6 +8,9 @@ import {
   InputAccessoryView,
   Keyboard,
   Platform,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
 } from "react-native";
 import { Colors, Typography, Spacing, BorderRadius } from "../utils/designSystem";
 import { cn } from "../utils/cn";
@@ -20,6 +23,8 @@ interface FormInputProps extends Omit<TextInputProps, "style"> {
   previousFieldRef?: RefObject<TextInput>;
   nextFieldRef?: RefObject<TextInput>;
   inputAccessoryViewID?: string;
+  inputContainerStyle?: StyleProp<ViewStyle>;
+  inputTextStyle?: StyleProp<TextStyle>;
 }
 
 export const FormInput = forwardRef<TextInput, FormInputProps>(({
@@ -30,6 +35,8 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   previousFieldRef,
   nextFieldRef,
   inputAccessoryViewID,
+  inputContainerStyle,
+  inputTextStyle,
   keyboardType,
   ...textInputProps
 }, ref) => {
@@ -93,16 +100,19 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         </Text>
       )}
       <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: Colors.white,
-          borderRadius: BorderRadius.default,
-          borderWidth: 1,
-          borderColor: error ? Colors.error : Colors.neutralGray,
-          paddingHorizontal: Spacing.md,
-          paddingVertical: Spacing.sm,
-        }}
+        style={[
+          {
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: Colors.white,
+            borderRadius: BorderRadius.default,
+            borderWidth: 1,
+            borderColor: error ? Colors.error : Colors.neutralGray,
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.sm,
+          },
+          inputContainerStyle,
+        ]}
       >
         <TextInput
           ref={ref}
@@ -117,12 +127,15 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
           cursorColor={Colors.primaryBlue}
           selectionColor={Colors.primaryBlue}
-          style={{
-            flex: 1,
-            fontSize: Typography.body.fontSize,
-            color: Colors.darkCharcoal,
-            padding: 0,
-          }}
+          style={[
+            {
+              flex: 1,
+              fontSize: Typography.body.fontSize,
+              color: Colors.darkCharcoal,
+              padding: 0,
+            },
+            inputTextStyle,
+          ]}
         />
         {unit && (
           <Text
