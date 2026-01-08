@@ -224,23 +224,25 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Door Trim Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={doorTrimWidthRef}
-                  value={doorTrimWidth}
-                  onChangeText={setDoorTrimWidth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => doorJambWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorTrimWidth-${doorTrimWidthID}` : undefined}
-                  style={bubbleInputStyle}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Door Trim Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={doorTrimWidthRef}
+                    value={doorTrimWidth}
+                    onChangeText={setDoorTrimWidth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => doorJambWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorTrimWidth-${doorTrimWidthID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Width of trim molding around doors
@@ -248,23 +250,25 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Door Jamb Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={doorJambWidthRef}
-                  value={doorJambWidth}
-                  onChangeText={setDoorJambWidth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => windowWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorJambWidth-${doorJambWidthID}` : undefined}
-                  style={bubbleInputStyle}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Door Jamb Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={doorJambWidthRef}
+                    value={doorJambWidth}
+                    onChangeText={setDoorJambWidth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => windowWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorJambWidth-${doorJambWidthID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Width of door jamb (inside frame)
