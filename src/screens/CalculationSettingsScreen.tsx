@@ -277,13 +277,13 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Window Size
-              </Text>
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Window Size (ft)
+                </Text>
+                <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Width (ft)
+                    W
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -301,9 +301,9 @@ export default function CalculationSettingsScreen() {
                     />
                   </View>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Height (ft)
+                    H
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
