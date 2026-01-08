@@ -187,7 +187,7 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door
