@@ -172,7 +172,7 @@ export default function CalculationSettingsScreen() {
               Door Assumptions
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
+            <View style={{ marginBottom: Spacing.sm }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
                   Door
@@ -392,9 +392,7 @@ export default function CalculationSettingsScreen() {
               </Text>
             </View>
 
-            <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
-
-            <View style={{ marginBottom: Spacing.md }}>
+            <View style={{ marginBottom: Spacing.sm }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
                   Closet Door Width
