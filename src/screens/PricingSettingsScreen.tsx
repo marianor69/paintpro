@@ -247,7 +247,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
   const inputTextStyle = { textAlign: "right" as const };
   const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
-  const columnLabelStyle = { width: inputWidth, textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray };
+  const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md };
+  const columnLabelStyle = { textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
 
   return (
     <SafeAreaView
@@ -672,10 +673,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={{ flex: 1 }} />
-              <View style={{ width: inputWidth }}>
+              <View style={columnLabelWrapperStyle}>
                 <Text style={columnLabelStyle}>1 gal</Text>
               </View>
-              <View style={{ width: inputWidth }}>
+              <View style={columnLabelWrapperStyle}>
                 <Text style={columnLabelStyle}>5 gal</Text>
               </View>
             </View>
