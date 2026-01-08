@@ -351,8 +351,8 @@ export default function CalculationSettingsScreen() {
                       keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => windowTrimWidthRef.current?.focus()}
+                    returnKeyType="next"
+                    onSubmitEditing={() => wallCoverageRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowHeight-${windowHeightID}` : undefined}
                       style={bubbleInputStyle}
@@ -362,36 +362,6 @@ export default function CalculationSettingsScreen() {
               </View>
             </View>
 
-            <View>
-              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Window Trim Width
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Width of trim molding around windows
-                  </Text>
-                </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
-                  <View style={inputContainerStyle}>
-                    <TextInput
-                      ref={windowTrimWidthRef}
-                      value={windowTrimWidth}
-                      onChangeText={setWindowTrimWidth}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => wallCoverageRef.current?.focus()}
-                      blurOnSubmit={false}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
-                      style={bubbleInputStyle}
-                    />
-                  </View>
-                </View>
-              </View>
-            </View>
           </Card>
 
           {/* Paint Coverage Rules */}
@@ -525,7 +495,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    ft
+                    Feet
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -553,7 +523,7 @@ export default function CalculationSettingsScreen() {
                 </Text>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Single in
+                    Single (in)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -573,7 +543,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Double in
+                    Double (in)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -606,7 +576,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Single in
+                    Single (in)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -626,7 +596,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Double in
+                    Double (in)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -695,7 +665,7 @@ export default function CalculationSettingsScreen() {
                     Baseboard Width
                   </Text>
                   <Text style={helperTextStyle}>
-                    Width of baseboard trim along walls (default: 5.5 inches)
+                    Width of baseboard trim along walls
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
@@ -719,14 +689,14 @@ export default function CalculationSettingsScreen() {
               </View>
             </View>
 
-            <View>
+            <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Crown Moulding Width
                   </Text>
                   <Text style={helperTextStyle}>
-                    Width of crown moulding trim along ceiling perimeter (default: 5.5 inches)
+                    Width of crown moulding trim along ceiling perimeter
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
@@ -739,9 +709,39 @@ export default function CalculationSettingsScreen() {
                       keyboardType="numeric"
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => windowTrimWidthRef.current?.focus()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Window Trim Width
+                  </Text>
+                  <Text style={helperTextStyle}>
+                    Width of trim molding around windows
+                  </Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={windowTrimWidthRef}
+                      value={windowTrimWidth}
+                      onChangeText={setWindowTrimWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
                       returnKeyType="done"
                       onSubmitEditing={() => Keyboard.dismiss()}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
                       style={bubbleInputStyle}
                     />
                   </View>
@@ -822,18 +822,18 @@ export default function CalculationSettingsScreen() {
         <InputAccessoryView nativeID={`calcWindowHeight-${windowHeightID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => windowWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => windowTrimWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => wallCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`calcWindowTrimWidth-${windowTrimWidthID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => wallCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => crownMouldingWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => Keyboard.dismiss()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Done</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`wallCoverage-${wallCoverageID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => windowTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => ceilingCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
