@@ -12,12 +12,18 @@ import {
   InputAccessoryView,
 } from "react-native";
 import { useCalculationSettings } from "../state/calculationStore";
+import { useAppSettings } from "../state/appSettings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 
 export default function CalculationSettingsScreen() {
   const { settings, updateSettings, resetToDefaults } = useCalculationSettings();
+  const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
+  const ceilingCoverageSqFtPerGallon = useAppSettings((s) => s.ceilingCoverageSqFtPerGallon);
+  const trimCoverageSqFtPerGallon = useAppSettings((s) => s.trimCoverageSqFtPerGallon);
+  const primerCoverageSqFtPerGallon = useAppSettings((s) => s.primerCoverageSqFtPerGallon);
+  const updateAppSettings = useAppSettings((s) => s.updateSettings);
 
   const [doorHeight, setDoorHeight] = useState(settings.doorHeight.toString());
   const [doorWidth, setDoorWidth] = useState(settings.doorWidth.toString());
@@ -49,6 +55,10 @@ export default function CalculationSettingsScreen() {
   const windowWidthRef = useRef<TextInput>(null);
   const windowHeightRef = useRef<TextInput>(null);
   const windowTrimWidthRef = useRef<TextInput>(null);
+  const wallCoverageRef = useRef<TextInput>(null);
+  const ceilingCoverageRef = useRef<TextInput>(null);
+  const trimCoverageRef = useRef<TextInput>(null);
+  const primerCoverageRef = useRef<TextInput>(null);
   const singleClosetWidthRef = useRef<TextInput>(null);
   const singleClosetTrimWidthRef = useRef<TextInput>(null);
   const singleClosetBaseboardRef = useRef<TextInput>(null);
@@ -67,6 +77,10 @@ export default function CalculationSettingsScreen() {
   const windowWidthID = useId();
   const windowHeightID = useId();
   const windowTrimWidthID = useId();
+  const wallCoverageID = useId();
+  const ceilingCoverageID = useId();
+  const trimCoverageID = useId();
+  const primerCoverageID = useId();
   const singleClosetWidthID = useId();
   const singleClosetTrimWidthID = useId();
   const singleClosetBaseboardID = useId();
@@ -347,7 +361,7 @@ export default function CalculationSettingsScreen() {
                     placeholder="0"
                     placeholderTextColor={Colors.mediumGray}
                     returnKeyType="next"
-                    onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
+                  onSubmitEditing={() => wallCoverageRef.current?.focus()}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
                     style={bubbleInputStyle}
@@ -357,6 +371,99 @@ export default function CalculationSettingsScreen() {
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Width of trim molding around windows
               </Text>
+            </View>
+          </Card>
+
+          {/* Paint Coverage Rules */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Paint Coverage Rules (sqft/gal)
+            </Text>
+
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Wall Paint
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={wallCoverageRef}
+                    value={String(wallCoverageSqFtPerGallon)}
+                    onChangeText={(text) => updateAppSettings({ wallCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                    keyboardType="numeric"
+                    placeholder="350"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => ceilingCoverageRef.current?.focus()}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `wallCoverage-${wallCoverageID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Ceiling Paint
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={ceilingCoverageRef}
+                    value={String(ceilingCoverageSqFtPerGallon)}
+                    onChangeText={(text) => updateAppSettings({ ceilingCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                    keyboardType="numeric"
+                    placeholder="350"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => trimCoverageRef.current?.focus()}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `ceilingCoverage-${ceilingCoverageID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
+              </View>
+            </View>
+
+            <View style={{ flexDirection: "row", gap: Spacing.md }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Trim Paint
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={trimCoverageRef}
+                    value={String(trimCoverageSqFtPerGallon)}
+                    onChangeText={(text) => updateAppSettings({ trimCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                    keyboardType="numeric"
+                    placeholder="350"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => primerCoverageRef.current?.focus()}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `trimCoverage-${trimCoverageID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Primer
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={primerCoverageRef}
+                    value={String(primerCoverageSqFtPerGallon)}
+                    onChangeText={(text) => updateAppSettings({ primerCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                    keyboardType="numeric"
+                    placeholder="350"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `primerCoverage-${primerCoverageID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
+              </View>
             </View>
           </Card>
 
@@ -657,12 +764,36 @@ export default function CalculationSettingsScreen() {
         <InputAccessoryView nativeID={`calcWindowTrimWidth-${windowTrimWidthID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => wallCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`wallCoverage-${wallCoverageID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => windowTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => ceilingCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`ceilingCoverage-${ceilingCoverageID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => wallCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => trimCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`trimCoverage-${trimCoverageID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => ceilingCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => primerCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`primerCoverage-${primerCoverageID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => trimCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => closetCavityDepthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`calcClosetCavityDepth-${closetCavityDepthID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => windowTrimWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => primerCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => singleClosetWidthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

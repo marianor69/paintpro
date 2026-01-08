@@ -1,5 +1,5 @@
-import React, { useState, useRef, useId } from "react";
-import { View, Text, ScrollView, Pressable, Alert, TextInput, Modal, InputAccessoryView, Keyboard, Platform } from "react-native";
+import React, { useState } from "react";
+import { View, Text, ScrollView, Pressable, Alert, TextInput, Modal, Keyboard, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -9,8 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAppSettings } from "../state/appSettings";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
-import { FormInput } from "../components/FormInput";
-import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
+import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
 import { AUDIT_FILES } from "../utils/auditData";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
@@ -19,18 +18,6 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default function SettingsScreen() {
   const navigation = useNavigation<NavigationProp>();
   const appSettings = useAppSettings();
-
-  // Refs for keyboard navigation
-  const wallCoverageRef = useRef<TextInput>(null);
-  const ceilingCoverageRef = useRef<TextInput>(null);
-  const trimCoverageRef = useRef<TextInput>(null);
-  const primerCoverageRef = useRef<TextInput>(null);
-
-  // Unique IDs for InputAccessoryViews
-  const wallCoverageID = useId();
-  const ceilingCoverageID = useId();
-  const trimCoverageID = useId();
-  const primerCoverageID = useId();
 
   // PIN management state
   const [showPinModal, setShowPinModal] = useState(false);
@@ -209,99 +196,6 @@ export default function SettingsScreen() {
               Calculation Settings
             </Text>
           </Pressable>
-        </Card>
-
-        {/* Paint Coverage Rules */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Text
-            style={{
-              fontSize: Typography.h2.fontSize,
-              fontWeight: Typography.h2.fontWeight,
-              color: Colors.darkCharcoal,
-              marginBottom: Spacing.md,
-            }}
-          >
-            Paint Coverage Rules (sqft/gal)
-          </Text>
-
-          {/* Row 1: Wall Paint & Ceiling Paint */}
-          <View style={{ flexDirection: "row", marginBottom: Spacing.sm, gap: Spacing.sm }}>
-            <View style={{ flex: 1 }}>
-              <FormInput
-                ref={wallCoverageRef}
-                label="Wall Paint"
-                value={String(appSettings.wallCoverageSqFtPerGallon)}
-                onChangeText={(text) =>
-                  appSettings.updateSettings({
-                    wallCoverageSqFtPerGallon: parseFloat(text) || 0,
-                  })
-                }
-                placeholder="350"
-                keyboardType="numeric"
-                returnKeyType="next"
-                blurOnSubmit={false}
-                onSubmitEditing={() => ceilingCoverageRef.current?.focus()}
-                inputAccessoryViewID={`wallCoverage-${wallCoverageID}`}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <FormInput
-                ref={ceilingCoverageRef}
-                label="Ceiling Paint"
-                value={String(appSettings.ceilingCoverageSqFtPerGallon)}
-                onChangeText={(text) =>
-                  appSettings.updateSettings({
-                    ceilingCoverageSqFtPerGallon: parseFloat(text) || 0,
-                  })
-                }
-                placeholder="350"
-                keyboardType="numeric"
-                returnKeyType="next"
-                blurOnSubmit={false}
-                onSubmitEditing={() => trimCoverageRef.current?.focus()}
-                inputAccessoryViewID={`ceilingCoverage-${ceilingCoverageID}`}
-              />
-            </View>
-          </View>
-
-          {/* Row 2: Trim Paint & Primer */}
-          <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-            <View style={{ flex: 1 }}>
-              <FormInput
-                ref={trimCoverageRef}
-                label="Trim Paint"
-                value={String(appSettings.trimCoverageSqFtPerGallon)}
-                onChangeText={(text) =>
-                  appSettings.updateSettings({
-                    trimCoverageSqFtPerGallon: parseFloat(text) || 0,
-                  })
-                }
-                placeholder="350"
-                keyboardType="numeric"
-                returnKeyType="next"
-                blurOnSubmit={false}
-                onSubmitEditing={() => primerCoverageRef.current?.focus()}
-                inputAccessoryViewID={`trimCoverage-${trimCoverageID}`}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <FormInput
-                ref={primerCoverageRef}
-                label="Primer"
-                value={String(appSettings.primerCoverageSqFtPerGallon)}
-                onChangeText={(text) =>
-                  appSettings.updateSettings({
-                    primerCoverageSqFtPerGallon: parseFloat(text) || 0,
-                  })
-                }
-                placeholder="350"
-                keyboardType="numeric"
-                returnKeyType="done"
-                onSubmitEditing={() => Keyboard.dismiss()}
-                inputAccessoryViewID={`primerCoverage-${primerCoverageID}`}
-              />
-            </View>
-          </View>
         </Card>
 
         {/* Settings Protection */}
@@ -774,51 +668,6 @@ export default function SettingsScreen() {
         </Pressable>
       </Modal>
 
-      {/* Custom InputAccessoryViews for Paint Coverage fields */}
-      {Platform.OS === "ios" && (
-        <>
-          <InputAccessoryView nativeID={`wallCoverage-${wallCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-              <Pressable onPress={() => ceilingCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-
-          <InputAccessoryView nativeID={`ceilingCoverage-${ceilingCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-              <Pressable onPress={() => wallCoverageRef.current?.focus()}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400", paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}>Previous</Text>
-              </Pressable>
-              <Pressable onPress={() => trimCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-
-          <InputAccessoryView nativeID={`trimCoverage-${trimCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-              <Pressable onPress={() => ceilingCoverageRef.current?.focus()}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400", paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}>Previous</Text>
-              </Pressable>
-              <Pressable onPress={() => primerCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-
-          <InputAccessoryView nativeID={`primerCoverage-${primerCoverageID}`}>
-            <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-              <Pressable onPress={() => trimCoverageRef.current?.focus()}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400", paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}>Previous</Text>
-              </Pressable>
-              <Pressable onPress={() => Keyboard.dismiss()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}>
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Done</Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-        </>
-      )}
     </SafeAreaView>
   );
 }
