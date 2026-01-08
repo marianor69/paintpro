@@ -77,7 +77,7 @@ export default function CalculationSettingsScreen() {
   const baseboardWidthID = useId();
   const crownMouldingWidthID = useId();
 
-  const inputContainerStyle = [TextInputStyles.container, { width: 96, alignSelf: "flex-start" }];
+  const inputContainerStyle = [TextInputStyles.container, { width: 68, alignSelf: "flex-start" }];
 
   const handleSave = () => {
     const newSettings = {
@@ -185,7 +185,6 @@ export default function CalculationSettingsScreen() {
                       value={doorHeight}
                       onChangeText={setDoorHeight}
                       keyboardType="numeric"
-                  maxLength={4}
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
@@ -206,7 +205,6 @@ export default function CalculationSettingsScreen() {
                       value={doorWidth}
                       onChangeText={setDoorWidth}
                       keyboardType="numeric"
-                  maxLength={4}
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
@@ -233,7 +231,6 @@ export default function CalculationSettingsScreen() {
                   value={doorTrimWidth}
                   onChangeText={setDoorTrimWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -258,7 +255,6 @@ export default function CalculationSettingsScreen() {
                   value={doorJambWidth}
                   onChangeText={setDoorJambWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -295,7 +291,6 @@ export default function CalculationSettingsScreen() {
                       value={windowWidth}
                       onChangeText={setWindowWidth}
                       keyboardType="numeric"
-                  maxLength={4}
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
@@ -316,7 +311,6 @@ export default function CalculationSettingsScreen() {
                       value={windowHeight}
                       onChangeText={setWindowHeight}
                       keyboardType="numeric"
-                  maxLength={4}
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
@@ -343,7 +337,6 @@ export default function CalculationSettingsScreen() {
                   value={windowTrimWidth}
                   onChangeText={setWindowTrimWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -376,7 +369,6 @@ export default function CalculationSettingsScreen() {
                     value={closetCavityDepth}
                     onChangeText={setClosetCavityDepth}
                     keyboardType="numeric"
-                  maxLength={4}
                     placeholder="2"
                     placeholderTextColor={Colors.mediumGray}
                     returnKeyType="next"
@@ -408,7 +400,6 @@ export default function CalculationSettingsScreen() {
                   value={singleClosetWidth}
                   onChangeText={setSingleClosetWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="24"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -430,7 +421,6 @@ export default function CalculationSettingsScreen() {
                   value={singleClosetTrimWidth}
                   onChangeText={setSingleClosetTrimWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="3.5"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -452,7 +442,6 @@ export default function CalculationSettingsScreen() {
                   value={singleClosetBaseboardPerimeter}
                   onChangeText={setSingleClosetBaseboardPerimeter}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="88"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -483,7 +472,6 @@ export default function CalculationSettingsScreen() {
                   value={doubleClosetWidth}
                   onChangeText={setDoubleClosetWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="48"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -505,7 +493,6 @@ export default function CalculationSettingsScreen() {
                   value={doubleClosetTrimWidth}
                   onChangeText={setDoubleClosetTrimWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="3.5"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -527,7 +514,6 @@ export default function CalculationSettingsScreen() {
                   value={doubleClosetBaseboardPerimeter}
                   onChangeText={setDoubleClosetBaseboardPerimeter}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="112"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -559,7 +545,6 @@ export default function CalculationSettingsScreen() {
                   value={baseboardWidth}
                   onChangeText={setBaseboardWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="next"
@@ -584,7 +569,6 @@ export default function CalculationSettingsScreen() {
                   value={crownMouldingWidth}
                   onChangeText={setCrownMouldingWidth}
                   keyboardType="numeric"
-                  maxLength={4}
                   placeholder="0"
                   placeholderTextColor={Colors.mediumGray}
                   returnKeyType="done"
