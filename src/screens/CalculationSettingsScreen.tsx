@@ -397,13 +397,13 @@ export default function CalculationSettingsScreen() {
           {/* Paint Coverage Rules */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Paint Coverage Rules (sqft/gal)
+              Paint Coverage Rules
             </Text>
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Wall Paint
+                  Wall Paint (sqft/gal)
                 </Text>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -423,7 +423,7 @@ export default function CalculationSettingsScreen() {
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Ceiling Paint
+                  Ceiling Paint (sqft/gal)
                 </Text>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -446,7 +446,7 @@ export default function CalculationSettingsScreen() {
             <View style={{ flexDirection: "row", gap: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Trim Paint
+                  Trim Paint (sqft/gal)
                 </Text>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -466,7 +466,7 @@ export default function CalculationSettingsScreen() {
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Primer
+                  Primer (sqft/gal)
                 </Text>
                 <View style={inputContainerStyle}>
                   <TextInput
