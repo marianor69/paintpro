@@ -93,6 +93,7 @@ export default function CalculationSettingsScreen() {
 
   const inputContainerStyle = [TextInputStyles.container, { width: 68, alignSelf: "flex-start" }];
   const bubbleInputStyle = [TextInputStyles.base, { textAlign: "right" as const }];
+  const helperTextStyle = { fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray };
 
   const handleSave = () => {
     const parsedCasingWidth = parseFloat(singleClosetTrimWidth) || settings.singleClosetTrimWidth;
@@ -192,7 +193,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door
                   </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={helperTextStyle}>
                     Standard door dimensions for surface area calculation
                   </Text>
                 </View>
@@ -245,7 +246,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Trim Width
                   </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={helperTextStyle}>
                     Width of trim molding around doors
                   </Text>
                 </View>
@@ -278,7 +279,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Jamb Width
                   </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={helperTextStyle}>
                     Width of door jamb (inside frame)
                   </Text>
                 </View>
@@ -318,7 +319,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Window Size (ft)
                   </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={helperTextStyle}>
                     Standard window dimensions
                   </Text>
                 </View>
@@ -371,7 +372,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Window Trim Width
                   </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={helperTextStyle}>
                     Width of trim molding around windows
                   </Text>
                 </View>
@@ -524,7 +525,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              <Text style={helperTextStyle}>
                 Depth of closet interior for wall area calculation
               </Text>
             </View>
@@ -623,7 +624,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              <Text style={helperTextStyle}>
                 Total baseboard length inside closet (back + 2 sides)
               </Text>
             </View>
@@ -664,7 +665,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              <Text style={helperTextStyle}>
                 Casing width used for closet openings
               </Text>
             </View>
@@ -695,7 +696,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              <Text style={helperTextStyle}>
                 Width of baseboard trim along walls (default: 5.5 inches)
               </Text>
             </View>
@@ -725,7 +726,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+              <Text style={helperTextStyle}>
                 Width of crown moulding trim along ceiling perimeter (default: 5.5 inches)
               </Text>
             </View>
