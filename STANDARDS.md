@@ -35,3 +35,13 @@ Reference implementation:
 Notes:
 - Do not remove existing `returnKeyType` or `onSubmitEditing` logic.
 - This standard applies only to iOS (InputAccessoryView). Android may omit toolbar.
+
+## DefaultFontSizes
+
+Use these defaults for consistent typography:
+- Card title (h2): 20
+- Main label (body): 16
+- Helper text (caption): 13
+
+Reference implementation:
+- `src/utils/designSystem.ts`
