@@ -532,7 +532,7 @@ export default function CalculationSettingsScreen() {
           {/* Trim Width Assumptions */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Trim Width Assumptions
+              Baseboard and Crowns
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
