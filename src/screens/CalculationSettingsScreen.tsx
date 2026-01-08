@@ -251,9 +251,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    in
-                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>in</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -284,9 +282,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    in
-                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -377,9 +373,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    in
-                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowTrimWidthRef}
@@ -646,9 +640,7 @@ export default function CalculationSettingsScreen() {
                   Casing Width
                 </Text>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    in
-                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={singleClosetTrimWidthRef}
@@ -680,9 +672,7 @@ export default function CalculationSettingsScreen() {
                   Baseboard Width
                 </Text>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    in
-                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={baseboardWidthRef}
@@ -711,9 +701,7 @@ export default function CalculationSettingsScreen() {
                   Crown Moulding Width
                 </Text>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    in
-                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={crownMouldingWidthRef}
