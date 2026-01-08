@@ -70,6 +70,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const shelfCountRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
+  const bubbleWidth = 64;
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -310,7 +311,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder={unitSystem === "metric" ? "0.91" : "3"}
                     nextFieldRef={heightRef}
-                    inputContainerStyle={{ width: 64 }}
+                    inputContainerStyle={{ width: bubbleWidth }}
                     className="mb-0"
                   />
                 </View>
@@ -325,7 +326,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder={unitSystem === "metric" ? "2.03" : "6.67"}
                     nextFieldRef={depthRef}
-                    inputContainerStyle={{ width: 64 }}
+                    inputContainerStyle={{ width: bubbleWidth }}
                     className="mb-0"
                   />
                 </View>
@@ -340,7 +341,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder={unitSystem === "metric" ? "0.30" : "1"}
                     nextFieldRef={shelfCountRef}
-                    inputContainerStyle={{ width: 64 }}
+                    inputContainerStyle={{ width: bubbleWidth }}
                     className="mb-0"
                   />
                 </View>
@@ -357,7 +358,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     onChangeText={setShelfCount}
                     keyboardType="numeric"
                     placeholder="0"
-                    inputContainerStyle={{ width: 64 }}
+                    inputContainerStyle={{ width: bubbleWidth }}
                     className="mb-0"
                   />
                 </View>
