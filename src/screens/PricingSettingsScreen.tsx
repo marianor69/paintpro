@@ -672,10 +672,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={{ flex: 1 }} />
-              <View style={inputContainerStyle}>
+              <View style={{ width: inputWidth }}>
                 <Text style={columnLabelStyle}>1 gal</Text>
               </View>
-              <View style={inputContainerStyle}>
+              <View style={{ width: inputWidth }}>
                 <Text style={columnLabelStyle}>5 gal</Text>
               </View>
             </View>
