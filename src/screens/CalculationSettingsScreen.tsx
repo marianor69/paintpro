@@ -192,12 +192,12 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door
                   </Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
                     Standard door dimensions for surface area calculation
                   </Text>
                 </View>
                 <View>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
                     Height (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -217,7 +217,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
                     Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -245,7 +245,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Trim Width (inches)
                   </Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
                     Width of trim molding around doors
                   </Text>
                 </View>
@@ -273,7 +273,7 @@ export default function CalculationSettingsScreen() {
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Jamb Width (inches)
                   </Text>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
                     Width of door jamb (inside frame)
                   </Text>
                 </View>
@@ -308,7 +308,7 @@ export default function CalculationSettingsScreen() {
                   Window Size (ft)
                 </Text>
                 <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
                     Width
                   </Text>
                   <View style={inputContainerStyle}>
@@ -328,7 +328,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
                     Height
                   </Text>
                   <View style={inputContainerStyle}>
