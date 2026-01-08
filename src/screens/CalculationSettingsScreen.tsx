@@ -636,9 +636,14 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Casing Width
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Casing Width
+                  </Text>
+                  <Text style={helperTextStyle}>
+                    Casing width used for closet openings
+                  </Text>
+                </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
@@ -661,16 +666,18 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={helperTextStyle}>
-                Casing width used for closet openings
-              </Text>
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Baseboard Width
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Baseboard Width
+                  </Text>
+                  <Text style={helperTextStyle}>
+                    Width of baseboard trim along walls (default: 5.5 inches)
+                  </Text>
+                </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
@@ -690,16 +697,18 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={helperTextStyle}>
-                Width of baseboard trim along walls (default: 5.5 inches)
-              </Text>
             </View>
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Crown Moulding Width
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Crown Moulding Width
+                  </Text>
+                  <Text style={helperTextStyle}>
+                    Width of crown moulding trim along ceiling perimeter (default: 5.5 inches)
+                  </Text>
+                </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
                   <View style={inputContainerStyle}>
@@ -718,9 +727,6 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
-              <Text style={helperTextStyle}>
-                Width of crown moulding trim along ceiling perimeter (default: 5.5 inches)
-              </Text>
             </View>
           </Card>
 
