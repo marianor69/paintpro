@@ -499,26 +499,28 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Casing Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={singleClosetTrimWidthRef}
-                  value={singleClosetTrimWidth}
-                  onChangeText={(value) => {
-                    setSingleClosetTrimWidth(value);
-                    setDoubleClosetTrimWidth(value);
-                  }}
-                  keyboardType="numeric"
-                  placeholder="3.5"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => baseboardWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetTrimWidth-${singleClosetTrimWidthID}` : undefined}
-                  style={bubbleInputStyle}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Casing Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={singleClosetTrimWidthRef}
+                    value={singleClosetTrimWidth}
+                    onChangeText={(value) => {
+                      setSingleClosetTrimWidth(value);
+                      setDoubleClosetTrimWidth(value);
+                    }}
+                    keyboardType="numeric"
+                    placeholder="3.5"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => baseboardWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetTrimWidth-${singleClosetTrimWidthID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Casing width used for closet openings
@@ -526,23 +528,25 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Baseboard Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={baseboardWidthRef}
-                  value={baseboardWidth}
-                  onChangeText={setBaseboardWidth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => crownMouldingWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcBaseboardWidth-${baseboardWidthID}` : undefined}
-                  style={bubbleInputStyle}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Baseboard Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={baseboardWidthRef}
+                    value={baseboardWidth}
+                    onChangeText={setBaseboardWidth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => crownMouldingWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcBaseboardWidth-${baseboardWidthID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Width of baseboard trim along walls (default: 5.5 inches)
@@ -550,22 +554,24 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Crown Moulding Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={crownMouldingWidthRef}
-                  value={crownMouldingWidth}
-                  onChangeText={setCrownMouldingWidth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="done"
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
-                  style={bubbleInputStyle}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Crown Moulding Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={crownMouldingWidthRef}
+                    value={crownMouldingWidth}
+                    onChangeText={setCrownMouldingWidth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="done"
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Width of crown moulding trim along ceiling perimeter (default: 5.5 inches)
