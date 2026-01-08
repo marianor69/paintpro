@@ -356,10 +356,15 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Window Trim Width (inches)
-                </Text>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Window Trim Width (inches)
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
+                    Width of trim molding around windows
+                  </Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={windowTrimWidthRef}
@@ -369,16 +374,13 @@ export default function CalculationSettingsScreen() {
                     placeholder="0"
                     placeholderTextColor={Colors.mediumGray}
                     returnKeyType="next"
-                  onSubmitEditing={() => wallCoverageRef.current?.focus()}
+                    onSubmitEditing={() => wallCoverageRef.current?.focus()}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
                     style={bubbleInputStyle}
                   />
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Width of trim molding around windows
-              </Text>
             </View>
           </Card>
 
