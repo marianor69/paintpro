@@ -78,6 +78,7 @@ export default function CalculationSettingsScreen() {
   const crownMouldingWidthID = useId();
 
   const inputContainerStyle = [TextInputStyles.container, { width: 68, alignSelf: "flex-start" }];
+  const bubbleInputStyle = [TextInputStyles.base, { textAlign: "right" as const }];
 
   const handleSave = () => {
     const parsedCasingWidth = parseFloat(singleClosetTrimWidth) || settings.singleClosetTrimWidth;
@@ -192,7 +193,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => doorWidthRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorHeight-${doorHeightID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -212,7 +213,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => doorTrimWidthRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorWidth-${doorWidthID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -238,7 +239,7 @@ export default function CalculationSettingsScreen() {
                   onSubmitEditing={() => doorJambWidthRef.current?.focus()}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorTrimWidth-${doorTrimWidthID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={bubbleInputStyle}
                 />
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -262,7 +263,7 @@ export default function CalculationSettingsScreen() {
                   onSubmitEditing={() => windowWidthRef.current?.focus()}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorJambWidth-${doorJambWidthID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={bubbleInputStyle}
                 />
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -298,7 +299,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => windowHeightRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowWidth-${windowWidthID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -318,7 +319,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => windowTrimWidthRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowHeight-${windowHeightID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -344,7 +345,7 @@ export default function CalculationSettingsScreen() {
                   onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={bubbleInputStyle}
                 />
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -376,7 +377,7 @@ export default function CalculationSettingsScreen() {
                     onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
                     blurOnSubmit={false}
                     inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
-                    style={TextInputStyles.base}
+                    style={bubbleInputStyle}
                   />
                 </View>
               </View>
@@ -408,7 +409,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => doubleClosetWidthRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetWidth-${singleClosetWidthID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -428,7 +429,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => singleClosetBaseboardRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetWidth-${doubleClosetWidthID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -456,7 +457,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => doubleClosetBaseboardRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetBaseboard-${singleClosetBaseboardID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -476,7 +477,7 @@ export default function CalculationSettingsScreen() {
                       onSubmitEditing={() => singleClosetTrimWidthRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetBaseboard-${doubleClosetBaseboardID}` : undefined}
-                      style={TextInputStyles.base}
+                      style={bubbleInputStyle}
                     />
                   </View>
                 </View>
@@ -512,7 +513,7 @@ export default function CalculationSettingsScreen() {
                   onSubmitEditing={() => baseboardWidthRef.current?.focus()}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetTrimWidth-${singleClosetTrimWidthID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={bubbleInputStyle}
                 />
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -536,7 +537,7 @@ export default function CalculationSettingsScreen() {
                   onSubmitEditing={() => crownMouldingWidthRef.current?.focus()}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `calcBaseboardWidth-${baseboardWidthID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={bubbleInputStyle}
                 />
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -559,7 +560,7 @@ export default function CalculationSettingsScreen() {
                   returnKeyType="done"
                   onSubmitEditing={() => Keyboard.dismiss()}
                   inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
-                  style={TextInputStyles.base}
+                  style={bubbleInputStyle}
                 />
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
