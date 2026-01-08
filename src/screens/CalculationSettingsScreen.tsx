@@ -243,26 +243,31 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Door Trim Width (inches)
+                    Door Trim Width
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
                     Width of trim molding around doors
                   </Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={doorTrimWidthRef}
-                    value={doorTrimWidth}
-                    onChangeText={setDoorTrimWidth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => doorJambWidthRef.current?.focus()}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorTrimWidth-${doorTrimWidthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    in
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={doorTrimWidthRef}
+                      value={doorTrimWidth}
+                      onChangeText={setDoorTrimWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => doorJambWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorTrimWidth-${doorTrimWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -271,26 +276,31 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Door Jamb Width (inches)
+                    Door Jamb Width
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
                     Width of door jamb (inside frame)
                   </Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={doorJambWidthRef}
-                    value={doorJambWidth}
-                    onChangeText={setDoorJambWidth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => windowWidthRef.current?.focus()}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorJambWidth-${doorJambWidthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    in
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={doorJambWidthRef}
+                      value={doorJambWidth}
+                      onChangeText={setDoorJambWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => windowWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcDoorJambWidth-${doorJambWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -359,26 +369,31 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Window Trim Width (inches)
+                    Window Trim Width
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray }}>
                     Width of trim molding around windows
                   </Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={windowTrimWidthRef}
-                    value={windowTrimWidth}
-                    onChangeText={setWindowTrimWidth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => wallCoverageRef.current?.focus()}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    in
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={windowTrimWidthRef}
+                      value={windowTrimWidth}
+                      onChangeText={setWindowTrimWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => wallCoverageRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -486,22 +501,27 @@ export default function CalculationSettingsScreen() {
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Closet Cavity Depth (feet)
+                  Closet Cavity Depth
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={closetCavityDepthRef}
-                    value={closetCavityDepth}
-                    onChangeText={setClosetCavityDepth}
-                    keyboardType="numeric"
-                    placeholder="2"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    ft
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={closetCavityDepthRef}
+                      value={closetCavityDepth}
+                      onChangeText={setClosetCavityDepth}
+                      keyboardType="numeric"
+                      placeholder="2"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -516,7 +536,7 @@ export default function CalculationSettingsScreen() {
                 </Text>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Single
+                    Single in
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -536,7 +556,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Double
+                    Double in
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -564,7 +584,7 @@ export default function CalculationSettingsScreen() {
                 </Text>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Single
+                    Single in
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -584,7 +604,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Double
+                    Double in
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -618,25 +638,30 @@ export default function CalculationSettingsScreen() {
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Casing Width (inches)
+                  Casing Width
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={singleClosetTrimWidthRef}
-                    value={singleClosetTrimWidth}
-                    onChangeText={(value) => {
-                      setSingleClosetTrimWidth(value);
-                      setDoubleClosetTrimWidth(value);
-                    }}
-                    keyboardType="numeric"
-                    placeholder="3.5"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => baseboardWidthRef.current?.focus()}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetTrimWidth-${singleClosetTrimWidthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    in
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={singleClosetTrimWidthRef}
+                      value={singleClosetTrimWidth}
+                      onChangeText={(value) => {
+                        setSingleClosetTrimWidth(value);
+                        setDoubleClosetTrimWidth(value);
+                      }}
+                      keyboardType="numeric"
+                      placeholder="3.5"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => baseboardWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetTrimWidth-${singleClosetTrimWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -647,22 +672,27 @@ export default function CalculationSettingsScreen() {
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Baseboard Width (inches)
+                  Baseboard Width
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={baseboardWidthRef}
-                    value={baseboardWidth}
-                    onChangeText={setBaseboardWidth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => crownMouldingWidthRef.current?.focus()}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcBaseboardWidth-${baseboardWidthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    in
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={baseboardWidthRef}
+                      value={baseboardWidth}
+                      onChangeText={setBaseboardWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => crownMouldingWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcBaseboardWidth-${baseboardWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -673,21 +703,26 @@ export default function CalculationSettingsScreen() {
             <View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Crown Moulding Width (inches)
+                  Crown Moulding Width
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={crownMouldingWidthRef}
-                    value={crownMouldingWidth}
-                    onChangeText={setCrownMouldingWidth}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="done"
-                    onSubmitEditing={() => Keyboard.dismiss()}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    in
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={crownMouldingWidthRef}
+                      value={crownMouldingWidth}
+                      onChangeText={setCrownMouldingWidth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      onSubmitEditing={() => Keyboard.dismiss()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcCrownMouldingWidth-${crownMouldingWidthID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
