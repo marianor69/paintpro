@@ -381,8 +381,8 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                   Wall Paint
                 </Text>
                 <View style={inputContainerStyle}>
@@ -401,8 +401,8 @@ export default function CalculationSettingsScreen() {
                   />
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                   Ceiling Paint
                 </Text>
                 <View style={inputContainerStyle}>
@@ -424,8 +424,8 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ flexDirection: "row", gap: Spacing.md }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                   Trim Paint
                 </Text>
                 <View style={inputContainerStyle}>
@@ -444,8 +444,8 @@ export default function CalculationSettingsScreen() {
                   />
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                   Primer
                 </Text>
                 <View style={inputContainerStyle}>
