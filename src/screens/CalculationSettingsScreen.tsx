@@ -391,23 +391,25 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Door Opening Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={singleClosetWidthRef}
-                  value={singleClosetWidth}
-                  onChangeText={setSingleClosetWidth}
-                  keyboardType="numeric"
-                  placeholder="24"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => singleClosetTrimWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetWidth-${singleClosetWidthID}` : undefined}
-                  style={TextInputStyles.base}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Single Door Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={singleClosetWidthRef}
+                    value={singleClosetWidth}
+                    onChangeText={setSingleClosetWidth}
+                    keyboardType="numeric"
+                    placeholder="24"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => singleClosetTrimWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcSingleClosetWidth-${singleClosetWidthID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
               </View>
             </View>
 
@@ -463,23 +465,25 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Door Opening Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={doubleClosetWidthRef}
-                  value={doubleClosetWidth}
-                  onChangeText={setDoubleClosetWidth}
-                  keyboardType="numeric"
-                  placeholder="48"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => doubleClosetTrimWidthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetWidth-${doubleClosetWidthID}` : undefined}
-                  style={TextInputStyles.base}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Double Door Opening Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={doubleClosetWidthRef}
+                    value={doubleClosetWidth}
+                    onChangeText={setDoubleClosetWidth}
+                    keyboardType="numeric"
+                    placeholder="48"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => doubleClosetTrimWidthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcDoubleClosetWidth-${doubleClosetWidthID}` : undefined}
+                    style={TextInputStyles.base}
+                  />
+                </View>
               </View>
             </View>
 
