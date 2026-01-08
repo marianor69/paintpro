@@ -304,9 +304,11 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
-                  Window Size (ft)
-                </Text>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Window Size (ft)
+                  </Text>
+                </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
                     Width
