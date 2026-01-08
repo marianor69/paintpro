@@ -45,3 +45,13 @@ Use these defaults for consistent typography:
 
 Reference implementation:
 - `src/utils/designSystem.ts`
+
+## RowLabelAlignment
+
+Rule:
+- Center-align labels when there is no helper text.
+- Top-align labels when helper text is present.
+
+Notes:
+- Use `alignItems: "center"` when there is no helper text.
+- Use `alignItems: "flex-start"` and offset the label block when helper text exists.
