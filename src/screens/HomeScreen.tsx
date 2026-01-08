@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.8 - 98870b7 - Pricing headers right-aligned
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v1.2.0 - 006b831 - Door assumptions row layout
+              GPT - v1.2.1 - ca5c899 - Window size single row
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
