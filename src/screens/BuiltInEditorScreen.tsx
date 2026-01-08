@@ -357,6 +357,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     onChangeText={setShelfCount}
                     keyboardType="numeric"
                     placeholder="0"
+                    inputContainerStyle={{ width: 64 }}
                     className="mb-0"
                   />
                 </View>
