@@ -334,23 +334,25 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Window Trim Width (inches)
-              </Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={windowTrimWidthRef}
-                  value={windowTrimWidth}
-                  onChangeText={setWindowTrimWidth}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  returnKeyType="next"
-                  onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
-                  style={bubbleInputStyle}
-                />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 }}>
+                  Window Trim Width (inches)
+                </Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={windowTrimWidthRef}
+                    value={windowTrimWidth}
+                    onChangeText={setWindowTrimWidth}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowTrimWidth-${windowTrimWidthID}` : undefined}
+                    style={bubbleInputStyle}
+                  />
+                </View>
               </View>
               <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                 Width of trim molding around windows
