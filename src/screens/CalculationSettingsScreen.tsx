@@ -403,42 +403,52 @@ export default function CalculationSettingsScreen() {
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Wall Paint (sqft/gal)
+                  Wall Paint
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={wallCoverageRef}
-                    value={String(wallCoverageSqFtPerGallon)}
-                    onChangeText={(text) => updateAppSettings({ wallCoverageSqFtPerGallon: parseFloat(text) || 0 })}
-                    keyboardType="numeric"
-                    placeholder="350"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                    onSubmitEditing={() => ceilingCoverageRef.current?.focus()}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `wallCoverage-${wallCoverageID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    sqft/gal
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={wallCoverageRef}
+                      value={String(wallCoverageSqFtPerGallon)}
+                      onChangeText={(text) => updateAppSettings({ wallCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="350"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      onSubmitEditing={() => ceilingCoverageRef.current?.focus()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `wallCoverage-${wallCoverageID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Ceiling Paint (sqft/gal)
+                  Ceiling Paint
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={ceilingCoverageRef}
-                    value={String(ceilingCoverageSqFtPerGallon)}
-                    onChangeText={(text) => updateAppSettings({ ceilingCoverageSqFtPerGallon: parseFloat(text) || 0 })}
-                    keyboardType="numeric"
-                    placeholder="350"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                    onSubmitEditing={() => trimCoverageRef.current?.focus()}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `ceilingCoverage-${ceilingCoverageID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    sqft/gal
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={ceilingCoverageRef}
+                      value={String(ceilingCoverageSqFtPerGallon)}
+                      onChangeText={(text) => updateAppSettings({ ceilingCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="350"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      onSubmitEditing={() => trimCoverageRef.current?.focus()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `ceilingCoverage-${ceilingCoverageID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -446,42 +456,52 @@ export default function CalculationSettingsScreen() {
             <View style={{ flexDirection: "row", gap: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Trim Paint (sqft/gal)
+                  Trim Paint
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={trimCoverageRef}
-                    value={String(trimCoverageSqFtPerGallon)}
-                    onChangeText={(text) => updateAppSettings({ trimCoverageSqFtPerGallon: parseFloat(text) || 0 })}
-                    keyboardType="numeric"
-                    placeholder="350"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                    onSubmitEditing={() => primerCoverageRef.current?.focus()}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `trimCoverage-${trimCoverageID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    sqft/gal
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={trimCoverageRef}
+                      value={String(trimCoverageSqFtPerGallon)}
+                      onChangeText={(text) => updateAppSettings({ trimCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="350"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      onSubmitEditing={() => primerCoverageRef.current?.focus()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `trimCoverage-${trimCoverageID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Primer (sqft/gal)
+                  Primer
                 </Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={primerCoverageRef}
-                    value={String(primerCoverageSqFtPerGallon)}
-                    onChangeText={(text) => updateAppSettings({ primerCoverageSqFtPerGallon: parseFloat(text) || 0 })}
-                    keyboardType="numeric"
-                    placeholder="350"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                    onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `primerCoverage-${primerCoverageID}` : undefined}
-                    style={bubbleInputStyle}
-                  />
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    sqft/gal
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={primerCoverageRef}
+                      value={String(primerCoverageSqFtPerGallon)}
+                      onChangeText={(text) => updateAppSettings({ primerCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="350"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      onSubmitEditing={() => closetCavityDepthRef.current?.focus()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `primerCoverage-${primerCoverageID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
