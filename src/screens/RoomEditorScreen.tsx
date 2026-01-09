@@ -1307,7 +1307,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
           {/* Closets Counters */}
           <View style={{ marginBottom: Spacing.sm }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Single Door Closet
               </Text>
@@ -1385,8 +1385,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+          <View style={{ marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Double Doors Closet
               </Text>
