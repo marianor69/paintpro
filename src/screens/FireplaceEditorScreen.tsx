@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TextInput,
+  Image,
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
@@ -22,11 +23,15 @@ import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
 import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { v4 as uuidv4 } from "uuid";
 import {
   formatCurrency,
 } from "../utils/calculations";
 import { computeFireplacePricingSummary } from "../utils/pricingSummary";
 import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
+import { RoomPhoto } from "../types/painting";
 
 type Props = NativeStackScreenProps<RootStackParamList, "FireplaceEditor">;
 
@@ -68,6 +73,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const [overMantelHeight, setOverMantelHeight] = useState(!isNewFireplace && fireplace?.overMantelHeight && fireplace.overMantelHeight > 0 ? formatMeasurementValue(fireplace.overMantelHeight, 'length', unitSystem, 2) : "");
 
   const [notes, setNotes] = useState(!isNewFireplace && fireplace?.notes ? fireplace.notes : "");
+  const [photos, setPhotos] = useState<RoomPhoto[]>(
+    !isNewFireplace && fireplace?.photos ? fireplace.photos : []
+  );
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [editingPhotoNote, setEditingPhotoNote] = useState("");
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -121,6 +131,13 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       // For existing: changes are when values differ from stored data
       if (!fireplace) return;
 
+      const photosChanged =
+        photos.length !== (fireplace.photos?.length || 0) ||
+        photos.some((photo, index) => {
+          const stored = fireplace.photos?.[index];
+          return !stored || photo.uri !== stored.uri || photo.note !== stored.note;
+        });
+
       const hasChanges =
         name !== (fireplace.name || "") ||
         hasMantel !== (fireplace.hasMantel ?? false) ||
@@ -133,7 +150,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         depth !== (fireplace.depth && fireplace.depth > 0 ? fireplace.depth.toString() : "") ||
         hasTrim !== (fireplace.hasTrim ?? false) ||
         trimLinearFeet !== (fireplace.trimLinearFeet && fireplace.trimLinearFeet > 0 ? fireplace.trimLinearFeet.toString() : "") ||
-        notes !== (fireplace.notes || "");
+        notes !== (fireplace.notes || "") ||
+        photosChanged;
 
       setHasUnsavedChanges(hasChanges);
     }
@@ -152,6 +170,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     hasTrim,
     trimLinearFeet,
     notes,
+    photos,
   ]);
 
   useEffect(() => {
@@ -197,6 +216,93 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       }
     }
   });
+
+  // Photo handling functions
+  const generatePhotoFileName = (fireplaceName: string, photoIndex: number): string => {
+    const safeName = (fireplaceName || "Fireplace").replace(/[^a-zA-Z0-9]/g, "_");
+    const paddedIndex = String(photoIndex).padStart(2, "0");
+    return `${safeName}_${paddedIndex}.jpg`;
+  };
+
+  const handleAddPhoto = async (useCamera: boolean) => {
+    try {
+      if (useCamera) {
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!cameraPermission.granted) {
+          Alert.alert("Permission Required", "Camera permission is needed to take photos.");
+          return;
+        }
+      } else {
+        const mediaPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!mediaPermission.granted) {
+          Alert.alert("Permission Required", "Photo library permission is needed to select photos.");
+          return;
+        }
+      }
+
+      const result = useCamera
+        ? await ImagePicker.launchCameraAsync({
+            mediaTypes: ["images"],
+            allowsEditing: false,
+            quality: 0.8,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            allowsEditing: false,
+            quality: 0.8,
+          });
+
+      if (!result.canceled && result.assets[0]) {
+        const newPhotoIndex = photos.length + 1;
+        const newPhoto: RoomPhoto = {
+          id: uuidv4(),
+          uri: result.assets[0].uri,
+          fileName: generatePhotoFileName(name, newPhotoIndex),
+          createdAt: Date.now(),
+        };
+        setPhotos([...photos, newPhoto]);
+        setHasUnsavedChanges(true);
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to add photo.");
+    }
+  };
+
+  const handleDeletePhoto = (photoId: string) => {
+    Alert.alert(
+      "Delete Photo",
+      "Are you sure you want to delete this photo?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            setPhotos(photos.filter((p) => p.id !== photoId));
+            setHasUnsavedChanges(true);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleEditPhotoNote = (photo: RoomPhoto) => {
+    setEditingPhotoId(photo.id);
+    setEditingPhotoNote(photo.note || "");
+  };
+
+  const handleSavePhotoNote = () => {
+    if (editingPhotoId) {
+      setPhotos(
+        photos.map((p) =>
+          p.id === editingPhotoId ? { ...p, note: editingPhotoNote.trim() || undefined } : p
+        )
+      );
+      setHasUnsavedChanges(true);
+      setEditingPhotoId(null);
+      setEditingPhotoNote("");
+    }
+  };
 
   // Navigate back after save completes
   useEffect(() => {
@@ -244,6 +350,10 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     const trimLinearFeetValue = parseDisplayValue(trimLinearFeet, 'linearFeet', unitSystem);
     const overMantelWidthFeet = parseDisplayValue(overMantelWidth, 'length', unitSystem);
     const overMantelHeightFeet = parseDisplayValue(overMantelHeight, 'length', unitSystem);
+    const normalizedPhotos = photos.map((photo, index) => ({
+      ...photo,
+      fileName: generatePhotoFileName(name.trim(), index + 1),
+    }));
 
     if (isNewFireplace) {
       // CREATE new fireplace with data
@@ -266,6 +376,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         overMantelHeight: overMantelHeightFeet,
         coats: 2,
         notes: notes.trim() || undefined,
+        photos: normalizedPhotos,
       });
     } else {
       // UPDATE existing fireplace
@@ -285,6 +396,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         overMantelHeight: overMantelHeightFeet,
         coats: fireplace?.coats || 2,
         notes: notes.trim() || undefined,
+        photos: normalizedPhotos,
       });
     }
 
@@ -484,6 +596,199 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                 />
               </Card>
             </View>
+
+            {/* Fireplace Photos Section */}
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Fireplace Photos
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                Document mantel, legs, and over-mantel conditions
+              </Text>
+
+              {/* Add Photo Buttons */}
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: photos.length > 0 ? Spacing.md : 0 }}>
+                <Pressable
+                  onPress={() => handleAddPhoto(true)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Ionicons name="camera-outline" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.sm }}>
+                    Take Photo
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => handleAddPhoto(false)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.white,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
+                  }}
+                >
+                  <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginLeft: Spacing.sm }}>
+                    Choose
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Photo Grid */}
+              {photos.length > 0 && (
+                <View style={{ gap: Spacing.md }}>
+                  {photos.map((photo) => (
+                    <View
+                      key={photo.id}
+                      style={{
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Image
+                        source={{ uri: photo.uri }}
+                        style={{
+                          width: "100%",
+                          height: 180,
+                          backgroundColor: Colors.neutralGray,
+                        }}
+                        resizeMode="cover"
+                      />
+                      <View style={{ padding: Spacing.sm }}>
+                        {/* File Name */}
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                          {photo.fileName}
+                        </Text>
+
+                        {/* Note Display */}
+                        {editingPhotoId === photo.id ? (
+                          <>
+                            <TextInput
+                              value={editingPhotoNote}
+                              onChangeText={setEditingPhotoNote}
+                              placeholder="Add a note about this photo..."
+                              placeholderTextColor={Colors.mediumGray}
+                              multiline
+                              style={[
+                                TextInputStyles.multiline,
+                                {
+                                  backgroundColor: Colors.white,
+                                  borderRadius: BorderRadius.default,
+                                  padding: Spacing.sm,
+                                  minHeight: 60,
+                                  marginBottom: Spacing.sm,
+                                }
+                              ]}
+                            />
+                            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                              <Pressable
+                                onPress={handleSavePhotoNote}
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: Colors.primaryBlue,
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                                  Save Note
+                                </Text>
+                              </Pressable>
+                              <Pressable
+                                onPress={() => {
+                                  setEditingPhotoId(null);
+                                  setEditingPhotoNote("");
+                                }}
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: Colors.neutralGray,
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                                  Cancel
+                                </Text>
+                              </Pressable>
+                            </View>
+                          </>
+                        ) : (
+                          <>
+                            {photo.note ? (
+                              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                                {photo.note}
+                              </Text>
+                            ) : (
+                              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic", marginBottom: Spacing.sm }}>
+                                No note added
+                              </Text>
+                            )}
+
+                            {/* Action Buttons */}
+                            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                              <Pressable
+                                onPress={() => handleEditPhotoNote(photo)}
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: Colors.primaryBlue,
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Ionicons name="create-outline" size={16} color={Colors.white} />
+                                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.xs }}>
+                                  {photo.note ? "Edit Note" : "Add Note"}
+                                </Text>
+                              </Pressable>
+                              <Pressable
+                                onPress={() => handleDeletePhoto(photo.id)}
+                                style={{
+                                  backgroundColor: Colors.error + "10",
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  paddingHorizontal: Spacing.md,
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Ionicons name="trash-outline" size={16} color={Colors.error} />
+                              </Pressable>
+                            </View>
+                          </>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {photos.length === 0 && (
+                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.lg, alignItems: "center" }}>
+                  <Ionicons name="camera-outline" size={40} color={Colors.mediumGray} />
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
+                    No photos added yet
+                  </Text>
+                </View>
+              )}
+            </Card>
 
             {/* Fireplace Summary */}
             {calculations && (() => {

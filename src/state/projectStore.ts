@@ -666,6 +666,7 @@ export const useProjectStore = create<ProjectStore>()(
           tallWallHeight: 0,
           shortWallHeight: 0,
           doubleSidedWalls: false,
+          photos: [],
         };
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -721,6 +722,7 @@ export const useProjectStore = create<ProjectStore>()(
           hasTrim: false,
           trimLinearFeet: 0,
           coats: 2,
+          photos: [],
         };
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -831,6 +833,7 @@ export const useProjectStore = create<ProjectStore>()(
           height: 8,
           includePrimer: true,
           coats: 2,
+          photos: [],
         };
         set((state) => ({
           projects: state.projects.map((p) =>

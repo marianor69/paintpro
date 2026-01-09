@@ -9,7 +9,6 @@ import {
   Platform,
   Alert,
   Image,
-  Modal,
   Keyboard,
   InputAccessoryView,
 } from "react-native";
@@ -112,11 +111,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   // Notes and Photos
   const [notes, setNotes] = useState(!isNew && irregularRoom?.notes ? irregularRoom.notes : "");
   const [photos, setPhotos] = useState<RoomPhoto[]>(!isNew && irregularRoom?.photos ? irregularRoom.photos : []);
-
-  // Photo modal state
-  const [photoModalVisible, setPhotoModalVisible] = useState(false);
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
-  const [photoNote, setPhotoNote] = useState("");
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [editingPhotoNote, setEditingPhotoNote] = useState("");
 
   // Unsaved changes tracking
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -510,6 +506,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     });
 
     const cathedralPeakValue = isCathedral ? parseDisplayValue(cathedralPeakHeight, "length", unitSystem) : undefined;
+    const normalizedPhotos = photos.map((photo, index) => ({
+      ...photo,
+      fileName: `${(name || "IrregularRoom").replace(/[^a-zA-Z0-9]/g, "_")}_${String(index + 1).padStart(2, "0")}.jpg`,
+    }));
 
     const data = {
       name,
@@ -533,7 +533,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       hasCrownMoulding,
       hasAccentWall,
       notes,
-      photos,
+      photos: normalizedPhotos,
     };
 
     if (isNew) {
@@ -568,80 +568,91 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     isNew, projectId, irregularRoomId, unitSystem, addIrregularRoom, updateIrregularRoom, navigation, hasValidDimensions
   ]);
 
-  // Photo functions
-  const handleAddPhoto = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 0.8,
-    });
+  // Photo handling functions
+  const generatePhotoFileName = (roomName: string, photoIndex: number): string => {
+    const safeName = (roomName || "IrregularRoom").replace(/[^a-zA-Z0-9]/g, "_");
+    const paddedIndex = String(photoIndex).padStart(2, "0");
+    return `${safeName}_${paddedIndex}.jpg`;
+  };
 
-    if (!result.canceled && result.assets[0]) {
-      const photoNumber = photos.length + 1;
-      const roomName = name || "IrregularRoom";
-      const newPhoto: RoomPhoto = {
-        id: uuidv4(),
-        uri: result.assets[0].uri,
-        fileName: `${roomName.replace(/\s+/g, "_")}_${photoNumber.toString().padStart(2, "0")}.jpg`,
-        createdAt: Date.now(),
-      };
-      setPhotos([...photos, newPhoto]);
+  const handleAddPhoto = async (useCamera: boolean) => {
+    try {
+      if (useCamera) {
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!cameraPermission.granted) {
+          Alert.alert("Permission Required", "Camera permission is needed to take photos.");
+          return;
+        }
+      } else {
+        const mediaPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!mediaPermission.granted) {
+          Alert.alert("Permission Required", "Photo library permission is needed to select photos.");
+          return;
+        }
+      }
+
+      const result = useCamera
+        ? await ImagePicker.launchCameraAsync({
+            mediaTypes: ["images"],
+            allowsEditing: false,
+            quality: 0.8,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            allowsEditing: false,
+            quality: 0.8,
+          });
+
+      if (!result.canceled && result.assets[0]) {
+        const newPhotoIndex = photos.length + 1;
+        const newPhoto: RoomPhoto = {
+          id: uuidv4(),
+          uri: result.assets[0].uri,
+          fileName: generatePhotoFileName(name, newPhotoIndex),
+          createdAt: Date.now(),
+        };
+        setPhotos([...photos, newPhoto]);
+        setHasUnsavedChanges(true);
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to add photo.");
     }
   };
 
-  const handleTakePhoto = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission needed", "Camera permission is required to take photos");
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      const photoNumber = photos.length + 1;
-      const roomName = name || "IrregularRoom";
-      const newPhoto: RoomPhoto = {
-        id: uuidv4(),
-        uri: result.assets[0].uri,
-        fileName: `${roomName.replace(/\s+/g, "_")}_${photoNumber.toString().padStart(2, "0")}.jpg`,
-        createdAt: Date.now(),
-      };
-      setPhotos([...photos, newPhoto]);
-    }
+  const handleDeletePhoto = (photoId: string) => {
+    Alert.alert(
+      "Delete Photo",
+      "Are you sure you want to delete this photo?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            setPhotos(photos.filter((p) => p.id !== photoId));
+            setHasUnsavedChanges(true);
+          },
+        },
+      ]
+    );
   };
 
-  const handlePhotoPress = (index: number) => {
-    setSelectedPhotoIndex(index);
-    setPhotoNote(photos[index].note || "");
-    setPhotoModalVisible(true);
+  const handleEditPhotoNote = (photo: RoomPhoto) => {
+    setEditingPhotoId(photo.id);
+    setEditingPhotoNote(photo.note || "");
   };
 
   const handleSavePhotoNote = () => {
-    if (selectedPhotoIndex !== null) {
-      const updatedPhotos = [...photos];
-      updatedPhotos[selectedPhotoIndex] = {
-        ...updatedPhotos[selectedPhotoIndex],
-        note: photoNote,
-      };
-      setPhotos(updatedPhotos);
+    if (editingPhotoId) {
+      setPhotos(
+        photos.map((p) =>
+          p.id === editingPhotoId ? { ...p, note: editingPhotoNote.trim() || undefined } : p
+        )
+      );
+      setHasUnsavedChanges(true);
+      setEditingPhotoId(null);
+      setEditingPhotoNote("");
     }
-    setPhotoModalVisible(false);
-    setSelectedPhotoIndex(null);
-    setPhotoNote("");
-  };
-
-  const handleDeletePhoto = () => {
-    if (selectedPhotoIndex !== null) {
-      const updatedPhotos = photos.filter((_, idx) => idx !== selectedPhotoIndex);
-      setPhotos(updatedPhotos);
-    }
-    setPhotoModalVisible(false);
-    setSelectedPhotoIndex(null);
-    setPhotoNote("");
   };
 
   // Save prompt handlers
@@ -1199,85 +1210,197 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               />
             </Card>
 
-            {/* Photos */}
+            {/* Room Photos Section */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Photos
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Room Photos
               </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                Document nail pops, holes, sheetrock patches, or other observations
+              </Text>
+
+              {/* Add Photo Buttons */}
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: photos.length > 0 ? Spacing.md : 0 }}>
+                <Pressable
+                  onPress={() => handleAddPhoto(true)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Ionicons name="camera-outline" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.sm }}>
+                    Take Photo
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => handleAddPhoto(false)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.white,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
+                  }}
+                >
+                  <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginLeft: Spacing.sm }}>
+                    Choose
+                  </Text>
+                </Pressable>
+              </View>
 
               {/* Photo Grid */}
               {photos.length > 0 && (
-                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                  {photos.map((photo, index) => (
-                    <Pressable
+                <View style={{ gap: Spacing.md }}>
+                  {photos.map((photo) => (
+                    <View
                       key={photo.id}
-                      onPress={() => handlePhotoPress(index)}
                       style={{
-                        width: 80,
-                        height: 80,
+                        backgroundColor: Colors.backgroundWarmGray,
                         borderRadius: BorderRadius.default,
                         overflow: "hidden",
                       }}
                     >
                       <Image
                         source={{ uri: photo.uri }}
-                        style={{ width: "100%", height: "100%" }}
+                        style={{
+                          width: "100%",
+                          height: 180,
+                          backgroundColor: Colors.neutralGray,
+                        }}
                         resizeMode="cover"
                       />
-                      {photo.note && (
-                        <View style={{
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          backgroundColor: "rgba(0,0,0,0.5)",
-                          padding: 2,
-                        }}>
-                          <Ionicons name="document-text" size={12} color={Colors.white} />
-                        </View>
-                      )}
-                    </Pressable>
+                      <View style={{ padding: Spacing.sm }}>
+                        {/* File Name */}
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                          {photo.fileName}
+                        </Text>
+
+                        {/* Note Display */}
+                        {editingPhotoId === photo.id ? (
+                          <>
+                            <TextInput
+                              value={editingPhotoNote}
+                              onChangeText={setEditingPhotoNote}
+                              placeholder="Add a note about this photo..."
+                              placeholderTextColor={Colors.mediumGray}
+                              multiline
+                              style={[
+                                TextInputStyles.multiline,
+                                {
+                                  backgroundColor: Colors.white,
+                                  borderRadius: BorderRadius.default,
+                                  padding: Spacing.sm,
+                                  minHeight: 60,
+                                  marginBottom: Spacing.sm,
+                                }
+                              ]}
+                            />
+                            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                              <Pressable
+                                onPress={handleSavePhotoNote}
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: Colors.primaryBlue,
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                                  Save Note
+                                </Text>
+                              </Pressable>
+                              <Pressable
+                                onPress={() => {
+                                  setEditingPhotoId(null);
+                                  setEditingPhotoNote("");
+                                }}
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: Colors.neutralGray,
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                                  Cancel
+                                </Text>
+                              </Pressable>
+                            </View>
+                          </>
+                        ) : (
+                          <>
+                            {photo.note ? (
+                              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                                {photo.note}
+                              </Text>
+                            ) : (
+                              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic", marginBottom: Spacing.sm }}>
+                                No note added
+                              </Text>
+                            )}
+
+                            {/* Action Buttons */}
+                            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                              <Pressable
+                                onPress={() => handleEditPhotoNote(photo)}
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: Colors.primaryBlue,
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Ionicons name="create-outline" size={16} color={Colors.white} />
+                                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.xs }}>
+                                  {photo.note ? "Edit Note" : "Add Note"}
+                                </Text>
+                              </Pressable>
+                              <Pressable
+                                onPress={() => handleDeletePhoto(photo.id)}
+                                style={{
+                                  backgroundColor: Colors.error + "10",
+                                  borderRadius: 8,
+                                  paddingVertical: Spacing.xs,
+                                  paddingHorizontal: Spacing.md,
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Ionicons name="trash-outline" size={16} color={Colors.error} />
+                              </Pressable>
+                            </View>
+                          </>
+                        )}
+                      </View>
+                    </View>
                   ))}
                 </View>
               )}
 
-              {/* Add Photo Buttons */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                <Pressable
-                  onPress={handleTakePhoto}
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: Colors.primaryBlueLight,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.sm,
-                  }}
-                >
-                  <Ionicons name="camera-outline" size={20} color={Colors.primaryBlue} />
-                  <Text style={{ ...Typography.body, color: Colors.primaryBlue, fontWeight: "600", marginLeft: Spacing.xs }}>
-                    Camera
+              {photos.length === 0 && (
+                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.lg, alignItems: "center" }}>
+                  <Ionicons name="camera-outline" size={40} color={Colors.mediumGray} />
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
+                    No photos added yet
                   </Text>
-                </Pressable>
-                <Pressable
-                  onPress={handleAddPhoto}
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: Colors.primaryBlueLight,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.sm,
-                  }}
-                >
-                  <Ionicons name="images-outline" size={20} color={Colors.primaryBlue} />
-                  <Text style={{ ...Typography.body, color: Colors.primaryBlue, fontWeight: "600", marginLeft: Spacing.xs }}>
-                    Library
-                  </Text>
-                </Pressable>
-              </View>
+                </View>
+              )}
             </Card>
 
             {/* Save Button */}
@@ -1298,106 +1421,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Pressable>
           </View>
         </ScrollView>
-
-        {/* Photo Modal */}
-        <Modal
-          visible={photoModalVisible}
-          animationType="slide"
-          presentationStyle="pageSheet"
-          onRequestClose={() => setPhotoModalVisible(false)}
-        >
-          <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: Colors.white }}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              style={{ flex: 1 }}
-            >
-              {/* Modal Header */}
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: Spacing.md,
-                borderBottomWidth: 1,
-                borderBottomColor: Colors.neutralGray,
-              }}>
-                <Text style={Typography.h2}>Photo Details</Text>
-                <Pressable onPress={() => setPhotoModalVisible(false)}>
-                  <Ionicons name="close" size={24} color={Colors.darkCharcoal} />
-                </Pressable>
-              </View>
-
-              {/* Photo Preview */}
-              {selectedPhotoIndex !== null && photos[selectedPhotoIndex] && (
-                <View style={{ flex: 1, padding: Spacing.md }}>
-                  <Image
-                    source={{ uri: photos[selectedPhotoIndex].uri }}
-                    style={{
-                      width: "100%",
-                      height: 250,
-                      borderRadius: BorderRadius.default,
-                      marginBottom: Spacing.md,
-                    }}
-                    resizeMode="contain"
-                  />
-
-                  <Text style={{ ...Typography.body, fontWeight: "600", marginBottom: Spacing.xs }}>
-                    Note
-                  </Text>
-                  <TextInput
-                    value={photoNote}
-                    onChangeText={setPhotoNote}
-                    placeholder="Add a note (e.g., nail pops, holes, sheetrock patch)"
-                    placeholderTextColor={Colors.mediumGray}
-                    multiline
-                    numberOfLines={3}
-                    textAlignVertical="top"
-                    // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
-                    cursorColor={Colors.primaryBlue}
-                    selectionColor={Colors.primaryBlue}
-                    style={{
-                      backgroundColor: Colors.backgroundWarmGray,
-                      borderRadius: BorderRadius.default,
-                      padding: Spacing.md,
-                      fontSize: Typography.body.fontSize,
-                      color: Colors.darkCharcoal,
-                      minHeight: 80,
-                    }}
-                  />
-                </View>
-              )}
-
-              {/* Modal Actions */}
-              <View style={{ padding: Spacing.md, gap: Spacing.sm }}>
-                <Pressable
-                  onPress={handleSavePhotoNote}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ ...Typography.body, color: Colors.white, fontWeight: "600" }}>
-                    Save Note
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={handleDeletePhoto}
-                  style={{
-                    backgroundColor: Colors.error + "10",
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ ...Typography.body, color: Colors.error, fontWeight: "600" }}>
-                    Delete Photo
-                  </Text>
-                </Pressable>
-              </View>
-            </KeyboardAvoidingView>
-          </SafeAreaView>
-        </Modal>
 
         {/* InputAccessoryView for Room Name field */}
         {Platform.OS === "ios" && (

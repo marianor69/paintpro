@@ -155,6 +155,7 @@ export interface Staircase {
   walls?: StaircaseWall[];
   // Notes field (available without photos)
   notes?: string;
+  photos?: RoomPhoto[];
 }
 
 export interface Fireplace {
@@ -169,6 +170,7 @@ export interface Fireplace {
   coats: number;
   // Notes field (available without photos)
   notes?: string;
+  photos?: RoomPhoto[];
   // New 3-part structure
   hasMantel?: boolean; // Fixed price
   hasLegs?: boolean; // Fixed price (replaces hasTrim)
@@ -199,6 +201,7 @@ export interface BrickWall {
   coats: number; // Number of coats of wall paint (1 or 2, default 2)
   // Notes field (available without photos)
   notes?: string;
+  photos?: RoomPhoto[];
 }
 
 export interface IrregularRoomWall {
