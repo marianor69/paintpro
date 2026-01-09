@@ -464,6 +464,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={inlineFieldStyle} />
             </View>
 
             <Text style={{ ...Typography.h3, marginBottom: Spacing.sm, marginTop: Spacing.xs }}>
@@ -546,6 +547,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={inlineFieldStyle} />
             </View>
 
             <Text style={{ ...Typography.h3, marginBottom: Spacing.sm, marginTop: Spacing.xs }}>
