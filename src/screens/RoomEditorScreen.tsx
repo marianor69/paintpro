@@ -1193,7 +1193,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     minWidth: 32,
                     paddingHorizontal: 8,
-                    paddingVertical: 8,
+                    paddingVertical: 6,
                     backgroundColor: Colors.white,
                     borderRadius: 8,
                     borderWidth: 1,
