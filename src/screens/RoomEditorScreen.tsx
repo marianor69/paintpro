@@ -1163,11 +1163,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
                   borderRadius: BorderRadius.default,
-                  paddingHorizontal: Spacing.md,
-                  paddingVertical: Spacing.sm,
+                  paddingHorizontal: Spacing.sm,
+                  paddingVertical: Spacing.xs,
                   borderWidth: 1,
                   borderColor: Colors.neutralGray,
-                  gap: Spacing.sm,
+                  gap: Spacing.xs,
                 }}
               >
                 <Pressable
@@ -1180,20 +1180,20 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   accessibilityRole="button"
                   accessibilityLabel="Decrease window count"
                   style={{
-                    width: 36,
-                    height: 36,
+                    width: 28,
+                    height: 28,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                  <Text style={{ fontSize: 18, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
                 </Pressable>
                 <View
                   style={{
-                    minWidth: 40,
-                    paddingHorizontal: Spacing.md,
-                    paddingVertical: Spacing.sm,
+                    minWidth: 32,
+                    paddingHorizontal: 12,
+                    paddingVertical: 4,
                     backgroundColor: Colors.white,
                     borderRadius: BorderRadius.default,
                     borderWidth: 1,
@@ -1214,14 +1214,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   accessibilityRole="button"
                   accessibilityLabel="Increase window count"
                   style={{
-                    width: 36,
-                    height: 36,
+                    width: 28,
+                    height: 28,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                  <Text style={{ fontSize: 18, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
