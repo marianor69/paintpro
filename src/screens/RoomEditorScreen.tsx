@@ -125,6 +125,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [windowCount, setWindowCount] = useState(
     room?.windowCount && room.windowCount > 0 ? room.windowCount.toString() : ""
   );
+  const [testWindowsCount, setTestWindowsCount] = useState("");
   const [doorCount, setDoorCount] = useState(
     room?.doorCount && room.doorCount > 0 ? room.doorCount.toString() : ""
   );
@@ -1138,6 +1139,25 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 ))}
               </View>
             )}
+          </View>
+
+          {/* Windows Count (Test Only) */}
+          <View style={{ marginBottom: Spacing.md }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                Windows Count
+              </Text>
+              <View style={[TextInputStyles.container, { width: 68, alignSelf: "flex-end" }]}>
+                <TextInput
+                  value={testWindowsCount}
+                  onChangeText={setTestWindowsCount}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  placeholderTextColor={Colors.mediumGray}
+                  style={[TextInputStyles.base, { textAlign: "right" }]}
+                />
+              </View>
+            </View>
           </View>
 
           {/* Windows Counter */}
