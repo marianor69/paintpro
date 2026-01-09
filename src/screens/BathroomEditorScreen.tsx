@@ -935,8 +935,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </Text>
 
           {/* Pass-Through Openings */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+          <View style={{ marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <View>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                   Pass-Through Openings
@@ -990,7 +990,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
 
             {openings.length > 0 && (
-              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.sm }}>
                 {openings.map((opening, index) => (
                   <View key={opening.id} style={{ marginBottom: index < openings.length - 1 ? Spacing.md : 0, paddingBottom: index < openings.length - 1 ? Spacing.md : 0, borderBottomWidth: index < openings.length - 1 ? 1 : 0, borderBottomColor: Colors.neutralGray }}>
                     {/** Keyboard Navigation Toolbar (standard) for opening fields */}
@@ -1130,8 +1130,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {/* Windows Counter */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+          <View style={{ marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Windows
               </Text>
@@ -1184,8 +1184,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {/* Doors Counter */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+          <View style={{ marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Doors
               </Text>
@@ -1238,8 +1238,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {/* Closets Counters */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+          <View style={{ marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Single Door Closet
               </Text>
@@ -1295,8 +1295,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+          <View style={{ marginBottom: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Double Doors Closet
               </Text>
