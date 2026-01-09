@@ -1162,9 +1162,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: 999,
-                  paddingHorizontal: Spacing.sm,
-                  paddingVertical: Spacing.xs,
+                  borderRadius: BorderRadius.default,
+                  paddingHorizontal: Spacing.md,
+                  paddingVertical: Spacing.sm,
                   borderWidth: 1,
                   borderColor: Colors.neutralGray,
                   gap: Spacing.sm,
@@ -1184,14 +1184,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 36,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 18,
+                    borderRadius: 12,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
                 </Pressable>
                 <View
                   style={{
-                    minWidth: 60,
+                    minWidth: 40,
                     paddingHorizontal: Spacing.md,
                     paddingVertical: Spacing.sm,
                     backgroundColor: Colors.white,
@@ -1218,7 +1218,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 36,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 18,
+                    borderRadius: 12,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
