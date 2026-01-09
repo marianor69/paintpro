@@ -891,7 +891,7 @@ export const useProjectStore = create<ProjectStore>()(
           paintCeilings: project?.globalPaintDefaults?.paintCeilings ?? true,
           paintWindowFrames: project?.globalPaintDefaults?.paintWindowFrames ?? true,
           paintDoorFrames: project?.globalPaintDefaults?.paintDoorFrames ?? true,
-          paintWindows: project?.globalPaintDefaults?.paintWindows ?? false,
+          paintWindows: project?.globalPaintDefaults?.paintWindows ?? true,
           paintDoors: project?.globalPaintDefaults?.paintDoors ?? true,
           paintJambs: project?.globalPaintDefaults?.paintDoorJambs ?? true,
           paintBaseboard: project?.globalPaintDefaults?.paintBaseboards ?? true,
