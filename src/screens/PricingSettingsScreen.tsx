@@ -252,6 +252,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
+  const labelAlignWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs };
   const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
 
   return (
@@ -282,7 +283,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <View style={rightAlignedLabelWrapperStyle}>
+                <View style={[rightAlignedLabelWrapperStyle, labelAlignWithBubbleValueStyle]}>
                   <Text style={rightAlignedLabelTextStyle}>Wall</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
@@ -306,7 +307,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <View style={rightAlignedLabelWrapperStyle}>
+                <View style={[rightAlignedLabelWrapperStyle, labelAlignWithBubbleValueStyle]}>
                   <Text style={rightAlignedLabelTextStyle}>Ceiling</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
