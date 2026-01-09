@@ -532,7 +532,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     const cathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
 
     const updatedBathroom = {
-      id: currentRoomId,
+      id: currentBathroomId,
       name: trimmedName,
       length: lengthFeet,
       width: widthFeet,
