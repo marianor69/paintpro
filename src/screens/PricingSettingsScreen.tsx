@@ -420,24 +420,26 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Closet</Text>
-              <View style={bubbleHeaderWrapperStyle}>
-                <Text style={bubbleHeaderTextStyle}>Each $</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={closetLaborRef}
-                    value={closetLabor}
-                    onChangeText={setClosetLabor}
-                    placeholder="75"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => riserLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetLabor-${closetLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Closet</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={closetLaborRef}
+                      value={closetLabor}
+                      onChangeText={setClosetLabor}
+                      placeholder="75"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => riserLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetLabor-${closetLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -494,24 +496,26 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Handrail</Text>
-              <View style={bubbleHeaderWrapperStyle}>
-                <Text style={bubbleHeaderTextStyle}>$/LF</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={handrailLaborRef}
-                    value={handrailLaborPerLF}
-                    onChangeText={setHandrailLaborPerLF}
-                    placeholder="10"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => mantelLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Handrail</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>$/LF</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={handrailLaborRef}
+                      value={handrailLaborPerLF}
+                      onChangeText={setHandrailLaborPerLF}
+                      placeholder="10"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => mantelLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -664,47 +668,51 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </Text>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Furniture Moving</Text>
-              <View style={bubbleHeaderWrapperStyle}>
-                <Text style={bubbleHeaderTextStyle}>Each $</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={furnitureMovingFeeRef}
-                    value={furnitureMovingFee}
-                    onChangeText={setFurnitureMovingFee}
-                    placeholder="100"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => nailsRemovalFeeRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
-                    style={inputTextStyle}
-                  />
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Furniture Moving</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={furnitureMovingFeeRef}
+                      value={furnitureMovingFee}
+                      onChangeText={setFurnitureMovingFee}
+                      placeholder="100"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => nailsRemovalFeeRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Nails/Screws Removal</Text>
-              <View style={bubbleHeaderWrapperStyle}>
-                <Text style={bubbleHeaderTextStyle}>Each $</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={nailsRemovalFeeRef}
-                    value={nailsRemovalFee}
-                    onChangeText={setNailsRemovalFee}
-                    placeholder="75"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingNailsRemovalFee-${nailsRemovalFeeID}` : undefined}
-                    style={inputTextStyle}
-                  />
+              <View style={inlineFieldStyle}>
+                <Text style={labelStyle}>Nails/Screws Removal</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={nailsRemovalFeeRef}
+                      value={nailsRemovalFee}
+                      onChangeText={setNailsRemovalFee}
+                      placeholder="75"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingNailsRemovalFee-${nailsRemovalFeeID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
