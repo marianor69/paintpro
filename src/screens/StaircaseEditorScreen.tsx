@@ -409,7 +409,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
               {/* Row 1: Risers & Spindles - 2 columns */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, alignItems: "center" }}>
                   <FormInput
                     ref={riserCountRef}
                     previousFieldRef={nameRef}
@@ -420,6 +420,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     placeholder="0"
                     nextFieldRef={spindleCountRef}
                     inputContainerStyle={{ width: 68 }}
+                    labelStyle={{ textAlign: "center", width: 68, alignSelf: "center" }}
                     className="mb-0"
                   />
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -427,7 +428,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   </Text>
                 </View>
 
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, alignItems: "center" }}>
                   <FormInput
                     ref={spindleCountRef}
                     previousFieldRef={riserCountRef}
@@ -438,6 +439,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     placeholder="0"
                     nextFieldRef={handrailLengthRef}
                     inputContainerStyle={{ width: 68 }}
+                    labelStyle={{ textAlign: "center", width: 68, alignSelf: "center" }}
                     className="mb-0"
                   />
                 </View>
