@@ -610,12 +610,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     };
 
     console.log("[BathroomEditor] Saving room totals (using computeRoomPricingSummary):", {
-      laborTotal: finalRoom.laborTotal,
-      materialsTotal: finalRoom.materialsTotal,
-      grandTotal: finalRoom.grandTotal,
+      laborTotal: finalBathroom.laborTotal,
+      materialsTotal: finalBathroom.materialsTotal,
+      grandTotal: finalBathroom.grandTotal,
     });
 
-    updateBathroom(projectId, currentBathroomId, finalRoom as any);
+    updateBathroom(projectId, currentBathroomId, finalBathroom as any);
 
     // Update initial snapshot to the newly saved state
     initialStateRef.current = serializeBathroomState(
