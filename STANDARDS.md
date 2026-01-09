@@ -34,7 +34,7 @@ Reference implementation:
 
 Definitions (visual standards):
 - Top-align: Use the same alignment as CalculationSettings Card 1, Row 1.
-- Center-align: Use the same alignment as PricingSettings Card 1, Row 7 (Riser $).
+- Center-align: Main label aligns with the numeric value inside the bubble (not the unit header). Use CalculationSettings Card 3, Row 1.
 
 Rule:
 - Choose Top-align when the label block includes helper text.
