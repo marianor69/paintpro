@@ -801,7 +801,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           {/* Room Dimensions: Length × Width = Area */}
           <View style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Room Size
+              Bathroom Size
             </Text>
             {/* Labels row */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
