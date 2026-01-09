@@ -335,6 +335,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder="0"
                     nextFieldRef={heightRef}
+                    inputContainerStyle={{ width: 68 }}
                     className="mb-0"
                   />
                 </View>
@@ -347,6 +348,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                     onChangeText={setHeight}
                     keyboardType="numeric"
                     placeholder="0"
+                    inputContainerStyle={{ width: 68 }}
                     className="mb-0"
                   />
                 </View>
