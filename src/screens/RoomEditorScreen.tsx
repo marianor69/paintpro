@@ -1146,7 +1146,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Windows
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View
+                style={{
+                  height: 44,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: 22,
+                  paddingHorizontal: Spacing.md,
+                  gap: Spacing.md,
+                  borderWidth: 1,
+                  borderColor: `${Colors.primaryBlue}33`,
+                }}
+              >
                 <Pressable
                   onPress={() => {
                     const current = parseInt(windowCount) || 0;
@@ -1154,41 +1166,51 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       setWindowCount((current - 1).toString());
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease window count"
                   style={{
-                    backgroundColor: Colors.neutralGray,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
+                    width: 34,
+                    height: 34,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 17,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                </Pressable>
+                <View
+                  style={{
+                    minWidth: 56,
+                    height: 34,
+                    paddingHorizontal: Spacing.md,
+                    backgroundColor: Colors.white,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: Colors.primaryBlue,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Decrease window count"
                 >
-                  <Ionicons name="remove" size={20} color={Colors.darkCharcoal} />
-                </Pressable>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, minWidth: 30, textAlign: "center" }}>
-                  {windowCount || "0"}
-                </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {windowCount || "0"}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => {
                     const current = parseInt(windowCount) || 0;
                     setWindowCount((current + 1).toString());
                   }}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
                   accessibilityRole="button"
                   accessibilityLabel="Increase window count"
+                  style={{
+                    width: 34,
+                    height: 34,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 17,
+                  }}
                 >
-                  <Ionicons name="add" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
