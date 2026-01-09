@@ -327,40 +327,46 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Each door ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={doorLaborRef}
-                    value={doorLabor}
-                    onChangeText={setDoorLabor}
-                    placeholder="50"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => windowLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingDoorLabor-${doorLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={doorLaborRef}
+                      value={doorLabor}
+                      onChangeText={setDoorLabor}
+                      placeholder="50"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => windowLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingDoorLabor-${doorLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Window ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={windowLaborRef}
-                    value={windowLabor}
-                    onChangeText={setWindowLabor}
-                    placeholder="35"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => baseboardLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingWindowLabor-${windowLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Each window ($)</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={windowLaborRef}
+                      value={windowLabor}
+                      onChangeText={setWindowLabor}
+                      placeholder="35"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => baseboardLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingWindowLabor-${windowLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -412,22 +418,25 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Closet ($)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={closetLaborRef}
-                  value={closetLabor}
-                  onChangeText={setClosetLabor}
-                  placeholder="75"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => riserLaborRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetLabor-${closetLaborID}` : undefined}
-                  style={inputTextStyle}
-                />
+              <Text style={labelStyle}>Each closet ($)</Text>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={closetLaborRef}
+                    value={closetLabor}
+                    onChangeText={setClosetLabor}
+                    placeholder="75"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => riserLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetLabor-${closetLaborID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
               </View>
             </View>
 
@@ -437,41 +446,47 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Riser ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={riserLaborRef}
-                    value={riserLabor}
-                    onChangeText={setRiserLabor}
-                    placeholder="15"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => spindleLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingRiserLabor-${riserLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Each riser ($)</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={riserLaborRef}
+                      value={riserLabor}
+                      onChangeText={setRiserLabor}
+                      placeholder="15"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => spindleLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingRiserLabor-${riserLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Spindle ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={spindleLaborRef}
-                    value={spindleLabor}
-                    onChangeText={setSpindleLabor}
-                    placeholder="8"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => handrailLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingSpindleLabor-${spindleLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Each spindle ($)</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={spindleLaborRef}
+                      value={spindleLabor}
+                      onChangeText={setSpindleLabor}
+                      placeholder="8"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => handrailLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingSpindleLabor-${spindleLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -505,41 +520,47 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Mantel ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={mantelLaborRef}
-                    value={mantelLabor}
-                    onChangeText={setMantelLabor}
-                    placeholder="100"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => legsLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingMantelLabor-${mantelLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Each mantel ($)</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={mantelLaborRef}
+                      value={mantelLabor}
+                      onChangeText={setMantelLabor}
+                      placeholder="100"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => legsLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingMantelLabor-${mantelLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Legs ($)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={legsLaborRef}
-                    value={legsLabor}
-                    onChangeText={setLegsLabor}
-                    placeholder="100"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => secondCoatMultiplierRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingLegsLabor-${legsLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Each leg ($)</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={legsLaborRef}
+                      value={legsLabor}
+                      onChangeText={setLegsLabor}
+                      placeholder="100"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => secondCoatMultiplierRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingLegsLabor-${legsLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -641,42 +662,48 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </Text>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Furniture Moving ($)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={furnitureMovingFeeRef}
-                  value={furnitureMovingFee}
-                  onChangeText={setFurnitureMovingFee}
-                  placeholder="100"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => nailsRemovalFeeRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
-                  style={inputTextStyle}
-                />
+              <Text style={labelStyle}>Each furniture move ($)</Text>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={furnitureMovingFeeRef}
+                    value={furnitureMovingFee}
+                    onChangeText={setFurnitureMovingFee}
+                    placeholder="100"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => nailsRemovalFeeRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingFurnitureMovingFee-${furnitureMovingFeeID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
               </View>
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Nails/Screws Removal ($)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={nailsRemovalFeeRef}
-                  value={nailsRemovalFee}
-                  onChangeText={setNailsRemovalFee}
-                  placeholder="75"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingNailsRemovalFee-${nailsRemovalFeeID}` : undefined}
-                  style={inputTextStyle}
-                />
+              <Text style={labelStyle}>Each nails/screws removal ($)</Text>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={nailsRemovalFeeRef}
+                    value={nailsRemovalFee}
+                    onChangeText={setNailsRemovalFee}
+                    placeholder="75"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => wallPaintGallonRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingNailsRemovalFee-${nailsRemovalFeeID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
               </View>
             </View>
           </Card>
