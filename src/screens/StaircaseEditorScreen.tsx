@@ -409,55 +409,68 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
               {/* Row 1: Risers & Spindles - 2 columns */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <View style={{ flex: 1, alignItems: "center" }}>
-                  <FormInput
-                    ref={riserCountRef}
-                    previousFieldRef={nameRef}
-                    label="Risers"
-                    value={riserCount}
-                    onChangeText={setRiserCount}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    nextFieldRef={spindleCountRef}
-                    inputContainerStyle={{ width: 68 }}
-                    labelStyle={{ textAlign: "center", width: 68, alignSelf: "center" }}
-                    className="mb-0"
-                  />
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                      Risers
+                    </Text>
+                    <FormInput
+                      ref={riserCountRef}
+                      previousFieldRef={nameRef}
+                      label=""
+                      value={riserCount}
+                      onChangeText={setRiserCount}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      nextFieldRef={spindleCountRef}
+                      inputContainerStyle={{ width: 68 }}
+                      className="mb-0"
+                    />
+                  </View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                     Standard riser height of 7.5 inches assumed
                   </Text>
                 </View>
 
-                <View style={{ flex: 1, alignItems: "center" }}>
-                  <FormInput
-                    ref={spindleCountRef}
-                    previousFieldRef={riserCountRef}
-                    label="Spindles"
-                    value={spindleCount}
-                    onChangeText={setSpindleCount}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    nextFieldRef={handrailLengthRef}
-                    inputContainerStyle={{ width: 68 }}
-                    labelStyle={{ textAlign: "center", width: 68, alignSelf: "center" }}
-                    className="mb-0"
-                  />
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                      Spindles
+                    </Text>
+                    <FormInput
+                      ref={spindleCountRef}
+                      previousFieldRef={riserCountRef}
+                      label=""
+                      value={spindleCount}
+                      onChangeText={setSpindleCount}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      nextFieldRef={handrailLengthRef}
+                      inputContainerStyle={{ width: 68 }}
+                      className="mb-0"
+                    />
+                  </View>
                 </View>
               </View>
 
               {/* Handrail Length - full width */}
               <View>
-                <FormInput
-                  ref={handrailLengthRef}
-                  previousFieldRef={spindleCountRef}
-                  label={`Handrail Length (${unitSystem === 'metric' ? 'm' : 'ft'})`}
-                  value={handrailLength}
-                  onChangeText={setHandrailLength}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  inputContainerStyle={{ width: 68 }}
-                  className="mb-0"
-                />
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Handrail Length ({unitSystem === 'metric' ? 'm' : 'ft'})
+                  </Text>
+                  <FormInput
+                    ref={handrailLengthRef}
+                    previousFieldRef={spindleCountRef}
+                    label=""
+                    value={handrailLength}
+                    onChangeText={setHandrailLength}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    inputContainerStyle={{ width: 68 }}
+                    className="mb-0"
+                  />
+                </View>
               </View>
             </Card>
 
