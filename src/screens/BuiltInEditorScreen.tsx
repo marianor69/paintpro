@@ -82,7 +82,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
   const bubbleWidth = 64;
-  const bubbleLabelStyle = { textAlign: "center" as const };
+  const bubbleLabelStyle = { textAlign: "center" as const, width: bubbleWidth, alignSelf: "center" as const };
   const bubbleInputTextStyle = { textAlign: "right" as const };
 
   const arePhotosEqual = useCallback((current: RoomPhoto[] = [], stored: RoomPhoto[] = []) => {
