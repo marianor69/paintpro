@@ -62,3 +62,18 @@ Rule:
 - Cards are numbered per screen for reference only (no UI labels).
 - Order is top-to-bottom, left-to-right as they appear on screen.
 - Example: "CalculationSettings Card 1" refers to the first visible card from the top.
+
+## RightAlignBubbleHeader
+
+Purpose: Align unit headers (e.g., "Inches", "Feet") to the same right edge as the numeric value in the bubble.
+
+Apply:
+- Wrap the header and bubble in a fixed-width container (same width as the bubble).
+- Set wrapper `alignItems: "flex-end"`.
+- Header text uses `textAlign: "right"` and right padding equal to the bubble's horizontal padding.
+
+Reference implementation:
+- `src/screens/CalculationSettingsScreen.tsx`
+
+Notes:
+- This matches the visual alignment used in PricingSettings column headers.
