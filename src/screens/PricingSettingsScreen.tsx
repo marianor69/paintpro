@@ -251,6 +251,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const columnLabelStyle = { textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
   const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
+  const centerLabelStyle = { ...labelStyle, alignSelf: "center" as const };
 
   return (
     <SafeAreaView
@@ -280,9 +281,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Wall</Text>
+                <Text style={centerLabelStyle}>Wall</Text>
                 <View style={bubbleHeaderWrapperStyle}>
-                  <Text style={bubbleHeaderTextStyle}>$/sq ft</Text>
+                  <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={wallLaborRef}
@@ -302,9 +303,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Ceiling</Text>
+                <Text style={centerLabelStyle}>Ceiling</Text>
                 <View style={bubbleHeaderWrapperStyle}>
-                  <Text style={bubbleHeaderTextStyle}>$/sq ft</Text>
+                  <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={ceilingLaborRef}
@@ -327,7 +328,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Door</Text>
+                <Text style={centerLabelStyle}>Door</Text>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
@@ -349,7 +350,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Window</Text>
+                <Text style={centerLabelStyle}>Window</Text>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
