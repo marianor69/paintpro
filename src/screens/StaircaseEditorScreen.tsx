@@ -537,6 +537,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         onChangeText={(value) => updateWallHeight(index, 'tallHeight', value)}
                         keyboardType="numeric"
                         placeholder="0"
+                        inputContainerStyle={{ width: 68 }}
                         className="mb-0"
                       />
                     </View>
@@ -547,6 +548,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         onChangeText={(value) => updateWallHeight(index, 'shortHeight', value)}
                         keyboardType="numeric"
                         placeholder="0"
+                        inputContainerStyle={{ width: 68 }}
                         className="mb-0"
                       />
                     </View>
