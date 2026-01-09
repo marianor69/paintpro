@@ -94,6 +94,14 @@ export default function CalculationSettingsScreen() {
   const inputContainerStyle = [TextInputStyles.container, { width: 68, alignSelf: "flex-start" }];
   const bubbleInputStyle = [TextInputStyles.base, { textAlign: "right" as const }];
   const helperTextStyle = { fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray };
+  const unitHeaderStyle = {
+    fontSize: Typography.caption.fontSize,
+    color: Colors.mediumGray,
+    marginBottom: Spacing.xs,
+    textAlign: "right" as const,
+    width: 68,
+    paddingRight: Spacing.md,
+  };
 
   const handleSave = () => {
     const parsedCasingWidth = parseFloat(singleClosetTrimWidth) || settings.singleClosetTrimWidth;
@@ -251,7 +259,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right" }}>Inches</Text>
+                  <Text style={unitHeaderStyle}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -282,7 +290,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right" }}>Inches</Text>
+                  <Text style={unitHeaderStyle}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -320,7 +328,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                  <Text style={unitHeaderStyle}>
                     Width
                   </Text>
                   <View style={inputContainerStyle}>
@@ -340,7 +348,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                  <Text style={unitHeaderStyle}>
                     Height
                   </Text>
                   <View style={inputContainerStyle}>
@@ -494,7 +502,7 @@ export default function CalculationSettingsScreen() {
                   </Text>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right" }}>
+                  <Text style={unitHeaderStyle}>
                     Feet
                   </Text>
                   <View style={inputContainerStyle}>
