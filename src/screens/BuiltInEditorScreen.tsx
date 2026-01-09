@@ -78,7 +78,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const widthRef = useRef<TextInput>(null);
   const heightRef = useRef<TextInput>(null);
   const depthRef = useRef<TextInput>(null);
-  const shelfCountRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
   const bubbleWidth = 64;
@@ -473,7 +472,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     onChangeText={setDepth}
                     keyboardType="numeric"
                     placeholder={unitSystem === "metric" ? "0.30" : "1"}
-                    nextFieldRef={shelfCountRef}
                     inputContainerStyle={{ width: bubbleWidth }}
                     inputTextStyle={bubbleInputTextStyle}
                     labelStyle={bubbleLabelStyle}
@@ -481,19 +479,75 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   />
                 </View>
                 <View style={bubbleLabelContainerStyle}>
-                  <FormInput
-                    ref={shelfCountRef}
-                    previousFieldRef={depthRef}
-                    label="Shelves"
-                    value={shelfCount}
-                    onChangeText={setShelfCount}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    inputContainerStyle={{ width: bubbleWidth }}
-                    inputTextStyle={bubbleInputTextStyle}
-                    labelStyle={bubbleLabelStyle}
-                    className="mb-0"
-                  />
+                  <Text style={[bubbleLabelStyle, { color: Colors.darkCharcoal, fontWeight: "500" as any }]}>
+                    Shelves
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                      marginTop: Spacing.xs,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(shelfCount) || 0;
+                        setShelfCount(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease shelf count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {shelfCount || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(shelfCount) || 0;
+                        setShelfCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase shelf count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
             </Card>

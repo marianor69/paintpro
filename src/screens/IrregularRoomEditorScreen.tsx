@@ -997,17 +997,71 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                     Window Count
                   </Text>
-                  <FormInput
-                    label=""
-                    value={windowCount}
-                    onChangeText={setWindowCount}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    inputContainerStyle={{ width: 68 }}
-                    inputTextStyle={{ textAlign: "right" }}
-                    onFocus={handleFieldFocus}
-                    className="mb-0"
-                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(windowCount) || 0;
+                        setWindowCount(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease window count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {windowCount || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(windowCount) || 0;
+                        setWindowCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase window count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
@@ -1015,17 +1069,71 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                       Door Count
                     </Text>
-                    <FormInput
-                      label=""
-                      value={doorCount}
-                      onChangeText={setDoorCount}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      inputContainerStyle={{ width: 68 }}
-                      inputTextStyle={{ textAlign: "right" }}
-                      onFocus={handleFieldFocus}
-                      className="mb-0"
-                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        backgroundColor: Colors.primaryBlueLight,
+                        borderRadius: BorderRadius.default,
+                        paddingHorizontal: 4,
+                        paddingVertical: 2,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        gap: 4,
+                      }}
+                    >
+                      <Pressable
+                        onPress={() => {
+                          const current = parseInt(doorCount) || 0;
+                          setDoorCount(Math.max(0, current - 1).toString());
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Decrease door count"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 12,
+                        }}
+                      >
+                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                      </Pressable>
+                      <View
+                        style={{
+                          minWidth: 32,
+                          paddingHorizontal: 8,
+                          paddingVertical: 6,
+                          backgroundColor: Colors.white,
+                          borderRadius: 8,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                          {doorCount || "0"}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={() => {
+                          const current = parseInt(doorCount) || 0;
+                          setDoorCount((current + 1).toString());
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel="Increase door count"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 12,
+                        }}
+                      >
+                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                      </Pressable>
+                    </View>
                   </View>
                   <Toggle
                     label="Has Closet"
@@ -1040,34 +1148,142 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                         Single Door Count
                       </Text>
-                      <FormInput
-                        label=""
-                        value={singleDoorClosets}
-                        onChangeText={setSingleDoorClosets}
-                        keyboardType="numeric"
-                        placeholder="0"
-                        inputContainerStyle={{ width: 68 }}
-                        inputTextStyle={{ textAlign: "right" }}
-                        onFocus={handleFieldFocus}
-                        className="mb-0"
-                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          backgroundColor: Colors.primaryBlueLight,
+                          borderRadius: BorderRadius.default,
+                          paddingHorizontal: 4,
+                          paddingVertical: 2,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          gap: 4,
+                        }}
+                      >
+                        <Pressable
+                          onPress={() => {
+                            const current = parseInt(singleDoorClosets) || 0;
+                            setSingleDoorClosets(Math.max(0, current - 1).toString());
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="Decrease single door closet count"
+                          style={{
+                            width: 28,
+                            height: 28,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 12,
+                          }}
+                        >
+                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                        </Pressable>
+                        <View
+                          style={{
+                            minWidth: 32,
+                            paddingHorizontal: 8,
+                            paddingVertical: 6,
+                            backgroundColor: Colors.white,
+                            borderRadius: 8,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                            {singleDoorClosets || "0"}
+                          </Text>
+                        </View>
+                        <Pressable
+                          onPress={() => {
+                            const current = parseInt(singleDoorClosets) || 0;
+                            setSingleDoorClosets((current + 1).toString());
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="Increase single door closet count"
+                          style={{
+                            width: 28,
+                            height: 28,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 12,
+                          }}
+                        >
+                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                        </Pressable>
+                      </View>
                     </View>
 
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                       <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                         Double Door Count
                       </Text>
-                      <FormInput
-                        label=""
-                        value={doubleDoorClosets}
-                        onChangeText={setDoubleDoorClosets}
-                        keyboardType="numeric"
-                        placeholder="0"
-                        inputContainerStyle={{ width: 68 }}
-                        inputTextStyle={{ textAlign: "right" }}
-                        onFocus={handleFieldFocus}
-                        className="mb-0"
-                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          backgroundColor: Colors.primaryBlueLight,
+                          borderRadius: BorderRadius.default,
+                          paddingHorizontal: 4,
+                          paddingVertical: 2,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          gap: 4,
+                        }}
+                      >
+                        <Pressable
+                          onPress={() => {
+                            const current = parseInt(doubleDoorClosets) || 0;
+                            setDoubleDoorClosets(Math.max(0, current - 1).toString());
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="Decrease double door closet count"
+                          style={{
+                            width: 28,
+                            height: 28,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 12,
+                          }}
+                        >
+                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                        </Pressable>
+                        <View
+                          style={{
+                            minWidth: 32,
+                            paddingHorizontal: 8,
+                            paddingVertical: 6,
+                            backgroundColor: Colors.white,
+                            borderRadius: 8,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                            {doubleDoorClosets || "0"}
+                          </Text>
+                        </View>
+                        <Pressable
+                          onPress={() => {
+                            const current = parseInt(doubleDoorClosets) || 0;
+                            setDoubleDoorClosets((current + 1).toString());
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel="Increase double door closet count"
+                          style={{
+                            width: 28,
+                            height: 28,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 12,
+                          }}
+                        >
+                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                        </Pressable>
+                      </View>
                     </View>
                   </>
                 )}
