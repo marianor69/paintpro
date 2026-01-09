@@ -841,8 +841,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={materialRowStyle}>
-                <Text style={labelStyle}>Trim Paint</Text>
+              <View style={[materialRowStyle, { alignItems: "flex-start" }]}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
+                  <Text style={labelStyle}>Trim Paint</Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
+                  </Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={trimPaintGallonRef}
@@ -876,9 +881,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   />
                 </View>
               </View>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
-              </Text>
             </View>
 
             <View style={materialRowStyle}>
