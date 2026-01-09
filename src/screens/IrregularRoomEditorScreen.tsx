@@ -1064,79 +1064,80 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                      Door Count
-                    </Text>
-                    <View
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    Door Count
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(doorCount) || 0;
+                        setDoorCount(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease door count"
                       style={{
-                        flexDirection: "row",
+                        width: 28,
+                        height: 28,
                         alignItems: "center",
-                        backgroundColor: Colors.primaryBlueLight,
-                        borderRadius: BorderRadius.default,
-                        paddingHorizontal: 4,
-                        paddingVertical: 2,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        gap: 4,
+                        justifyContent: "center",
+                        borderRadius: 12,
                       }}
                     >
-                      <Pressable
-                        onPress={() => {
-                          const current = parseInt(doorCount) || 0;
-                          setDoorCount(Math.max(0, current - 1).toString());
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Decrease door count"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 12,
-                        }}
-                      >
-                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
-                      </Pressable>
-                      <View
-                        style={{
-                          minWidth: 32,
-                          paddingHorizontal: 8,
-                          paddingVertical: 6,
-                          backgroundColor: Colors.white,
-                          borderRadius: 8,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                          {doorCount || "0"}
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={() => {
-                          const current = parseInt(doorCount) || 0;
-                          setDoorCount((current + 1).toString());
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Increase door count"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 12,
-                        }}
-                      >
-                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
-                      </Pressable>
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {doorCount || "0"}
+                      </Text>
                     </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(doorCount) || 0;
+                        setDoorCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase door count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
                   </View>
+                </View>
+
+                <View>
                   <Toggle
-                    label="Has Closet"
+                    label="Hat closet"
                     value={hasCloset}
                     onValueChange={setHasCloset}
                   />
