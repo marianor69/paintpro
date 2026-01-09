@@ -82,7 +82,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
   const bubbleWidth = 64;
-  const bubbleLabelStyle = { textAlign: "center" as const, width: bubbleWidth, alignSelf: "center" as const, fontSize: 13 };
+  const bubbleLabelStyle = { textAlign: "center" as const, width: bubbleWidth, alignSelf: "center" as const, fontSize: 13, lineHeight: 15 };
+  const bubbleLabelContainerStyle = { alignItems: "center" as const };
   const bubbleInputTextStyle = { textAlign: "right" as const };
 
   const arePhotosEqual = useCallback((current: RoomPhoto[] = [], stored: RoomPhoto[] = []) => {
@@ -429,7 +430,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
               {/* Row 1: Width, Height, Depth, Shelves */}
               <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={bubbleLabelContainerStyle}>
                   <FormInput
                     ref={widthRef}
                     previousFieldRef={nameRef}
@@ -446,7 +447,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   />
                 </View>
 
-                <View style={{ flex: 1 }}>
+                <View style={bubbleLabelContainerStyle}>
                   <FormInput
                     ref={heightRef}
                     previousFieldRef={widthRef}
@@ -463,7 +464,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   />
                 </View>
 
-                <View style={{ flex: 1 }}>
+                <View style={bubbleLabelContainerStyle}>
                   <FormInput
                     ref={depthRef}
                     previousFieldRef={heightRef}
@@ -479,7 +480,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     className="mb-0"
                   />
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={bubbleLabelContainerStyle}>
                   <FormInput
                     ref={shelfCountRef}
                     previousFieldRef={depthRef}
