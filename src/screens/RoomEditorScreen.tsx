@@ -806,15 +806,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             {/* Labels row */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>Length</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>Length</Text>
               </View>
               <Text style={{ fontSize: 18, color: "transparent" }}>×</Text>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>Width</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>Width</Text>
               </View>
               <Text style={{ fontSize: 18, color: "transparent" }}>=</Text>
               <View style={{ flex: 1.2 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>Area</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>Area</Text>
               </View>
             </View>
             {/* Input fields row */}
