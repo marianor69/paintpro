@@ -26,7 +26,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { Toggle } from "../components/Toggle";
-import { NumericInput } from "../components/NumericInput";
 import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto, IrregularRoomWall } from "../types/painting";
@@ -742,7 +741,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               <View style={{ marginBottom: Spacing.md }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Walls ({unitSystem === "metric" ? "m" : "ft"})
+                    Walls
                   </Text>
                   <Pressable
                     onPress={handleAddWall}
@@ -766,20 +765,20 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                   <View style={{ width: 30 }} />
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>
-                      Width
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                      Width ({unitSystem === "metric" ? "m" : "ft"})
                     </Text>
                   </View>
                   <Text style={{ fontSize: 14, color: "transparent" }}>×</Text>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.md }}>
-                      Height
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                      Height ({unitSystem === "metric" ? "m" : "ft"})
                     </Text>
                   </View>
                   <Text style={{ fontSize: 14, color: "transparent" }}>=</Text>
                   <View style={{ width: 70 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right", paddingRight: Spacing.sm }}>
-                      Area
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                      Area ({unitSystem === "metric" ? "m²" : "sqft"})
                     </Text>
                   </View>
                   <View style={{ width: 36 }} />
@@ -993,62 +992,86 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 Openings & Closets
               </Text>
 
-              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md, alignItems: "flex-end" }}>
-                <View style={{ flex: 0.4 }}>
-                  <NumericInput
-                    label="Windows"
+              <View style={{ gap: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    Window Count
+                  </Text>
+                  <FormInput
+                    label=""
                     value={windowCount}
                     onChangeText={setWindowCount}
-                    min={0}
-                    max={20}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    inputContainerStyle={{ width: 68 }}
+                    inputTextStyle={{ textAlign: "right" }}
                     onFocus={handleFieldFocus}
+                    className="mb-0"
                   />
                 </View>
-                <View style={{ flex: 0.4 }}>
-                  <NumericInput
-                    label="Doors"
-                    value={doorCount}
-                    onChangeText={setDoorCount}
-                    min={0}
-                    max={10}
-                    onFocus={handleFieldFocus}
-                  />
-                </View>
-                <View style={{ flex: 1, justifyContent: "flex-end" }}>
+
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                      Door Count
+                    </Text>
+                    <FormInput
+                      label=""
+                      value={doorCount}
+                      onChangeText={setDoorCount}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      inputContainerStyle={{ width: 68 }}
+                      inputTextStyle={{ textAlign: "right" }}
+                      onFocus={handleFieldFocus}
+                      className="mb-0"
+                    />
+                  </View>
                   <Toggle
-                    label="Closet"
+                    label="Has Closet"
                     value={hasCloset}
                     onValueChange={setHasCloset}
                   />
                 </View>
-              </View>
 
-              {hasCloset && (
-                <View style={{ marginTop: Spacing.md }}>
-                  <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                    <View style={{ flex: 1 }}>
-                      <NumericInput
-                        label="Single Door"
+                {hasCloset && (
+                  <>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        Single Door Count
+                      </Text>
+                      <FormInput
+                        label=""
                         value={singleDoorClosets}
                         onChangeText={setSingleDoorClosets}
-                        min={0}
-                        max={10}
+                        keyboardType="numeric"
+                        placeholder="0"
+                        inputContainerStyle={{ width: 68 }}
+                        inputTextStyle={{ textAlign: "right" }}
                         onFocus={handleFieldFocus}
+                        className="mb-0"
                       />
                     </View>
-                    <View style={{ flex: 1 }}>
-                      <NumericInput
-                        label="Double Door"
+
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                        Double Door Count
+                      </Text>
+                      <FormInput
+                        label=""
                         value={doubleDoorClosets}
                         onChangeText={setDoubleDoorClosets}
-                        min={0}
-                        max={10}
+                        keyboardType="numeric"
+                        placeholder="0"
+                        inputContainerStyle={{ width: 68 }}
+                        inputTextStyle={{ textAlign: "right" }}
                         onFocus={handleFieldFocus}
+                        className="mb-0"
                       />
                     </View>
-                  </View>
-                </View>
-              )}
+                  </>
+                )}
+              </View>
             </Card>
 
             {/* Paint Options */}
