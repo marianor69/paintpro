@@ -125,7 +125,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [windowCount, setWindowCount] = useState(
     room?.windowCount && room.windowCount > 0 ? room.windowCount.toString() : ""
   );
-  const [testWindowsCount, setTestWindowsCount] = useState("");
   const [doorCount, setDoorCount] = useState(
     room?.doorCount && room.doorCount > 0 ? room.doorCount.toString() : ""
   );
@@ -1132,25 +1131,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             )}
           </View>
 
-          {/* Windows Count (Test Only) */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                Windows Count
-              </Text>
-              <View style={[TextInputStyles.container, { width: 68, alignSelf: "flex-end" }]}>
-                <TextInput
-                  value={testWindowsCount}
-                  onChangeText={setTestWindowsCount}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  placeholderTextColor={Colors.mediumGray}
-                  style={[TextInputStyles.base, { textAlign: "right" }]}
-                />
-              </View>
-            </View>
-          </View>
-
           {/* Windows Counter */}
           <View style={{ marginBottom: Spacing.md }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
@@ -1233,7 +1213,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Doors
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: BorderRadius.default,
+                  paddingHorizontal: 4,
+                  paddingVertical: 2,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  gap: Spacing.xs,
+                }}
+              >
                 <Pressable
                   onPress={() => {
                     const current = parseInt(doorCount) || 0;
@@ -1241,41 +1233,51 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       setDoorCount((current - 1).toString());
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease door count"
                   style={{
-                    backgroundColor: Colors.neutralGray,
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                </Pressable>
+                <View
+                  style={{
+                    minWidth: 32,
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    backgroundColor: Colors.white,
                     borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Decrease door count"
                 >
-                  <Ionicons name="remove" size={20} color={Colors.darkCharcoal} />
-                </Pressable>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, minWidth: 30, textAlign: "center" }}>
-                  {doorCount || "0"}
-                </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {doorCount || "0"}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => {
                     const current = parseInt(doorCount) || 0;
                     setDoorCount((current + 1).toString());
                   }}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
                   accessibilityRole="button"
                   accessibilityLabel="Increase door count"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
                 >
-                  <Ionicons name="add" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
@@ -1287,7 +1289,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Single Door Closet
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: BorderRadius.default,
+                  paddingHorizontal: 4,
+                  paddingVertical: 2,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  gap: Spacing.xs,
+                }}
+              >
                 <Pressable
                   onPress={() => {
                     const current = parseInt(singleDoorClosets) || 0;
@@ -1298,42 +1312,52 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       }
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease single door closet count"
                   style={{
-                    backgroundColor: Colors.neutralGray,
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                </Pressable>
+                <View
+                  style={{
+                    minWidth: 32,
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    backgroundColor: Colors.white,
                     borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Decrease single door closet count"
                 >
-                  <Ionicons name="remove" size={20} color={Colors.darkCharcoal} />
-                </Pressable>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, minWidth: 30, textAlign: "center" }}>
-                  {singleDoorClosets || "0"}
-                </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {singleDoorClosets || "0"}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => {
                     const current = parseInt(singleDoorClosets) || 0;
                     setSingleDoorClosets((current + 1).toString());
                     setHasCloset(true);
                   }}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
                   accessibilityRole="button"
                   accessibilityLabel="Increase single door closet count"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
                 >
-                  <Ionicons name="add" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
@@ -1344,7 +1368,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Double Doors Closet
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: BorderRadius.default,
+                  paddingHorizontal: 4,
+                  paddingVertical: 2,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  gap: Spacing.xs,
+                }}
+              >
                 <Pressable
                   onPress={() => {
                     const current = parseInt(doubleDoorClosets) || 0;
@@ -1355,42 +1391,52 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       }
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease double door closet count"
                   style={{
-                    backgroundColor: Colors.neutralGray,
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                </Pressable>
+                <View
+                  style={{
+                    minWidth: 32,
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    backgroundColor: Colors.white,
                     borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Decrease double door closet count"
                 >
-                  <Ionicons name="remove" size={20} color={Colors.darkCharcoal} />
-                </Pressable>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, minWidth: 30, textAlign: "center" }}>
-                  {doubleDoorClosets || "0"}
-                </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {doubleDoorClosets || "0"}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => {
                     const current = parseInt(doubleDoorClosets) || 0;
                     setDoubleDoorClosets((current + 1).toString());
                     setHasCloset(true);
                   }}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
                   accessibilityRole="button"
                   accessibilityLabel="Increase double door closet count"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
                 >
-                  <Ionicons name="add" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
