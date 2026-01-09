@@ -102,6 +102,7 @@ export default function CalculationSettingsScreen() {
     width: 68,
     paddingRight: Spacing.md,
   };
+  const centerAlignOffset = (Typography.caption.fontSize + Spacing.xs) / 2;
 
   const handleSave = () => {
     const parsedCasingWidth = parseFloat(singleClosetTrimWidth) || settings.singleClosetTrimWidth;
@@ -380,7 +381,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, alignSelf: "center" }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, alignSelf: "center", marginTop: centerAlignOffset }}>
                   Wall Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
@@ -405,7 +406,7 @@ export default function CalculationSettingsScreen() {
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, alignSelf: "center" }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, alignSelf: "center", marginTop: centerAlignOffset }}>
                   Ceiling Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
