@@ -948,7 +948,19 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   Pass-Through Openings
                 </Text>
               </View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: BorderRadius.default,
+                  paddingHorizontal: 4,
+                  paddingVertical: 2,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  gap: 4,
+                }}
+              >
                 <Pressable
                   onPress={() => {
                     const current = openings.length;
@@ -956,20 +968,35 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       setOpenings(openings.slice(0, -1));
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease openings count"
                   style={{
-                    backgroundColor: Colors.neutralGray,
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                </Pressable>
+                <View
+                  style={{
+                    minWidth: 32,
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    backgroundColor: Colors.white,
                     borderRadius: 8,
-                    width: 32,
-                    height: 32,
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ fontSize: 20, color: Colors.darkCharcoal }}>−</Text>
-                </Pressable>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, width: 30, textAlign: "center" }}>
-                  {openings.length}
-                </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {openings.length}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => {
                     const newOpening = {
@@ -981,16 +1008,17 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     };
                     setOpenings([...openings, newOpening]);
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Increase openings count"
                   style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    width: 32,
-                    height: 32,
+                    width: 28,
+                    height: 28,
                     alignItems: "center",
                     justifyContent: "center",
+                    borderRadius: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 20, color: Colors.white, fontWeight: "bold" }}>+</Text>
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
