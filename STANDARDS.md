@@ -64,3 +64,28 @@ Reference implementation:
 
 Notes:
 - This matches the visual alignment used in PricingSettings column headers.
+
+## BubbleStepper
+
+Purpose: Standardize compact stepper controls with pill background and center value bubble.
+
+Apply:
+- Outer pill:
+  - Background: `Colors.primaryBlueLight`
+  - Border: `1px` solid `Colors.neutralGray`
+  - Corner radius: `BorderRadius.default` (12)
+  - Padding: horizontal `4`, vertical `2` (hardcoded)
+  - Layout: row, center-aligned, `gap: 4` (hardcoded)
+- Minus/Plus buttons:
+  - Size: `28 × 28`
+  - Radius: `12`
+  - Icon text: `−` / `+`, font size `22`, color `Colors.primaryBlue`, weight `600`
+- Center value bubble:
+  - Min width: `32`
+  - Padding: horizontal `8`, vertical `6` (hardcoded)
+  - Background: `Colors.white`
+  - Border: `1px` solid `Colors.neutralGray`
+  - Corner radius: `8`
+
+Reference implementation:
+- `src/screens/RoomEditorScreen.tsx` (Openings & Closets, Windows row)
