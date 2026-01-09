@@ -3,12 +3,14 @@ import {
   View,
   Text,
   TextInput,
+  Image,
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   Alert,
   Keyboard,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -23,6 +25,10 @@ import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { formatCurrency } from "../utils/calculations";
 import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { v4 as uuidv4 } from "uuid";
+import { RoomPhoto } from "../types/painting";
 
 type Props = NativeStackScreenProps<RootStackParamList, "BuiltInEditor">;
 
@@ -52,6 +58,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const [depth, setDepth] = useState(!isNewBuiltIn && builtIn?.depth && builtIn.depth > 0 ? formatMeasurementValue(builtIn.depth / 12, 'length', unitSystem, 2) : "");
   const [shelfCount, setShelfCount] = useState(!isNewBuiltIn && builtIn?.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "");
   const [notes, setNotes] = useState(!isNewBuiltIn && builtIn?.notes ? builtIn.notes : "");
+  const [photos, setPhotos] = useState<RoomPhoto[]>(builtIn?.photos || []);
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [editingPhotoNote, setEditingPhotoNote] = useState("");
+  const [photoErrorMessage, setPhotoErrorMessage] = useState("");
+  const [deletePhotoId, setDeletePhotoId] = useState<string | null>(null);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -71,6 +82,28 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
   const bubbleWidth = 64;
+  const bubbleLabelStyle = { textAlign: "center" as const };
+  const bubbleInputTextStyle = { textAlign: "right" as const };
+
+  const arePhotosEqual = useCallback((current: RoomPhoto[] = [], stored: RoomPhoto[] = []) => {
+    if (current.length !== stored.length) return false;
+    return current.every((photo, index) => {
+      const compare = stored[index];
+      if (!compare) return false;
+      return (
+        photo.id === compare.id &&
+        photo.uri === compare.uri &&
+        photo.fileName === compare.fileName &&
+        (photo.note || "") === (compare.note || "")
+      );
+    });
+  }, []);
+
+  const generatePhotoFileName = useCallback((builtInName: string, photoIndex: number): string => {
+    const safeName = (builtInName || "BuiltIn").replace(/[^a-zA-Z0-9]/g, "_");
+    const paddedIndex = String(photoIndex).padStart(2, "0");
+    return `${safeName}_${paddedIndex}.jpg`;
+  }, []);
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -87,9 +120,18 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
   // Track unsaved changes
   useEffect(() => {
+    setPhotos(updatedPhotos);
+
     if (isNewBuiltIn) {
       // For new built-in: changes are when user enters any data
-      const hasChanges = name !== "" || width !== "" || height !== "" || depth !== "" || shelfCount !== "";
+      const hasChanges =
+        name !== "" ||
+        width !== "" ||
+        height !== "" ||
+        depth !== "" ||
+        shelfCount !== "" ||
+        notes !== "" ||
+        photos.length > 0;
       setHasUnsavedChanges(hasChanges);
     } else {
       // For existing: changes are when values differ from stored data
@@ -101,11 +143,12 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         height !== (builtIn.height && builtIn.height > 0 ? builtIn.height.toString() : "") ||
         depth !== (builtIn.depth && builtIn.depth > 0 ? builtIn.depth.toString() : "") ||
         shelfCount !== (builtIn.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "") ||
-        notes !== (builtIn.notes || "");
+        notes !== (builtIn.notes || "") ||
+        !arePhotosEqual(photos, builtIn.photos || []);
 
       setHasUnsavedChanges(hasChanges);
     }
-  }, [isNewBuiltIn, builtIn, name, width, height, depth, shelfCount, notes]);
+  }, [isNewBuiltIn, builtIn, name, width, height, depth, shelfCount, notes, photos, arePhotosEqual]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
@@ -151,6 +194,79 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     }
   });
 
+  const handleAddPhoto = useCallback(async (useCamera: boolean) => {
+    try {
+      setPhotoErrorMessage("");
+      if (useCamera) {
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!cameraPermission.granted) {
+          setPhotoErrorMessage("Camera permission is required to take photos.");
+          return;
+        }
+      } else {
+        const mediaPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!mediaPermission.granted) {
+          setPhotoErrorMessage("Photo library permission is required to choose photos.");
+          return;
+        }
+      }
+
+      const result = useCamera
+        ? await ImagePicker.launchCameraAsync({
+            mediaTypes: ["images"],
+            allowsEditing: false,
+            quality: 0.8,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            allowsEditing: false,
+            quality: 0.8,
+          });
+
+      if (!result.canceled && result.assets[0]) {
+        const newPhotoIndex = photos.length + 1;
+        const newPhoto: RoomPhoto = {
+          id: uuidv4(),
+          uri: result.assets[0].uri,
+          fileName: generatePhotoFileName(name, newPhotoIndex),
+          createdAt: Date.now(),
+        };
+        setPhotos([...photos, newPhoto]);
+        setHasUnsavedChanges(true);
+      }
+    } catch (error) {
+      setPhotoErrorMessage("Unable to add photo. Please try again.");
+    }
+  }, [generatePhotoFileName, name, photos]);
+
+  const handleDeletePhoto = useCallback((photoId: string) => {
+    setDeletePhotoId(photoId);
+  }, []);
+
+  const confirmDeletePhoto = useCallback(() => {
+    if (!deletePhotoId) return;
+    setPhotos(photos.filter((p) => p.id !== deletePhotoId));
+    setHasUnsavedChanges(true);
+    setDeletePhotoId(null);
+  }, [deletePhotoId, photos]);
+
+  const handleEditPhotoNote = useCallback((photo: RoomPhoto) => {
+    setEditingPhotoId(photo.id);
+    setEditingPhotoNote(photo.note || "");
+  }, []);
+
+  const handleSavePhotoNote = useCallback(() => {
+    if (!editingPhotoId) return;
+    setPhotos(
+      photos.map((p) =>
+        p.id === editingPhotoId ? { ...p, note: editingPhotoNote.trim() || undefined } : p
+      )
+    );
+    setHasUnsavedChanges(true);
+    setEditingPhotoId(null);
+    setEditingPhotoNote("");
+  }, [editingPhotoId, editingPhotoNote, photos]);
+
   // Navigate back after save completes
   useEffect(() => {
     if (isSaving) {
@@ -165,7 +281,14 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     // For existing built-ins, prevent saving when no changes exist
     if (!isNewBuiltIn && !hasUnsavedChanges) return;
 
-    const hasAnyData = name !== "" || width !== "" || height !== "" || depth !== "" || shelfCount !== "";
+    const hasAnyData =
+      name !== "" ||
+      width !== "" ||
+      height !== "" ||
+      depth !== "" ||
+      shelfCount !== "" ||
+      notes !== "" ||
+      photos.length > 0;
 
     if (!hasAnyData) {
       Alert.alert("No Data Entered", "Please enter a name and at least one measurement before saving.");
@@ -184,6 +307,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     const widthInches = parseDisplayValue(width, 'length', unitSystem) * 12;
     const heightInches = parseDisplayValue(height, 'length', unitSystem) * 12;
     const depthInches = parseDisplayValue(depth, 'length', unitSystem) * 12;
+    const trimmedName = name.trim() || "BuiltIn";
+    const updatedPhotos = photos.map((photo, index) => ({
+      ...photo,
+      fileName: generatePhotoFileName(trimmedName, index + 1),
+    }));
 
     if (isNewBuiltIn) {
       // CREATE new built-in with data
@@ -191,24 +319,26 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
       // Then immediately update it with the entered data
       updateBuiltIn(projectId, newBuiltInId, {
-        name: name.trim(),
+        name: trimmedName,
         width: widthInches,
         height: heightInches,
         depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
         coats: 1,
         notes: notes.trim() || undefined,
+        photos: updatedPhotos,
       });
     } else {
       // UPDATE existing built-in
       updateBuiltIn(projectId, builtInId!, {
-        name: name.trim(),
+        name: trimmedName,
         width: widthInches,
         height: heightInches,
         depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
         coats: builtIn?.coats || 1,
         notes: notes.trim() || undefined,
+        photos: updatedPhotos,
       });
     }
 
@@ -312,6 +442,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     placeholder={unitSystem === "metric" ? "0.91" : "3"}
                     nextFieldRef={heightRef}
                     inputContainerStyle={{ width: bubbleWidth }}
+                    inputTextStyle={bubbleInputTextStyle}
+                    labelStyle={bubbleLabelStyle}
                     className="mb-0"
                   />
                 </View>
@@ -327,6 +459,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     placeholder={unitSystem === "metric" ? "2.03" : "6.67"}
                     nextFieldRef={depthRef}
                     inputContainerStyle={{ width: bubbleWidth }}
+                    inputTextStyle={bubbleInputTextStyle}
+                    labelStyle={bubbleLabelStyle}
                     className="mb-0"
                   />
                 </View>
@@ -342,6 +476,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     placeholder={unitSystem === "metric" ? "0.30" : "1"}
                     nextFieldRef={shelfCountRef}
                     inputContainerStyle={{ width: bubbleWidth }}
+                    inputTextStyle={bubbleInputTextStyle}
+                    labelStyle={bubbleLabelStyle}
                     className="mb-0"
                   />
                 </View>
@@ -355,6 +491,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder="0"
                     inputContainerStyle={{ width: bubbleWidth }}
+                    inputTextStyle={bubbleInputTextStyle}
+                    labelStyle={bubbleLabelStyle}
                     className="mb-0"
                   />
                 </View>
@@ -394,6 +532,143 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                 />
               </Card>
             </View>
+
+            {/* Built-In Photos */}
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Built-In Photos
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                Capture shelves, trim details, damage, or touch-up notes
+              </Text>
+
+              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.sm }}>
+                <Pressable
+                  onPress={() => handleAddPhoto(true)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Ionicons name="camera-outline" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.sm }}>
+                    Take Photo
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => handleAddPhoto(false)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.white,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
+                  }}
+                >
+                  <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginLeft: Spacing.sm }}>
+                    Choose
+                  </Text>
+                </Pressable>
+              </View>
+
+              {photoErrorMessage !== "" && (
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.error, marginBottom: Spacing.sm }}>
+                  {photoErrorMessage}
+                </Text>
+              )}
+
+              {photos.length > 0 && (
+                <View style={{ gap: Spacing.md }}>
+                  {photos.map((photo) => (
+                    <View
+                      key={photo.id}
+                      style={{
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Image
+                        source={{ uri: photo.uri }}
+                        style={{
+                          width: "100%",
+                          height: 180,
+                          backgroundColor: Colors.neutralGray,
+                        }}
+                        resizeMode="cover"
+                      />
+                      <View style={{ padding: Spacing.sm }}>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                          {photo.fileName}
+                        </Text>
+
+                        {photo.note ? (
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                            {photo.note}
+                          </Text>
+                        ) : (
+                          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic", marginBottom: Spacing.sm }}>
+                            No note added
+                          </Text>
+                        )}
+
+                        <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                          <Pressable
+                            onPress={() => handleEditPhotoNote(photo)}
+                            style={{
+                              flex: 1,
+                              backgroundColor: Colors.primaryBlue,
+                              borderRadius: 8,
+                              paddingVertical: Spacing.xs,
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Ionicons name="create-outline" size={16} color={Colors.white} />
+                            <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.xs }}>
+                              {photo.note ? "Edit Note" : "Add Note"}
+                            </Text>
+                          </Pressable>
+                          <Pressable
+                            onPress={() => handleDeletePhoto(photo.id)}
+                            style={{
+                              backgroundColor: Colors.error + "10",
+                              borderRadius: 8,
+                              paddingVertical: Spacing.xs,
+                              paddingHorizontal: Spacing.md,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Ionicons name="trash-outline" size={16} color={Colors.error} />
+                          </Pressable>
+                        </View>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {photos.length === 0 && (
+                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.lg, alignItems: "center" }}>
+                  <Ionicons name="camera-outline" size={40} color={Colors.mediumGray} />
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
+                    No photos added yet
+                  </Text>
+                </View>
+              )}
+            </Card>
 
             {/* Built-In Summary */}
             {hasAnyDimensions && (() => {
@@ -584,6 +859,176 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
           onDiscard={handleDiscardAndLeave}
           onCancel={handleCancelExit}
         />
+
+        {/* Edit Photo Note Modal */}
+        <Modal
+          visible={editingPhotoId !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => {
+            setEditingPhotoId(null);
+            setEditingPhotoNote("");
+          }}
+        >
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+          >
+            <Pressable
+              style={{
+                flex: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => {
+                setEditingPhotoId(null);
+                setEditingPhotoNote("");
+              }}
+            >
+              <Pressable
+                style={{
+                  backgroundColor: Colors.white,
+                  borderRadius: BorderRadius.default,
+                  marginHorizontal: Spacing.lg,
+                  padding: Spacing.lg,
+                  width: "90%",
+                  maxWidth: 400,
+                  ...Shadows.card,
+                }}
+                onPress={(e) => e.stopPropagation()}
+              >
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Photo Note
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                  Add notes about finish details or repairs.
+                </Text>
+
+                <TextInput
+                  value={editingPhotoNote}
+                  onChangeText={setEditingPhotoNote}
+                  placeholder="e.g., Touch-up needed on lower shelf"
+                  placeholderTextColor={Colors.mediumGray}
+                  multiline
+                  numberOfLines={4}
+                  style={[
+                    TextInputStyles.multiline,
+                    {
+                      backgroundColor: Colors.backgroundWarmGray,
+                      marginBottom: Spacing.md,
+                      minHeight: 100,
+                    }
+                  ]}
+                  autoFocus
+                />
+
+                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                  <Pressable
+                    onPress={() => {
+                      setEditingPhotoId(null);
+                      setEditingPhotoNote("");
+                    }}
+                    style={{
+                      flex: 1,
+                      backgroundColor: Colors.neutralGray,
+                      borderRadius: BorderRadius.default,
+                      paddingVertical: Spacing.md,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                      Cancel
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={handleSavePhotoNote}
+                    style={{
+                      flex: 1,
+                      backgroundColor: Colors.primaryBlue,
+                      borderRadius: BorderRadius.default,
+                      paddingVertical: Spacing.md,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                      Save Note
+                    </Text>
+                  </Pressable>
+                </View>
+              </Pressable>
+            </Pressable>
+          </KeyboardAvoidingView>
+        </Modal>
+
+        {/* Delete Photo Confirmation */}
+        <Modal
+          visible={deletePhotoId !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setDeletePhotoId(null)}
+        >
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => setDeletePhotoId(null)}
+          >
+            <Pressable
+              style={{
+                backgroundColor: Colors.white,
+                borderRadius: BorderRadius.default,
+                marginHorizontal: Spacing.lg,
+                padding: Spacing.lg,
+                width: "90%",
+                maxWidth: 360,
+                ...Shadows.card,
+              }}
+              onPress={(e) => e.stopPropagation()}
+            >
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                Delete Photo
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+                This photo and its note will be removed.
+              </Text>
+
+              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                <Pressable
+                  onPress={() => setDeletePhotoId(null)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.neutralGray,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                    Cancel
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={confirmDeletePhoto}
+                  style={{
+                    flex: 1,
+                    backgroundColor: Colors.error,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.md,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Delete
+                  </Text>
+                </Pressable>
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

@@ -25,6 +25,7 @@ interface FormInputProps extends Omit<TextInputProps, "style"> {
   inputAccessoryViewID?: string;
   inputContainerStyle?: StyleProp<ViewStyle>;
   inputTextStyle?: StyleProp<TextStyle>;
+  labelStyle?: StyleProp<TextStyle>;
 }
 
 export const FormInput = forwardRef<TextInput, FormInputProps>(({
@@ -37,6 +38,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   inputAccessoryViewID,
   inputContainerStyle,
   inputTextStyle,
+  labelStyle,
   keyboardType,
   ...textInputProps
 }, ref) => {
@@ -94,6 +96,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
             fontWeight: Typography.body.fontWeight,
             color: Colors.darkCharcoal,
             marginBottom: Spacing.xs,
+            ...(labelStyle as TextStyle),
           }}
         >
           {label}

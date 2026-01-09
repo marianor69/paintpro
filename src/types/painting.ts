@@ -187,6 +187,7 @@ export interface BuiltIn {
   coats: number; // number of coats to paint
   // Notes field (available without photos)
   notes?: string;
+  photos?: RoomPhoto[];
 }
 
 export interface BrickWall {

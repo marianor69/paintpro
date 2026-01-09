@@ -776,6 +776,7 @@ export const useProjectStore = create<ProjectStore>()(
           depth: 12,
           shelfCount: 4,
           coats: 2,
+          photos: [],
         };
         set((state) => ({
           projects: state.projects.map((p) =>
