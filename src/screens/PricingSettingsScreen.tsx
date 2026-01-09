@@ -241,7 +241,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   };
 
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
-  const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", gap: Spacing.sm };
+  const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" as const };
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
   const inputWidth = 68;
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
@@ -256,7 +256,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const labelCenterWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
   const labelCenterTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
-  const leftAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-start" as const };
+  const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const };
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm, textAlign: "left" as const };
 
