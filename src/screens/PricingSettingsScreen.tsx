@@ -557,7 +557,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
-                  <Text style={labelCenterLeftTextStyle}>Mantel</Text>
+                  <Text style={leftAlignedLabelTextStyle}>Mantel</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each $</Text>
@@ -581,7 +581,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={inlineFieldStyle}>
                 <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
-                  <Text style={labelCenterLeftTextStyle}>Legs</Text>
+                  <Text style={leftAlignedLabelTextStyle}>Legs</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each $</Text>
