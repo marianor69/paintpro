@@ -494,7 +494,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Closet Cavity Depth
                   </Text>
@@ -575,7 +575,7 @@ export default function CalculationSettingsScreen() {
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Baseboard Perimeter
                   </Text>
@@ -635,7 +635,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Casing Width
                   </Text>
@@ -669,7 +669,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Baseboard Width
                   </Text>
@@ -699,8 +699,8 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Crown Moulding Width
                   </Text>
@@ -730,7 +730,7 @@ export default function CalculationSettingsScreen() {
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Window Trim Width
                   </Text>
