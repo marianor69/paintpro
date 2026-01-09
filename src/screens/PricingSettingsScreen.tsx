@@ -253,7 +253,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const labelAlignWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs };
-  const labelCenterWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs + (Spacing.sm / 2) };
+  const labelCenterWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
 
   return (
