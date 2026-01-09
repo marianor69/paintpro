@@ -102,7 +102,7 @@ export default function CalculationSettingsScreen() {
     width: 68,
     paddingRight: Spacing.md,
   };
-  const centerAlignOffset = (Typography.caption.fontSize + Spacing.xs) / 2;
+  const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
 
   const handleSave = () => {
     const parsedCasingWidth = parseFloat(singleClosetTrimWidth) || settings.singleClosetTrimWidth;
