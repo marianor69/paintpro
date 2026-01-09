@@ -521,176 +521,180 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 />
               </View>
 
-              {/* Row 1: Risers & Spindles - 2 columns */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                      Risers
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        backgroundColor: Colors.primaryBlueLight,
-                        borderRadius: BorderRadius.default,
-                        paddingHorizontal: 4,
-                        paddingVertical: 2,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        gap: 4,
-                      }}
-                    >
-                      <Pressable
-                        onPress={() => {
-                          const current = parseInt(riserCount) || 0;
-                          setRiserCount(Math.max(0, current - 1).toString());
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Decrease riser count"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 12,
-                        }}
-                      >
-                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
-                      </Pressable>
-                      <View
-                        style={{
-                          minWidth: 32,
-                          paddingHorizontal: 8,
-                          paddingVertical: 6,
-                          backgroundColor: Colors.white,
-                          borderRadius: 8,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                          {riserCount || "0"}
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={() => {
-                          const current = parseInt(riserCount) || 0;
-                          setRiserCount((current + 1).toString());
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Increase riser count"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 12,
-                        }}
-                      >
-                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                    Standard riser height of 7.5 inches assumed
+              {/* Row 1: Risers */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Risers
                   </Text>
-                </View>
-
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                      Spindles
-                    </Text>
-                    <View
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(riserCount) || 0;
+                        setRiserCount(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease riser count"
                       style={{
-                        flexDirection: "row",
+                        width: 28,
+                        height: 28,
                         alignItems: "center",
-                        backgroundColor: Colors.primaryBlueLight,
-                        borderRadius: BorderRadius.default,
-                        paddingHorizontal: 4,
-                        paddingVertical: 2,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        gap: 4,
+                        justifyContent: "center",
+                        borderRadius: 12,
                       }}
                     >
-                      <Pressable
-                        onPress={() => {
-                          const current = parseInt(spindleCount) || 0;
-                          setSpindleCount(Math.max(0, current - 1).toString());
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Decrease spindle count"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 12,
-                        }}
-                      >
-                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
-                      </Pressable>
-                      <View
-                        style={{
-                          minWidth: 32,
-                          paddingHorizontal: 8,
-                          paddingVertical: 6,
-                          backgroundColor: Colors.white,
-                          borderRadius: 8,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                          {spindleCount || "0"}
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={() => {
-                          const current = parseInt(spindleCount) || 0;
-                          setSpindleCount((current + 1).toString());
-                        }}
-                        accessibilityRole="button"
-                        accessibilityLabel="Increase spindle count"
-                        style={{
-                          width: 28,
-                          height: 28,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: 12,
-                        }}
-                      >
-                        <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
-                      </Pressable>
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {riserCount || "0"}
+                      </Text>
                     </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(riserCount) || 0;
+                        setRiserCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase riser count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
+                </View>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                  Standard riser height of 7.5 inches assumed
+                </Text>
+              </View>
+
+              {/* Row 2: Spindles */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Spindles
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(spindleCount) || 0;
+                        setSpindleCount(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease spindle count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {spindleCount || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(spindleCount) || 0;
+                        setSpindleCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase spindle count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
                   </View>
                 </View>
               </View>
 
               {/* Handrail Length - full width */}
-              <View>
+              <View style={{ marginBottom: Spacing.md }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Handrail Length ({unitSystem === 'metric' ? 'm' : 'ft'})
+                    Handrail Length
                   </Text>
-                  <FormInput
-                    ref={handrailLengthRef}
-                    previousFieldRef={nameRef}
-                    label=""
-                    value={handrailLength}
-                    onChangeText={setHandrailLength}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    inputContainerStyle={{ width: 68 }}
-                    inputTextStyle={{ textAlign: "right" }}
-                    className="mb-0"
-                  />
+                  <View style={{ alignItems: "flex-end", width: 68 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                      Feet
+                    </Text>
+                    <FormInput
+                      ref={handrailLengthRef}
+                      previousFieldRef={nameRef}
+                      label=""
+                      value={handrailLength}
+                      onChangeText={setHandrailLength}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      inputContainerStyle={{ width: 68 }}
+                      inputTextStyle={{ textAlign: "right" }}
+                      className="mb-0"
+                    />
+                  </View>
                 </View>
               </View>
             </Card>
