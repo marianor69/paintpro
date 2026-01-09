@@ -323,6 +323,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+            </View>
+
+            <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Door</Text>
                 <View style={bubbleHeaderWrapperStyle}>
@@ -345,9 +348,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-            </View>
-
-            <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Window</Text>
                 <View style={bubbleHeaderWrapperStyle}>
@@ -370,6 +370,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+            </View>
+
+            <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Baseboard</Text>
                 <View style={bubbleHeaderWrapperStyle}>
@@ -488,26 +491,27 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-              <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Handrail</Text>
-                <View style={bubbleHeaderWrapperStyle}>
-                  <Text style={bubbleHeaderTextStyle}>$/LF</Text>
-                  <View style={inputContainerStyle}>
-                    <TextInput
-                      ref={handrailLaborRef}
-                      value={handrailLaborPerLF}
-                      onChangeText={setHandrailLaborPerLF}
-                      placeholder="10"
-                      placeholderTextColor={Colors.mediumGray}
-                      keyboardType="numeric"
-                      returnKeyType="next"
-                      onSubmitEditing={() => mantelLaborRef.current?.focus()}
-                      onFocus={handleFieldFocus}
-                      blurOnSubmit={false}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
-                      style={inputTextStyle}
-                    />
-                  </View>
+            </View>
+
+            <View style={rowStyle}>
+              <Text style={labelStyle}>Handrail</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>$/LF</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={handrailLaborRef}
+                    value={handrailLaborPerLF}
+                    onChangeText={setHandrailLaborPerLF}
+                    placeholder="10"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => mantelLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
+                    style={inputTextStyle}
+                  />
                 </View>
               </View>
             </View>
