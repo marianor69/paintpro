@@ -249,7 +249,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
   const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md };
   const columnLabelStyle = { textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
-  const unitBubbleLabelStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, marginBottom: Spacing.xs };
+  const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
+  const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
 
   return (
     <SafeAreaView
@@ -280,8 +281,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Wall</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>$/sq ft</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>$/sq ft</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={wallLaborRef}
@@ -302,8 +303,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={inlineFieldStyle}>
                 <Text style={labelStyle}>Ceiling</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>$/sq ft</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>$/sq ft</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={ceilingLaborRef}
@@ -326,9 +327,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Each door ($)</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <Text style={labelStyle}>Door</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorLaborRef}
@@ -348,9 +349,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Each window ($)</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <Text style={labelStyle}>Window</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowLaborRef}
@@ -373,8 +374,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <Text style={labelStyle}>Baseboard</Text>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={unitBubbleLabelStyle}>$/LF</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>$/LF</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={baseboardLaborRef}
@@ -396,8 +397,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <Text style={labelStyle}>Crowns</Text>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={unitBubbleLabelStyle}>$/LF</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>$/LF</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={crownMouldingRef}
@@ -418,9 +419,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Each closet ($)</Text>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={unitBubbleLabelStyle}>Each $</Text>
+              <Text style={labelStyle}>Closet</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>Each $</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={closetLaborRef}
@@ -446,9 +447,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Each riser ($)</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <Text style={labelStyle}>Riser</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={riserLaborRef}
@@ -468,9 +469,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Each spindle ($)</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <Text style={labelStyle}>Spindle</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={spindleLaborRef}
@@ -493,8 +494,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <Text style={labelStyle}>Handrail</Text>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={unitBubbleLabelStyle}>$/LF</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>$/LF</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={handrailLaborRef}
@@ -520,9 +521,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Each mantel ($)</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <Text style={labelStyle}>Mantel</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={mantelLaborRef}
@@ -542,9 +543,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Each leg ($)</Text>
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={unitBubbleLabelStyle}>Each $</Text>
+                <Text style={labelStyle}>Legs</Text>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={legsLaborRef}
@@ -662,9 +663,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </Text>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Each furniture move ($)</Text>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={unitBubbleLabelStyle}>Each $</Text>
+              <Text style={labelStyle}>Furniture Moving</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>Each $</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={furnitureMovingFeeRef}
@@ -685,9 +686,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Each nails/screws removal ($)</Text>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={unitBubbleLabelStyle}>Each $</Text>
+              <Text style={labelStyle}>Nails/Screws Removal</Text>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>Each $</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={nailsRemovalFeeRef}
