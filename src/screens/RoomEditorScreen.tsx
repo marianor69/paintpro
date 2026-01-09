@@ -1200,7 +1200,17 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Doors
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: 16,
+                  paddingHorizontal: Spacing.sm,
+                  paddingVertical: Spacing.xs,
+                  gap: Spacing.sm,
+                }}
+              >
                 <Pressable
                   onPress={() => {
                     const current = parseInt(doorCount) || 0;
@@ -1208,41 +1218,49 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       setDoorCount((current - 1).toString());
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease door count"
                   style={{
-                    backgroundColor: Colors.neutralGray,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
+                    width: 28,
+                    height: 28,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Decrease door count"
                 >
-                  <Ionicons name="remove" size={20} color={Colors.darkCharcoal} />
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
                 </Pressable>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, minWidth: 30, textAlign: "center" }}>
-                  {doorCount || "0"}
-                </Text>
+                <View
+                  style={{
+                    minWidth: 44,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.xs,
+                    backgroundColor: Colors.white,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: Colors.primaryBlue,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {doorCount || "0"}
+                  </Text>
+                </View>
                 <Pressable
                   onPress={() => {
                     const current = parseInt(doorCount) || 0;
                     setDoorCount((current + 1).toString());
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Increase door count"
                   style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    padding: Spacing.xs,
-                    width: 32,
-                    height: 32,
+                    width: 28,
+                    height: 28,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Increase door count"
                 >
-                  <Ionicons name="add" size={20} color={Colors.white} />
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
