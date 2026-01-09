@@ -250,8 +250,8 @@ export default function CalculationSettingsScreen() {
                     Width of trim molding around doors
                   </Text>
                 </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>Inches</Text>
+                <View style={{ alignItems: "flex-end", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right" }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -281,8 +281,8 @@ export default function CalculationSettingsScreen() {
                     Width of door jamb (inside frame)
                   </Text>
                 </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>Inches</Text>
+                <View style={{ alignItems: "flex-end", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right" }}>Inches</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -493,8 +493,8 @@ export default function CalculationSettingsScreen() {
                     Depth of closet interior for wall area calculation
                   </Text>
                 </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right", width: 68 }}>
+                <View style={{ alignItems: "flex-end", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "right" }}>
                     Feet
                   </Text>
                   <View style={inputContainerStyle}>
