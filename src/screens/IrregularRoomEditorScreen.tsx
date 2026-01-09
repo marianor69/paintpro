@@ -1036,11 +1036,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       />
                     </View>
                   </View>
-                  <Toggle
-                    label="Include Closet Interior in Quote"
-                    value={includeClosetInteriorInQuote}
-                    onValueChange={setIncludeClosetInteriorInQuote}
-                  />
                 </View>
               )}
             </Card>
