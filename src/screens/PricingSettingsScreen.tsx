@@ -249,6 +249,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
   const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md };
   const columnLabelStyle = { textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
+  const unitBubbleLabelStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, marginBottom: Spacing.xs };
 
   return (
     <SafeAreaView
@@ -278,48 +279,54 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Wall ($/sq ft)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={wallLaborRef}
-                    value={wallLaborPerSqFt}
-                    onChangeText={setWallLaborPerSqFt}
-                    placeholder="1.50"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => ceilingLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallLabor-${wallLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Wall</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>$/sq ft</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={wallLaborRef}
+                      value={wallLaborPerSqFt}
+                      onChangeText={setWallLaborPerSqFt}
+                      placeholder="1.50"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => ceilingLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallLabor-${wallLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Ceiling ($/sq ft)</Text>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={ceilingLaborRef}
-                    value={ceilingLaborPerSqFt}
-                    onChangeText={setCeilingLaborPerSqFt}
-                    placeholder="1.75"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => doorLaborRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingLabor-${ceilingLaborID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <Text style={labelStyle}>Ceiling</Text>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={unitBubbleLabelStyle}>$/sq ft</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={ceilingLaborRef}
+                      value={ceilingLaborPerSqFt}
+                      onChangeText={setCeilingLaborPerSqFt}
+                      placeholder="1.75"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => doorLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingLabor-${ceilingLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Door ($)</Text>
+                <Text style={labelStyle}>Each door ($)</Text>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={doorLaborRef}
@@ -359,42 +366,48 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Baseboard ($/LF)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={baseboardLaborRef}
-                  value={baseboardLaborPerLF}
-                  onChangeText={setBaseboardLaborPerLF}
-                  placeholder="1.25"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => crownMouldingRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingBaseboardLabor-${baseboardLaborID}` : undefined}
-                  style={inputTextStyle}
-                />
+              <Text style={labelStyle}>Baseboard</Text>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={unitBubbleLabelStyle}>$/LF</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={baseboardLaborRef}
+                    value={baseboardLaborPerLF}
+                    onChangeText={setBaseboardLaborPerLF}
+                    placeholder="1.25"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => crownMouldingRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingBaseboardLabor-${baseboardLaborID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
               </View>
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Crowns ($/LF)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={crownMouldingRef}
-                  value={crownMouldingLaborPerLF}
-                  onChangeText={setCrownMouldingLaborPerLF}
-                  placeholder="1.50"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => closetLaborRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCrownMoulding-${crownMouldingID}` : undefined}
-                  style={inputTextStyle}
-                />
+              <Text style={labelStyle}>Crowns</Text>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={unitBubbleLabelStyle}>$/LF</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={crownMouldingRef}
+                    value={crownMouldingLaborPerLF}
+                    onChangeText={setCrownMouldingLaborPerLF}
+                    placeholder="1.50"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => closetLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingCrownMoulding-${crownMouldingID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
               </View>
             </View>
 
@@ -464,22 +477,25 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={rowStyle}>
-              <Text style={labelStyle}>Handrail ($/LF)</Text>
-              <View style={inputContainerStyle}>
-                <TextInput
-                  ref={handrailLaborRef}
-                  value={handrailLaborPerLF}
-                  onChangeText={setHandrailLaborPerLF}
-                  placeholder="10"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => mantelLaborRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
-                  style={inputTextStyle}
-                />
+              <Text style={labelStyle}>Handrail</Text>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={unitBubbleLabelStyle}>$/LF</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={handrailLaborRef}
+                    value={handrailLaborPerLF}
+                    onChangeText={setHandrailLaborPerLF}
+                    placeholder="10"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => mantelLaborRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingHandrailLabor-${handrailLaborID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
               </View>
             </View>
 
