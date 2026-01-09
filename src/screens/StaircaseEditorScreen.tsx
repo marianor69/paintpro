@@ -417,15 +417,16 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     <FormInput
                       ref={riserCountRef}
                       previousFieldRef={nameRef}
-                      label=""
-                      value={riserCount}
-                      onChangeText={setRiserCount}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      nextFieldRef={spindleCountRef}
-                      inputContainerStyle={{ width: 68 }}
-                      className="mb-0"
-                    />
+                    label=""
+                    value={riserCount}
+                    onChangeText={setRiserCount}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={spindleCountRef}
+                    inputContainerStyle={{ width: 68 }}
+                    inputTextStyle={{ textAlign: "right" }}
+                    className="mb-0"
+                  />
                   </View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
                     Standard riser height of 7.5 inches assumed
@@ -440,15 +441,16 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     <FormInput
                       ref={spindleCountRef}
                       previousFieldRef={riserCountRef}
-                      label=""
-                      value={spindleCount}
-                      onChangeText={setSpindleCount}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      nextFieldRef={handrailLengthRef}
-                      inputContainerStyle={{ width: 68 }}
-                      className="mb-0"
-                    />
+                    label=""
+                    value={spindleCount}
+                    onChangeText={setSpindleCount}
+                    keyboardType="numeric"
+                    placeholder="0"
+                    nextFieldRef={handrailLengthRef}
+                    inputContainerStyle={{ width: 68 }}
+                    inputTextStyle={{ textAlign: "right" }}
+                    className="mb-0"
+                  />
                   </View>
                 </View>
               </View>
@@ -468,6 +470,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder="0"
                     inputContainerStyle={{ width: 68 }}
+                    inputTextStyle={{ textAlign: "right" }}
                     className="mb-0"
                   />
                 </View>
