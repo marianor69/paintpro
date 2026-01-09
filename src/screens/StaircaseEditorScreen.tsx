@@ -419,6 +419,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder="0"
                     nextFieldRef={spindleCountRef}
+                    inputContainerStyle={{ width: 68 }}
                     className="mb-0"
                   />
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
@@ -436,6 +437,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     keyboardType="numeric"
                     placeholder="0"
                     nextFieldRef={handrailLengthRef}
+                    inputContainerStyle={{ width: 68 }}
                     className="mb-0"
                   />
                 </View>
@@ -451,6 +453,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   onChangeText={setHandrailLength}
                   keyboardType="numeric"
                   placeholder="0"
+                  inputContainerStyle={{ width: 68 }}
                   className="mb-0"
                 />
               </View>
