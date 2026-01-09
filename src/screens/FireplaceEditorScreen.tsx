@@ -425,6 +425,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                       keyboardType="numeric"
                       placeholder="0"
                       nextFieldRef={overMantelHeightRef}
+                      inputContainerStyle={{ width: 68 }}
+                      inputTextStyle={{ textAlign: "right" }}
                       className="mb-0"
                     />
                   </View>
@@ -437,6 +439,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                       onChangeText={setOverMantelHeight}
                       keyboardType="numeric"
                       placeholder="0"
+                      inputContainerStyle={{ width: 68 }}
+                      inputTextStyle={{ textAlign: "right" }}
                       className="mb-0"
                     />
                   </View>
