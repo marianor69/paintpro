@@ -249,7 +249,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Trim Width
@@ -280,7 +280,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Jamb Width
@@ -492,7 +492,7 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Closet Cavity Depth
@@ -573,7 +573,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Baseboard Perimeter
@@ -633,7 +633,7 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Casing Width
@@ -667,7 +667,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Baseboard Width
@@ -728,7 +728,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Window Trim Width
