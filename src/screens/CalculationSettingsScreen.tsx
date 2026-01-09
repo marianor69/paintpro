@@ -380,7 +380,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, alignSelf: "center" }}>
                   Wall Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
@@ -405,7 +405,7 @@ export default function CalculationSettingsScreen() {
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, alignSelf: "center" }}>
                   Ceiling Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
