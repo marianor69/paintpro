@@ -120,8 +120,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
   // Track unsaved changes
   useEffect(() => {
-    setPhotos(updatedPhotos);
-
     if (isNewBuiltIn) {
       // For new built-in: changes are when user enters any data
       const hasChanges =
