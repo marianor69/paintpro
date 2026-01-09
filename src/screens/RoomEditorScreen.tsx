@@ -943,49 +943,60 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 </Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
-                <Pressable
-                  onPress={() => {
-                    const current = openings.length;
-                    if (current > 0) {
-                      setOpenings(openings.slice(0, -1));
-                    }
-                  }}
+                <View
                   style={{
-                    backgroundColor: Colors.neutralGray,
-                    borderRadius: 8,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
+                    flexDirection: "row",
+                    borderWidth: 1,
+                    borderColor: Colors.primaryBlue,
+                    borderRadius: 10,
+                    overflow: "hidden",
                   }}
                 >
-                  <Text style={{ fontSize: 20, color: Colors.darkCharcoal }}>−</Text>
-                </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      const current = openings.length;
+                      if (current > 0) {
+                        setOpenings(openings.slice(0, -1));
+                      }
+                    }}
+                    disabled={openings.length === 0}
+                    style={{
+                      width: 36,
+                      height: 32,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: openings.length === 0 ? Colors.neutralGray : Colors.primaryBlueLight,
+                      borderRightWidth: 1,
+                      borderRightColor: Colors.primaryBlue,
+                    }}
+                  >
+                    <Text style={{ fontSize: 18, color: openings.length === 0 ? Colors.mediumGray : Colors.primaryBlue }}>−</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      const newOpening = {
+                        id: `opening-${Date.now()}`,
+                        width: "36",
+                        height: "80",
+                        hasInteriorTrim: true,
+                        hasExteriorTrim: true,
+                      };
+                      setOpenings([...openings, newOpening]);
+                    }}
+                    style={{
+                      width: 36,
+                      height: 32,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                    }}
+                  >
+                    <Text style={{ fontSize: 18, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                  </Pressable>
+                </View>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, width: 30, textAlign: "center" }}>
                   {openings.length}
                 </Text>
-                <Pressable
-                  onPress={() => {
-                    const newOpening = {
-                      id: `opening-${Date.now()}`,
-                      width: "36",
-                      height: "80",
-                      hasInteriorTrim: true,
-                      hasExteriorTrim: true,
-                    };
-                    setOpenings([...openings, newOpening]);
-                  }}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: 20, color: Colors.white, fontWeight: "bold" }}>+</Text>
-                </Pressable>
               </View>
             </View>
 
