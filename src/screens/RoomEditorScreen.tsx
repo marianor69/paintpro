@@ -1187,7 +1187,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     borderRadius: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 18, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
                 </Pressable>
                 <View
                   style={{
@@ -1221,7 +1221,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     borderRadius: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 18, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
                 </Pressable>
               </View>
             </View>
