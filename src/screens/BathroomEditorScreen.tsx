@@ -1397,6 +1397,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 TextInputStyles.multiline,
                 {
                   backgroundColor: Colors.backgroundWarmGray,
+                  borderRadius: BorderRadius.default,
+                  padding: Spacing.md,
+                  minHeight: 100,
                 }
               ]}
             />
