@@ -697,61 +697,71 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                 <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.md }} />
 
                 {/* Number of Floors */}
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginRight: Spacing.sm }}>
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.md, justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                     {t("screens.projectSetup.floors.numberOfFloors")}:
                   </Text>
-                  <Pressable
-                    onPress={() => handleFloorCountChange(localFloorCount - 1)}
-                    disabled={localFloorCount <= 1}
+                  <View
                     style={{
-                      backgroundColor: localFloorCount <= 1 ? Colors.neutralGray : Colors.white,
-                      borderRadius: 8,
-                      padding: Spacing.xs,
-                      width: 32,
-                      height: 32,
+                      flexDirection: "row",
                       alignItems: "center",
-                      justifyContent: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
                       borderWidth: 1,
                       borderColor: Colors.neutralGray,
-                      marginRight: Spacing.xs,
+                      gap: 4,
                     }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Decrease floor count"
                   >
-                    <Ionicons
-                      name="remove"
-                      size={18}
-                      color={localFloorCount <= 1 ? Colors.mediumGray : Colors.darkCharcoal}
-                    />
-                  </Pressable>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, minWidth: 24, textAlign: "center" }}>
-                    {localFloorCount}
-                  </Text>
-                  <Pressable
-                    onPress={() => handleFloorCountChange(localFloorCount + 1)}
-                    disabled={localFloorCount >= 5}
-                    style={{
-                      backgroundColor: localFloorCount >= 5 ? Colors.neutralGray : Colors.white,
-                      borderRadius: 8,
-                      padding: Spacing.xs,
-                      width: 32,
-                      height: 32,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      marginLeft: Spacing.xs,
-                    }}
-                    accessibilityRole="button"
-                    accessibilityLabel="Increase floor count"
-                  >
-                    <Ionicons
-                      name="add"
-                      size={18}
-                      color={localFloorCount >= 5 ? Colors.mediumGray : Colors.darkCharcoal}
-                    />
-                  </Pressable>
+                    <Pressable
+                      onPress={() => handleFloorCountChange(localFloorCount - 1)}
+                      disabled={localFloorCount <= 1}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease floor count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: localFloorCount <= 1 ? Colors.mediumGray : Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {localFloorCount}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => handleFloorCountChange(localFloorCount + 1)}
+                      disabled={localFloorCount >= 5}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase floor count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: localFloorCount >= 5 ? Colors.mediumGray : Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
                 </View>
 
                 {/* Floor Heights */}

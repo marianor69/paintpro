@@ -801,20 +801,26 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           {/* Room Dimensions: Length × Width = Area */}
           <View style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Room Size ({unitSystem === 'metric' ? 'm / m²' : 'ft / sq ft'})
+              Room Size
             </Text>
             {/* Labels row */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>Length</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                  Length ({unitSystem === "metric" ? "m" : "ft"})
+                </Text>
               </View>
               <Text style={{ fontSize: 18, color: "transparent" }}>×</Text>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>Width</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                  Width ({unitSystem === "metric" ? "m" : "ft"})
+                </Text>
               </View>
               <Text style={{ fontSize: 18, color: "transparent" }}>=</Text>
               <View style={{ flex: 1.2 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>Area</Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                  Area ({unitSystem === "metric" ? "m²" : "sqft"})
+                </Text>
               </View>
             </View>
             {/* Input fields row */}
