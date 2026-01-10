@@ -271,6 +271,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const };
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
+  const mainLabelStyle = { alignSelf: "center" as const, marginTop: Typography.caption.fontSize + Spacing.xs };
 
   return (
     <SafeAreaView
@@ -874,9 +875,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={materialRowStyle}>
-                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                <View style={leftAlignedLabelWrapperStyle}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={leftAlignedLabelTextStyle}>Trim Paint</Text>
+                    <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Trim Paint</Text>
                     <Pressable
                       onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
                       hitSlop={8}
