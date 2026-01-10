@@ -630,7 +630,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>2-Coat</Text>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <Text style={leftAlignedLabelTextStyle}>2-Coat</Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={secondCoatMultiplierRef}
@@ -649,7 +651,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Accent Wall</Text>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <Text style={leftAlignedLabelTextStyle}>Accent Wall</Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={accentWallMultiplierRef}
@@ -671,7 +675,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Bathroom</Text>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <Text style={leftAlignedLabelTextStyle}>Bathroom</Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={bathroomMultiplierRef}
@@ -690,7 +696,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Closet</Text>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <Text style={leftAlignedLabelTextStyle}>Closet</Text>
+                </View>
                 <View style={inputContainerStyle}>
                   <TextInput
                     ref={closetMultiplierRef}
