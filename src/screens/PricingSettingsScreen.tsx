@@ -258,9 +258,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const inputWidth = 68;
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
   const inputTextStyle = { textAlign: "right" as const };
-  const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
+  const materialRowStyle = { flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm, marginBottom: Spacing.md };
+  const materialHeaderRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.xs };
   const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md, alignItems: "center" as const };
-  const columnLabelStyle = { textAlign: "center" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
+  const columnLabelStyle = { textAlign: "center" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const, marginBottom: Spacing.xs };
   const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
@@ -272,6 +273,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const, width: "100%" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
   const noHeaderLabelStyle = { alignSelf: "center" as const, marginTop: 0 };
+  const materialLabelStyle = { marginTop: Spacing.sm };
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
@@ -809,7 +811,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               Material Costs
             </Text>
 
-            <View style={materialRowStyle}>
+            <View style={materialHeaderRowStyle}>
               <View style={{ flex: 1 }} />
               <View style={columnLabelWrapperStyle}>
                 <Text style={columnLabelStyle}>1 gal</Text>
@@ -821,7 +823,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Wall Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Wall Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -859,7 +861,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Ceiling Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Ceiling Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -897,7 +899,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }, noHeaderLabelStyle]}>
+                <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }, materialLabelStyle]}>
                   Trim Paint
                 </Text>
               </View>
@@ -937,7 +939,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Primer</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Primer</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
