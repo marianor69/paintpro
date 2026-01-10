@@ -267,7 +267,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const labelAlignWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs };
     const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
   const labelCenterTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs };
-  const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const };
+  const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const, minWidth: 0 };
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: Typography.caption.fontSize + Spacing.xs };
@@ -876,7 +876,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
                 <View style={labelWithIconRowStyle}>
-                  <Text style={leftAlignedLabelTextStyle}>Trim Paint</Text>
+                  <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }]}>Trim Paint</Text>
                   <Pressable
                     onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
                     hitSlop={8}
