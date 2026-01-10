@@ -270,7 +270,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const, minWidth: 0 };
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
-  const mainLabelStyle = { alignSelf: "center" as const, marginTop: Typography.caption.fontSize + Spacing.xs };
+  const mainLabelStyle = { alignSelf: "flex-start" as const, marginTop: Typography.caption.fontSize + Spacing.xs };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
 
   return (
