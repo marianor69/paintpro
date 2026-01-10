@@ -272,6 +272,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: Typography.caption.fontSize + Spacing.xs };
+  const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
 
   return (
     <SafeAreaView
@@ -873,22 +874,21 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={materialRowStyle}>
-                <View style={leftAlignedLabelWrapperStyle}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, ...mainLabelStyle }}>
-                    <Text style={leftAlignedLabelTextStyle}>Trim Paint</Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Trim paint help" />
-                    </Pressable>
-                  </View>
+            <View style={materialRowStyle}>
+              <View style={leftAlignedLabelWrapperStyle}>
+                <View style={labelWithIconRowStyle}>
+                  <Text style={leftAlignedLabelTextStyle}>Trim Paint</Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Trim paint help" />
+                  </Pressable>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={trimPaintGallonRef}
+              </View>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={trimPaintGallonRef}
                     value={trimPaintPerGallon}
                     onChangeText={setTrimPaintPerGallon}
                     placeholder="50"
