@@ -268,6 +268,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
   const labelCenterTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs };
   const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const, minWidth: 0 };
+  // Horizontal alignment standard: do not change without explicit approval.
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const, width: "100%" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: Typography.caption.fontSize + Spacing.xs };
