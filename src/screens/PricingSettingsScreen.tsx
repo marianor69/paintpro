@@ -988,6 +988,36 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         </ScrollView>
       </KeyboardAvoidingView>
 
+      <Modal
+        visible={infoModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setInfoModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+          <Pressable
+            onPress={() => setInfoModalVisible(false)}
+            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+          />
+          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+            <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+              {infoModalTitle}
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
+              {infoModalBody}
+            </Text>
+            <Pressable
+              onPress={() => setInfoModalVisible(false)}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                Close
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       {/* KB-004: InputAccessoryViews for all pricing fields */}
       {Platform.OS === "ios" && (<>
         <InputAccessoryView nativeID={`pricingWallLabor-${wallLaborID}`}>
