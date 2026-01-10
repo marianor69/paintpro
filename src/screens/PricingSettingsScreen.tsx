@@ -302,8 +302,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
-                  <Text style={leftAlignedLabelTextStyle}>Wall</Text>
+                <View style={leftAlignedLabelWrapperStyle}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Wall</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
@@ -326,8 +326,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
               </View>
               <View style={inlineFieldStyle}>
-                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
-                  <Text style={leftAlignedLabelTextStyle}>Ceiling</Text>
+                <View style={leftAlignedLabelWrapperStyle}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Ceiling</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
