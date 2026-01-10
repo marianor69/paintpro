@@ -413,7 +413,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Baseboard</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
-                  <Text style={bubbleHeaderTextStyle}>$/LF</Text>
+                  <Text style={bubbleHeaderTextStyle}>$/lf</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={baseboardLaborRef}
@@ -437,7 +437,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Crowns</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
-                  <Text style={bubbleHeaderTextStyle}>$/LF</Text>
+                  <Text style={bubbleHeaderTextStyle}>$/lf</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={crownMouldingRef}
@@ -548,7 +548,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Handrail</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
-                  <Text style={bubbleHeaderTextStyle}>$/LF</Text>
+                  <Text style={bubbleHeaderTextStyle}>$/lf</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={handrailLaborRef}
