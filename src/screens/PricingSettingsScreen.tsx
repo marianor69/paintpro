@@ -253,7 +253,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   }, []);
 
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
-  const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" as const };
+  const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" as const };
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
   const inputWidth = 68;
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
