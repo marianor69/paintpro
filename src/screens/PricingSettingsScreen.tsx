@@ -821,7 +821,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Wall Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Wall Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -859,7 +859,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Ceiling Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Ceiling Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -943,7 +943,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Primer</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Primer</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
