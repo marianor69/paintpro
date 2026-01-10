@@ -271,7 +271,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   // Horizontal alignment standard: do not change without explicit approval.
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const, width: "100%" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
-  const noHeaderLabelStyle = { alignSelf: "center" as const, marginTop: Spacing.sm };
+  const noHeaderLabelStyle = { alignSelf: "center" as const, marginTop: 0 };
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
@@ -821,7 +821,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Wall Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Wall Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -859,7 +859,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Ceiling Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Ceiling Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -897,9 +897,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <View style={{ marginTop: mainLabelStyle.marginTop }}>
-                  <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }]}>Trim Paint</Text>
-                </View>
+                <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }, noHeaderLabelStyle]}>
+                  Trim Paint
+                </Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -937,7 +937,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Primer</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Primer</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
