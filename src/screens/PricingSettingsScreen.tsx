@@ -889,35 +889,34 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={trimPaintGallonRef}
-                    value={trimPaintPerGallon}
-                    onChangeText={setTrimPaintPerGallon}
-                    placeholder="50"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
-                    style={inputTextStyle}
-                  />
-                </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={trimPaint5GallonRef}
-                    value={trimPaintPer5Gallon}
-                    onChangeText={setTrimPaintPer5Gallon}
-                    placeholder="225"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => primerGallonRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
-                    style={inputTextStyle}
-                  />
-                </View>
+                  value={trimPaintPerGallon}
+                  onChangeText={setTrimPaintPerGallon}
+                  placeholder="50"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
+                  style={inputTextStyle}
+                />
+              </View>
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={trimPaint5GallonRef}
+                  value={trimPaintPer5Gallon}
+                  onChangeText={setTrimPaintPer5Gallon}
+                  placeholder="225"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => primerGallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
+                  style={inputTextStyle}
+                />
               </View>
             </View>
 
