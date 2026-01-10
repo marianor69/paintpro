@@ -821,7 +821,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Wall Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Wall Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -859,7 +859,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Ceiling Paint</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Ceiling Paint</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
@@ -897,7 +897,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <View style={[labelWithIconRowStyle, { marginTop: Spacing.sm }]}>
+                <View style={[labelWithIconRowStyle, { marginTop: mainLabelStyle.marginTop }]}>
                   <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }]}>Trim Paint</Text>
                   <Pressable
                     onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
@@ -943,7 +943,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Primer</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Primer</Text>
               </View>
               <View style={inputContainerStyle}>
                 <TextInput
