@@ -636,7 +636,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>2-Coat</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, alignSelf: "center" as const }}>2-Coat</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={inputContainerStyle}>
@@ -659,7 +659,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Accent Wall</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, alignSelf: "center" as const }}>Accent Wall</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={inputContainerStyle}>
@@ -685,7 +685,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Bathroom</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, alignSelf: "center" as const }}>Bathroom</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={inputContainerStyle}>
@@ -708,7 +708,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, alignSelf: "center" as const }}>Closet</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={inputContainerStyle}>
