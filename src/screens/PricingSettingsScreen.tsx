@@ -897,7 +897,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <View style={labelWithIconRowStyle}>
+                <View style={[labelWithIconRowStyle, { marginTop: Spacing.sm }]}>
                   <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }]}>Trim Paint</Text>
                   <Pressable
                     onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
