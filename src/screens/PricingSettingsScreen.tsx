@@ -247,8 +247,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
   const inputTextStyle = { textAlign: "right" as const };
   const materialRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
-  const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md };
-  const columnLabelStyle = { textAlign: "right" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
+  const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md, alignItems: "center" as const };
+  const columnLabelStyle = { textAlign: "center" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const };
   const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
