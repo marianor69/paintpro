@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   Alert,
+  Modal,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
@@ -47,6 +48,10 @@ export default function CalculationSettingsScreen() {
 
   const [baseboardWidth, setBaseboardWidth] = useState(settings.baseboardWidth.toString());
   const [crownMouldingWidth, setCrownMouldingWidth] = useState(settings.crownMouldingWidth.toString());
+
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+  const [infoModalTitle, setInfoModalTitle] = useState("");
+  const [infoModalBody, setInfoModalBody] = useState("");
 
   // KB-004: Refs for keyboard navigation
   const doorHeightRef = useRef<TextInput>(null);
@@ -104,6 +109,12 @@ export default function CalculationSettingsScreen() {
     paddingRight: Spacing.md,
   };
   const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
+
+  const openInfoModal = (title: string, body: string) => {
+    setInfoModalTitle(title);
+    setInfoModalBody(body);
+    setInfoModalVisible(true);
+  };
 
   const handleSave = () => {
     const parsedCasingWidth = parseFloat(singleClosetTrimWidth) || settings.singleClosetTrimWidth;
@@ -644,14 +655,14 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Casing Width
+                    Casing
                   </Text>
                   <Text style={helperTextStyle}>
                     Casing width used for closet openings
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={singleClosetTrimWidthRef}
@@ -678,14 +689,14 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Baseboard Width
+                    Baseboard
                   </Text>
                   <Text style={helperTextStyle}>
                     Width of baseboard trim along walls
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={baseboardWidthRef}
@@ -709,14 +720,14 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Crown Moulding Width
+                    Crown Moulding
                   </Text>
                   <Text style={helperTextStyle}>
                     Width of crown moulding trim along ceiling perimeter
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={crownMouldingWidthRef}
@@ -739,14 +750,14 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Window Trim Width
+                    Window Trim
                   </Text>
                   <Text style={helperTextStyle}>
                     Width of trim molding around windows
                   </Text>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Inches</Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowTrimWidthRef}
