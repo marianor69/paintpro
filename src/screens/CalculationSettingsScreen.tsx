@@ -216,7 +216,7 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
@@ -274,7 +274,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
@@ -310,7 +310,7 @@ export default function CalculationSettingsScreen() {
             </View>
 
             <View>
-              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
