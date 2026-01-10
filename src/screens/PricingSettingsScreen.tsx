@@ -305,8 +305,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               Labor Rates - Rooms
             </Text>
 
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Wall</Text>
                 </View>
@@ -330,10 +330,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-            </View>
-
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Ceiling</Text>
                 </View>
@@ -359,8 +356,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Door</Text>
                 </View>
@@ -384,10 +381,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-            </View>
-
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Window</Text>
                 </View>
@@ -413,8 +407,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Baseboard</Text>
                 </View>
@@ -438,10 +432,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-            </View>
-
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Crowns</Text>
                 </View>
@@ -467,8 +458,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
                 </View>
@@ -500,8 +491,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Labor Rates - Staircases
             </Text>
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Riser</Text>
                 </View>
@@ -525,10 +516,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-            </View>
-
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Spindle</Text>
                 </View>
@@ -554,8 +542,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Handrail</Text>
                 </View>
@@ -587,8 +575,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Labor Rates - Fireplaces
             </Text>
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Mantel</Text>
                 </View>
@@ -612,10 +600,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-            </View>
-
-            <View style={rowStyle}>
-              <View style={inlineFieldStyle}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Legs</Text>
                 </View>
