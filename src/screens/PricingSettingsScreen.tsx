@@ -271,6 +271,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   // Horizontal alignment standard: do not change without explicit approval.
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const, width: "100%" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
+  const noHeaderLabelStyle = { alignSelf: "center" as const };
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
@@ -647,7 +648,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>2-Coat</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>2-Coat</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -671,7 +672,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Accent Wall</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Accent Wall</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -695,7 +696,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Bathroom</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Bathroom</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -719,7 +720,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Closet</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
