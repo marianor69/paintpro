@@ -638,42 +638,46 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>2-Coat</Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={secondCoatMultiplierRef}
-                    value={secondCoatLaborMultiplier}
-                    onChangeText={setSecondCoatLaborMultiplier}
-                    placeholder="2.0"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => accentWallMultiplierRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricing2CoatMultiplier-${secondCoatMultiplierID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <View style={bubbleHeaderWrapperStyle}>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={secondCoatMultiplierRef}
+                      value={secondCoatLaborMultiplier}
+                      onChangeText={setSecondCoatLaborMultiplier}
+                      placeholder="2.0"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => accentWallMultiplierRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricing2CoatMultiplier-${secondCoatMultiplierID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Accent Wall</Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={accentWallMultiplierRef}
-                    value={accentWallLaborMultiplier}
-                    onChangeText={setAccentWallLaborMultiplier}
-                    placeholder="1.25"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => bathroomMultiplierRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingAccentWallMultiplier-${accentWallMultiplierID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <View style={bubbleHeaderWrapperStyle}>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={accentWallMultiplierRef}
+                      value={accentWallLaborMultiplier}
+                      onChangeText={setAccentWallLaborMultiplier}
+                      placeholder="1.25"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => bathroomMultiplierRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingAccentWallMultiplier-${accentWallMultiplierID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -683,42 +687,46 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Bathroom</Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={bathroomMultiplierRef}
-                    value={bathroomLaborMultiplier}
-                    onChangeText={setBathroomLaborMultiplier}
-                    placeholder="1.0"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => closetMultiplierRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomMultiplier-${bathroomMultiplierID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <View style={bubbleHeaderWrapperStyle}>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={bathroomMultiplierRef}
+                      value={bathroomLaborMultiplier}
+                      onChangeText={setBathroomLaborMultiplier}
+                      placeholder="1.0"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => closetMultiplierRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomMultiplier-${bathroomMultiplierID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
                 </View>
-                <View style={inputContainerStyle}>
-                  <TextInput
-                    ref={closetMultiplierRef}
-                    value={closetLaborMultiplier}
-                    onChangeText={setClosetLaborMultiplier}
-                    placeholder="1.0"
-                    placeholderTextColor={Colors.mediumGray}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
-                    onFocus={handleFieldFocus}
-                    blurOnSubmit={false}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetMultiplier-${closetMultiplierID}` : undefined}
-                    style={inputTextStyle}
-                  />
+                <View style={bubbleHeaderWrapperStyle}>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={closetMultiplierRef}
+                      value={closetLaborMultiplier}
+                      onChangeText={setClosetLaborMultiplier}
+                      placeholder="1.0"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetMultiplier-${closetMultiplierID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
