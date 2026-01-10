@@ -730,8 +730,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               Fixed Fees
             </Text>
 
-            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Furniture Moving</Text>
                 </View>
@@ -755,7 +755,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
-              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+            </View>
+
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Nails/Screws Removal</Text>
                 </View>
