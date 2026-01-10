@@ -107,6 +107,13 @@ export default function CalculationSettingsScreen() {
     width: 68,
     paddingRight: Spacing.md,
   };
+  const bubbleHeaderCenterStyle = {
+    fontSize: Typography.caption.fontSize,
+    color: Colors.mediumGray,
+    marginBottom: Spacing.xs,
+    textAlign: "center" as const,
+    width: 68,
+  };
   const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: centerAlignOffset };
 
@@ -223,8 +230,8 @@ export default function CalculationSettingsScreen() {
                     </Pressable>
                   </View>
                 </View>
-                <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                <View style={{ width: 68, alignItems: "center" }}>
+                  <Text style={bubbleHeaderCenterStyle}>
                     Height (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -243,8 +250,8 @@ export default function CalculationSettingsScreen() {
                     />
                   </View>
                 </View>
-                <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                <View style={{ width: 68, alignItems: "center" }}>
+                  <Text style={bubbleHeaderCenterStyle}>
                     Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -281,8 +288,8 @@ export default function CalculationSettingsScreen() {
                     </Pressable>
                   </View>
                 </View>
-                <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>Width (in)</Text>
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={bubbleHeaderCenterStyle}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -317,8 +324,8 @@ export default function CalculationSettingsScreen() {
                     </Pressable>
                   </View>
                 </View>
-                <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>Width (in)</Text>
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={bubbleHeaderCenterStyle}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -361,7 +368,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={unitHeaderStyle}>
+                  <Text style={bubbleHeaderCenterStyle}>
                     Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -381,7 +388,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={unitHeaderStyle}>
+                  <Text style={bubbleHeaderCenterStyle}>
                     Height (ft)
                   </Text>
                   <View style={inputContainerStyle}>
