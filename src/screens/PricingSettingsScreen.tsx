@@ -280,10 +280,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
           }}
           scrollEventThrottle={16}
         >
-          {/* Labor Rates */}
+          {/* Labor Rates - Rooms */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Labor Rates
+              Labor Rates - Rooms
             </Text>
 
             <View style={rowStyle}>
@@ -466,11 +466,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={inlineFieldStyle} />
             </View>
+          </Card>
 
-            <Text style={{ ...Typography.h3, marginBottom: Spacing.sm, marginTop: Spacing.xs }}>
-              Staircases
+          {/* Labor Rates - Staircases */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Labor Rates - Staircases
             </Text>
-
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
@@ -549,11 +551,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={inlineFieldStyle} />
             </View>
+          </Card>
 
-            <Text style={{ ...Typography.h3, marginBottom: Spacing.sm, marginTop: Spacing.xs }}>
-              Fireplaces
+          {/* Labor Rates - Fireplaces */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Labor Rates - Fireplaces
             </Text>
-
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
