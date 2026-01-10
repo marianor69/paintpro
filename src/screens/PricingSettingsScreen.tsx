@@ -901,7 +901,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
                 <View style={trimPaintLabelRowStyle}>
-                  <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1 }, mainLabelStyle]}>
+                  <Text style={[leftAlignedLabelTextStyle, { flexShrink: 1, width: "auto" }, materialLabelStyle]}>
                     Trim Paint
                   </Text>
                   <Pressable
