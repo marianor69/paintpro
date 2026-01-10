@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               New Interface
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              CLAUDE - v1.0.9 - 70fbe59 - Trim Paint help icon
+              CLAUDE - v1.0.10 - d9c233c - Trim Paint icon next to text
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
               GPT - v2.9.1 - Remove trim paint icon
