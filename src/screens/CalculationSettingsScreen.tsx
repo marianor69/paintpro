@@ -282,7 +282,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>Width (in)</Text>
+                  <Text style={unitHeaderStyle}>Width(in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -318,7 +318,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>Width (in)</Text>
+                  <Text style={unitHeaderStyle}>Width(in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -362,7 +362,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={unitHeaderStyle}>
-                    Width (ft)
+                    Width(ft)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -382,7 +382,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={unitHeaderStyle}>
-                    Height (ft)
+                    Height(ft)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
