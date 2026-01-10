@@ -901,7 +901,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={{ marginBottom: Spacing.md, flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                  <Text style={[leftAlignedLabelTextStyle, materialLabelStyle]}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                     Trim Paint
                   </Text>
                   <Pressable
