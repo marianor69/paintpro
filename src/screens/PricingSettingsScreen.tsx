@@ -271,7 +271,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   // Horizontal alignment standard: do not change without explicit approval.
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const, width: "100%" as const };
   const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
-  const noHeaderLabelStyle = { alignSelf: "center" as const };
+  const noHeaderLabelStyle = { alignSelf: "center" as const, marginTop: Spacing.sm };
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
