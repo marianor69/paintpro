@@ -636,7 +636,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>2-Coat</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>2-Coat</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -657,7 +657,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Accent Wall</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Accent Wall</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -681,7 +681,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Bathroom</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Bathroom</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -702,7 +702,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Closet</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
