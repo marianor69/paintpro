@@ -14,6 +14,7 @@ import {
 import { useCalculationSettings } from "../state/calculationStore";
 import { useAppSettings } from "../state/appSettings";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 
@@ -199,9 +200,12 @@ export default function CalculationSettingsScreen() {
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Door
-                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Door
+                    </Text>
+                    <Ionicons name="information-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door info" />
+                  </View>
                   <Text style={helperTextStyle}>
                     Standard door dimensions for surface area calculation
                   </Text>
@@ -252,9 +256,12 @@ export default function CalculationSettingsScreen() {
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Door Trim Width
-                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Door Trim Width
+                    </Text>
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
+                  </View>
                   <Text style={helperTextStyle}>
                     Width of trim molding around doors
                   </Text>
