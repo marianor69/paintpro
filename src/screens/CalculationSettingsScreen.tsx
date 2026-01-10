@@ -99,7 +99,6 @@ export default function CalculationSettingsScreen() {
 
   const inputContainerStyle = [TextInputStyles.container, { width: 68, alignSelf: "flex-start" }];
   const bubbleInputStyle = [TextInputStyles.base, { textAlign: "right" as const }];
-  const helperTextStyle = { fontSize: Typography.caption.fontSize, fontWeight: "400", color: Colors.mediumGray };
   const unitHeaderStyle = {
     fontSize: Typography.caption.fontSize,
     color: Colors.mediumGray,
@@ -210,16 +209,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                       Door
                     </Text>
-                    <Ionicons name="information-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door info" />
+                    <Pressable
+                      onPress={() => openInfoModal("Door", "Standard door dimensions for surface area calculation")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door help" />
+                    </Pressable>
                   </View>
-                  <Text style={helperTextStyle}>
-                    Standard door dimensions for surface area calculation
-                  </Text>
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
@@ -266,16 +267,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                       Door Trim Width
                     </Text>
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
+                    <Pressable
+                      onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
+                    </Pressable>
                   </View>
-                  <Text style={helperTextStyle}>
-                    Width of trim molding around doors
-                  </Text>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
                   <Text style={unitHeaderStyle}>Inches</Text>
@@ -300,13 +303,18 @@ export default function CalculationSettingsScreen() {
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Door Jamb Width
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Width of door jamb (inside frame)
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Door Jamb Width
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
                   <Text style={unitHeaderStyle}>Inches</Text>
@@ -338,13 +346,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Window Size (ft)
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Standard window dimensions
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Window Size (ft)
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Window Size", "Standard window dimensions")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window size help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={unitHeaderStyle}>
@@ -512,13 +525,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Closet Cavity Depth
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Depth of closet interior for wall area calculation
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Closet Cavity Depth
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Closet Cavity Depth", "Depth of closet interior for wall area calculation")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
                   <Text style={unitHeaderStyle}>
@@ -593,13 +611,18 @@ export default function CalculationSettingsScreen() {
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Baseboard Perimeter
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Total baseboard length inside closet (back + 2 sides)
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Baseboard Perimeter
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Baseboard Perimeter", "Total baseboard length inside closet (back + 2 sides)")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
@@ -653,13 +676,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Casing
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Casing width used for closet openings
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Casing
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Casing", "Casing width used for closet openings")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Casing help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
@@ -687,13 +715,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Baseboard
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Width of baseboard trim along walls
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Baseboard
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Baseboard", "Width of baseboard trim along walls")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
@@ -718,13 +751,18 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ marginBottom: Spacing.md }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Crown Moulding
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Width of crown moulding trim along ceiling perimeter
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Crown Moulding
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Crown Moulding", "Width of crown moulding trim along ceiling perimeter")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
@@ -748,13 +786,18 @@ export default function CalculationSettingsScreen() {
 
             <View>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.md }}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Window Trim
-                  </Text>
-                  <Text style={helperTextStyle}>
-                    Width of trim molding around windows
-                  </Text>
+                <View style={{ flex: 1, marginTop: centerAlignOffset }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                      Window Trim
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Window Trim", "Width of trim molding around windows")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
@@ -814,6 +857,36 @@ export default function CalculationSettingsScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={infoModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setInfoModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+          <Pressable
+            onPress={() => setInfoModalVisible(false)}
+            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+          />
+          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+            <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+              {infoModalTitle}
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
+              {infoModalBody}
+            </Text>
+            <Pressable
+              onPress={() => setInfoModalVisible(false)}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                Close
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
 
       {/* KB-004: InputAccessoryViews for all calculation fields */}
       {Platform.OS === "ios" && (<>

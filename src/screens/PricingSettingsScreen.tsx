@@ -5,6 +5,7 @@ import {
   TextInput,
   Pressable,
   ScrollView,
+  Modal,
   KeyboardAvoidingView,
   Platform,
   InputAccessoryView,
@@ -14,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { usePricingStore } from "../state/pricingStore";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 
@@ -21,6 +23,10 @@ type Props = NativeStackScreenProps<RootStackParamList, "PricingSettings">;
 
 export default function PricingSettingsScreen({ navigation }: Props) {
   const pricing = usePricingStore();
+
+  const [infoModalVisible, setInfoModalVisible] = React.useState(false);
+  const [infoModalTitle, setInfoModalTitle] = React.useState("");
+  const [infoModalBody, setInfoModalBody] = React.useState("");
 
   const [wallLaborPerSqFt, setWallLaborPerSqFt] = React.useState(
     pricing.wallLaborPerSqFt.toString()
@@ -239,6 +245,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     });
     navigation.goBack();
   };
+
+  const openInfoModal = useCallback((title: string, body: string) => {
+    setInfoModalTitle(title);
+    setInfoModalBody(body);
+    setInfoModalVisible(true);
+  }, []);
 
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
   const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" as const };
@@ -707,7 +719,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Furniture Moving</Text>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <Text style={leftAlignedLabelTextStyle}>Furniture Moving</Text>
+                </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
@@ -732,7 +746,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
-                <Text style={labelStyle}>Nails/Screws Removal</Text>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <Text style={leftAlignedLabelTextStyle}>Nails/Screws Removal</Text>
+                </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each $</Text>
                   <View style={inputContainerStyle}>
@@ -773,7 +789,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={materialRowStyle}>
-              <Text style={labelStyle}>Wall Paint</Text>
+              <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                <Text style={leftAlignedLabelTextStyle}>Wall Paint</Text>
+              </View>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={wallPaintGallonRef}
@@ -809,7 +827,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={materialRowStyle}>
-              <Text style={labelStyle}>Ceiling Paint</Text>
+              <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                <Text style={leftAlignedLabelTextStyle}>Ceiling Paint</Text>
+              </View>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={ceilingPaintGallonRef}
@@ -845,12 +865,17 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ marginBottom: Spacing.md }}>
-              <View style={[materialRowStyle, { alignItems: "flex-start" }]}>
-                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={labelStyle}>Trim Paint</Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails
-                  </Text>
+              <View style={materialRowStyle}>
+                <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                    <Text style={leftAlignedLabelTextStyle}>Trim Paint</Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Trim paint help" />
+                    </Pressable>
+                  </View>
                 </View>
                 <View style={inputContainerStyle}>
                   <TextInput
@@ -888,7 +913,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={materialRowStyle}>
-              <Text style={labelStyle}>Primer</Text>
+              <View style={[leftAlignedLabelWrapperStyle, labelCenterWithBubbleValueStyle]}>
+                <Text style={leftAlignedLabelTextStyle}>Primer</Text>
+              </View>
               <View style={inputContainerStyle}>
                 <TextInput
                   ref={primerGallonRef}
