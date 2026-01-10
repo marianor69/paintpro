@@ -889,10 +889,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.md, flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
+            <View style={materialRowStyle}>
+              <View style={leftAlignedLabelWrapperStyle}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, ...materialLabelStyle }}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, flex: undefined }}>
                     Trim Paint
                   </Text>
                   <Pressable
