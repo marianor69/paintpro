@@ -265,12 +265,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const labelAlignWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs };
-  const labelCenterWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
+  const labelCenterWithBubbleValueStyle = { marginTop: Typography.caption.fontSize + Spacing.xs };
   const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
-  const labelCenterTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
+  const labelCenterTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs };
   const leftAlignedLabelWrapperStyle = { flex: 1, alignItems: "flex-start" as const };
   const leftAlignedLabelTextStyle = { ...labelStyle, textAlign: "left" as const };
-  const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm, textAlign: "left" as const };
+  const labelCenterLeftTextStyle = { ...labelStyle, marginTop: Typography.caption.fontSize + Spacing.xs, textAlign: "left" as const };
 
   return (
     <SafeAreaView
