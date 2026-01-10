@@ -270,7 +270,7 @@ export default function CalculationSettingsScreen() {
                 <View style={{ flex: 1, marginTop: centerAlignOffset }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                      Door Trim Width
+                      Door Trim
                     </Text>
                     <Pressable
                       onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
@@ -281,7 +281,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>Inches</Text>
+                  <Text style={unitHeaderStyle}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -306,7 +306,7 @@ export default function CalculationSettingsScreen() {
                 <View style={{ flex: 1, marginTop: centerAlignOffset }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                      Door Jamb Width
+                      Door Jamb
                     </Text>
                     <Pressable
                       onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
@@ -317,7 +317,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>Inches</Text>
+                  <Text style={unitHeaderStyle}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -349,7 +349,7 @@ export default function CalculationSettingsScreen() {
                 <View style={{ flex: 1, marginTop: centerAlignOffset }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                      Window Size (ft)
+                      Window Size
                     </Text>
                     <Pressable
                       onPress={() => openInfoModal("Window Size", "Standard window dimensions")}
@@ -361,7 +361,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={unitHeaderStyle}>
-                    Width
+                    Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -381,7 +381,7 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={unitHeaderStyle}>
-                    Height
+                    Height (ft)
                   </Text>
                   <View style={inputContainerStyle}>
                     <TextInput
