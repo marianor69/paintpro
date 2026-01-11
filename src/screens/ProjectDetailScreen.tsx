@@ -1663,7 +1663,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 <Ionicons name="bed-outline" size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                Room
+                4-Wall Room
               </Text>
             </Pressable>
 
