@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               New Interface
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              CLAUDE - v1.0.30 - ea7dc83 - Closet moved to column 1 under Baseboard
+              CLAUDE - v1.0.31 - 0f60414 - Handrail aligned in left column
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
               GPT - v2.9.1 - Remove trim paint icon
