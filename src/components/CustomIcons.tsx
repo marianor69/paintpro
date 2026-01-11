@@ -93,26 +93,26 @@ export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       {/* Row 1 - Full bricks */}
-      <Rect x="10" y="10" width="35" height="14" rx="1" />
-      <Rect x="50" y="10" width="35" height="14" rx="1" />
+      <Rect x="10" y="10" width="38" height="14" rx="1" />
+      <Rect x="52" y="10" width="38" height="14" rx="1" />
 
       {/* Row 2 - Offset bricks */}
-      <Rect x="10" y="28" width="17" height="14" rx="1" />
-      <Rect x="32" y="28" width="35" height="14" rx="1" />
-      <Rect x="72" y="28" width="13" height="14" rx="1" />
+      <Rect x="10" y="28" width="18" height="14" rx="1" />
+      <Rect x="32" y="28" width="38" height="14" rx="1" />
+      <Rect x="74" y="28" width="16" height="14" rx="1" />
 
       {/* Row 3 - Full bricks */}
-      <Rect x="10" y="46" width="35" height="14" rx="1" />
-      <Rect x="50" y="46" width="35" height="14" rx="1" />
+      <Rect x="10" y="46" width="38" height="14" rx="1" />
+      <Rect x="52" y="46" width="38" height="14" rx="1" />
 
       {/* Row 4 - Offset bricks */}
-      <Rect x="10" y="64" width="17" height="14" rx="1" />
-      <Rect x="32" y="64" width="35" height="14" rx="1" />
-      <Rect x="72" y="64" width="13" height="14" rx="1" />
+      <Rect x="10" y="64" width="18" height="14" rx="1" />
+      <Rect x="32" y="64" width="38" height="14" rx="1" />
+      <Rect x="74" y="64" width="16" height="14" rx="1" />
 
       {/* Row 5 - Full bricks */}
-      <Rect x="10" y="82" width="35" height="14" rx="1" />
-      <Rect x="50" y="82" width="35" height="14" rx="1" />
+      <Rect x="10" y="82" width="38" height="14" rx="1" />
+      <Rect x="52" y="82" width="38" height="14" rx="1" />
     </G>
   </Svg>
 );
