@@ -10,40 +10,40 @@ export const FireplaceIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       {/* Top mantel */}
-      <Path d="M 15 20 L 85 20 L 85 28 L 15 28 Z" />
+      <Path d="M 10 10 L 90 10 L 90 20 L 10 20 Z" />
 
       {/* Mantel support */}
-      <Path d="M 18 28 L 22 35 L 78 35 L 82 28" />
+      <Path d="M 12 20 L 18 28 L 82 28 L 88 20" />
 
       {/* Left column */}
-      <Path d="M 22 35 L 22 80 L 35 80 L 35 35" />
+      <Path d="M 18 28 L 18 85 L 32 85 L 32 28" />
 
       {/* Right column */}
-      <Path d="M 65 35 L 65 80 L 78 80 L 78 35" />
+      <Path d="M 68 28 L 68 85 L 82 85 L 82 28" />
 
       {/* Bottom base line */}
-      <Line x1="22" y1="80" x2="78" y2="80" />
+      <Line x1="18" y1="85" x2="82" y2="85" />
 
       {/* Left foot */}
-      <Rect x="18" y="80" width="20" height="8" rx="2" />
+      <Rect x="12" y="85" width="22" height="8" rx="2" />
 
       {/* Right foot */}
-      <Rect x="62" y="80" width="20" height="8" rx="2" />
+      <Rect x="66" y="85" width="22" height="8" rx="2" />
 
       {/* Arched opening */}
-      <Path d="M 35 80 L 35 55 A 15 15 0 0 1 65 55 L 65 80" />
+      <Path d="M 32 85 L 32 58 A 18 18 0 0 1 68 58 L 68 85" />
 
       {/* Center flame */}
-      <Path d="M 50 75 Q 45 65, 50 55 Q 55 65, 50 75" />
+      <Path d="M 50 80 Q 44 68, 50 55 Q 56 68, 50 80" />
 
       {/* Left flame */}
-      <Path d="M 43 75 Q 38 68, 43 60 Q 46 66, 45 70 Q 48 68, 43 75" />
+      <Path d="M 40 80 Q 34 70, 40 58 Q 44 66, 46 72 Q 48 70, 40 80" />
 
       {/* Right flame */}
-      <Path d="M 57 75 Q 62 68, 57 60 Q 54 66, 55 70 Q 52 68, 57 75" />
+      <Path d="M 60 80 Q 66 70, 60 58 Q 56 66, 54 72 Q 52 70, 60 80" />
 
       {/* Log */}
-      <Path d="M 42 77 Q 50 80, 58 77" />
+      <Path d="M 40 82 Q 50 86, 60 82" />
     </G>
   </Svg>
 );
@@ -75,16 +75,16 @@ export const BuiltInIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) 
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       {/* Outer frame */}
-      <Path d="M 15 15 L 15 90 L 85 90 L 85 15 Z"/>
+      <Path d="M 10 10 L 10 90 L 90 90 L 90 10 Z"/>
 
       {/* Horizontal shelves */}
-      <Path d="M 15 30 L 85 30"/>
-      <Path d="M 15 45 L 85 45"/>
-      <Path d="M 15 60 L 85 60"/>
-      <Path d="M 15 75 L 85 75"/>
+      <Path d="M 10 28 L 90 28"/>
+      <Path d="M 10 46 L 90 46"/>
+      <Path d="M 10 64 L 90 64"/>
+      <Path d="M 10 82 L 90 82"/>
 
       {/* Vertical divider */}
-      <Path d="M 50 15 L 50 90"/>
+      <Path d="M 50 10 L 50 90"/>
     </G>
   </Svg>
 );
@@ -93,26 +93,26 @@ export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       {/* Row 1 - Full bricks */}
-      <Rect x="15" y="15" width="30" height="12" rx="1" />
-      <Rect x="48" y="15" width="30" height="12" rx="1" />
+      <Rect x="10" y="10" width="35" height="14" rx="1" />
+      <Rect x="50" y="10" width="35" height="14" rx="1" />
 
       {/* Row 2 - Offset bricks */}
-      <Rect x="15" y="30" width="15" height="12" rx="1" />
-      <Rect x="33" y="30" width="30" height="12" rx="1" />
-      <Rect x="66" y="30" width="12" height="12" rx="1" />
+      <Rect x="10" y="28" width="17" height="14" rx="1" />
+      <Rect x="32" y="28" width="35" height="14" rx="1" />
+      <Rect x="72" y="28" width="13" height="14" rx="1" />
 
       {/* Row 3 - Full bricks */}
-      <Rect x="15" y="45" width="30" height="12" rx="1" />
-      <Rect x="48" y="45" width="30" height="12" rx="1" />
+      <Rect x="10" y="46" width="35" height="14" rx="1" />
+      <Rect x="50" y="46" width="35" height="14" rx="1" />
 
       {/* Row 4 - Offset bricks */}
-      <Rect x="15" y="60" width="15" height="12" rx="1" />
-      <Rect x="33" y="60" width="30" height="12" rx="1" />
-      <Rect x="66" y="60" width="12" height="12" rx="1" />
+      <Rect x="10" y="64" width="17" height="14" rx="1" />
+      <Rect x="32" y="64" width="35" height="14" rx="1" />
+      <Rect x="72" y="64" width="13" height="14" rx="1" />
 
       {/* Row 5 - Full bricks */}
-      <Rect x="15" y="75" width="30" height="12" rx="1" />
-      <Rect x="48" y="75" width="30" height="12" rx="1" />
+      <Rect x="10" y="82" width="35" height="14" rx="1" />
+      <Rect x="50" y="82" width="35" height="14" rx="1" />
     </G>
   </Svg>
 );
@@ -121,7 +121,7 @@ export const NonFourWallRoomIcon: React.FC<IconProps> = ({ size = 20, color = "#
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
       {/* Irregular hexagon representing non-4-wall room */}
-      <Path d="M 20 50 L 35 20 L 65 20 L 80 50 L 65 80 L 35 80 Z" />
+      <Path d="M 10 50 L 28 15 L 72 15 L 90 50 L 72 85 L 28 85 Z" />
     </G>
   </Svg>
 );
