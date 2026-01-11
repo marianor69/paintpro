@@ -17,6 +17,72 @@ import { useAppSettings } from "../state/appSettings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
+
+function SettingsRowGrid({
+  label,
+  col1,
+  col2,
+  gap = Spacing.md,
+  colWidth = 68,
+  showCol2Spacer = true,
+  alignLabelToHeader = false,
+  style,
+}: {
+  label: React.ReactNode;
+  col1?: React.ReactNode;
+  col2?: React.ReactNode;
+  gap?: number;
+  colWidth?: number;
+  showCol2Spacer?: boolean;
+  alignLabelToHeader?: boolean;
+  style?: any;
+}) {
+  // matches the vertical offset concept you already use (centerAlignOffset)
+  const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
+
+  return (
+    <View style={[{ flexDirection: "row", alignItems: "flex-start", gap }, style]}>
+      <View style={{ flex: 1, marginTop: alignLabelToHeader ? centerAlignOffset : 0 }}>
+        {label}
+      </View>
+
+      <View style={{ width: colWidth, alignItems: "center" }}>{col1 ?? null}</View>
+
+      {showCol2Spacer ? (
+        <View style={{ width: colWidth, alignItems: "center" }}>{col2 ?? null}</View>
+      ) : (
+        col2 ?? null
+      )}
+    </View>
+  );
+}
+
+function BubbleStack({
+  header,
+  children,
+  width = 68,
+}: {
+  header: string;
+  children: React.ReactNode;
+  width?: number;
+}) {
+  return (
+    <View style={{ alignItems: "center" }}>
+      <Text
+        style={{
+          fontSize: Typography.caption.fontSize,
+          color: Colors.mediumGray,
+          marginBottom: Spacing.xs,
+          textAlign: "center",
+          width,
+        }}
+      >
+        {header}
+      </Text>
+      {children}
+    </View>
+  );
+}
 import { Card } from "../components/Card";
 
 export default function CalculationSettingsScreen() {
@@ -572,15 +638,16 @@ export default function CalculationSettingsScreen() {
               </View>
             </View>
 
-            <View style={{ marginBottom: Spacing.sm }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1, ...mainLabelStyle }}>
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.sm }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                   Door Width
                 </Text>
-                <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Single (in)
-                  </Text>
+              )}
+              col1={(
+                <BubbleStack header="Single (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={singleClosetWidthRef}
@@ -596,11 +663,10 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Double (in)
-                  </Text>
+                </BubbleStack>
+              )}
+              col2={(
+                <BubbleStack header="Double (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doubleClosetWidthRef}
@@ -616,29 +682,27 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+            />
 
-            <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Baseboard Perimeter
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Baseboard Perimeter", "Total baseboard length inside closet (back + 2 sides)")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
-                    </Pressable>
-                  </View>
-                </View>
-                <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Single (in)
+            <SettingsRowGrid
+              alignLabelToHeader
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Baseboard Perimeter
                   </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Baseboard Perimeter", "Total baseboard length inside closet (back + 2 sides)")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
+                  </Pressable>
+                </View>
+              )}
+              col1={(
+                <BubbleStack header="Single (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={singleClosetBaseboardRef}
@@ -654,11 +718,10 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                    Double (in)
-                  </Text>
+                </BubbleStack>
+              )}
+              col2={(
+                <BubbleStack header="Double (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doubleClosetBaseboardRef}
@@ -674,9 +737,9 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+            />
           </Card>
 
           {/* Casings, Baseboards and Crowns */}
@@ -685,23 +748,21 @@ export default function CalculationSettingsScreen() {
               Casings, Baseboards and Crowns
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Casing
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Casing", "Casing width used for closet openings")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Casing help" />
-                    </Pressable>
-                  </View>
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Casing
+                  </Text>
+                  <Pressable onPress={() => openInfoModal("Casing", "Casing width used for closet openings")} hitSlop={8}>
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Casing help" />
+                  </Pressable>
                 </View>
-                <View style={{ alignItems: "center", width: 68, marginRight: 68 }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
+              )}
+              col1={(
+                <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={singleClosetTrimWidthRef}
@@ -720,28 +781,27 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View style={{ width: 68 }} />
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              col2={null}
+              showCol2Spacer
+            />
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Baseboard
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Baseboard", "Width of baseboard trim along walls")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
-                    </Pressable>
-                  </View>
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Baseboard
+                  </Text>
+                  <Pressable onPress={() => openInfoModal("Baseboard", "Width of baseboard trim along walls")} hitSlop={8}>
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
+                  </Pressable>
                 </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
+              )}
+              col1={(
+                <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={baseboardWidthRef}
@@ -757,27 +817,27 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              col2={null}
+              showCol2Spacer
+            />
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Crown Moulding
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Crown Moulding", "Width of crown moulding trim along ceiling perimeter")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
-                    </Pressable>
-                  </View>
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Crown Moulding
+                  </Text>
+                  <Pressable onPress={() => openInfoModal("Crown Moulding", "Width of crown moulding trim along ceiling perimeter")} hitSlop={8}>
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
+                  </Pressable>
                 </View>
-                <View style={{ alignItems: "center", marginRight: 58 + Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
+              )}
+              col1={(
+                <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={crownMouldingWidthRef}
@@ -792,28 +852,26 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View style={{ width: 68 }} />
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              col2={null}
+              showCol2Spacer
+            />
 
-            <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Window Trim
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Window Trim", "Width of trim molding around windows")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
-                    </Pressable>
-                  </View>
+            <SettingsRowGrid
+              alignLabelToHeader
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Window Trim
+                  </Text>
+                  <Pressable onPress={() => openInfoModal("Window Trim", "Width of trim molding around windows")} hitSlop={8}>
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
+                  </Pressable>
                 </View>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
+              )}
+              col1={(
+                <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowTrimWidthRef}
@@ -828,9 +886,11 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              col2={null}
+              showCol2Spacer
+            />
           </Card>
 
           {/* Action Buttons */}
