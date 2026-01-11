@@ -568,6 +568,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={{ flex: 1 }} />
             </View>
           </Card>
 
