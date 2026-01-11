@@ -459,7 +459,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1 }} />
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
@@ -484,6 +483,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={{ flex: 1 }} />
             </View>
           </Card>
 
