@@ -119,7 +119,7 @@ export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
 
 export const NonFourWallRoomIcon: React.FC<IconProps> = ({ size = 24, color = "#0066CC" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <G fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
       {/* Irregular hexagon representing non-4-wall room */}
       <Path d="M 20 50 L 35 20 L 65 20 L 80 50 L 65 80 L 35 80 Z" />
     </G>
