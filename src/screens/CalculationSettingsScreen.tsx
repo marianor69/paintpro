@@ -17,6 +17,7 @@ import { useAppSettings } from "../state/appSettings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
+import { Card } from "../components/Card";
 
 function SettingsRowGrid({
   label,
@@ -83,8 +84,6 @@ function BubbleStack({
     </View>
   );
 }
-import { Card } from "../components/Card";
-
 export default function CalculationSettingsScreen() {
   const { settings, updateSettings, resetToDefaults } = useCalculationSettings();
   const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
