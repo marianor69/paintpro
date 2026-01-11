@@ -1534,7 +1534,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           </Text>
 
           {/* Add Photo Buttons */}
-          <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: photos.length > 0 ? Spacing.md : 0 }}>
+          <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
             <Pressable
               onPress={() => handleAddPhoto(true)}
               style={{
