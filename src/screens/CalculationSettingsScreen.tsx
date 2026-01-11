@@ -11,6 +11,7 @@ import {
   Platform,
   Keyboard,
   InputAccessoryView,
+  useWindowDimensions,
 } from "react-native";
 import { useCalculationSettings } from "../state/calculationStore";
 import { useAppSettings } from "../state/appSettings";
@@ -101,6 +102,10 @@ function BubbleStack({
   );
 }
 export default function CalculationSettingsScreen() {
+  const { width: screenWidth } = useWindowDimensions();
+  const isTablet = screenWidth >= 768;
+  const labelMinWidth = isTablet ? 240 : 160;
+  const labelMaxWidth = isTablet ? 340 : 230;
   const { settings, updateSettings, resetToDefaults } = useCalculationSettings();
   const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
   const ceilingCoverageSqFtPerGallon = useAppSettings((s) => s.ceilingCoverageSqFtPerGallon);
@@ -298,6 +303,8 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
@@ -354,6 +361,8 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
@@ -393,6 +402,8 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               label={(
                 <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
@@ -438,6 +449,8 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
@@ -614,45 +627,50 @@ export default function CalculationSettingsScreen() {
               Closet Assumptions
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Closet Cavity Depth
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Closet Cavity Depth", "Depth of closet interior for wall area calculation")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
-                    </Pressable>
-                  </View>
-                </View>
-                <View style={{ alignItems: "flex-end", width: 68 }}>
-                  <Text style={unitHeaderStyle}>
-                    Feet
+            <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Closet Cavity Depth
                   </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Closet Cavity Depth", "Depth of closet cavity used for closet interior assumptions")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
+                  </Pressable>
+                </View>
+              )}
+              pos0={(
+                <BubbleStack header="Depth (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={closetCavityDepthRef}
                       value={closetCavityDepth}
                       onChangeText={setClosetCavityDepth}
                       keyboardType="numeric"
-                      placeholder="2"
+                      placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => singleClosetWidthRef.current?.focus()}
+                      returnKeyType="done"
+                      onSubmitEditing={() => Keyboard.dismiss()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcClosetCavityDepth-${closetCavityDepthID}` : undefined}
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              pos1={null}
+              reservePos1
+            />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.sm }}
               label={(
@@ -701,6 +719,8 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               label={(
                 <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
@@ -763,6 +783,8 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
@@ -802,6 +824,8 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
@@ -838,6 +862,8 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
@@ -873,6 +899,8 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
+              labelMinWidth={labelMinWidth}
+              labelMaxWidth={labelMaxWidth}
               alignLabelToHeader
               label={(
                 <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
