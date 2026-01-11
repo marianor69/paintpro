@@ -116,6 +116,7 @@ export default function CalculationSettingsScreen() {
   };
   const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: centerAlignOffset };
+  const materialLabelStyle = { marginTop: Spacing.sm };
 
   const openInfoModal = (title: string, body: string) => {
     setInfoModalTitle(title);
