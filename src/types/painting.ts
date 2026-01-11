@@ -13,6 +13,7 @@ export interface Room {
   cathedralPeakHeight?: number; // Height at the peak for cathedral ceilings
   windowCount: number;
   doorCount: number;
+  toiletEnclosed?: boolean;
   hasCloset: boolean;
   // Closet details
   singleDoorClosets?: number;

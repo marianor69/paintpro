@@ -49,6 +49,7 @@ function serializeBathroomState(
   manualArea: string,
   isCathedral: boolean,
   cathedralPeakHeight: string,
+  toiletEnclosed: boolean,
   windowCount: string,
   doorCount: string,
   hasCloset: boolean,
@@ -74,6 +75,7 @@ function serializeBathroomState(
     manualArea,
     isCathedral,
     cathedralPeakHeight,
+    toiletEnclosed,
     windowCount,
     doorCount,
     hasCloset,
@@ -122,6 +124,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     bathroom?.manualArea && bathroom.manualArea > 0 ? formatMeasurementValue(bathroom.manualArea, 'area', unitSystem, 2) : ""
   );
   const [isCathedral, setIsCathedral] = useState(bathroom?.ceilingType === "cathedral");
+  const [toiletEnclosed, setToiletEnclosed] = useState(bathroom?.toiletEnclosed ?? false);
   const [windowCount, setWindowCount] = useState(
     bathroom?.windowCount && bathroom.windowCount > 0 ? bathroom.windowCount.toString() : ""
   );
@@ -289,6 +292,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         "",
         false,
         "",
+        false,
         "",
         "",
         false,
@@ -320,6 +324,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       bathroom.manualArea && bathroom.manualArea > 0 ? bathroom.manualArea.toString() : "",
       bathroom.ceilingType === "cathedral",
       bathroom.cathedralPeakHeight && bathroom.cathedralPeakHeight > 0 ? bathroom.cathedralPeakHeight.toString() : "",
+      bathroom.toiletEnclosed ?? false,
       bathroom.windowCount && bathroom.windowCount > 0 ? bathroom.windowCount.toString() : "",
       bathroom.doorCount && bathroom.doorCount > 0 ? bathroom.doorCount.toString() : "",
       bathroom.hasCloset || false,
@@ -351,6 +356,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       manualArea,
       isCathedral,
       cathedralPeakHeight,
+      toiletEnclosed,
       windowCount,
       doorCount,
       hasCloset,
@@ -379,6 +385,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     manualArea,
     isCathedral,
     cathedralPeakHeight,
+    toiletEnclosed,
     windowCount,
     doorCount,
     hasCloset,
@@ -541,6 +548,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       manualArea: manualAreaSqFt,
       ceilingType: isCathedral ? "cathedral" : "flat",
       cathedralPeakHeight: cathedralPeakHeightFeet,
+      toiletEnclosed,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
       hasCloset,
@@ -625,6 +633,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       manualArea,
       isCathedral,
       cathedralPeakHeight,
+      toiletEnclosed,
       windowCount,
       doorCount,
       hasCloset,
@@ -713,6 +722,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       manualArea: previewManualAreaSqFt,
       ceilingType: isCathedral ? "cathedral" : "flat",
       cathedralPeakHeight: previewCathedralPeakHeightFeet,
+      toiletEnclosed,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
       hasCloset,
@@ -906,6 +916,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
               </View>
             </View>
           </View>
+
+          <Toggle
+            label="Toilet Enclosed"
+            value={toiletEnclosed}
+            onValueChange={setToiletEnclosed}
+          />
 
           {/* Cathedral Ceiling Toggle */}
           <Toggle
