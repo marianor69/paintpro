@@ -204,6 +204,8 @@ export default function CalculationSettingsScreen() {
   };
   const centerAlignOffset = Typography.caption.fontSize + Spacing.xs + Spacing.sm;
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: centerAlignOffset };
+  const helpIconPressableStyle = { marginLeft: Spacing.xs, transform: [{ translateY: -2 }] };
+  const helpIconSize = 13;
   const materialLabelStyle = { marginTop: Spacing.sm };
 
   const openInfoModal = (title: string, body: string) => {
@@ -326,9 +328,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Door", "Standard door dimensions for surface area calculation")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Door help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Door help" />
                   </Pressable>
                 </View>
               )}
@@ -394,9 +396,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
                   </Pressable>
                 </View>
               )}
@@ -444,9 +446,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
                   </Pressable>
                 </View>
               )}
@@ -502,9 +504,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Window Size", "Standard window dimensions")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Window size help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Window size help" />
                   </Pressable>
                 </View>
               )}
@@ -691,9 +693,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Closet Cavity Depth", "Depth of closet cavity used for closet interior assumptions")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
                   </Pressable>
                 </View>
               )}
@@ -792,9 +794,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Baseboard Perimeter", "Total baseboard length inside closet (back + 2 sides)")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
                   </Pressable>
                 </View>
               )}
@@ -867,9 +869,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Casing", "Casing width used for closet openings")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Casing help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Casing help" />
                   </Pressable>
                 </View>
               )}
@@ -921,9 +923,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Baseboard", "Width of baseboard trim along walls")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
                   </Pressable>
                 </View>
               )}
@@ -972,9 +974,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Crown Moulding", "Width of crown moulding trim along ceiling perimeter")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
                   </Pressable>
                 </View>
               )}
@@ -1021,9 +1023,9 @@ export default function CalculationSettingsScreen() {
                   <Pressable
                     onPress={() => openInfoModal("Window Trim", "Width of trim molding around windows")}
                     hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                    style={helpIconPressableStyle}
                   >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
                   </Pressable>
                 </View>
               )}
