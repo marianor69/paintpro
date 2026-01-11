@@ -777,21 +777,25 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, width: 120 }}>
                       {getOrdinal(index + 1)} {t("screens.projectSetup.floors.floorHeight")}:
                     </Text>
-                    <View style={{ ...TextInputStyles.container, flex: 1, width: 60, marginRight: Spacing.xs, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}>
-                      <TextInput
-                        value={height}
-                        onChangeText={(value) => handleFloorHeightChange(index, value)}
-                        keyboardType="numeric"
-                        placeholder="8"
-                        placeholderTextColor={Colors.mediumGray}
-                        returnKeyType="done"
+                    <View style={{ width: 68, alignItems: "center" }}>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center", width: 68 }}>
+                        Feet
+                      </Text>
+                      <View style={{ ...TextInputStyles.container, width: 68, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}>
+                        <TextInput
+                          value={height}
+                          onChangeText={(value) => handleFloorHeightChange(index, value)}
+                          keyboardType="numeric"
+                          placeholder="8"
+                          placeholderTextColor={Colors.mediumGray}
+                          returnKeyType="done"
                           style={TextInputStyles.base}
-                        cursorColor={Colors.primaryBlue}
-                        selectionColor={Colors.primaryBlue}
-                        accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
-                      />
+                          cursorColor={Colors.primaryBlue}
+                          selectionColor={Colors.primaryBlue}
+                          accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
+                        />
+                      </View>
                     </View>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>{unitSystem === 'metric' ? 'm' : 'ft'}</Text>
                   </View>
                 ))}
               </>
