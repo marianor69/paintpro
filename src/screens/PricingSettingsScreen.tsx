@@ -893,15 +893,23 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={materialRowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      ...leftAlignedLabelTextStyle,
+                      ...materialLabelStyle,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Trim Paint
                   </Text>
                   <Pressable
-                    onPress={() => openInfoModal("Trim Paint", "Used for: baseboards, doors, jambs, window/door trim, crown moulding, risers, spindles, handrails")}
+                    onPress={() => openInfoModal("Trim Paint", "Explain what this setting controls")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Trim Paint help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Trim Paint help" />
                   </Pressable>
                 </View>
               </View>
