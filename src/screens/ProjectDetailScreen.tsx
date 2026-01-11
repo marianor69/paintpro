@@ -1667,6 +1667,29 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Text>
             </Pressable>
 
+            {/* Irregular Room Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddIrregularRoom();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.sm,
+              }}
+            >
+              <View style={{ width: 24, marginRight: Spacing.md }}>
+                <Ionicons name="shapes-outline" size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Non 4-Wall Room
+              </Text>
+            </Pressable>
+
             {/* Bathroom Option */}
             <Pressable
               onPress={() => {
@@ -1790,29 +1813,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Brick/Panel
-              </Text>
-            </Pressable>
-
-            {/* Irregular Room Option */}
-            <Pressable
-              onPress={() => {
-                setAddMenuVisible(false);
-                handleAddIrregularRoom();
-              }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                padding: Spacing.md,
-                borderRadius: BorderRadius.default,
-                backgroundColor: Colors.backgroundWarmGray,
-                marginBottom: Spacing.md,
-              }}
-            >
-              <View style={{ width: 24, marginRight: Spacing.md }}>
-                <Ionicons name="shapes-outline" size={24} color={Colors.primaryBlue} />
-              </View>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
-                Irregular Room
               </Text>
             </Pressable>
 
