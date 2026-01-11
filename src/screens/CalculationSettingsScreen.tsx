@@ -105,7 +105,7 @@ function BubbleStack({
 export default function CalculationSettingsScreen() {
   const { width: screenWidth } = useWindowDimensions();
   const isTablet = screenWidth >= 768;
-  const doorLabelWidth = isTablet ? 180 : 140;
+  const doorLabelWidth = isTablet ? 180 : 150;
   const labelToBubbleSpace = Spacing.sm;
   const bubbleToBubbleSpace = Spacing.sm;
   const { settings, updateSettings, resetToDefaults } = useCalculationSettings();
