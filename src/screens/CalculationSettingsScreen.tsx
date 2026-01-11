@@ -282,25 +282,24 @@ export default function CalculationSettingsScreen() {
               Door Assumptions
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Door
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Door", "Standard door dimensions for surface area calculation")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door help" />
-                    </Pressable>
-                  </View>
-                </View>
-                <View style={{ width: 68, alignItems: "center" }}>
-                  <Text style={bubbleHeaderCenterStyle}>
-                    Height (ft)
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Door
                   </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Door", "Standard door dimensions for surface area calculation")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door help" />
+                  </Pressable>
+                </View>
+              )}
+              col1={(
+                <BubbleStack header="Height (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorHeightRef}
@@ -316,11 +315,10 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View style={{ width: 68, alignItems: "center" }}>
-                  <Text style={bubbleHeaderCenterStyle}>
-                    Width (ft)
-                  </Text>
+                </BubbleStack>
+              )}
+              col2={(
+                <BubbleStack header="Width (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorWidthRef}
@@ -336,27 +334,28 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+            />
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Door Trim
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
-                    </Pressable>
-                  </View>
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Door Trim
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
+                  </Pressable>
                 </View>
-                <View style={{ alignItems: "center", width: 68, marginRight: 58 }}>
-                  <Text style={bubbleHeaderCenterStyle}>Width (in)</Text>
+              )}
+              col1={(
+                <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorTrimWidthRef}
@@ -372,28 +371,29 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View style={{ width: 68 }} />
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              col2={null}
+              showCol2Spacer
+            />
 
-            <View>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Door Jamb
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
-                    </Pressable>
-                  </View>
+            <SettingsRowGrid
+              alignLabelToHeader
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Door Jamb
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
+                  </Pressable>
                 </View>
-                <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={bubbleHeaderCenterStyle}>Width (in)</Text>
+              )}
+              col1={(
+                <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={doorJambWidthRef}
@@ -409,10 +409,11 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View style={{ width: 68 }} />
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+              col2={null}
+              showCol2Spacer
+            />
           </Card>
 
           {/* Window Assumptions */}
@@ -421,25 +422,24 @@ export default function CalculationSettingsScreen() {
               Window Assumptions
             </Text>
 
-            <View style={{ marginBottom: Spacing.md }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
-                      Window Size
-                    </Text>
-                    <Pressable
-                      onPress={() => openInfoModal("Window Size", "Standard window dimensions")}
-                      hitSlop={8}
-                    >
-                      <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window size help" />
-                    </Pressable>
-                  </View>
-                </View>
-                <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={bubbleHeaderCenterStyle}>
-                    Height (ft)
+            <SettingsRowGrid
+              alignLabelToHeader
+              style={{ marginBottom: Spacing.md }}
+              label={(
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Window Size
                   </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Window Size", "Standard window dimensions")}
+                    hitSlop={8}
+                  >
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window size help" />
+                  </Pressable>
+                </View>
+              )}
+              col1={(
+                <BubbleStack header="Height (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowHeightRef}
@@ -455,11 +455,10 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-                <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={bubbleHeaderCenterStyle}>
-                    Width (ft)
-                  </Text>
+                </BubbleStack>
+              )}
+              col2={(
+                <BubbleStack header="Width (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
                       ref={windowWidthRef}
@@ -475,9 +474,9 @@ export default function CalculationSettingsScreen() {
                       style={bubbleInputStyle}
                     />
                   </View>
-                </View>
-              </View>
-            </View>
+                </BubbleStack>
+              )}
+            />
 
           </Card>
 
