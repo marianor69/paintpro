@@ -700,7 +700,7 @@ export default function CalculationSettingsScreen() {
                     </Pressable>
                   </View>
                 </View>
-                <View style={{ alignItems: "center" }}>
+                <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>Width (in)</Text>
                   <View style={inputContainerStyle}>
                     <TextInput
