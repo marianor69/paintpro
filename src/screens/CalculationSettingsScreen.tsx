@@ -21,47 +21,48 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } f
 import { Card } from "../components/Card";
 
 // ===============================
-// SettingsRowGrid (bounded-flex labels, fixed bubbles)
+// SettingsRowGrid (DEFINITIVE: no gap, fixed label width)
 // ===============================
 function SettingsRowGrid({
   label,
   pos0,
   pos1,
-  gap = Spacing.md,
   colWidth = 68,
   reservePos1 = true,
   alignLabelToHeader = false,
-  labelMinWidth,
-  labelMaxWidth,
+  labelWidth,
+  labelToBubbleSpace = Spacing.sm,
+  bubbleToBubbleSpace = Spacing.sm,
   style,
 }: {
   label: React.ReactNode;
   pos0?: React.ReactNode;
   pos1?: React.ReactNode;
-  gap?: number;
   colWidth?: number;
   reservePos1?: boolean;
   alignLabelToHeader?: boolean;
-  labelMinWidth?: number;
-  labelMaxWidth?: number;
+  labelWidth: number;
+  labelToBubbleSpace?: number;
+  bubbleToBubbleSpace?: number;
   style?: any;
 }) {
   const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
 
   return (
-    <View style={[{ flexDirection: "row", alignItems: "flex-start", gap }, style]}>
+    <View style={[{ flexDirection: "row", alignItems: "flex-start" }, style]}>
       <View
         style={{
-          flex: 1,
-          minWidth: labelMinWidth,
-          maxWidth: labelMaxWidth,
+          width: labelWidth,
           marginTop: alignLabelToHeader ? centerAlignOffset : 0,
+          marginRight: labelToBubbleSpace,
         }}
       >
         {label}
       </View>
 
-      <View style={{ width: colWidth, alignItems: "center" }}>{pos0 ?? null}</View>
+      <View style={{ width: colWidth, alignItems: "center", marginRight: reservePos1 ? bubbleToBubbleSpace : 0 }}>
+        {pos0 ?? null}
+      </View>
 
       {reservePos1 ? (
         <View style={{ width: colWidth, alignItems: "center" }}>{pos1 ?? null}</View>
@@ -104,9 +105,9 @@ function BubbleStack({
 export default function CalculationSettingsScreen() {
   const { width: screenWidth } = useWindowDimensions();
   const isTablet = screenWidth >= 768;
-  const labelMinWidth = isTablet ? 240 : 160;
-  const labelMaxWidth = isTablet ? 280 : 200;
-  const rowGap = Spacing.sm;
+  const doorLabelWidth = isTablet ? 280 : 160;
+  const labelToBubbleSpace = Spacing.sm;
+  const bubbleToBubbleSpace = Spacing.sm;
   const { settings, updateSettings, resetToDefaults } = useCalculationSettings();
   const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
   const ceilingCoverageSqFtPerGallon = useAppSettings((s) => s.ceilingCoverageSqFtPerGallon);
@@ -304,13 +305,13 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door
                   </Text>
@@ -318,7 +319,7 @@ export default function CalculationSettingsScreen() {
                     onPress={() => openInfoModal("Door", "Standard door dimensions for surface area calculation")}
                     hitSlop={8}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door help" />
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} style={{ marginLeft: Spacing.xs }} accessibilityLabel="Door help" />
                   </Pressable>
                 </View>
               )}
@@ -363,13 +364,13 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Trim
                   </Text>
@@ -377,7 +378,7 @@ export default function CalculationSettingsScreen() {
                     onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
                     hitSlop={8}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} style={{ marginLeft: Spacing.xs }} accessibilityLabel="Door trim width help" />
                   </Pressable>
                 </View>
               )}
@@ -405,12 +406,12 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Door Jamb
                   </Text>
@@ -418,7 +419,7 @@ export default function CalculationSettingsScreen() {
                     onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
                     hitSlop={8}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
+                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} style={{ marginLeft: Spacing.xs }} accessibilityLabel="Door jamb width help" />
                   </Pressable>
                 </View>
               )}
@@ -453,13 +454,13 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Window Size
                   </Text>
@@ -633,13 +634,13 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Closet Cavity Depth
                   </Text>
@@ -675,9 +676,9 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.sm }}
               label={(
@@ -726,12 +727,12 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Baseboard Perimeter
                   </Text>
@@ -791,13 +792,13 @@ export default function CalculationSettingsScreen() {
             </Text>
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Casing
                   </Text>
@@ -833,13 +834,13 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Baseboard
                   </Text>
@@ -872,13 +873,13 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Crown Moulding
                   </Text>
@@ -910,12 +911,12 @@ export default function CalculationSettingsScreen() {
             />
 
             <SettingsRowGrid
-              gap={rowGap}
-              labelMinWidth={labelMinWidth}
-              labelMaxWidth={labelMaxWidth}
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                     Window Trim
                   </Text>
