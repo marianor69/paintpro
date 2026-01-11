@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.31 - 0f60414 - Handrail aligned in left column
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v2.9.1 - Remove trim paint icon
+              GPT - v2.9.2 - Window headers flipped
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates

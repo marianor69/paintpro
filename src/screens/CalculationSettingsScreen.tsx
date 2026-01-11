@@ -369,6 +369,26 @@ export default function CalculationSettingsScreen() {
                 </View>
                 <View style={{ alignItems: "center", width: 68 }}>
                   <Text style={bubbleHeaderCenterStyle}>
+                    Height (ft)
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={windowHeightRef}
+                      value={windowHeight}
+                      onChangeText={setWindowHeight}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      onSubmitEditing={() => windowWidthRef.current?.focus()}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowHeight-${windowHeightID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </View>
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={bubbleHeaderCenterStyle}>
                     Width (ft)
                   </Text>
                   <View style={inputContainerStyle}>
@@ -380,29 +400,9 @@ export default function CalculationSettingsScreen() {
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
-                      onSubmitEditing={() => windowHeightRef.current?.focus()}
+                      onSubmitEditing={() => wallCoverageRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowWidth-${windowWidthID}` : undefined}
-                      style={bubbleInputStyle}
-                    />
-                  </View>
-                </View>
-                <View style={{ alignItems: "center", width: 68 }}>
-                  <Text style={bubbleHeaderCenterStyle}>
-                    Height (ft)
-                  </Text>
-                  <View style={inputContainerStyle}>
-                    <TextInput
-                      ref={windowHeightRef}
-                      value={windowHeight}
-                      onChangeText={setWindowHeight}
-                      keyboardType="numeric"
-                      placeholder="0"
-                      placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => wallCoverageRef.current?.focus()}
-                      blurOnSubmit={false}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowHeight-${windowHeightID}` : undefined}
                       style={bubbleInputStyle}
                     />
                   </View>
