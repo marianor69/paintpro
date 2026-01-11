@@ -104,8 +104,8 @@ function BubbleStack({
 export default function CalculationSettingsScreen() {
   const { width: screenWidth } = useWindowDimensions();
   const isTablet = screenWidth >= 768;
-  const labelMinWidth = isTablet ? 240 : 140;
-  const labelMaxWidth = isTablet ? 360 : 200;
+  const labelMinWidth = isTablet ? 240 : 160;
+  const labelMaxWidth = isTablet ? 280 : 200;
   const rowGap = Spacing.sm;
   const { settings, updateSettings, resetToDefaults } = useCalculationSettings();
   const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
