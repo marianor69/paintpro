@@ -1683,7 +1683,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               }}
             >
               <View style={{ width: 24, marginRight: Spacing.md }}>
-                <NonFourWallRoomIcon size={24} color="#4A4A4A" />
+                <NonFourWallRoomIcon size={24} color={Colors.primaryBlue} />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Non 4-Wall Room
