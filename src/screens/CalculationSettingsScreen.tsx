@@ -307,6 +307,7 @@ export default function CalculationSettingsScreen() {
                     />
                   </View>
                 </View>
+                <View style={{ width: 68 }} />
               </View>
             </View>
 
@@ -343,6 +344,7 @@ export default function CalculationSettingsScreen() {
                     />
                   </View>
                 </View>
+                <View style={{ width: 68 }} />
               </View>
             </View>
           </Card>
