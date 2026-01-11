@@ -20,20 +20,20 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } f
 
 function SettingsRowGrid({
   label,
-  col1,
-  col2,
+  pos0,
+  pos1,
   gap = Spacing.md,
   colWidth = 68,
-  showCol2Spacer = true,
+  reservePos1 = true,
   alignLabelToHeader = false,
   style,
 }: {
   label: React.ReactNode;
-  col1?: React.ReactNode;
-  col2?: React.ReactNode;
+  pos0?: React.ReactNode;
+  pos1?: React.ReactNode;
   gap?: number;
   colWidth?: number;
-  showCol2Spacer?: boolean;
+  reservePos1?: boolean;
   alignLabelToHeader?: boolean;
   style?: any;
 }) {
@@ -46,12 +46,12 @@ function SettingsRowGrid({
         {label}
       </View>
 
-      <View style={{ width: colWidth, alignItems: "center" }}>{col1 ?? null}</View>
+      <View style={{ width: colWidth, alignItems: "center" }}>{pos0 ?? null}</View>
 
-      {showCol2Spacer ? (
-        <View style={{ width: colWidth, alignItems: "center" }}>{col2 ?? null}</View>
+      {reservePos1 ? (
+        <View style={{ width: colWidth, alignItems: "center" }}>{pos1 ?? null}</View>
       ) : (
-        col2 ?? null
+        pos1 ?? null
       )}
     </View>
   );
@@ -298,7 +298,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Height (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -317,7 +317,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={(
+              pos1={(
                 <BubbleStack header="Width (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -354,7 +354,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -373,8 +373,8 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={null}
-              showCol2Spacer
+              pos1={null}
+              reservePos1
             />
 
             <SettingsRowGrid
@@ -392,7 +392,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -411,8 +411,8 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={null}
-              showCol2Spacer
+              pos1={null}
+              reservePos1
             />
           </Card>
 
@@ -438,7 +438,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Height (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -457,7 +457,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={(
+              pos1={(
                 <BubbleStack header="Width (ft)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -645,7 +645,7 @@ export default function CalculationSettingsScreen() {
                   Door Width
                 </Text>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Single (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -664,7 +664,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={(
+              pos1={(
                 <BubbleStack header="Double (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -700,7 +700,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Single (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -719,7 +719,7 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={(
+              pos1={(
                 <BubbleStack header="Double (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -760,7 +760,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -782,8 +782,8 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={null}
-              showCol2Spacer
+              pos1={null}
+              reservePos1
             />
 
             <SettingsRowGrid
@@ -799,7 +799,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -818,8 +818,8 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={null}
-              showCol2Spacer
+              pos1={null}
+              reservePos1
             />
 
             <SettingsRowGrid
@@ -835,7 +835,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -853,8 +853,8 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={null}
-              showCol2Spacer
+              pos1={null}
+              reservePos1
             />
 
             <SettingsRowGrid
@@ -869,7 +869,7 @@ export default function CalculationSettingsScreen() {
                   </Pressable>
                 </View>
               )}
-              col1={(
+              pos0={(
                 <BubbleStack header="Width (in)">
                   <View style={inputContainerStyle}>
                     <TextInput
@@ -887,8 +887,8 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </BubbleStack>
               )}
-              col2={null}
-              showCol2Spacer
+              pos1={null}
+              reservePos1
             />
           </Card>
 
