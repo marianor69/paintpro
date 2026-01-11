@@ -46,7 +46,7 @@ function SettingsRowGrid({
   bubbleToBubbleSpace?: number;
   style?: any;
 }) {
-  const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
+  const centerAlignOffset = Typography.caption.fontSize + Spacing.xs + Spacing.sm;
 
   return (
     <View style={[{ flexDirection: "row", alignItems: "flex-start" }, style]}>
@@ -202,7 +202,7 @@ export default function CalculationSettingsScreen() {
     textAlign: "center" as const,
     width: 68,
   };
-  const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
+  const centerAlignOffset = Typography.caption.fontSize + Spacing.xs + Spacing.sm;
   const mainLabelStyle = { alignSelf: "center" as const, marginTop: centerAlignOffset };
   const materialLabelStyle = { marginTop: Spacing.sm };
 
@@ -311,15 +311,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Door
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Door", "Standard door dimensions for surface area calculation")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} style={{ marginLeft: Spacing.xs }} accessibilityLabel="Door help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Door help" />
                   </Pressable>
                 </View>
               )}
@@ -370,15 +379,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Door Trim
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Door Trim Width", "Width of trim molding around doors")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} style={{ marginLeft: Spacing.xs }} accessibilityLabel="Door trim width help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Door trim width help" />
                   </Pressable>
                 </View>
               )}
@@ -411,15 +429,24 @@ export default function CalculationSettingsScreen() {
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Door Jamb
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Door Jamb Width", "Width of door jamb (inside frame)")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} style={{ marginLeft: Spacing.xs }} accessibilityLabel="Door jamb width help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Door jamb width help" />
                   </Pressable>
                 </View>
               )}
@@ -460,15 +487,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Window Size
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Window Size", "Standard window dimensions")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window size help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Window size help" />
                   </Pressable>
                 </View>
               )}
@@ -640,15 +676,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Closet Cavity Depth
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Closet Cavity Depth", "Depth of closet cavity used for closet interior assumptions")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Closet cavity depth help" />
                   </Pressable>
                 </View>
               )}
@@ -732,15 +777,24 @@ export default function CalculationSettingsScreen() {
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Baseboard Perimeter
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Baseboard Perimeter", "Total baseboard length inside closet (back + 2 sides)")}
                     hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
                   >
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Baseboard perimeter help" />
                   </Pressable>
                 </View>
               )}
@@ -798,12 +852,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Casing
                   </Text>
-                  <Pressable onPress={() => openInfoModal("Casing", "Casing width used for closet openings")} hitSlop={8}>
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Casing help" />
+                  <Pressable
+                    onPress={() => openInfoModal("Casing", "Casing width used for closet openings")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                  >
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Casing help" />
                   </Pressable>
                 </View>
               )}
@@ -840,12 +906,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Baseboard
                   </Text>
-                  <Pressable onPress={() => openInfoModal("Baseboard", "Width of baseboard trim along walls")} hitSlop={8}>
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
+                  <Pressable
+                    onPress={() => openInfoModal("Baseboard", "Width of baseboard trim along walls")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                  >
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Baseboard help" />
                   </Pressable>
                 </View>
               )}
@@ -879,12 +957,24 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Crown Moulding
                   </Text>
-                  <Pressable onPress={() => openInfoModal("Crown Moulding", "Width of crown moulding trim along ceiling perimeter")} hitSlop={8}>
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
+                  <Pressable
+                    onPress={() => openInfoModal("Crown Moulding", "Width of crown moulding trim along ceiling perimeter")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                  >
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Crown moulding help" />
                   </Pressable>
                 </View>
               )}
@@ -916,12 +1006,24 @@ export default function CalculationSettingsScreen() {
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500",
+                      color: Colors.darkCharcoal,
+                      flex: 0,
+                      width: "auto",
+                    }}
+                  >
                     Window Trim
                   </Text>
-                  <Pressable onPress={() => openInfoModal("Window Trim", "Width of trim molding around windows")} hitSlop={8}>
-                    <Ionicons name="help-circle-outline" size={16} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
+                  <Pressable
+                    onPress={() => openInfoModal("Window Trim", "Width of trim molding around windows")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                  >
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Window trim help" />
                   </Pressable>
                 </View>
               )}
