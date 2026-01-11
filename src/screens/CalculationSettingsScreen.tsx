@@ -19,6 +19,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 
+// ===============================
+// SettingsRowGrid (bounded-flex labels, fixed bubbles)
+// ===============================
 function SettingsRowGrid({
   label,
   pos0,
@@ -27,6 +30,8 @@ function SettingsRowGrid({
   colWidth = 68,
   reservePos1 = true,
   alignLabelToHeader = false,
+  labelMinWidth,
+  labelMaxWidth,
   style,
 }: {
   label: React.ReactNode;
@@ -36,14 +41,22 @@ function SettingsRowGrid({
   colWidth?: number;
   reservePos1?: boolean;
   alignLabelToHeader?: boolean;
+  labelMinWidth?: number;
+  labelMaxWidth?: number;
   style?: any;
 }) {
-  // matches the vertical offset concept you already use (centerAlignOffset)
   const centerAlignOffset = Typography.caption.fontSize + Spacing.xs;
 
   return (
     <View style={[{ flexDirection: "row", alignItems: "flex-start", gap }, style]}>
-      <View style={{ flex: 1, marginTop: alignLabelToHeader ? centerAlignOffset : 0 }}>
+      <View
+        style={{
+          flex: 1,
+          minWidth: labelMinWidth,
+          maxWidth: labelMaxWidth,
+          marginTop: alignLabelToHeader ? centerAlignOffset : 0,
+        }}
+      >
         {label}
       </View>
 
@@ -58,6 +71,9 @@ function SettingsRowGrid({
   );
 }
 
+// ===============================
+// BubbleStack (header + bubble)
+// ===============================
 function BubbleStack({
   header,
   children,
