@@ -18,7 +18,7 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/des
 import { Card } from "../components/Card";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { calculateCurrentStep, getCompletedSteps, canCompleteStep2 } from "../utils/projectStepLogic";
-import { FireplaceIcon, StaircaseIcon, BuiltInIcon, BrickWallIcon } from "../components/CustomIcons";
+import { FireplaceIcon, StaircaseIcon, BuiltInIcon, BrickWallIcon, NonFourWallRoomIcon } from "../components/CustomIcons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -1683,7 +1683,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               }}
             >
               <View style={{ width: 24, marginRight: Spacing.md }}>
-                <Ionicons name="shapes-outline" size={24} color={Colors.primaryBlue} />
+                <NonFourWallRoomIcon size={24} color="#4A4A4A" />
               </View>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
                 Non 4-Wall Room
