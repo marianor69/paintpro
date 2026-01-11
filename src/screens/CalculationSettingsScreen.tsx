@@ -219,7 +219,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Door
                     </Text>
                     <Pressable
@@ -277,7 +277,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Door Trim
                     </Text>
                     <Pressable
@@ -313,7 +313,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Door Jamb
                     </Text>
                     <Pressable
@@ -356,7 +356,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Window Size
                     </Text>
                     <Pressable
@@ -420,7 +420,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                   Wall Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
@@ -445,7 +445,7 @@ export default function CalculationSettingsScreen() {
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                   Ceiling Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
@@ -473,7 +473,7 @@ export default function CalculationSettingsScreen() {
 
             <View style={{ flexDirection: "row", gap: Spacing.md }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                   Trim Paint
                 </Text>
                 <View style={{ alignItems: "center" }}>
@@ -498,7 +498,7 @@ export default function CalculationSettingsScreen() {
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                   Primer
                 </Text>
                 <View style={{ alignItems: "center" }}>
@@ -535,7 +535,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Closet Cavity Depth
                     </Text>
                     <Pressable
@@ -621,7 +621,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Baseboard Perimeter
                     </Text>
                     <Pressable
@@ -686,7 +686,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Casing
                     </Text>
                     <Pressable
@@ -725,7 +725,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Baseboard
                     </Text>
                     <Pressable
@@ -761,7 +761,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Crown Moulding
                     </Text>
                     <Pressable
@@ -796,7 +796,7 @@ export default function CalculationSettingsScreen() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.md }}>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...mainLabelStyle }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                       Window Trim
                     </Text>
                     <Pressable
