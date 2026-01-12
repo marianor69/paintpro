@@ -877,7 +877,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       style={{
                         flex: 1,
                         fontSize: Typography.body.fontSize,
-                        fontWeight: "600" as any,
+                        fontWeight: "500" as any,
                         color: Colors.darkCharcoal,
                         marginTop: LABEL_TO_VALUE_OFFSET,
                       }}
