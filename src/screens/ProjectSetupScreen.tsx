@@ -789,15 +789,15 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center", width: 68 }}>
                         Feet
                       </Text>
-                      <View style={{ ...TextInputStyles.container, width: 68, paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}>
-                        <TextInput
-                          value={height}
-                          onChangeText={(value) => handleFloorHeightChange(index, value)}
+                    <View style={{ ...TextInputStyles.container, width: 68 }}>
+                      <TextInput
+                        value={height}
+                        onChangeText={(value) => handleFloorHeightChange(index, value)}
                           keyboardType="numeric"
                           placeholder="8"
                           placeholderTextColor={Colors.mediumGray}
                           returnKeyType="done"
-                          style={TextInputStyles.base}
+                        style={TextInputStyles.base}
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
                           accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
