@@ -1220,9 +1220,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           {/* Windows Counter */}
           <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                Windows
-              </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Window Count
+                  </Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -1296,9 +1296,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           {/* Doors Counter */}
           <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                Doors
-              </Text>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Door Count
+                  </Text>
               <View
                 style={{
                   flexDirection: "row",
