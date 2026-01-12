@@ -33,6 +33,10 @@ export interface CalculationSettings {
   defaultOpeningWidth: number; // default opening width in inches
   defaultOpeningHeight: number; // default opening height in inches
   openingTrimWidth: number; // width of trim around openings in inches
+
+  // Bathroom settings
+  bathroomWallHeight: number; // in feet
+  bathroomFixtureDeductionPercent: number; // percent of wall area to deduct
 }
 
 interface CalculationStore {
@@ -74,6 +78,10 @@ const DEFAULT_SETTINGS: CalculationSettings = {
   defaultOpeningWidth: 36, // default opening width in inches (3 feet)
   defaultOpeningHeight: 80, // default opening height in inches (~6.67 feet)
   openingTrimWidth: 3.5, // width of trim around openings in inches
+
+  // Bathroom defaults
+  bathroomWallHeight: 8,
+  bathroomFixtureDeductionPercent: 20,
 };
 
 export const useCalculationSettings = create<CalculationStore>()(

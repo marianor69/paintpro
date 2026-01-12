@@ -408,6 +408,12 @@ export interface PricingSettings {
   accentWallLaborMultiplier: number;
   bathroomLaborMultiplier: number;
   closetLaborMultiplier: number;
+  bathroomLaborMode?: "multiplier" | "tiers";
+  bathroomTierSmallLabor?: number;
+  bathroomTierMediumLabor?: number;
+  bathroomTierLargeBaseLabor?: number;
+  bathroomTierLargeExtraPerSqFt?: number;
+  bathroomEnclosedToiletAddOn?: number;
 
   // Furniture moving fee (flat fee per project)
   // Default: 100

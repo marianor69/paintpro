@@ -29,8 +29,14 @@ const defaultPricing: PricingSettings = {
 
   // Accent wall / multiple colors labor multiplier
   accentWallLaborMultiplier: 1.25,
-  bathroomLaborMultiplier: 1.0,
+  bathroomLaborMultiplier: 2.5,
   closetLaborMultiplier: 1.0,
+  bathroomLaborMode: "multiplier",
+  bathroomTierSmallLabor: 350,
+  bathroomTierMediumLabor: 400,
+  bathroomTierLargeBaseLabor: 450,
+  bathroomTierLargeExtraPerSqFt: 5,
+  bathroomEnclosedToiletAddOn: 50,
 
   // Furniture moving fee (flat fee per project)
   furnitureMovingFee: 100,

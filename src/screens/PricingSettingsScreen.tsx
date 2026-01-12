@@ -70,7 +70,25 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     (pricing.accentWallLaborMultiplier || 1.25).toString()
   );
   const [bathroomLaborMultiplier, setBathroomLaborMultiplier] = React.useState(
-    (pricing.bathroomLaborMultiplier || 1.0).toString()
+    (pricing.bathroomLaborMultiplier || 2.5).toString()
+  );
+  const [bathroomLaborMode, setBathroomLaborMode] = React.useState(
+    pricing.bathroomLaborMode || "multiplier"
+  );
+  const [bathroomTierSmallLabor, setBathroomTierSmallLabor] = React.useState(
+    (pricing.bathroomTierSmallLabor ?? 350).toString()
+  );
+  const [bathroomTierMediumLabor, setBathroomTierMediumLabor] = React.useState(
+    (pricing.bathroomTierMediumLabor ?? 400).toString()
+  );
+  const [bathroomTierLargeBaseLabor, setBathroomTierLargeBaseLabor] = React.useState(
+    (pricing.bathroomTierLargeBaseLabor ?? 450).toString()
+  );
+  const [bathroomTierLargeExtraPerSqFt, setBathroomTierLargeExtraPerSqFt] = React.useState(
+    (pricing.bathroomTierLargeExtraPerSqFt ?? 5).toString()
+  );
+  const [bathroomEnclosedToiletAddOn, setBathroomEnclosedToiletAddOn] = React.useState(
+    (pricing.bathroomEnclosedToiletAddOn ?? 50).toString()
   );
   const [closetLaborMultiplier, setClosetLaborMultiplier] = React.useState(
     (pricing.closetLaborMultiplier || 1.0).toString()
@@ -125,6 +143,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const secondCoatMultiplierRef = useRef<TextInput>(null);
   const accentWallMultiplierRef = useRef<TextInput>(null);
   const bathroomMultiplierRef = useRef<TextInput>(null);
+  const bathroomTierSmallRef = useRef<TextInput>(null);
+  const bathroomTierMediumRef = useRef<TextInput>(null);
+  const bathroomTierLargeBaseRef = useRef<TextInput>(null);
+  const bathroomTierLargeExtraRef = useRef<TextInput>(null);
+  const bathroomEnclosedToiletRef = useRef<TextInput>(null);
   const closetMultiplierRef = useRef<TextInput>(null);
   const furnitureMovingFeeRef = useRef<TextInput>(null);
   const nailsRemovalFeeRef = useRef<TextInput>(null);
@@ -153,6 +176,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const secondCoatMultiplierID = useId();
   const accentWallMultiplierID = useId();
   const bathroomMultiplierID = useId();
+  const bathroomTierSmallID = useId();
+  const bathroomTierMediumID = useId();
+  const bathroomTierLargeBaseID = useId();
+  const bathroomTierLargeExtraID = useId();
+  const bathroomEnclosedToiletID = useId();
   const closetMultiplierID = useId();
   const furnitureMovingFeeID = useId();
   const nailsRemovalFeeID = useId();
@@ -228,7 +256,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       crownMouldingLaborPerLF: parseFloat(crownMouldingLaborPerLF) || 0,
       secondCoatLaborMultiplier: parseFloat(secondCoatLaborMultiplier) || 2.0,
       accentWallLaborMultiplier: parseFloat(accentWallLaborMultiplier) || 1.25,
-      bathroomLaborMultiplier: parseFloat(bathroomLaborMultiplier) || 1.0,
+      bathroomLaborMultiplier: parseFloat(bathroomLaborMultiplier) || 2.5,
+      bathroomLaborMode,
+      bathroomTierSmallLabor: parseFloat(bathroomTierSmallLabor) || 350,
+      bathroomTierMediumLabor: parseFloat(bathroomTierMediumLabor) || 400,
+      bathroomTierLargeBaseLabor: parseFloat(bathroomTierLargeBaseLabor) || 450,
+      bathroomTierLargeExtraPerSqFt: parseFloat(bathroomTierLargeExtraPerSqFt) || 5,
+      bathroomEnclosedToiletAddOn: parseFloat(bathroomEnclosedToiletAddOn) || 50,
       closetLaborMultiplier: parseFloat(closetLaborMultiplier) || 1.0,
       furnitureMovingFee: parseFloat(furnitureMovingFee) || 100,
       nailsRemovalFee: parseFloat(nailsRemovalFee) || 75,
@@ -258,6 +292,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const inputWidth = 68;
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
   const inputTextStyle = { textAlign: "right" as const };
+  const modeToggleWidth = inputWidth * 2 + Spacing.sm;
+  const modeToggleContainerStyle = { flexDirection: "row", width: modeToggleWidth, borderWidth: 1, borderColor: Colors.neutralGray, borderRadius: BorderRadius.default, overflow: "hidden" as const };
+  const modeToggleButtonStyle = { flex: 1, paddingVertical: Spacing.xs, alignItems: "center", justifyContent: "center" };
   const materialRowStyle = { flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm, marginBottom: Spacing.md };
   const materialHeaderRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.xs };
   const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md, alignItems: "center" as const };
@@ -675,7 +712,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
                       returnKeyType="next"
-                      onSubmitEditing={() => bathroomMultiplierRef.current?.focus()}
+                      onSubmitEditing={() => closetMultiplierRef.current?.focus()}
                       onFocus={handleFieldFocus}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `pricingAccentWallMultiplier-${accentWallMultiplierID}` : undefined}
@@ -687,30 +724,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
 
             <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
-              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
-                <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Bathroom</Text>
-                </View>
-                <View style={bubbleHeaderWrapperStyle}>
-                  <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={inputContainerStyle}>
-                    <TextInput
-                      ref={bathroomMultiplierRef}
-                      value={bathroomLaborMultiplier}
-                      onChangeText={setBathroomLaborMultiplier}
-                      placeholder="1.0"
-                      placeholderTextColor={Colors.mediumGray}
-                      keyboardType="numeric"
-                      returnKeyType="next"
-                      onSubmitEditing={() => closetMultiplierRef.current?.focus()}
-                      onFocus={handleFieldFocus}
-                      blurOnSubmit={false}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomMultiplier-${bathroomMultiplierID}` : undefined}
-                      style={inputTextStyle}
-                    />
-                  </View>
-                </View>
-              </View>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <View style={leftAlignedLabelWrapperStyle}>
                   <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Closet</Text>
@@ -726,7 +739,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
                       returnKeyType="next"
-                      onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                      onSubmitEditing={() => {
+                        if (bathroomLaborMode === "tiers") {
+                          bathroomTierSmallRef.current?.focus();
+                          return;
+                        }
+                        bathroomMultiplierRef.current?.focus();
+                      }}
                       onFocus={handleFieldFocus}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `pricingClosetMultiplier-${closetMultiplierID}` : undefined}
@@ -735,7 +754,209 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={{ flex: 1 }} />
             </View>
+          </Card>
+
+          {/* Bathroom Labor */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Bathroom Labor
+            </Text>
+
+            <View style={rowStyle}>
+              <View style={leftAlignedLabelWrapperStyle}>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Use Multiplier</Text>
+              </View>
+              <View style={modeToggleContainerStyle}>
+                <Pressable
+                  onPress={() => setBathroomLaborMode("multiplier")}
+                  style={[
+                    modeToggleButtonStyle,
+                    { backgroundColor: bathroomLaborMode === "multiplier" ? Colors.primaryBlueLight : Colors.white },
+                  ]}
+                >
+                <Text style={{ fontSize: Typography.caption.fontSize, color: bathroomLaborMode === "multiplier" ? Colors.primaryBlue : Colors.mediumGray, fontWeight: "600" as const }}>
+                  Multiplier
+                </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setBathroomLaborMode("tiers")}
+                  style={[
+                    modeToggleButtonStyle,
+                    { backgroundColor: bathroomLaborMode === "tiers" ? Colors.primaryBlueLight : Colors.white },
+                  ]}
+                >
+                <Text style={{ fontSize: Typography.caption.fontSize, color: bathroomLaborMode === "tiers" ? Colors.primaryBlue : Colors.mediumGray, fontWeight: "600" as const }}>
+                  Tiers
+                </Text>
+                </Pressable>
+              </View>
+            </View>
+
+            {bathroomLaborMode === "multiplier" && (
+              <View>
+                <View style={rowStyle}>
+                  <View style={leftAlignedLabelWrapperStyle}>
+                    <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Multiplier</Text>
+                  </View>
+                  <View style={bubbleHeaderWrapperStyle}>
+                    <Text style={bubbleHeaderTextStyle}>x</Text>
+                    <View style={inputContainerStyle}>
+                      <TextInput
+                        ref={bathroomMultiplierRef}
+                        value={bathroomLaborMultiplier}
+                        onChangeText={setBathroomLaborMultiplier}
+                        placeholder="2.5"
+                        placeholderTextColor={Colors.mediumGray}
+                        keyboardType="numeric"
+                        returnKeyType="next"
+                        onSubmitEditing={() => bathroomEnclosedToiletRef.current?.focus()}
+                        onFocus={handleFieldFocus}
+                        blurOnSubmit={false}
+                        inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomMultiplier-${bathroomMultiplierID}` : undefined}
+                        style={inputTextStyle}
+                      />
+                    </View>
+                  </View>
+                </View>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: -Spacing.xs, marginBottom: Spacing.sm }}>
+                  Applies to standard wall and ceiling labor rates.
+                </Text>
+              </View>
+            )}
+
+            {bathroomLaborMode === "tiers" && (
+              <View style={{ gap: Spacing.md, marginBottom: Spacing.sm }}>
+                <View style={rowStyle}>
+                  <View style={leftAlignedLabelWrapperStyle}>
+                    <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Small {"(<30 sq ft)"}</Text>
+                  </View>
+                  <View style={bubbleHeaderWrapperStyle}>
+                    <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                    <View style={inputContainerStyle}>
+                      <TextInput
+                        ref={bathroomTierSmallRef}
+                        value={bathroomTierSmallLabor}
+                        onChangeText={setBathroomTierSmallLabor}
+                        placeholder="350"
+                        placeholderTextColor={Colors.mediumGray}
+                        keyboardType="numeric"
+                        returnKeyType="next"
+                        onSubmitEditing={() => bathroomTierMediumRef.current?.focus()}
+                        onFocus={handleFieldFocus}
+                        blurOnSubmit={false}
+                        inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomTierSmall-${bathroomTierSmallID}` : undefined}
+                        style={inputTextStyle}
+                      />
+                    </View>
+                  </View>
+                </View>
+
+                <View style={rowStyle}>
+                  <View style={leftAlignedLabelWrapperStyle}>
+                    <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Medium {"(30-50 sq ft)"}</Text>
+                  </View>
+                  <View style={bubbleHeaderWrapperStyle}>
+                    <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                    <View style={inputContainerStyle}>
+                      <TextInput
+                        ref={bathroomTierMediumRef}
+                        value={bathroomTierMediumLabor}
+                        onChangeText={setBathroomTierMediumLabor}
+                        placeholder="400"
+                        placeholderTextColor={Colors.mediumGray}
+                        keyboardType="numeric"
+                        returnKeyType="next"
+                        onSubmitEditing={() => bathroomTierLargeBaseRef.current?.focus()}
+                        onFocus={handleFieldFocus}
+                        blurOnSubmit={false}
+                        inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomTierMedium-${bathroomTierMediumID}` : undefined}
+                        style={inputTextStyle}
+                      />
+                    </View>
+                  </View>
+                </View>
+
+                <View style={rowStyle}>
+                  <View style={leftAlignedLabelWrapperStyle}>
+                    <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Large {"(>50 sq ft)"}</Text>
+                  </View>
+                  <View style={bubbleHeaderWrapperStyle}>
+                    <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                    <View style={inputContainerStyle}>
+                      <TextInput
+                        ref={bathroomTierLargeBaseRef}
+                        value={bathroomTierLargeBaseLabor}
+                        onChangeText={setBathroomTierLargeBaseLabor}
+                        placeholder="450"
+                        placeholderTextColor={Colors.mediumGray}
+                        keyboardType="numeric"
+                        returnKeyType="next"
+                        onSubmitEditing={() => bathroomTierLargeExtraRef.current?.focus()}
+                        onFocus={handleFieldFocus}
+                        blurOnSubmit={false}
+                        inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomTierLargeBase-${bathroomTierLargeBaseID}` : undefined}
+                        style={inputTextStyle}
+                      />
+                    </View>
+                  </View>
+                </View>
+
+                <View style={rowStyle}>
+                  <View style={leftAlignedLabelWrapperStyle}>
+                    <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Extra per sq ft</Text>
+                  </View>
+                  <View style={bubbleHeaderWrapperStyle}>
+                    <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
+                    <View style={inputContainerStyle}>
+                      <TextInput
+                        ref={bathroomTierLargeExtraRef}
+                        value={bathroomTierLargeExtraPerSqFt}
+                        onChangeText={setBathroomTierLargeExtraPerSqFt}
+                        placeholder="5"
+                        placeholderTextColor={Colors.mediumGray}
+                        keyboardType="numeric"
+                        returnKeyType="next"
+                        onSubmitEditing={() => bathroomEnclosedToiletRef.current?.focus()}
+                        onFocus={handleFieldFocus}
+                        blurOnSubmit={false}
+                        inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomTierLargeExtra-${bathroomTierLargeExtraID}` : undefined}
+                        style={inputTextStyle}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            <View style={rowStyle}>
+              <View style={leftAlignedLabelWrapperStyle}>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Enclosed Toilet</Text>
+              </View>
+              <View style={bubbleHeaderWrapperStyle}>
+                <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                <View style={inputContainerStyle}>
+                  <TextInput
+                    ref={bathroomEnclosedToiletRef}
+                    value={bathroomEnclosedToiletAddOn}
+                    onChangeText={setBathroomEnclosedToiletAddOn}
+                    placeholder="50"
+                    placeholderTextColor={Colors.mediumGray}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                    onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                    onFocus={handleFieldFocus}
+                    blurOnSubmit={false}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `pricingBathroomEnclosedToilet-${bathroomEnclosedToiletID}` : undefined}
+                    style={inputTextStyle}
+                  />
+                </View>
+              </View>
+            </View>
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: -Spacing.xs }}>
+              Applies when Toilet Enclosed is enabled in the bathroom.
+            </Text>
           </Card>
 
           {/* Fixed Fees */}
@@ -1137,24 +1358,76 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingAccentWallMultiplier-${accentWallMultiplierID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => secondCoatMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => bathroomMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingBathroomMultiplier-${bathroomMultiplierID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomEnclosedToiletRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBathroomTierSmall-${bathroomTierSmallID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomTierMediumRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBathroomTierMedium-${bathroomTierMediumID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => bathroomTierSmallRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomTierLargeBaseRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBathroomTierLargeBase-${bathroomTierLargeBaseID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => bathroomTierMediumRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomTierLargeExtraRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBathroomTierLargeExtra-${bathroomTierLargeExtraID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => bathroomTierLargeBaseRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomEnclosedToiletRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBathroomEnclosedToilet-${bathroomEnclosedToiletID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable
+              onPress={() => {
+                if (bathroomLaborMode === "tiers") {
+                  bathroomTierLargeExtraRef.current?.focus();
+                  return;
+                }
+                bathroomMultiplierRef.current?.focus();
+              }}
+              style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text>
+            </Pressable>
+            <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingClosetMultiplier-${closetMultiplierID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => bathroomMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+            <Pressable onPress={() => accentWallMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable
+              onPress={() => {
+                if (bathroomLaborMode === "tiers") {
+                  bathroomTierSmallRef.current?.focus();
+                  return;
+                }
+                bathroomMultiplierRef.current?.focus();
+              }}
+              style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text>
+            </Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingFurnitureMovingFee-${furnitureMovingFeeID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => closetMultiplierRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => bathroomEnclosedToiletRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => nailsRemovalFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
