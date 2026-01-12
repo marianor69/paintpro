@@ -1071,18 +1071,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                         <>
                           <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md, marginBottom: Spacing.sm }}>
                             <View style={{ flex: 1, marginTop: labelOffset }}>
-                              <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                                  Opening {index + 1}
-                                </Text>
-                                <Pressable
-                                  onPress={() => setOpenings(openings.filter((_, i) => i !== index))}
-                                  hitSlop={8}
-                                  style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
-                                >
-                                  <Ionicons name="close-circle-outline" size={18} color={Colors.error} />
-                                </Pressable>
-                              </View>
+                              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                                Opening {index + 1}
+                              </Text>
                             </View>
                             <View style={{ alignItems: "center" }}>
                               <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
