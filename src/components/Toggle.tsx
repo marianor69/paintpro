@@ -31,7 +31,7 @@ export function Toggle({
           <Text
             style={{
               fontSize: Typography.body.fontSize,
-              fontWeight: Typography.body.fontWeight,
+              fontWeight: "500",
               color: Colors.darkCharcoal,
             }}
           >
