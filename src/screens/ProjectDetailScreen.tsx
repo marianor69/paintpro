@@ -1098,13 +1098,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   borderRadius: 8,
-                  paddingHorizontal: Spacing.md,
-                  paddingVertical: 6,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
                 }}
                 accessibilityRole="button"
                 accessibilityLabel="Add room or structure"
               >
-                <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
                   Add
                 </Text>
               </Pressable>
