@@ -71,6 +71,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const [hasOverMantel, setHasOverMantel] = useState(!isNewFireplace && fireplace?.hasOverMantel ? true : false);
   const [overMantelWidth, setOverMantelWidth] = useState(!isNewFireplace && fireplace?.overMantelWidth && fireplace.overMantelWidth > 0 ? formatMeasurementValue(fireplace.overMantelWidth, 'length', unitSystem, 2) : "");
   const [overMantelHeight, setOverMantelHeight] = useState(!isNewFireplace && fireplace?.overMantelHeight && fireplace.overMantelHeight > 0 ? formatMeasurementValue(fireplace.overMantelHeight, 'length', unitSystem, 2) : "");
+  const [overMantelDepth, setOverMantelDepth] = useState(!isNewFireplace && fireplace?.overMantelDepth && fireplace.overMantelDepth > 0 ? formatMeasurementValue(fireplace.overMantelDepth, 'length', unitSystem, 2) : "");
 
   const [notes, setNotes] = useState(!isNewFireplace && fireplace?.notes ? fireplace.notes : "");
   const [photos, setPhotos] = useState<RoomPhoto[]>(
@@ -95,6 +96,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const trimLinearFeetRef = useRef<TextInput>(null);
   const overMantelWidthRef = useRef<TextInput>(null);
   const overMantelHeightRef = useRef<TextInput>(null);
+  const overMantelDepthRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
 
@@ -122,6 +124,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         hasOverMantel ||
         overMantelWidth !== "" ||
         overMantelHeight !== "" ||
+        overMantelDepth !== "" ||
         width !== "" ||
         height !== "" ||
         depth !== "" ||
@@ -145,6 +148,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         hasOverMantel !== (fireplace.hasOverMantel ?? false) ||
         overMantelWidth !== (fireplace.overMantelWidth && fireplace.overMantelWidth > 0 ? fireplace.overMantelWidth.toString() : "") ||
         overMantelHeight !== (fireplace.overMantelHeight && fireplace.overMantelHeight > 0 ? fireplace.overMantelHeight.toString() : "") ||
+        overMantelDepth !== (fireplace.overMantelDepth && fireplace.overMantelDepth > 0 ? fireplace.overMantelDepth.toString() : "") ||
         width !== (fireplace.width && fireplace.width > 0 ? fireplace.width.toString() : "") ||
         height !== (fireplace.height && fireplace.height > 0 ? fireplace.height.toString() : "") ||
         depth !== (fireplace.depth && fireplace.depth > 0 ? fireplace.depth.toString() : "") ||
@@ -164,6 +168,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     hasOverMantel,
     overMantelWidth,
     overMantelHeight,
+    overMantelDepth,
     width,
     height,
     depth,
@@ -321,6 +326,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
       hasOverMantel ||
       overMantelWidth !== "" ||
       overMantelHeight !== "" ||
+      overMantelDepth !== "" ||
       width !== "" ||
       height !== "" ||
       depth !== "" ||
@@ -350,6 +356,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     const trimLinearFeetValue = parseDisplayValue(trimLinearFeet, 'linearFeet', unitSystem);
     const overMantelWidthFeet = parseDisplayValue(overMantelWidth, 'length', unitSystem);
     const overMantelHeightFeet = parseDisplayValue(overMantelHeight, 'length', unitSystem);
+    const overMantelDepthFeet = overMantelDepth ? parseDisplayValue(overMantelDepth, 'length', unitSystem) : undefined;
     const normalizedPhotos = photos.map((photo, index) => ({
       ...photo,
       fileName: generatePhotoFileName(name.trim(), index + 1),
@@ -374,6 +381,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         hasOverMantel,
         overMantelWidth: overMantelWidthFeet,
         overMantelHeight: overMantelHeightFeet,
+        overMantelDepth: overMantelDepthFeet,
         coats: 2,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
@@ -394,6 +402,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         hasOverMantel,
         overMantelWidth: overMantelWidthFeet,
         overMantelHeight: overMantelHeightFeet,
+        overMantelDepth: overMantelDepthFeet,
         coats: fireplace?.coats || 2,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
@@ -518,41 +527,69 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
               {/* PART 3: Over Mantel */}
               <Toggle
-                label="Over Mantel"
+                label="Area Over Mantel"
                 value={hasOverMantel}
                 onValueChange={setHasOverMantel}
-                description="Measured area (width × height)"
                 className={hasOverMantel ? "mb-4" : "mb-0"}
               />
 
               {hasOverMantel && (
-                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                  <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
+                  <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                      Area Over Mantel
+                    </Text>
+                  </View>
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                      Width (in)
+                    </Text>
                     <FormInput
                       ref={overMantelWidthRef}
                       previousFieldRef={nameRef}
-                      label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                      label=""
                       value={overMantelWidth}
                       onChangeText={setOverMantelWidth}
                       keyboardType="numeric"
                       placeholder="0"
                       nextFieldRef={overMantelHeightRef}
                       inputContainerStyle={{ width: 68 }}
-                      inputTextStyle={{ textAlign: "right" }}
+                      inputTextStyle={{ textAlign: "center" }}
                       className="mb-0"
                     />
                   </View>
-                  <View style={{ flex: 1 }}>
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                      Height (in)
+                    </Text>
                     <FormInput
                       ref={overMantelHeightRef}
                       previousFieldRef={overMantelWidthRef}
-                      label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                      label=""
                       value={overMantelHeight}
                       onChangeText={setOverMantelHeight}
                       keyboardType="numeric"
                       placeholder="0"
+                      nextFieldRef={overMantelDepthRef}
                       inputContainerStyle={{ width: 68 }}
-                      inputTextStyle={{ textAlign: "right" }}
+                      inputTextStyle={{ textAlign: "center" }}
+                      className="mb-0"
+                    />
+                  </View>
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                      Depth
+                    </Text>
+                    <FormInput
+                      ref={overMantelDepthRef}
+                      previousFieldRef={overMantelHeightRef}
+                      label=""
+                      value={overMantelDepth}
+                      onChangeText={setOverMantelDepth}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      inputContainerStyle={{ width: 68 }}
+                      inputTextStyle={{ textAlign: "center" }}
                       className="mb-0"
                     />
                   </View>

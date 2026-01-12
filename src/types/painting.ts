@@ -178,6 +178,7 @@ export interface Fireplace {
   hasOverMantel?: boolean; // Measured area
   overMantelWidth?: number; // in feet
   overMantelHeight?: number; // in feet
+  overMantelDepth?: number; // in feet
 }
 
 export interface BuiltIn {
