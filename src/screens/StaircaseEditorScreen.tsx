@@ -51,8 +51,9 @@ function BubbleStack({
   return (
     <View style={{ width, alignItems: "center" }}>
       <Text
+        numberOfLines={1}
+        ellipsizeMode="clip"
         style={{
-          width,
           fontSize: Typography.caption.fontSize,
           color: Colors.mediumGray,
           marginBottom: Spacing.xs,
@@ -867,7 +868,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       flexDirection: "row",
                       alignItems: "flex-start",
                       justifyContent: "space-between",
-                      gap: Spacing.lg,
+                      gap: Spacing.md,
                     }}
                   >
                     <Text
