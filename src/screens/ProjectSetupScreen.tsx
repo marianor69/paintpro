@@ -147,6 +147,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [localFloorHeights, setLocalFloorHeights] = useState<string[]>(
     effectiveFloorHeights.map((h) => h.toString())
   );
+  const LABEL_TO_VALUE_OFFSET = Typography.caption.fontSize + Spacing.xs + Spacing.sm;
 
   // Paint Defaults State (for new projects)
   const [localPaintDefaults, setLocalPaintDefaults] = useState({
@@ -774,7 +775,14 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                       marginBottom: index < localFloorHeights.length - 1 ? Spacing.sm : 0,
                     }}
                   >
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, width: 120 }}>
+                    <Text
+                      style={{
+                        fontSize: Typography.body.fontSize,
+                        color: Colors.darkCharcoal,
+                        width: 120,
+                        marginTop: LABEL_TO_VALUE_OFFSET,
+                      }}
+                    >
                       {getOrdinal(index + 1)} {t("screens.projectSetup.floors.floorHeight")}:
                     </Text>
                     <View style={{ width: 68, alignItems: "center" }}>
