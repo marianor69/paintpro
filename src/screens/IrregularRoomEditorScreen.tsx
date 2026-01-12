@@ -55,7 +55,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const updateIrregularRoom = useProjectStore((s) => s.updateIrregularRoom);
 
   const pricing = usePricingStore((s) => s.settings);
-  const unitSystem = useCalculationSettings((s) => s.unitSystem);
+  const unitSystem = useAppSettings((s) => s.unitSystem);
   const calcSettings = useCalculationSettings((s) => s.settings);
   const testMode = useAppSettings((s) => s.testMode);
 
