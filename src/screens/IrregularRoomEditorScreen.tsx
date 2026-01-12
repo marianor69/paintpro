@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   Image,
+  Modal,
   Keyboard,
   InputAccessoryView,
 } from "react-native";
@@ -109,6 +110,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   // Notes and Photos
   const [notes, setNotes] = useState(!isNew && irregularRoom?.notes ? irregularRoom.notes : "");
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+  const [infoModalTitle, setInfoModalTitle] = useState("");
+  const [infoModalBody, setInfoModalBody] = useState("");
   const [photos, setPhotos] = useState<RoomPhoto[]>(!isNew && irregularRoom?.photos ? irregularRoom.photos : []);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
@@ -464,6 +468,12 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
     pendingFocusRef.current = true;
   }, [scrollFocusedInputIntoView]);
+
+  const openInfoModal = (title: string, body: string) => {
+    setInfoModalTitle(title);
+    setInfoModalBody(body);
+    setInfoModalVisible(true);
+  };
 
   const handleSave = useCallback(() => {
     if (isSavingRef.current) {
@@ -968,20 +978,48 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               />
 
               {isCathedral && (
-                <View style={{ marginTop: Spacing.md }}>
-                  <FormInput
-                    ref={cathedralPeakHeightRef}
-                    label={`Peak Height (${unitSystem === "metric" ? "m" : "ft"})`}
-                    value={cathedralPeakHeight}
-                    onChangeText={setCathedralPeakHeight}
-                    keyboardType="numeric"
-                    placeholder="0"
-                    onFocus={handleFieldFocus}
-                    className="mb-0"
-                  />
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                    Height at the highest point of the cathedral ceiling
-                  </Text>
+                <View style={{ marginTop: Spacing.sm }}>
+                  <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
+                    <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm }}>
+                      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                          Peak Height
+                        </Text>
+                        <Pressable
+                          onPress={() => openInfoModal("Peak Height", "Height at the highest point of the cathedral ceiling")}
+                          hitSlop={8}
+                          style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                        >
+                          <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Peak height help" />
+                        </Pressable>
+                      </View>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                      <Text
+                        style={{
+                          width: 68,
+                          fontSize: Typography.caption.fontSize,
+                          color: Colors.mediumGray,
+                          marginBottom: Spacing.xs,
+                          textAlign: "center",
+                        }}
+                      >
+                        Feet
+                      </Text>
+                      <FormInput
+                        ref={cathedralPeakHeightRef}
+                        label=""
+                        value={cathedralPeakHeight}
+                        onChangeText={setCathedralPeakHeight}
+                        keyboardType="numeric"
+                        placeholder="0"
+                        onFocus={handleFieldFocus}
+                        inputContainerStyle={{ width: 68 }}
+                        inputTextStyle={{ textAlign: "center" }}
+                        className="mb-0"
+                      />
+                    </View>
+                  </View>
                 </View>
               )}
             </Card>
@@ -1750,6 +1788,36 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           </InputAccessoryView>
         )}
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={infoModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setInfoModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+          <Pressable
+            onPress={() => setInfoModalVisible(false)}
+            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+          />
+          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+            <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+              {infoModalTitle}
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
+              {infoModalBody}
+            </Text>
+            <Pressable
+              onPress={() => setInfoModalVisible(false)}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                Close
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
 
       {/* Save Prompt Modal */}
       <SavePromptModal
