@@ -534,7 +534,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               />
 
               {hasOverMantel && (
-                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.sm }}>
                   <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                       Over Mantel
