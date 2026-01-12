@@ -781,7 +781,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </Text>
 
               {/* Wall Counter */}
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.md, marginBottom: Spacing.md, paddingRight: Spacing.md }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.md, marginBottom: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                   Number of Walls:
                 </Text>
@@ -796,6 +796,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     borderWidth: 1,
                     borderColor: Colors.neutralGray,
                     gap: 4,
+                    marginRight: Spacing.md,
                   }}
                 >
                   <Pressable
