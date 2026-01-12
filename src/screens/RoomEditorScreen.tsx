@@ -1511,7 +1511,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           {((parseInt(singleDoorClosets) || 0) > 0 || (parseInt(doubleDoorClosets) || 0) > 0) && (
             <View
               style={{
-                backgroundColor: (parseInt(singleDoorClosets) || 0) > 0 ? Colors.white : "#E3F2FD",
+                backgroundColor: Colors.white,
                 borderRadius: BorderRadius.default,
                 padding: Spacing.md,
                 marginTop: Spacing.sm,
