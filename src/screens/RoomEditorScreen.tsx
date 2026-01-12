@@ -13,6 +13,7 @@ import {
   Modal,
   Keyboard,
   InputAccessoryView,
+  Switch,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { usePreventRemove } from "@react-navigation/native";
@@ -1508,18 +1509,40 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {((parseInt(singleDoorClosets) || 0) > 0 || (parseInt(doubleDoorClosets) || 0) > 0) && (
-            <View style={{ backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md, marginTop: Spacing.sm }}>
-              <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: "#1565C0", marginBottom: Spacing.xs }}>
-                Closet Interior Calculation
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: "#1565C0", marginBottom: Spacing.sm }}>
-                Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.
-              </Text>
-              <Toggle
-                label="Include Closet Interiors"
-                value={includeClosetInteriorInQuote}
-                onValueChange={setIncludeClosetInteriorInQuote}
-              />
+            <View
+              style={{
+                backgroundColor: (parseInt(singleDoorClosets) || 0) > 0 ? Colors.white : "#E3F2FD",
+                borderRadius: BorderRadius.default,
+                padding: Spacing.md,
+                marginTop: Spacing.sm,
+              }}
+            >
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View style={{ flex: 1, marginRight: Spacing.md }}>
+                  <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: Typography.body.fontWeight, color: Colors.darkCharcoal }}>
+                      Include Closet Interiors
+                    </Text>
+                    <Pressable
+                      onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                      hitSlop={8}
+                      style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                    >
+                      <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
+                    </Pressable>
+                  </View>
+                </View>
+                <Switch
+                  value={includeClosetInteriorInQuote}
+                  onValueChange={setIncludeClosetInteriorInQuote}
+                  trackColor={{
+                    false: Colors.neutralGray,
+                    true: Colors.primaryBlue,
+                  }}
+                  thumbColor={Colors.white}
+                  ios_backgroundColor={Colors.neutralGray}
+                />
+              </View>
             </View>
           )}
         </Card>
