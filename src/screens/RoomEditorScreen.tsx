@@ -1158,7 +1158,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                Windows
+                Window Count
               </Text>
               <View
                 style={{
@@ -1234,7 +1234,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                Doors
+                Door Count
               </Text>
               <View
                 style={{
