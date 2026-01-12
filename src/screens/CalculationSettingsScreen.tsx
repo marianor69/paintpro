@@ -88,6 +88,8 @@ function BubbleStack({
   return (
     <View style={{ alignItems: "center" }}>
       <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
         style={{
           fontSize: Typography.caption.fontSize,
           color: Colors.mediumGray,
