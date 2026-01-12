@@ -869,7 +869,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       alignItems: "flex-start",
                       justifyContent: "space-between",
                       gap: Spacing.md,
-                      paddingRight: Spacing.sm,
+                      paddingRight: Spacing.md,
                     }}
                   >
                     <Text
