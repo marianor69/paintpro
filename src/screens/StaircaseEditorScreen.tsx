@@ -766,7 +766,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       keyboardType="numeric"
                       placeholder="0"
                       inputContainerStyle={{ width: 68 }}
-                      inputTextStyle={{ textAlign: "center" }}
+                      inputTextStyle={{ textAlign: "right" }}
                       className="mb-0"
                     />
                   </BubbleStack>
@@ -895,7 +895,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         keyboardType="numeric"
                         placeholder="0"
                         inputContainerStyle={{ width: 68 }}
-                        inputTextStyle={{ textAlign: "center" }}
+                        inputTextStyle={{ textAlign: "right" }}
                         className="mb-0"
                       />
                     </BubbleStack>
@@ -910,7 +910,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         keyboardType="numeric"
                         placeholder="0"
                         inputContainerStyle={{ width: 68 }}
-                        inputTextStyle={{ textAlign: "center" }}
+                        inputTextStyle={{ textAlign: "right" }}
                         className="mb-0"
                       />
                     </BubbleStack>
