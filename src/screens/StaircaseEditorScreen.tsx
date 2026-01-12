@@ -89,13 +89,13 @@ function LabelWithHelp({
       <Pressable
         onPress={onPress}
         hitSlop={8}
-        style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+        style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
         accessibilityRole="button"
         accessibilityLabel={`${text} help`}
       >
         <Ionicons
           name="help-circle-outline"
-          size={14}
+          size={13}
           color={Colors.mediumGray}
         />
       </Pressable>
