@@ -49,22 +49,22 @@ function BubbleStack({
   children: React.ReactNode;
 }) {
   return (
-    <View style={{ width, alignItems: "center", overflow: "visible" }}>
+    <View style={{ alignItems: "center" }}>
       <Text
         numberOfLines={1}
         ellipsizeMode="clip"
         style={{
-          minWidth: width,
           fontSize: Typography.caption.fontSize,
           color: Colors.mediumGray,
           marginBottom: Spacing.xs,
           textAlign: "center",
-          paddingHorizontal: Spacing.sm,
         }}
       >
         {header}
       </Text>
-      {children}
+      <View style={{ width, alignItems: "center" }}>
+        {children}
+      </View>
     </View>
   );
 }
