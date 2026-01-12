@@ -924,7 +924,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           />
 
           {isCathedral && (
-            <View style={{ marginTop: Spacing.md }}>
+            <View style={{ marginTop: Spacing.sm }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm }}>
                   <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
@@ -934,7 +934,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     <Pressable
                       onPress={() => openInfoModal("Peak Height", "Height at the highest point of the cathedral ceiling")}
                       hitSlop={8}
-                      style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                      style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
                     >
                       <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Peak height help" />
                     </Pressable>
