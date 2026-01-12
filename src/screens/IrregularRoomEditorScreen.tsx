@@ -751,24 +751,71 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               <View style={{ marginBottom: Spacing.md }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Walls
+                    Wall count
                   </Text>
-                  <Pressable
-                    onPress={handleAddWall}
+                  <View
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      paddingHorizontal: Spacing.sm,
-                      paddingVertical: Spacing.xs,
                       borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: Spacing.xs,
                     }}
                   >
-                    <Ionicons name="add" size={16} color={Colors.primaryBlue} />
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.primaryBlue, fontWeight: "600", marginLeft: 2 }}>
-                      Add Wall
-                    </Text>
-                  </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        if (walls.length > 1) {
+                          handleRemoveWall(walls[walls.length - 1].id);
+                        }
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease wall count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: walls.length > 1 ? Colors.primaryBlue : Colors.mediumGray, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {walls.length}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={handleAddWall}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase wall count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
                 </View>
 
                 {/* Column Headers */}
