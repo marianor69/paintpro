@@ -777,7 +777,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             {/* Walls Section */}
             <Card style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Does stairwell have walls to paint?
+                Walls in Stairwell
               </Text>
 
               {/* Wall Counter */}
