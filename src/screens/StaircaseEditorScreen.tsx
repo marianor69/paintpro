@@ -664,9 +664,6 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     </Pressable>
                   </View>
                 </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                  Standard riser height of 7.5 inches assumed
-                </Text>
               </View>
 
               {/* Row 2: Spindles */}
@@ -1519,21 +1516,25 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
           animationType="fade"
           onRequestClose={() => setRiserHelpVisible(false)}
         >
-          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "center", padding: Spacing.lg }}>
-            <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg }}>
-              <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+          <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+            <Pressable
+              onPress={() => setRiserHelpVisible(false)}
+              style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+            />
+            <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+              <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
                 Risers
               </Text>
-              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
                 Count the vertical faces between treads. This screen assumes a standard riser height of 7.5 inches.
               </Text>
               <Pressable
                 onPress={() => setRiserHelpVisible(false)}
-                style={{ alignSelf: "flex-end", marginTop: Spacing.md, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs }}
+                style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
                 accessibilityRole="button"
                 accessibilityLabel="Close riser help"
               >
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
                   Close
                 </Text>
               </Pressable>
