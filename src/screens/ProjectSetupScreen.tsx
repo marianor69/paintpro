@@ -147,7 +147,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [localFloorHeights, setLocalFloorHeights] = useState<string[]>(
     effectiveFloorHeights.map((h) => h.toString())
   );
-  const LABEL_TO_VALUE_OFFSET = Typography.caption.fontSize + Spacing.xs + Spacing.sm;
+  const LABEL_TO_VALUE_OFFSET = Typography.caption.fontSize + Spacing.xs;
 
   // Paint Defaults State (for new projects)
   const [localPaintDefaults, setLocalPaintDefaults] = useState({
