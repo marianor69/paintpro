@@ -498,7 +498,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                       <Pressable
                         onPress={() => openInfoModal("Include Primer", "Add 1 coat of primer before paint")}
                         hitSlop={8}
-                        style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                        style={{ marginLeft: Spacing.xs, marginTop: -2 }}
                       >
                         <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Include primer help" />
                       </Pressable>
@@ -529,7 +529,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                       <Pressable
                         onPress={() => openInfoModal("2 Coats of Paint", "Toggle ON for 2 coats, OFF for 1 coat")}
                         hitSlop={8}
-                        style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                        style={{ marginLeft: Spacing.xs, marginTop: -2 }}
                       >
                         <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Two coats help" />
                       </Pressable>
