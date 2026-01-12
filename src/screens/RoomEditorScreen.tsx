@@ -103,6 +103,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     s.projects.find((p) => p.id === projectId)
   );
   const room = isNewRoom ? null : project?.rooms.find((r) => r.id === roomId);
+  const projectPaintTrimDefault = project?.globalPaintDefaults?.paintTrim ?? true;
+  const projectClosetInteriorDefault = project?.globalPaintDefaults?.paintClosetInteriors ?? true;
   const addRoom = useProjectStore((s) => s.addRoom);
   const updateRoom = useProjectStore((s) => s.updateRoom);
   const deleteRoom = useProjectStore((s) => s.deleteRoom);
@@ -137,7 +139,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     room?.doubleDoorClosets && room.doubleDoorClosets > 0 ? room.doubleDoorClosets.toString() : ""
   );
   const [includeClosetInteriorInQuote, setIncludeClosetInteriorInQuote] = useState(
-    room?.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
+    room?.includeClosetInteriorInQuote ?? projectClosetInteriorDefault
   );
 
   // Paint options - room-level overrides
@@ -179,6 +181,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [infoModalTitle, setInfoModalTitle] = useState("");
   const [infoModalBody, setInfoModalBody] = useState("");
+  const includeClosetInteriorTouchedRef = useRef(false);
+  const prevClosetDoorCountRef = useRef<number>(
+    (parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0)
+  );
 
   // Collapsible sections
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
@@ -315,7 +321,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
         project?.globalPaintDefaults?.paintCrownMoulding ?? true,
         false,
-        project?.projectIncludeClosetInteriorInQuote ?? true
+        projectClosetInteriorDefault
       );
       return;
     }
@@ -346,9 +352,25 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       room.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
       room.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true,
       room.hasAccentWall ?? false,
-      room.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
+      room.includeClosetInteriorInQuote ?? projectClosetInteriorDefault
     );
   }, [room, project]);
+
+  useEffect(() => {
+    const totalClosetDoors =
+      (parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0);
+    const previousCount = prevClosetDoorCountRef.current;
+
+    if (
+      totalClosetDoors > 0 &&
+      previousCount === 0 &&
+      !includeClosetInteriorTouchedRef.current
+    ) {
+      setIncludeClosetInteriorInQuote(projectClosetInteriorDefault);
+    }
+
+    prevClosetDoorCountRef.current = totalClosetDoors;
+  }, [singleDoorClosets, doubleDoorClosets, projectClosetInteriorDefault]);
 
   // Check for changes by comparing current state to initial snapshot
   useEffect(() => {
@@ -595,7 +617,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       quoteBuilder,
       pricing,
       project?.projectCoats,
-      project?.projectIncludeClosetInteriorInQuote
+      projectClosetInteriorDefault
     );
 
     console.log("[RoomEditor] Saving room with gallon usage:", {
@@ -759,7 +781,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     quoteBuilder,
     pricing,
     project?.projectCoats,
-    project?.projectIncludeClosetInteriorInQuote
+    projectClosetInteriorDefault
   );
 
   if (!project) {
@@ -1039,8 +1061,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       id: `opening-${Date.now()}`,
                       width: "36",
                       height: "80",
-                      hasInteriorTrim: true,
-                      hasExteriorTrim: true,
+                      hasInteriorTrim: projectPaintTrimDefault,
+                      hasExteriorTrim: projectPaintTrimDefault,
                     };
                     setOpenings([...openings, newOpening]);
                   }}
@@ -1483,7 +1505,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </View>
               <Switch
                 value={includeClosetInteriorInQuote}
-                onValueChange={setIncludeClosetInteriorInQuote}
+                onValueChange={(value) => {
+                  includeClosetInteriorTouchedRef.current = true;
+                  setIncludeClosetInteriorInQuote(value);
+                }}
                 trackColor={{
                   false: Colors.neutralGray,
                   true: Colors.primaryBlue,
