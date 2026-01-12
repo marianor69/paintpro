@@ -1058,136 +1058,102 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
 
             {openings.length > 0 && (
-              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md, marginBottom: Spacing.md }}>
+              <View style={{ gap: Spacing.md, marginBottom: Spacing.md }}>
                 {openings.map((opening, index) => (
-                  <View key={opening.id} style={{ marginBottom: index < openings.length - 1 ? Spacing.md : 0, paddingBottom: index < openings.length - 1 ? Spacing.md : 0, borderBottomWidth: index < openings.length - 1 ? 1 : 0, borderBottomColor: Colors.neutralGray }}>
-                    {/** Keyboard Navigation Toolbar (standard) for opening fields */}
+                  <View key={opening.id}>
                     {(() => {
                       const openingFieldRefs = getOpeningRefs(index);
                       const previousOpeningRefs = index > 0 ? getOpeningRefs(index - 1) : null;
                       const nextOpeningRefs = index < openings.length - 1 ? getOpeningRefs(index + 1) : null;
+                      const labelOffset = Typography.caption.fontSize + Spacing.xs + Spacing.sm;
 
                       return (
                         <>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray }}>
-                        Opening {index + 1}
-                      </Text>
-                      <Pressable
-                        onPress={() => setOpenings(openings.filter((_, i) => i !== index))}
-                        style={{ padding: Spacing.xs }}
-                      >
-                        <Ionicons name="close-circle-outline" size={18} color={Colors.error} />
-                      </Pressable>
-                    </View>
+                          <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md, marginBottom: Spacing.sm }}>
+                            <View style={{ flex: 1, marginTop: labelOffset }}>
+                              <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                                  Opening {index + 1}
+                                </Text>
+                                <Pressable
+                                  onPress={() => setOpenings(openings.filter((_, i) => i !== index))}
+                                  hitSlop={8}
+                                  style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                                >
+                                  <Ionicons name="close-circle-outline" size={18} color={Colors.error} />
+                                </Pressable>
+                              </View>
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                              <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                                Width (in)
+                              </Text>
+                              <FormInput
+                                ref={openingFieldRefs.width}
+                                previousFieldRef={previousOpeningRefs?.height}
+                                nextFieldRef={openingFieldRefs.height}
+                                label=""
+                                value={opening.width}
+                                onChangeText={(text) => {
+                                  const updated = [...openings];
+                                  updated[index].width = text;
+                                  setOpenings(updated);
+                                }}
+                                placeholder="36"
+                                placeholderTextColor={Colors.mediumGray}
+                                keyboardType="numeric"
+                                inputContainerStyle={{ width: 68 }}
+                                inputTextStyle={{ textAlign: "center" }}
+                                className="mb-0"
+                              />
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                              <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
+                                Height (in)
+                              </Text>
+                              <FormInput
+                                ref={openingFieldRefs.height}
+                                previousFieldRef={openingFieldRefs.width}
+                                nextFieldRef={nextOpeningRefs?.width}
+                                label=""
+                                value={opening.height}
+                                onChangeText={(text) => {
+                                  const updated = [...openings];
+                                  updated[index].height = text;
+                                  setOpenings(updated);
+                                }}
+                                placeholder="80"
+                                placeholderTextColor={Colors.mediumGray}
+                                keyboardType="numeric"
+                                inputContainerStyle={{ width: 68 }}
+                                inputTextStyle={{ textAlign: "center" }}
+                                className="mb-0"
+                              />
+                            </View>
+                          </View>
 
-                    <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.sm }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                          Width (in)
-                        </Text>
-                        <FormInput
-                          ref={openingFieldRefs.width}
-                          previousFieldRef={previousOpeningRefs?.height}
-                          nextFieldRef={openingFieldRefs.height}
-                          label=""
-                          value={opening.width}
-                          onChangeText={(text) => {
-                            const updated = [...openings];
-                            updated[index].width = text;
-                            setOpenings(updated);
-                          }}
-                          placeholder="36"
-                          placeholderTextColor={Colors.mediumGray}
-                          keyboardType="numeric"
-                          textAlign="left"
-                          className="mb-0"
-                        />
-                      </View>
-
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "500" as any, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                          Height (in)
-                        </Text>
-                        <FormInput
-                          ref={openingFieldRefs.height}
-                          previousFieldRef={openingFieldRefs.width}
-                          nextFieldRef={nextOpeningRefs?.width}
-                          label=""
-                          value={opening.height}
-                          onChangeText={(text) => {
-                            const updated = [...openings];
-                            updated[index].height = text;
-                            setOpenings(updated);
-                          }}
-                          placeholder="80"
-                          placeholderTextColor={Colors.mediumGray}
-                          keyboardType="numeric"
-                          textAlign="left"
-                          className="mb-0"
-                        />
-                      </View>
-                    </View>
-
-                    <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                      <Pressable
-                        onPress={() => {
-                          const updated = [...openings];
-                          updated[index].hasInteriorTrim = !updated[index].hasInteriorTrim;
-                          setOpenings(updated);
-                        }}
-                        style={{
-                          flex: 1,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          paddingVertical: Spacing.xs,
-                          paddingHorizontal: Spacing.sm,
-                          backgroundColor: opening.hasInteriorTrim ? Colors.primaryBlueLight : Colors.white,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          borderRadius: BorderRadius.default,
-                        }}
-                      >
-                        <Ionicons
-                          name={opening.hasInteriorTrim ? "checkbox" : "checkbox-outline"}
-                          size={16}
-                          color={opening.hasInteriorTrim ? Colors.primaryBlue : Colors.mediumGray}
-                          style={{ marginRight: Spacing.xs }}
-                        />
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                          Interior Trim
-                        </Text>
-                      </Pressable>
-
-                      <Pressable
-                        onPress={() => {
-                          const updated = [...openings];
-                          updated[index].hasExteriorTrim = !updated[index].hasExteriorTrim;
-                          setOpenings(updated);
-                        }}
-                        style={{
-                          flex: 1,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          paddingVertical: Spacing.xs,
-                          paddingHorizontal: Spacing.sm,
-                          backgroundColor: opening.hasExteriorTrim ? Colors.primaryBlueLight : Colors.white,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          borderRadius: BorderRadius.default,
-                        }}
-                      >
-                        <Ionicons
-                          name={opening.hasExteriorTrim ? "checkbox" : "checkbox-outline"}
-                          size={16}
-                          color={opening.hasExteriorTrim ? Colors.primaryBlue : Colors.mediumGray}
-                          style={{ marginRight: Spacing.xs }}
-                        />
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.darkCharcoal }}>
-                          Exterior Trim
-                        </Text>
-                      </Pressable>
-                    </View>
+                          <View style={{ gap: Spacing.sm }}>
+                            <Toggle
+                              label="Interior Trim"
+                              value={opening.hasInteriorTrim}
+                              onValueChange={() => {
+                                const updated = [...openings];
+                                updated[index].hasInteriorTrim = !updated[index].hasInteriorTrim;
+                                setOpenings(updated);
+                              }}
+                              className="mb-0"
+                            />
+                            <Toggle
+                              label="Exterior Trim"
+                              value={opening.hasExteriorTrim}
+                              onValueChange={() => {
+                                const updated = [...openings];
+                                updated[index].hasExteriorTrim = !updated[index].hasExteriorTrim;
+                                setOpenings(updated);
+                              }}
+                              className="mb-0"
+                            />
+                          </View>
                         </>
                       );
                     })()}
