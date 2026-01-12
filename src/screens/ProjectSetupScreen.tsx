@@ -797,7 +797,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                           placeholder="8"
                           placeholderTextColor={Colors.mediumGray}
                           returnKeyType="done"
-                        style={TextInputStyles.base}
+                        style={[TextInputStyles.base, { textAlign: "right" }]}
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
                           accessibilityLabel={`${getOrdinal(index + 1)} floor height input`}
