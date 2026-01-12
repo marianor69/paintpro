@@ -1512,7 +1512,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.sm }}>
               <View style={{ flex: 1, marginRight: Spacing.md }}>
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: Typography.body.fontWeight, color: Colors.darkCharcoal }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                     Include Closet Interiors
                   </Text>
                   <Pressable
