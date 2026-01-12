@@ -527,7 +527,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
               {/* PART 3: Over Mantel */}
               <Toggle
-                label="Area Over Mantel"
+                label="Has Over Mantel"
                 value={hasOverMantel}
                 onValueChange={setHasOverMantel}
                 className={hasOverMantel ? "mb-4" : "mb-0"}
@@ -537,7 +537,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                 <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
                   <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                      Area Over Mantel
+                      Over Mantel
                     </Text>
                   </View>
                   <View style={{ alignItems: "center" }}>
@@ -578,7 +578,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   </View>
                   <View style={{ alignItems: "center" }}>
                     <Text style={{ width: 68, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs, textAlign: "center" }}>
-                      Depth
+                      Depth (in)
                     </Text>
                     <FormInput
                       ref={overMantelDepthRef}
