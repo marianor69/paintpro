@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
   Keyboard,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -34,6 +35,73 @@ import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "..
 import { RoomPhoto } from "../types/painting";
 
 type Props = NativeStackScreenProps<RootStackParamList, "StaircaseEditor">;
+
+const LABEL_TO_VALUE_OFFSET =
+  Typography.caption.fontSize + Spacing.xs + Spacing.sm;
+
+function BubbleStack({
+  header,
+  width = 68,
+  children,
+}: {
+  header: string;
+  width?: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={{ width, alignItems: "center" }}>
+      <Text
+        style={{
+          width,
+          fontSize: Typography.caption.fontSize,
+          color: Colors.mediumGray,
+          marginBottom: Spacing.xs,
+          textAlign: "center",
+        }}
+      >
+        {header}
+      </Text>
+      {children}
+    </View>
+  );
+}
+
+function LabelWithHelp({
+  text,
+  onPress,
+}: {
+  text: string;
+  onPress: () => void;
+}) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+      <Text
+        style={{
+          fontSize: Typography.body.fontSize,
+          fontWeight: "500" as any,
+          color: Colors.darkCharcoal,
+          flex: 0,
+          width: "auto",
+        }}
+      >
+        {text}
+      </Text>
+      <Pressable
+        onPress={onPress}
+        hitSlop={8}
+        style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+        accessibilityRole="button"
+        accessibilityLabel={`${text} help`}
+      >
+        <Ionicons
+          name="help-circle-outline"
+          size={14}
+          color={Colors.mediumGray}
+        />
+      </Pressable>
+    </View>
+  );
+}
 
 export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const { projectId, staircaseId } = route.params;
@@ -85,6 +153,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
+  const [riserHelpVisible, setRiserHelpVisible] = useState(false);
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
   // MD-002: Store the navigation action to dispatch when discarding
@@ -108,6 +177,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       TextInput.State.blurTextInput(focusedField);
     }
   }, []);
+
+  const showRiserHelp = () => {
+    setRiserHelpVisible(true);
+  };
 
   const addWall = () => {
     if (walls.length >= 4) return;
@@ -524,9 +597,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               {/* Row 1: Risers */}
               <View style={{ marginBottom: Spacing.md }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Risers
-                  </Text>
+                  <LabelWithHelp text="Risers" onPress={showRiserHelp} />
                   <View
                     style={{
                       flexDirection: "row",
@@ -674,14 +745,18 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
               {/* Handrail Length - full width */}
               <View style={{ marginBottom: Spacing.md }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500" as any,
+                      color: Colors.darkCharcoal,
+                      marginTop: LABEL_TO_VALUE_OFFSET,
+                    }}
+                  >
                     Handrail Length
                   </Text>
-                  <View style={{ alignItems: "flex-end", width: 68 }}>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                      Feet
-                    </Text>
+                  <BubbleStack header="Feet" width={68}>
                     <FormInput
                       ref={handrailLengthRef}
                       previousFieldRef={nameRef}
@@ -691,10 +766,10 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       keyboardType="numeric"
                       placeholder="0"
                       inputContainerStyle={{ width: 68 }}
-                      inputTextStyle={{ textAlign: "right" }}
+                      inputTextStyle={{ textAlign: "center" }}
                       className="mb-0"
                     />
-                  </View>
+                  </BubbleStack>
                 </View>
               </View>
             </Card>
@@ -781,35 +856,64 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 </View>
               </View>
 
-              {/* Wall Inputs */}
+              {/* Wall Inputs (one row per wall; no divider lines) */}
               {walls.map((wall, index) => (
-                <View key={wall.id} style={{ marginBottom: Spacing.md, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.neutralGray }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                    Wall {index + 1}
-                  </Text>
-                  <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                    <View style={{ flex: 1 }}>
+                <View
+                  key={wall.id}
+                  style={{
+                    marginBottom: Spacing.md,
+                    paddingTop: index === 0 ? 0 : Spacing.sm,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      gap: Spacing.md,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        flex: 1,
+                        fontSize: Typography.body.fontSize,
+                        fontWeight: "600" as any,
+                        color: Colors.darkCharcoal,
+                        marginTop: LABEL_TO_VALUE_OFFSET,
+                      }}
+                    >
+                      Wall {index + 1}
+                    </Text>
+                    <BubbleStack
+                      header={`Tall Side (${unitSystem === "metric" ? "m" : "ft"})`}
+                      width={68}
+                    >
                       <FormInput
-                        label={`Tall Side (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                        label=""
                         value={wall.tallHeight}
-                        onChangeText={(value) => updateWallHeight(index, 'tallHeight', value)}
+                        onChangeText={(value) => updateWallHeight(index, "tallHeight", value)}
                         keyboardType="numeric"
                         placeholder="0"
                         inputContainerStyle={{ width: 68 }}
+                        inputTextStyle={{ textAlign: "center" }}
                         className="mb-0"
                       />
-                    </View>
-                    <View style={{ flex: 1 }}>
+                    </BubbleStack>
+                    <BubbleStack
+                      header={`Short Side (${unitSystem === "metric" ? "m" : "ft"})`}
+                      width={68}
+                    >
                       <FormInput
-                        label={`Short Side (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                        label=""
                         value={wall.shortHeight}
-                        onChangeText={(value) => updateWallHeight(index, 'shortHeight', value)}
+                        onChangeText={(value) => updateWallHeight(index, "shortHeight", value)}
                         keyboardType="numeric"
                         placeholder="0"
                         inputContainerStyle={{ width: 68 }}
+                        inputTextStyle={{ textAlign: "center" }}
                         className="mb-0"
                       />
-                    </View>
+                    </BubbleStack>
                   </View>
                 </View>
               ))}
@@ -1408,6 +1512,34 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             </Pressable>
           </View>
         </ScrollView>
+
+        <Modal
+          visible={riserHelpVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setRiserHelpVisible(false)}
+        >
+          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "center", padding: Spacing.lg }}>
+            <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg }}>
+              <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                Risers
+              </Text>
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                Count the vertical faces between treads. This screen assumes a standard riser height of 7.5 inches.
+              </Text>
+              <Pressable
+                onPress={() => setRiserHelpVisible(false)}
+                style={{ alignSelf: "flex-end", marginTop: Spacing.md, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs }}
+                accessibilityRole="button"
+                accessibilityLabel="Close riser help"
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
+                  Close
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
 
         {/* Save Confirmation Modal */}
         <SavePromptModal
