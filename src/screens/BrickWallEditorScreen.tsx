@@ -10,6 +10,8 @@ import {
   Platform,
   Alert,
   Keyboard,
+  Switch,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -20,7 +22,6 @@ import { usePricingStore } from "../state/pricingStore";
 import { useAppSettings } from "../state/appSettings";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
-import { Toggle } from "../components/Toggle";
 import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { Ionicons } from "@expo/vector-icons";
@@ -65,6 +66,9 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
   const [coats, setCoats] = useState(!isNewBrickWall && brickWall?.coats ? brickWall.coats : 2);
 
   const [notes, setNotes] = useState(!isNewBrickWall && brickWall?.notes ? brickWall.notes : "");
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+  const [infoModalTitle, setInfoModalTitle] = useState("");
+  const [infoModalBody, setInfoModalBody] = useState("");
   const [photos, setPhotos] = useState<RoomPhoto[]>(
     !isNewBrickWall && brickWall?.photos ? brickWall.photos : []
   );
@@ -339,6 +343,12 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
     // Navigation happens automatically via useEffect when isSaving becomes true
   };
 
+  const openInfoModal = (title: string, body: string) => {
+    setInfoModalTitle(title);
+    setInfoModalBody(body);
+    setInfoModalVisible(true);
+  };
+
   const handleDiscardAndLeave = () => {
     // For new brick walls, nothing to delete (never created)
     // For existing brick walls, just go back without changes
@@ -436,12 +446,20 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               </View>
 
               {/* Dimensions */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm, marginBottom: Spacing.md }}>
+                <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Wall
+                  </Text>
+                </View>
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Width ({unitSystem === "metric" ? "m" : "ft"})
+                  </Text>
                   <FormInput
                     ref={widthRef}
                     previousFieldRef={nameRef}
-                    label={`Width (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    label=""
                     value={width}
                     onChangeText={setWidth}
                     keyboardType="numeric"
@@ -451,11 +469,14 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                     className="mb-0"
                   />
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ alignItems: "center", width: 68 }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    Height ({unitSystem === "metric" ? "m" : "ft"})
+                  </Text>
                   <FormInput
                     ref={heightRef}
                     previousFieldRef={widthRef}
-                    label={`Height (${unitSystem === 'metric' ? 'm' : 'ft'})`}
+                    label=""
                     value={height}
                     onChangeText={setHeight}
                     keyboardType="numeric"
@@ -467,21 +488,70 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               </View>
 
               {/* Primer Toggle */}
-              <Toggle
-                label="Include Primer"
-                value={includePrimer}
-                onValueChange={setIncludePrimer}
-                description="Add 1 coat of primer before paint"
-              />
+              <View style={{ marginBottom: Spacing.md }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                  <View style={{ flex: 1, marginRight: Spacing.md }}>
+                    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Include Primer
+                      </Text>
+                      <Pressable
+                        onPress={() => openInfoModal("Include Primer", "Add 1 coat of primer before paint")}
+                        hitSlop={8}
+                        style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                      >
+                        <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Include primer help" />
+                      </Pressable>
+                    </View>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                      Add 1 coat of primer before paint
+                    </Text>
+                  </View>
+                  <Switch
+                    value={includePrimer}
+                    onValueChange={setIncludePrimer}
+                    trackColor={{
+                      false: Colors.neutralGray,
+                      true: Colors.primaryBlue,
+                    }}
+                    thumbColor={Colors.white}
+                    ios_backgroundColor={Colors.neutralGray}
+                  />
+                </View>
+              </View>
 
               {/* Coats Toggle */}
-              <Toggle
-                label="2 Coats of Paint"
-                value={coats === 2}
-                onValueChange={(value) => setCoats(value ? 2 : 1)}
-                description="Toggle ON for 2 coats, OFF for 1 coat"
-                className="mb-0"
-              />
+              <View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                  <View style={{ flex: 1, marginRight: Spacing.md }}>
+                    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        2 Coats of Paint
+                      </Text>
+                      <Pressable
+                        onPress={() => openInfoModal("2 Coats of Paint", "Toggle ON for 2 coats, OFF for 1 coat")}
+                        hitSlop={8}
+                        style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+                      >
+                        <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Two coats help" />
+                      </Pressable>
+                    </View>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                      Toggle ON for 2 coats, OFF for 1 coat
+                    </Text>
+                  </View>
+                  <Switch
+                    value={coats === 2}
+                    onValueChange={(value) => setCoats(value ? 2 : 1)}
+                    trackColor={{
+                      false: Colors.neutralGray,
+                      true: Colors.primaryBlue,
+                    }}
+                    thumbColor={Colors.white}
+                    ios_backgroundColor={Colors.neutralGray}
+                  />
+                </View>
+              </View>
             </Card>
 
             {/* Notes Section */}
@@ -794,6 +864,36 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
           onCancel={handleCancelExit}
         />
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={infoModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setInfoModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+          <Pressable
+            onPress={() => setInfoModalVisible(false)}
+            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+          />
+          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+            <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+              {infoModalTitle}
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
+              {infoModalBody}
+            </Text>
+            <Pressable
+              onPress={() => setInfoModalVisible(false)}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                Close
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
