@@ -448,7 +448,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               {/* Dimensions */}
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm, marginBottom: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginTop: Spacing.sm }}>
                     Wall
                   </Text>
                 </View>
@@ -503,9 +503,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                         <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Include primer help" />
                       </Pressable>
                     </View>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                      Add 1 coat of primer before paint
-                    </Text>
+                    
                   </View>
                   <Switch
                     value={includePrimer}
@@ -536,9 +534,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                         <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Two coats help" />
                       </Pressable>
                     </View>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                      Toggle ON for 2 coats, OFF for 1 coat
-                    </Text>
+                    
                   </View>
                   <Switch
                     value={coats === 2}
