@@ -46,6 +46,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const calculationSettings = useCalculationSettings((s) => s.settings);
 
   const [addMenuVisible, setAddMenuVisible] = React.useState(false);
+  const [isEstimateExpanded, setIsEstimateExpanded] = React.useState(false);
 
   // Wrap project loading and preprocessing
   let summary: ReturnType<typeof calculateFilteredProjectSummary> | null = null;
@@ -761,25 +762,34 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             ...(project.estimateBuildComplete && { borderWidth: 2, borderColor: Colors.success })
           }}>
             {/* Header Row: Title/Amount on left, Button on right */}
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: Spacing.md, gap: Spacing.md }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: isEstimateExpanded ? Spacing.md : 0, gap: Spacing.md }}>
               {/* Left Side: Title and Amount */}
-              <View style={{ flex: 1 }}>
+              <Pressable
+                onPress={() => setIsEstimateExpanded((prev) => !prev)}
+                style={{ flex: 1 }}
+                accessibilityRole="button"
+                accessibilityLabel={isEstimateExpanded ? "Collapse estimate details" : "Expand estimate details"}
+              >
                 {project.estimateBuildComplete ? (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="checkmark-circle" size={22} color={Colors.success} style={{ marginRight: Spacing.xs }} />
+                    <Ionicons name={isEstimateExpanded ? "chevron-down" : "chevron-forward"} size={18} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Ionicons name="checkmark-circle" size={20} color={Colors.success} style={{ marginRight: Spacing.xs }} />
                     <Text style={{ fontSize: 18, color: Colors.success, fontWeight: "600" as any }}>
                       Estimate Complete
                     </Text>
                   </View>
                 ) : (
-                  <Text style={{ fontSize: 18, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                    Running Estimate
-                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
+                    <Ionicons name={isEstimateExpanded ? "chevron-down" : "chevron-forward"} size={18} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <Text style={{ fontSize: 18, color: Colors.mediumGray }}>
+                      Running Estimate
+                    </Text>
+                  </View>
                 )}
                 <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                   {formatCurrency(displaySummary.grandTotal)}
                 </Text>
-              </View>
+              </Pressable>
 
               {/* Right Side: Done/Edit Button */}
               {canMarkStep2Complete && (
@@ -790,18 +800,18 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     borderRadius: BorderRadius.default,
                     borderWidth: project.estimateBuildComplete ? 1 : 0,
                     borderColor: project.estimateBuildComplete ? Colors.neutralGray : undefined,
-                    paddingVertical: Spacing.md,
-                    paddingHorizontal: Spacing.md,
+                    paddingVertical: Spacing.sm,
+                    paddingHorizontal: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
-                    minWidth: 140,
+                    minWidth: 112,
                     ...Shadows.card,
                   }}
                   accessibilityRole="button"
                   accessibilityLabel={project.estimateBuildComplete ? "Edit estimate" : "Done building estimate"}
                 >
                   <View style={{ alignItems: "center" }}>
-                    <Ionicons name={project.estimateBuildComplete ? "pencil" : "checkmark-circle"} size={20} color={project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white} style={{ marginBottom: Spacing.xs }} />
+                    <Ionicons name={project.estimateBuildComplete ? "pencil" : "checkmark-circle"} size={18} color={project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white} style={{ marginBottom: Spacing.xs }} />
                     <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white, textAlign: "center" }}>
                       {project.estimateBuildComplete ? "Edit\nEstimate" : "Click\nwhen Done"}
                     </Text>
@@ -811,6 +821,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             </View>
 
             {/* Two-column layout: Grey (items list) + Blue (labor/materials) */}
+            {isEstimateExpanded && (
             <View style={{ flexDirection: "row", gap: Spacing.sm }}>
               {/* Left Column - Items List (Gray) */}
               <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
@@ -1087,6 +1098,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 </View>
               </View>
             </View>
+            )}
           </Card>
 
           {/* Rooms & Structures - Combined */}
