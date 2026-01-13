@@ -1410,7 +1410,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {singleClosetCount > 1 && (
+          {singleClosetCount > 0 && (
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs, marginBottom: Spacing.sm }}>
               <View style={{ flex: 1, marginRight: Spacing.md }}>
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
