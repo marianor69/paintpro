@@ -231,6 +231,8 @@ export interface IrregularRoom {
   singleDoorClosets?: number;
   doubleDoorClosets?: number;
   includeClosetInteriorInQuote?: boolean;
+  includeSingleClosetInteriorInQuote?: boolean;
+  includeDoubleClosetInteriorInQuote?: boolean;
   // Paint options
   paintWalls?: boolean;
   paintCeilings?: boolean;

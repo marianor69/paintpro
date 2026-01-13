@@ -12,6 +12,7 @@ import {
   Modal,
   Keyboard,
   InputAccessoryView,
+  Switch,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { usePreventRemove } from "@react-navigation/native";
@@ -91,10 +92,18 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   // Openings & Closets
   const [windowCount, setWindowCount] = useState(!isNew && irregularRoom?.windowCount ? irregularRoom.windowCount.toString() : "");
   const [doorCount, setDoorCount] = useState(!isNew && irregularRoom?.doorCount ? irregularRoom.doorCount.toString() : "");
-  const [hasCloset, setHasCloset] = useState(!isNew && irregularRoom?.hasCloset ? irregularRoom.hasCloset : false);
   const [singleDoorClosets, setSingleDoorClosets] = useState(!isNew && irregularRoom?.singleDoorClosets ? irregularRoom.singleDoorClosets.toString() : "");
   const [doubleDoorClosets, setDoubleDoorClosets] = useState(!isNew && irregularRoom?.doubleDoorClosets ? irregularRoom.doubleDoorClosets.toString() : "");
-  const [includeClosetInteriorInQuote, setIncludeClosetInteriorInQuote] = useState(!isNew && irregularRoom?.includeClosetInteriorInQuote !== undefined ? irregularRoom.includeClosetInteriorInQuote : project?.projectIncludeClosetInteriorInQuote ?? true);
+  const [includeSingleClosetInteriorInQuote, setIncludeSingleClosetInteriorInQuote] = useState(
+    !isNew && irregularRoom?.includeSingleClosetInteriorInQuote !== undefined
+      ? irregularRoom.includeSingleClosetInteriorInQuote
+      : irregularRoom?.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
+  );
+  const [includeDoubleClosetInteriorInQuote, setIncludeDoubleClosetInteriorInQuote] = useState(
+    !isNew && irregularRoom?.includeDoubleClosetInteriorInQuote !== undefined
+      ? irregularRoom.includeDoubleClosetInteriorInQuote
+      : irregularRoom?.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
+  );
 
   // Paint options
   const [paintWalls, setPaintWalls] = useState(!isNew ? irregularRoom?.paintWalls ?? true : project?.globalPaintDefaults?.paintWalls ?? true);
@@ -153,6 +162,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   const windowCountValue = parseInt(windowCount) || 0;
   const doorCountValue = parseInt(doorCount) || 0;
+  const singleClosetCount = parseInt(singleDoorClosets) || 0;
+  const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
+  const hasCloset = singleClosetCount > 0 || doubleClosetCount > 0;
   const projectCoats = safeNumber(project?.projectCoats, 2);
   const secondCoatMultiplier = safeNumber(pricing?.secondCoatLaborMultiplier, 2.0);
   const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
@@ -243,7 +255,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
         cathedralPeakHeight !== "" ||
         windowCount !== "" ||
         doorCount !== "" ||
-        hasCloset ||
+        singleDoorClosets !== "" ||
+        doubleDoorClosets !== "" ||
+        includeSingleClosetInteriorInQuote !== (project?.projectIncludeClosetInteriorInQuote ?? true) ||
+        includeDoubleClosetInteriorInQuote !== (project?.projectIncludeClosetInteriorInQuote ?? true) ||
         notes !== "" ||
         photos.length > 0;
       setHasUnsavedChanges(hasChanges);
@@ -259,11 +274,39 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           area: w.width > 0 && w.height > 0 ? (w.width * w.height).toFixed(1) : ""
         }))) ||
         isCathedral !== (irregularRoom.ceilingType === "cathedral") ||
+        (irregularRoom.singleDoorClosets || 0).toString() !== (singleDoorClosets || "0") ||
+        (irregularRoom.doubleDoorClosets || 0).toString() !== (doubleDoorClosets || "0") ||
+        (irregularRoom.includeSingleClosetInteriorInQuote ??
+          irregularRoom.includeClosetInteriorInQuote ??
+          project?.projectIncludeClosetInteriorInQuote ??
+          true) !== includeSingleClosetInteriorInQuote ||
+        (irregularRoom.includeDoubleClosetInteriorInQuote ??
+          irregularRoom.includeClosetInteriorInQuote ??
+          project?.projectIncludeClosetInteriorInQuote ??
+          true) !== includeDoubleClosetInteriorInQuote ||
         notes !== (irregularRoom.notes || "") ||
         photos.length !== (irregularRoom.photos?.length || 0);
       setHasUnsavedChanges(hasChanges);
     }
-  }, [isNew, irregularRoom, name, walls, isCathedral, cathedralPeakHeight, windowCount, doorCount, hasCloset, notes, photos, unitSystem, defaultHeight]);
+  }, [
+    isNew,
+    irregularRoom,
+    name,
+    walls,
+    isCathedral,
+    cathedralPeakHeight,
+    windowCount,
+    doorCount,
+    singleDoorClosets,
+    doubleDoorClosets,
+    includeSingleClosetInteriorInQuote,
+    includeDoubleClosetInteriorInQuote,
+    notes,
+    photos,
+    unitSystem,
+    defaultHeight,
+    project?.projectIncludeClosetInteriorInQuote
+  ]);
 
   // Keyboard listeners
   useEffect(() => {
@@ -528,9 +571,12 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
       hasCloset,
-      singleDoorClosets: hasCloset ? parseInt(singleDoorClosets) || 0 : 0,
-      doubleDoorClosets: hasCloset ? parseInt(doubleDoorClosets) || 0 : 0,
-      includeClosetInteriorInQuote,
+      singleDoorClosets: parseInt(singleDoorClosets) || 0,
+      doubleDoorClosets: parseInt(doubleDoorClosets) || 0,
+      includeClosetInteriorInQuote:
+        includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote,
       paintWalls,
       paintCeilings,
       paintWindowFrames,
@@ -570,8 +616,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     });
   }, [
     name, walls, isCathedral, cathedralPeakHeight,
-    windowCount, doorCount, hasCloset, singleDoorClosets, doubleDoorClosets,
-    includeClosetInteriorInQuote, paintWalls, paintCeilings, paintWindowFrames,
+    windowCount, doorCount, singleDoorClosets, doubleDoorClosets,
+    includeSingleClosetInteriorInQuote, includeDoubleClosetInteriorInQuote,
+    paintWalls, paintCeilings, paintWindowFrames,
     paintDoorFrames, paintWindows, paintDoors, paintJambs, paintBaseboard,
     hasCrownMoulding, hasAccentWall, notes, photos,
     isNew, projectId, irregularRoomId, unitSystem, addIrregularRoom, updateIrregularRoom, navigation, hasValidDimensions
@@ -1220,158 +1267,204 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                 </View>
 
-                <View>
-                  <Toggle
-                    label="Hat closet"
-                    value={hasCloset}
-                    onValueChange={setHasCloset}
-                  />
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    Single Door Closet
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(singleDoorClosets) || 0;
+                        setSingleDoorClosets(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease single door closet count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {singleDoorClosets || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(singleDoorClosets) || 0;
+                        setSingleDoorClosets((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase single door closet count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
                 </View>
 
-                {hasCloset && (
-                  <>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Single Door Count
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          backgroundColor: Colors.primaryBlueLight,
-                          borderRadius: BorderRadius.default,
-                          paddingHorizontal: 4,
-                          paddingVertical: 2,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          gap: 4,
-                        }}
-                      >
+                {singleClosetCount > 0 && (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
+                    <View style={{ flex: 1, marginRight: Spacing.md }}>
+                      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                          Include Closet Interior
+                        </Text>
                         <Pressable
-                          onPress={() => {
-                            const current = parseInt(singleDoorClosets) || 0;
-                            setSingleDoorClosets(Math.max(0, current - 1).toString());
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel="Decrease single door closet count"
-                          style={{
-                            width: 28,
-                            height: 28,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 12,
-                          }}
+                          onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                          hitSlop={8}
+                          style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
                         >
-                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
-                        </Pressable>
-                        <View
-                          style={{
-                            minWidth: 32,
-                            paddingHorizontal: 8,
-                            paddingVertical: 6,
-                            backgroundColor: Colors.white,
-                            borderRadius: 8,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                            {singleDoorClosets || "0"}
-                          </Text>
-                        </View>
-                        <Pressable
-                          onPress={() => {
-                            const current = parseInt(singleDoorClosets) || 0;
-                            setSingleDoorClosets((current + 1).toString());
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel="Increase single door closet count"
-                          style={{
-                            width: 28,
-                            height: 28,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 12,
-                          }}
-                        >
-                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                          <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
                         </Pressable>
                       </View>
                     </View>
+                    <Switch
+                      value={includeSingleClosetInteriorInQuote}
+                      onValueChange={setIncludeSingleClosetInteriorInQuote}
+                      trackColor={{
+                        false: Colors.neutralGray,
+                        true: Colors.primaryBlue,
+                      }}
+                      thumbColor={Colors.white}
+                      ios_backgroundColor={Colors.neutralGray}
+                    />
+                  </View>
+                )}
 
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                        Double Door Count
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    Double Doors Closet
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: BorderRadius.default,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(doubleDoorClosets) || 0;
+                        setDoubleDoorClosets(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease double door closet count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {doubleDoorClosets || "0"}
                       </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          backgroundColor: Colors.primaryBlueLight,
-                          borderRadius: BorderRadius.default,
-                          paddingHorizontal: 4,
-                          paddingVertical: 2,
-                          borderWidth: 1,
-                          borderColor: Colors.neutralGray,
-                          gap: 4,
-                        }}
-                      >
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(doubleDoorClosets) || 0;
+                        setDoubleDoorClosets((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase double door closet count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
+                </View>
+
+                {doubleClosetCount > 0 && (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
+                    <View style={{ flex: 1, marginRight: Spacing.md }}>
+                      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                          Include Closet Interior
+                        </Text>
                         <Pressable
-                          onPress={() => {
-                            const current = parseInt(doubleDoorClosets) || 0;
-                            setDoubleDoorClosets(Math.max(0, current - 1).toString());
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel="Decrease double door closet count"
-                          style={{
-                            width: 28,
-                            height: 28,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 12,
-                          }}
+                          onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                          hitSlop={8}
+                          style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
                         >
-                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
-                        </Pressable>
-                        <View
-                          style={{
-                            minWidth: 32,
-                            paddingHorizontal: 8,
-                            paddingVertical: 6,
-                            backgroundColor: Colors.white,
-                            borderRadius: 8,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                            {doubleDoorClosets || "0"}
-                          </Text>
-                        </View>
-                        <Pressable
-                          onPress={() => {
-                            const current = parseInt(doubleDoorClosets) || 0;
-                            setDoubleDoorClosets((current + 1).toString());
-                          }}
-                          accessibilityRole="button"
-                          accessibilityLabel="Increase double door closet count"
-                          style={{
-                            width: 28,
-                            height: 28,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 12,
-                          }}
-                        >
-                          <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                          <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
                         </Pressable>
                       </View>
                     </View>
-                  </>
+                    <Switch
+                      value={includeDoubleClosetInteriorInQuote}
+                      onValueChange={setIncludeDoubleClosetInteriorInQuote}
+                      trackColor={{
+                        false: Colors.neutralGray,
+                        true: Colors.primaryBlue,
+                      }}
+                      thumbColor={Colors.white}
+                      ios_backgroundColor={Colors.neutralGray}
+                    />
+                  </View>
                 )}
               </View>
             </Card>
