@@ -1633,23 +1633,23 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <Pressable
                 onPress={() => handleAddPhoto(true)}
                 style={{
-                  width: 40,
+                  width: 52,
                   height: 40,
-                  borderRadius: 20,
-                  backgroundColor: Colors.backgroundWarmGray,
+                  borderRadius: 10,
+                  backgroundColor: Colors.primaryBlue,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
                 accessibilityLabel="Take photo"
               >
-                <Ionicons name="camera-outline" size={20} color={Colors.darkCharcoal} />
+                <Ionicons name="camera-outline" size={20} color={Colors.white} />
               </Pressable>
               <Pressable
                 onPress={() => handleAddPhoto(false)}
                 style={{
-                  width: 40,
+                  width: 52,
                   height: 40,
-                  borderRadius: 20,
+                  borderRadius: 10,
                   backgroundColor: Colors.backgroundWarmGray,
                   alignItems: "center",
                   justifyContent: "center",
