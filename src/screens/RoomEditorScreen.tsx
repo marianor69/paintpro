@@ -1625,7 +1625,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
         {/* Room Photos Section */}
         <Card style={{ marginBottom: Spacing.md }}>
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: Spacing.md }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: photos.length > 0 ? Spacing.md : 0,
+            }}
+          >
             <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
               {(name ? name : "Room") + "'s Photos"}
             </Text>
