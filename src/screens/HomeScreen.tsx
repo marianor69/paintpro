@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.34 - 0582106 - Home Screen title
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v3.9.0 - RoomEditor card order
+              GPT - v3.9.1 - Estimate arrow on right
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates

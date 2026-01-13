@@ -761,7 +761,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             marginBottom: Spacing.md,
             ...(project.estimateBuildComplete && { borderWidth: 2, borderColor: Colors.success })
           }}>
-            {/* Header Row: Title/Amount on left, Button on right */}
+            {/* Header Row: Title/Amount on left, Button + Arrow on right */}
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: isEstimateExpanded ? Spacing.md : 0, gap: Spacing.md }}>
               {/* Left Side: Title and Amount */}
               <Pressable
@@ -772,7 +772,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               >
                 {project.estimateBuildComplete ? (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name={isEstimateExpanded ? "chevron-down" : "chevron-forward"} size={18} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
                     <Ionicons name="checkmark-circle" size={20} color={Colors.success} style={{ marginRight: Spacing.xs }} />
                     <Text style={{ fontSize: 18, color: Colors.success, fontWeight: "600" as any }}>
                       Estimate Complete
@@ -780,7 +779,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name={isEstimateExpanded ? "chevron-down" : "chevron-forward"} size={18} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
                     <Text style={{ fontSize: 18, color: Colors.mediumGray }}>
                       Running Estimate
                     </Text>
@@ -792,32 +790,51 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Pressable>
 
               {/* Right Side: Done/Edit Button */}
-              {canMarkStep2Complete && (
+              <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
+                {canMarkStep2Complete && (
+                  <Pressable
+                    onPress={project.estimateBuildComplete ? handleReopenEstimate : handleDoneBuilding}
+                    style={{
+                      backgroundColor: project.estimateBuildComplete ? Colors.white : Colors.success,
+                      borderRadius: BorderRadius.default,
+                      borderWidth: project.estimateBuildComplete ? 1 : 0,
+                      borderColor: project.estimateBuildComplete ? Colors.neutralGray : undefined,
+                      paddingVertical: Spacing.sm,
+                      paddingHorizontal: Spacing.sm,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: 112,
+                      ...Shadows.card,
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={project.estimateBuildComplete ? "Edit estimate" : "Done building estimate"}
+                  >
+                    <View style={{ alignItems: "center" }}>
+                      <Ionicons name={project.estimateBuildComplete ? "pencil" : "checkmark-circle"} size={18} color={project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white} style={{ marginBottom: Spacing.xs }} />
+                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white, textAlign: "center" }}>
+                        {project.estimateBuildComplete ? "Edit\nEstimate" : "Click\nwhen Done"}
+                      </Text>
+                    </View>
+                  </Pressable>
+                )}
                 <Pressable
-                  onPress={project.estimateBuildComplete ? handleReopenEstimate : handleDoneBuilding}
+                  onPress={() => setIsEstimateExpanded((prev) => !prev)}
                   style={{
-                    backgroundColor: project.estimateBuildComplete ? Colors.white : Colors.success,
-                    borderRadius: BorderRadius.default,
-                    borderWidth: project.estimateBuildComplete ? 1 : 0,
-                    borderColor: project.estimateBuildComplete ? Colors.neutralGray : undefined,
-                    paddingVertical: Spacing.sm,
-                    paddingHorizontal: Spacing.sm,
+                    width: 32,
+                    height: 32,
                     alignItems: "center",
                     justifyContent: "center",
-                    minWidth: 112,
-                    ...Shadows.card,
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={project.estimateBuildComplete ? "Edit estimate" : "Done building estimate"}
+                  accessibilityLabel={isEstimateExpanded ? "Collapse estimate details" : "Expand estimate details"}
                 >
-                  <View style={{ alignItems: "center" }}>
-                    <Ionicons name={project.estimateBuildComplete ? "pencil" : "checkmark-circle"} size={18} color={project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white} style={{ marginBottom: Spacing.xs }} />
-                    <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white, textAlign: "center" }}>
-                      {project.estimateBuildComplete ? "Edit\nEstimate" : "Click\nwhen Done"}
-                    </Text>
-                  </View>
+                  <Ionicons
+                    name={isEstimateExpanded ? "chevron-up" : "chevron-down"}
+                    size={22}
+                    color={Colors.mediumGray}
+                  />
                 </Pressable>
-              )}
+              </View>
             </View>
 
             {/* Two-column layout: Grey (items list) + Blue (labor/materials) */}
