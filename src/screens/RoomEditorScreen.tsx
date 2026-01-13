@@ -197,6 +197,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   // Collapsible sections
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
+  const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(true);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -1028,14 +1029,31 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
-        {/* Openings & Closets Section */}
+        {/* Openings & Closets Section - Collapsable */}
         <Card style={{ marginBottom: Spacing.md }}>
-          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-            Openings & Closets
-          </Text>
+          <Pressable
+            onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Openings & Closets
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Windows, doors, openings, and closets
+              </Text>
+            </View>
+            <Ionicons
+              name={openingsClosetsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
 
-          {/* Pass-Through Openings */}
-          <View style={{ marginBottom: Spacing.sm }}>
+          {openingsClosetsExpanded && (
+            <View style={{ marginTop: Spacing.md }}>
+              {/* Pass-Through Openings */}
+              <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <View>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
@@ -1582,6 +1600,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 thumbColor={Colors.white}
                 ios_backgroundColor={Colors.neutralGray}
               />
+            </View>
+          )}
             </View>
           )}
         </Card>
