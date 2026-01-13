@@ -211,6 +211,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const cathedralPeakHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
+  const singleClosetCount = parseInt(singleDoorClosets) || 0;
+  const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
 
   const getOpeningRefs = (index: number) => {
     if (!openingRefs.current[index]) {
@@ -1408,6 +1410,38 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
+          {singleClosetCount > 1 && (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs, marginBottom: Spacing.sm }}>
+              <View style={{ flex: 1, marginRight: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Include Closet Interior
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                  >
+                    <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
+                  </Pressable>
+                </View>
+              </View>
+              <Switch
+                value={includeClosetInteriorInQuote}
+                onValueChange={(value) => {
+                  includeClosetInteriorTouchedRef.current = true;
+                  setIncludeClosetInteriorInQuote(value);
+                }}
+                trackColor={{
+                  false: Colors.neutralGray,
+                  true: Colors.primaryBlue,
+                }}
+                thumbColor={Colors.white}
+                ios_backgroundColor={Colors.neutralGray}
+              />
+            </View>
+          )}
+
           <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
@@ -1487,12 +1521,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {((parseInt(singleDoorClosets) || 0) > 0 || (parseInt(doubleDoorClosets) || 0) > 0) && (
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.sm }}>
+          {doubleClosetCount > 0 && (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
               <View style={{ flex: 1, marginRight: Spacing.md }}>
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Include Closet Interiors
+                    Include Closet Interior
                   </Text>
                   <Pressable
                     onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
