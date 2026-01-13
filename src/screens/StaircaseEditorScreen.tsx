@@ -958,51 +958,47 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
             {/* Staircase Photos Section */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Staircase Photos
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-                Document risers, spindles, handrails, and wall conditions
-              </Text>
-
-              {/* Add Photo Buttons */}
-              <View style={{ flexDirection: "row", gap: Spacing.sm, marginBottom: Spacing.md }}>
-                <Pressable
-                  onPress={() => handleAddPhoto(true)}
-                  style={{
-                    flex: 1,
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Ionicons name="camera-outline" size={20} color={Colors.white} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.sm }}>
-                    Take Photo
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => handleAddPhoto(false)}
-                  style={{
-                    flex: 1,
-                    backgroundColor: Colors.white,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.md,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 1,
-                    borderColor: Colors.neutralGray,
-                  }}
-                >
-                  <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginLeft: Spacing.sm }}>
-                    Choose
-                  </Text>
-                </Pressable>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: photos.length > 0 ? Spacing.md : 0,
+                }}
+              >
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                  {(name ? name : "Staircase") + "'s Photos"}
+                </Text>
+                <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                  <Pressable
+                    onPress={() => handleAddPhoto(true)}
+                    style={{
+                      width: 52,
+                      height: 40,
+                      borderRadius: 10,
+                      backgroundColor: Colors.primaryBlue,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    accessibilityLabel="Take photo"
+                  >
+                    <Ionicons name="camera-outline" size={20} color={Colors.white} />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => handleAddPhoto(false)}
+                    style={{
+                      width: 52,
+                      height: 40,
+                      borderRadius: 10,
+                      backgroundColor: Colors.backgroundWarmGray,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    accessibilityLabel="Choose photo"
+                  >
+                    <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
+                  </Pressable>
+                </View>
               </View>
 
               {/* Photo Grid */}
@@ -1139,14 +1135,6 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 </View>
               )}
 
-              {photos.length === 0 && (
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.lg, alignItems: "center" }}>
-                  <Ionicons name="camera-outline" size={40} color={Colors.mediumGray} />
-                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
-                    No photos added yet
-                  </Text>
-                </View>
-              )}
             </Card>
 
             {/* Staircase Summary */}
