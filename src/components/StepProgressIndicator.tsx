@@ -10,6 +10,7 @@ interface StepProgressIndicatorProps {
   onStepPress?: (step: ProjectStep) => void;
   disabledSteps?: ProjectStep[];
   style?: ViewStyle;
+  showConnectors?: boolean;
 }
 
 /**
@@ -28,6 +29,7 @@ export default function StepProgressIndicator({
   onStepPress,
   disabledSteps = [],
   style,
+  showConnectors = true,
 }: StepProgressIndicatorProps) {
   const steps: ProjectStep[] = [1, 2, 3];
   const labels = ['Setup', 'Build Estimate', 'Send to Client'];
@@ -58,7 +60,7 @@ export default function StepProgressIndicator({
             </View>
 
             {/* Connector line (not after last step) */}
-            {index < steps.length - 1 && (
+            {showConnectors && index < steps.length - 1 && (
               <View style={styles.connectorWrapper}>
                 <StepConnector
                   isCompleted={isStepCompleted(step)}

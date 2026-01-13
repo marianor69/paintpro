@@ -745,6 +745,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
         completedSteps={completedSteps}
         onStepPress={handleStepPress}
         disabledSteps={completedSteps.includes(2) ? [] : [3]}
+        showConnectors={false}
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
