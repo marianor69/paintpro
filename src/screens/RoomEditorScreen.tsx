@@ -1627,7 +1627,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card style={{ marginBottom: Spacing.md }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-              {(name ? name : "Room") + " Photos"}
+              {(name ? name : "Room") + "'s Photos"}
             </Text>
             <View style={{ flexDirection: "row", gap: Spacing.sm }}>
               <Pressable
