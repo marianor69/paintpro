@@ -197,8 +197,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
 
   // Collapsible sections
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
-  const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(true);
-  const [notesExpanded, setNotesExpanded] = useState(true);
+  const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
+  const [notesExpanded, setNotesExpanded] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
