@@ -125,6 +125,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [photos, setPhotos] = useState<RoomPhoto[]>(!isNew && irregularRoom?.photos ? irregularRoom.photos : []);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
+  const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
+  const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
+  const [notesExpanded, setNotesExpanded] = useState(false);
 
   // Unsaved changes tracking
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -1118,13 +1121,29 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               )}
             </Card>
 
-            {/* Openings & Closets Section */}
+            {/* Openings & Closets Section - Collapsable */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Openings & Closets
-              </Text>
+              <Pressable
+                onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
+                style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                    Openings & Closets
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Windows, doors, and closets
+                  </Text>
+                </View>
+                <Ionicons
+                  name={openingsClosetsExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={Colors.mediumGray}
+                />
+              </Pressable>
 
-              <View style={{ gap: Spacing.md }}>
+              {openingsClosetsExpanded && (
+                <View style={{ gap: Spacing.md, marginTop: Spacing.md }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                     Window Count
@@ -1467,165 +1486,90 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                 )}
               </View>
-            </Card>
-
-            {/* Paint Options */}
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Paint Options
-              </Text>
-
-              <Toggle label="Paint Walls" value={paintWalls} onValueChange={setPaintWalls} />
-              <Toggle label="Paint Ceilings" value={paintCeilings} onValueChange={setPaintCeilings} />
-              <Toggle label="Paint Window Frames" value={paintWindowFrames} onValueChange={setPaintWindowFrames} />
-              <Toggle label="Paint Door Frames" value={paintDoorFrames} onValueChange={setPaintDoorFrames} />
-              <Toggle label="Paint Windows" value={paintWindows} onValueChange={setPaintWindows} />
-              <Toggle label="Paint Doors" value={paintDoors} onValueChange={setPaintDoors} />
-              <Toggle label="Paint Jambs" value={paintJambs} onValueChange={setPaintJambs} />
-              <Toggle label="Paint Baseboard" value={paintBaseboard} onValueChange={setPaintBaseboard} />
-              <Toggle label="Crown Moulding" value={hasCrownMoulding} onValueChange={setHasCrownMoulding} />
-              <Toggle label="Accent Wall (Multiple Colors)" value={hasAccentWall} onValueChange={setHasAccentWall} />
-            </Card>
-
-            {/* Room Summary Section */}
-            {totalArea > 0 && (
-              <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                  Room Summary
-                </Text>
-
-                {!hasPricingData ? (
-                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
-                      Pricing data unavailable. Please check Settings.
-                    </Text>
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      borderRadius: BorderRadius.default,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
-                          {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
-                        </Text>
-                      </View>
-                      {walls.length > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {walls.length}
-                          </Text>
-                        </View>
-                      )}
-                      {windowCountValue > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {windowCountValue}
-                          </Text>
-                        </View>
-                      )}
-                      {doorCountValue > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {doorCountValue}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-
-                    <View style={{ flex: 1, backgroundColor: Colors.primaryBlueLight, padding: Spacing.md }}>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Materials</Text>
-                      </View>
-
-                      {paintWalls && totalArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(wallLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(wallMaterialsCost)}
-                          </Text>
-                        </View>
-                      )}
-
-                      {paintWindows && windowCountValue > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(windowLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(windowMaterialsCost)}
-                          </Text>
-                        </View>
-                      )}
-
-                      {paintDoors && doorCountValue > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(doorLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(doorMaterialsCost)}
-                          </Text>
-                        </View>
-                      )}
-
-                      <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
-                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(totalLaborCost)}
-                        </Text>
-                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(totalMaterialsCost)}
-                        </Text>
-                      </View>
-                      <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: Spacing.xs }}>
-                        <Text style={{ fontSize: 14, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          ${Math.round(totalRoomCost).toLocaleString()}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )}
-              </Card>
             )}
+            </Card>
 
-            {/* Notes */}
+            {/* Paint Options - Collapsable */}
             <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Notes
-              </Text>
-              <TextInput
-                value={notes}
-                onChangeText={setNotes}
-                placeholder="Add notes about this room..."
-                placeholderTextColor={Colors.mediumGray}
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-                onFocus={handleFieldFocus}
-                // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
-                cursorColor={Colors.primaryBlue}
-                selectionColor={Colors.primaryBlue}
-                style={{
-                  backgroundColor: Colors.backgroundWarmGray,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  fontSize: Typography.body.fontSize,
-                  color: Colors.darkCharcoal,
-                  minHeight: 100,
-                }}
-              />
+              <Pressable
+                onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
+                style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                    Paint Options
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Customize what to paint in this room
+                  </Text>
+                </View>
+                <Ionicons
+                  name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={Colors.mediumGray}
+                />
+              </Pressable>
+
+              {paintOptionsExpanded && (
+                <View style={{ marginTop: Spacing.md }}>
+                  <Toggle label="Paint Walls" value={paintWalls} onValueChange={setPaintWalls} />
+                  <Toggle label="Paint Ceilings" value={paintCeilings} onValueChange={setPaintCeilings} />
+                  <Toggle label="Paint Window Frames" value={paintWindowFrames} onValueChange={setPaintWindowFrames} />
+                  <Toggle label="Paint Door Frames" value={paintDoorFrames} onValueChange={setPaintDoorFrames} />
+                  <Toggle label="Paint Windows" value={paintWindows} onValueChange={setPaintWindows} />
+                  <Toggle label="Paint Doors" value={paintDoors} onValueChange={setPaintDoors} />
+                  <Toggle label="Paint Jambs" value={paintJambs} onValueChange={setPaintJambs} />
+                  <Toggle label="Paint Baseboard" value={paintBaseboard} onValueChange={setPaintBaseboard} />
+                  <Toggle label="Crown Moulding" value={hasCrownMoulding} onValueChange={setHasCrownMoulding} />
+                  <Toggle label="Accent Wall (Multiple Colors)" value={hasAccentWall} onValueChange={setHasAccentWall} />
+                </View>
+              )}
+            </Card>
+
+            {/* Notes - Collapsable */}
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Pressable
+                onPress={() => setNotesExpanded(!notesExpanded)}
+                style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                    Notes
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Room notes and reminders
+                  </Text>
+                </View>
+                <Ionicons
+                  name={notesExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={Colors.mediumGray}
+                />
+              </Pressable>
+              {notesExpanded && (
+                <TextInput
+                  value={notes}
+                  onChangeText={setNotes}
+                  placeholder="Add notes about this room..."
+                  placeholderTextColor={Colors.mediumGray}
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                  onFocus={handleFieldFocus}
+                  // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
+                  cursorColor={Colors.primaryBlue}
+                  selectionColor={Colors.primaryBlue}
+                  style={{
+                    backgroundColor: Colors.backgroundWarmGray,
+                    borderRadius: BorderRadius.default,
+                    padding: Spacing.md,
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.darkCharcoal,
+                    minHeight: 100,
+                    marginTop: Spacing.md,
+                  }}
+                />
+              )}
             </Card>
 
             {/* Room Photos Section */}
@@ -1808,6 +1752,119 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               )}
 
             </Card>
+
+            {/* Room Summary Section */}
+            {totalArea > 0 && (
+              <Card style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                  Room Summary
+                </Text>
+
+                {!hasPricingData ? (
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
+                      Pricing data unavailable. Please check Settings.
+                    </Text>
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      borderRadius: BorderRadius.default,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
+                          {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                        </Text>
+                      </View>
+                      {walls.length > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {walls.length}
+                          </Text>
+                        </View>
+                      )}
+                      {windowCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {windowCountValue}
+                          </Text>
+                        </View>
+                      )}
+                      {doorCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {doorCountValue}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={{ flex: 1, backgroundColor: Colors.primaryBlueLight, padding: Spacing.md }}>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Materials</Text>
+                      </View>
+
+                      {paintWalls && totalArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(wallLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(wallMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {paintWindows && windowCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(windowLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(windowMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {paintDoors && doorCountValue > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(doorLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(doorMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
+
+                      <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(totalLaborCost)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(totalMaterialsCost)}
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: Spacing.xs }}>
+                        <Text style={{ fontSize: 14, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${Math.round(totalRoomCost).toLocaleString()}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                )}
+              </Card>
+            )}
 
             {/* Save Button */}
             <Pressable

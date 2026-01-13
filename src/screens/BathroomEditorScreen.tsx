@@ -196,6 +196,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
   // Collapsible sections
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
+  const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
+  const [notesExpanded, setNotesExpanded] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -1018,18 +1020,35 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
-        {/* Openings & Closets Section */}
+        {/* Openings & Closets Section - Collapsable */}
         <Card style={{ marginBottom: Spacing.md }}>
-          <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-            Openings & Closets
-          </Text>
+          <Pressable
+            onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Openings & Closets
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Windows, doors, and closets
+              </Text>
+            </View>
+            <Ionicons
+              name={openingsClosetsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
 
-          {/* Windows Counter */}
-          <View style={{ marginBottom: Spacing.sm }}>
+          {openingsClosetsExpanded && (
+            <View style={{ marginTop: Spacing.md }}>
+              {/* Windows Counter */}
+              <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Window Count
-                  </Text>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                Window Count
+              </Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -1101,11 +1120,11 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {/* Doors Counter */}
-          <View style={{ marginBottom: Spacing.sm }}>
+              <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Door Count
-                  </Text>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                Door Count
+              </Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -1177,7 +1196,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </View>
 
           {/* Closets Counters */}
-          <View style={{ marginBottom: Spacing.sm }}>
+              <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Single Door Closet
@@ -1256,36 +1275,36 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {singleClosetCount > 0 && (
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs, marginBottom: Spacing.sm }}>
-              <View style={{ flex: 1, marginRight: Spacing.md }}>
-                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Include Closet Interior
-                  </Text>
-                  <Pressable
-                    onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
-                    hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
-                  >
-                    <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
-                  </Pressable>
+              {singleClosetCount > 0 && (
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs, marginBottom: Spacing.sm }}>
+                  <View style={{ flex: 1, marginRight: Spacing.md }}>
+                    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Include Closet Interior
+                      </Text>
+                      <Pressable
+                        onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                        hitSlop={8}
+                        style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                      >
+                        <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
+                      </Pressable>
+                    </View>
+                  </View>
+                  <Switch
+                    value={includeSingleClosetInteriorInQuote}
+                    onValueChange={setIncludeSingleClosetInteriorInQuote}
+                    trackColor={{
+                      false: Colors.neutralGray,
+                      true: Colors.primaryBlue,
+                    }}
+                    thumbColor={Colors.white}
+                    ios_backgroundColor={Colors.neutralGray}
+                  />
                 </View>
-              </View>
-              <Switch
-                value={includeSingleClosetInteriorInQuote}
-                onValueChange={setIncludeSingleClosetInteriorInQuote}
-                trackColor={{
-                  false: Colors.neutralGray,
-                  true: Colors.primaryBlue,
-                }}
-                thumbColor={Colors.white}
-                ios_backgroundColor={Colors.neutralGray}
-              />
-            </View>
-          )}
+              )}
 
-          <View style={{ marginBottom: Spacing.sm }}>
+              <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Double Doors Closet
@@ -1364,70 +1383,171 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {doubleClosetCount > 0 && (
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
-              <View style={{ flex: 1, marginRight: Spacing.md }}>
-                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                    Include Closet Interior
-                  </Text>
-                  <Pressable
-                    onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
-                    hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
-                  >
-                    <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
-                  </Pressable>
+              {doubleClosetCount > 0 && (
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
+                  <View style={{ flex: 1, marginRight: Spacing.md }}>
+                    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                        Include Closet Interior
+                      </Text>
+                      <Pressable
+                        onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                        hitSlop={8}
+                        style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                      >
+                        <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
+                      </Pressable>
+                    </View>
+                  </View>
+                  <Switch
+                    value={includeDoubleClosetInteriorInQuote}
+                    onValueChange={setIncludeDoubleClosetInteriorInQuote}
+                    trackColor={{
+                      false: Colors.neutralGray,
+                      true: Colors.primaryBlue,
+                    }}
+                    thumbColor={Colors.white}
+                    ios_backgroundColor={Colors.neutralGray}
+                  />
                 </View>
-              </View>
-              <Switch
-                value={includeDoubleClosetInteriorInQuote}
-                onValueChange={setIncludeDoubleClosetInteriorInQuote}
-                trackColor={{
-                  false: Colors.neutralGray,
-                  true: Colors.primaryBlue,
-                }}
-                thumbColor={Colors.white}
-                ios_backgroundColor={Colors.neutralGray}
+              )}
+            </View>
+          )}
+        </Card>
+
+        {/* Paint Options Section - Collapsable */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <Pressable
+            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Paint Options
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Customize what to paint in this room
+              </Text>
+            </View>
+            <Ionicons
+              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
+
+          {paintOptionsExpanded && (
+            <View style={{ marginTop: Spacing.md }}>
+              <Toggle
+                label="Paint Walls"
+                value={paintWalls}
+                onValueChange={setPaintWalls}
+              />
+              <Toggle
+                label="Paint Ceilings"
+                value={paintCeilings}
+                onValueChange={setPaintCeilings}
+              />
+              <Toggle
+                label="Paint Window Frames"
+                value={paintWindowFrames}
+                onValueChange={setPaintWindowFrames}
+                description="Paint window trim and frames"
+              />
+              <Toggle
+                label="Paint Door Frames"
+                value={paintDoorFrames}
+                onValueChange={setPaintDoorFrames}
+                description="Paint door frames and closet door frames"
+              />
+              <Toggle
+                label="Paint Baseboard"
+                value={paintBaseboard}
+                onValueChange={setPaintBaseboard}
+              />
+              <Toggle
+                label="Paint Doors"
+                value={paintDoors}
+                onValueChange={setPaintDoors}
+                description="Paint the door faces (both sides)"
+              />
+              {paintDoors && (
+                <Toggle
+                  label="Paint Door Jambs"
+                  value={paintJambs}
+                  onValueChange={setPaintJambs}
+                  description="Paint the inside of door frames"
+                />
+              )}
+              <Toggle
+                label="Crown Moulding"
+                value={hasCrownMoulding}
+                onValueChange={setHasCrownMoulding}
+              />
+              <Toggle
+                label="Multiple Colors / Accent Wall"
+                value={hasAccentWall}
+                onValueChange={setHasAccentWall}
+                description="Adds extra labor for cutting in different colors"
+                className="mb-0"
               />
             </View>
           )}
         </Card>
 
-        {/* Notes Section */}
+        {/* Notes Section - Collapsable */}
         <View ref={notesCardRef}>
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Notes
-            </Text>
-            <TextInput
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Add notes about this bathroom..."
-              placeholderTextColor={Colors.mediumGray}
-              multiline
-              numberOfLines={3}
-              onFocus={() => {
-                setTimeout(() => {
-                  notesCardRef.current?.measureLayout(
-                    scrollViewRef.current as any,
-                    (x, y) => {
-                      scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
-                    },
-                    () => {}
-                  );
-                }, 100);
-              }}
-              style={[
-                TextInputStyles.multiline,
-                {
-                  backgroundColor: Colors.backgroundWarmGray,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  minHeight: 100,
-                }
-              ]}
-            />
+            <Pressable
+              onPress={() => setNotesExpanded(!notesExpanded)}
+              style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                  Notes
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                  Bathroom notes and reminders
+                </Text>
+              </View>
+              <Ionicons
+                name={notesExpanded ? "chevron-up" : "chevron-down"}
+                size={24}
+                color={Colors.mediumGray}
+              />
+            </Pressable>
+
+            {notesExpanded && (
+              <TextInput
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Add notes about this bathroom..."
+                placeholderTextColor={Colors.mediumGray}
+                multiline
+                numberOfLines={3}
+                onFocus={() => {
+                  setTimeout(() => {
+                    notesCardRef.current?.measureLayout(
+                      scrollViewRef.current as any,
+                      (x, y) => {
+                        scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                      },
+                      () => {}
+                    );
+                  }, 100);
+                }}
+                style={[
+                  TextInputStyles.multiline,
+                  {
+                    backgroundColor: Colors.backgroundWarmGray,
+                    borderRadius: BorderRadius.default,
+                    padding: Spacing.md,
+                    minHeight: 100,
+                    marginTop: Spacing.md,
+                  }
+                ]}
+              />
+            )}
           </Card>
         </View>
 
@@ -1553,86 +1673,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-        </Card>
-
-        {/* Paint Options Section - Collapsable */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Pressable
-            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
-            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                Paint Options
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Customize what to paint in this room
-              </Text>
-            </View>
-            <Ionicons
-              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={Colors.mediumGray}
-            />
-          </Pressable>
-
-          {paintOptionsExpanded && (
-            <View style={{ marginTop: Spacing.md }}>
-              <Toggle
-                label="Paint Walls"
-                value={paintWalls}
-                onValueChange={setPaintWalls}
-              />
-              <Toggle
-                label="Paint Ceilings"
-                value={paintCeilings}
-                onValueChange={setPaintCeilings}
-              />
-              <Toggle
-                label="Paint Window Frames"
-                value={paintWindowFrames}
-                onValueChange={setPaintWindowFrames}
-                description="Paint window trim and frames"
-              />
-              <Toggle
-                label="Paint Door Frames"
-                value={paintDoorFrames}
-                onValueChange={setPaintDoorFrames}
-                description="Paint door frames and closet door frames"
-              />
-              <Toggle
-                label="Paint Baseboard"
-                value={paintBaseboard}
-                onValueChange={setPaintBaseboard}
-              />
-              <Toggle
-                label="Paint Doors"
-                value={paintDoors}
-                onValueChange={setPaintDoors}
-                description="Paint the door faces (both sides)"
-              />
-              {paintDoors && (
-                <Toggle
-                  label="Paint Door Jambs"
-                  value={paintJambs}
-                  onValueChange={setPaintJambs}
-                  description="Paint the inside of door frames"
-                />
-              )}
-              <Toggle
-                label="Crown Moulding"
-                value={hasCrownMoulding}
-                onValueChange={setHasCrownMoulding}
-              />
-              <Toggle
-                label="Multiple Colors / Accent Wall"
-                value={hasAccentWall}
-                onValueChange={setHasAccentWall}
-                description="Adds extra labor for cutting in different colors"
-                className="mb-0"
-              />
-            </View>
-          )}
         </Card>
 
         {/* Room Summary Section */}
