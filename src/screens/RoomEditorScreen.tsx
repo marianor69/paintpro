@@ -198,6 +198,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   // Collapsible sections
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(true);
+  const [notesExpanded, setNotesExpanded] = useState(true);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -1606,40 +1607,139 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
-        {/* Notes Section */}
+        {/* Paint Options Section - Collapsable */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <Pressable
+            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Paint Options
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Customize what to paint in this room
+              </Text>
+            </View>
+            <Ionicons
+              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
+
+          {paintOptionsExpanded && (
+            <View style={{ marginTop: Spacing.md }}>
+              <Toggle
+                label="Paint Walls"
+                value={paintWalls}
+                onValueChange={setPaintWalls}
+              />
+              <Toggle
+                label="Paint Ceilings"
+                value={paintCeilings}
+                onValueChange={setPaintCeilings}
+              />
+              <Toggle
+                label="Paint Window Frames"
+                value={paintWindowFrames}
+                onValueChange={setPaintWindowFrames}
+                description="Paint window trim and frames"
+              />
+              <Toggle
+                label="Paint Door Frames"
+                value={paintDoorFrames}
+                onValueChange={setPaintDoorFrames}
+                description="Paint door frames and closet door frames"
+              />
+              <Toggle
+                label="Paint Baseboard"
+                value={paintBaseboard}
+                onValueChange={setPaintBaseboard}
+              />
+              <Toggle
+                label="Paint Doors"
+                value={paintDoors}
+                onValueChange={setPaintDoors}
+                description="Paint the door faces (both sides)"
+              />
+              {paintDoors && (
+                <Toggle
+                  label="Paint Door Jambs"
+                  value={paintJambs}
+                  onValueChange={setPaintJambs}
+                  description="Paint the inside of door frames"
+                />
+              )}
+              <Toggle
+                label="Crown Moulding"
+                value={hasCrownMoulding}
+                onValueChange={setHasCrownMoulding}
+              />
+              <Toggle
+                label="Multiple Colors / Accent Wall"
+                value={hasAccentWall}
+                onValueChange={setHasAccentWall}
+                description="Adds extra labor for cutting in different colors"
+                className="mb-0"
+              />
+            </View>
+          )}
+        </Card>
+
+        {/* Notes Section - Collapsable */}
         <View ref={notesCardRef}>
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-              Notes
-            </Text>
-            <TextInput
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Add notes about this room..."
-              placeholderTextColor={Colors.mediumGray}
-              multiline
-              numberOfLines={3}
-              onFocus={() => {
-                setTimeout(() => {
-                  notesCardRef.current?.measureLayout(
-                    scrollViewRef.current as any,
-                    (x, y) => {
-                      scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
-                    },
-                    () => {}
-                  );
-                }, 100);
-              }}
-              style={[
-                TextInputStyles.multiline,
-                {
-                  backgroundColor: Colors.backgroundWarmGray,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  minHeight: 100,
-                }
-              ]}
-            />
+            <Pressable
+              onPress={() => setNotesExpanded(!notesExpanded)}
+              style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                  Notes
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                  Room notes and reminders
+                </Text>
+              </View>
+              <Ionicons
+                name={notesExpanded ? "chevron-up" : "chevron-down"}
+                size={24}
+                color={Colors.mediumGray}
+              />
+            </Pressable>
+
+            {notesExpanded && (
+              <TextInput
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Add notes about this room..."
+                placeholderTextColor={Colors.mediumGray}
+                multiline
+                numberOfLines={3}
+                onFocus={() => {
+                  setTimeout(() => {
+                    notesCardRef.current?.measureLayout(
+                      scrollViewRef.current as any,
+                      (x, y) => {
+                        scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                      },
+                      () => {}
+                    );
+                  }, 100);
+                }}
+                style={[
+                  TextInputStyles.multiline,
+                  {
+                    backgroundColor: Colors.backgroundWarmGray,
+                    borderRadius: BorderRadius.default,
+                    padding: Spacing.md,
+                    minHeight: 100,
+                    marginTop: Spacing.md,
+                  }
+                ]}
+              />
+            )}
           </Card>
         </View>
 
@@ -1765,86 +1865,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-        </Card>
-
-        {/* Paint Options Section - Collapsable */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <Pressable
-            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
-            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                Paint Options
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Customize what to paint in this room
-              </Text>
-            </View>
-            <Ionicons
-              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={Colors.mediumGray}
-            />
-          </Pressable>
-
-          {paintOptionsExpanded && (
-            <View style={{ marginTop: Spacing.md }}>
-              <Toggle
-                label="Paint Walls"
-                value={paintWalls}
-                onValueChange={setPaintWalls}
-              />
-              <Toggle
-                label="Paint Ceilings"
-                value={paintCeilings}
-                onValueChange={setPaintCeilings}
-              />
-              <Toggle
-                label="Paint Window Frames"
-                value={paintWindowFrames}
-                onValueChange={setPaintWindowFrames}
-                description="Paint window trim and frames"
-              />
-              <Toggle
-                label="Paint Door Frames"
-                value={paintDoorFrames}
-                onValueChange={setPaintDoorFrames}
-                description="Paint door frames and closet door frames"
-              />
-              <Toggle
-                label="Paint Baseboard"
-                value={paintBaseboard}
-                onValueChange={setPaintBaseboard}
-              />
-              <Toggle
-                label="Paint Doors"
-                value={paintDoors}
-                onValueChange={setPaintDoors}
-                description="Paint the door faces (both sides)"
-              />
-              {paintDoors && (
-                <Toggle
-                  label="Paint Door Jambs"
-                  value={paintJambs}
-                  onValueChange={setPaintJambs}
-                  description="Paint the inside of door frames"
-                />
-              )}
-              <Toggle
-                label="Crown Moulding"
-                value={hasCrownMoulding}
-                onValueChange={setHasCrownMoulding}
-              />
-              <Toggle
-                label="Multiple Colors / Accent Wall"
-                value={hasAccentWall}
-                onValueChange={setHasAccentWall}
-                description="Adds extra labor for cutting in different colors"
-                className="mb-0"
-              />
-            </View>
-          )}
         </Card>
 
         {/* Room Summary Section */}
