@@ -840,7 +840,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         keyboardDismissMode="on-drag"
       >
         {/* Room Information Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
+        <Card style={{ marginBottom: Spacing.md, paddingTop: Spacing.lg, paddingBottom: Spacing.lg }}>
           {/* Room Name */}
           <View style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
