@@ -47,6 +47,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
   const [addMenuVisible, setAddMenuVisible] = React.useState(false);
   const [isEstimateExpanded, setIsEstimateExpanded] = React.useState(false);
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
   // Wrap project loading and preprocessing
   let summary: ReturnType<typeof calculateFilteredProjectSummary> | null = null;
@@ -712,6 +713,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const handleStepPress = (step: 1 | 2 | 3) => {
     if (step === 1) {
       navigation.navigate("ProjectSetup", { projectId: project.id });
+    } else if (step === 2) {
+      setIsEstimateExpanded(true);
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
     } else if (step === 3 && completedSteps.includes(2)) {
       navigation.navigate("ClientProposal", { projectId: project.id });
     }
@@ -752,6 +756,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
         style={{ flex: 1 }}
       >
         <ScrollView
+          ref={scrollViewRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ padding: Spacing.md, paddingBottom: 120 }}
           keyboardShouldPersistTaps="handled"
