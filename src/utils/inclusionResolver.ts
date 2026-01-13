@@ -34,6 +34,8 @@ export interface ResolvedInclusions {
   doors: boolean;
   closets: boolean;
   closetInteriors: boolean;
+  closetInteriorsSingle: boolean;
+  closetInteriorsDouble: boolean;
   crownMoulding: boolean;
   jambs: boolean;
 }
@@ -86,6 +88,8 @@ export function computeResolvedInclusions(
       doors: false,
       closets: false,
       closetInteriors: false,
+      closetInteriorsSingle: false,
+      closetInteriorsDouble: false,
       crownMoulding: false,
       jambs: false,
     };
@@ -103,21 +107,16 @@ export function computeResolvedInclusions(
   const crownMoulding = resolveInclusion(room.hasCrownMoulding, quoteBuilder.includeTrim); // Crown uses trim toggle
   const jambs = resolveInclusion(room.paintJambs, quoteBuilder.includeDoors); // Jambs use doors toggle
 
-  // Closet interiors: Check room toggle first, then project default, then QB toggle
-  let closetInteriors = false;
-  if (room.includeClosetInteriorInQuote !== undefined) {
-    // Room-level toggle exists - use it
-    closetInteriors = room.includeClosetInteriorInQuote;
-  } else if (projectIncludeClosetInteriorInQuote !== undefined) {
-    // Project default exists - use it
-    closetInteriors = projectIncludeClosetInteriorInQuote;
-  } else {
-    // Fall back to true (default)
-    closetInteriors = true;
-  }
-
-  // Apply QB closets toggle as final filter
-  closetInteriors = closetInteriors && quoteBuilder.includeClosets;
+  // Closet interiors: Check room toggle per closet type, then project default, then QB toggle
+  const fallbackClosetInterior =
+    room.includeClosetInteriorInQuote ?? projectIncludeClosetInteriorInQuote ?? true;
+  const closetInteriorsSingle =
+    (room.includeSingleClosetInteriorInQuote ?? fallbackClosetInterior) &&
+    quoteBuilder.includeClosets;
+  const closetInteriorsDouble =
+    (room.includeDoubleClosetInteriorInQuote ?? fallbackClosetInterior) &&
+    quoteBuilder.includeClosets;
+  const closetInteriors = closetInteriorsSingle || closetInteriorsDouble;
 
   return {
     walls,
@@ -128,6 +127,8 @@ export function computeResolvedInclusions(
     doors,
     closets,
     closetInteriors,
+    closetInteriorsSingle,
+    closetInteriorsDouble,
     crownMoulding,
     jambs,
   };

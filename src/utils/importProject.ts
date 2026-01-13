@@ -72,6 +72,8 @@ interface ImportedProject {
     includeDoors?: boolean;
     includeTrim?: boolean;
     includeClosetInteriorInQuote?: boolean;
+    includeSingleClosetInteriorInQuote?: boolean;
+    includeDoubleClosetInteriorInQuote?: boolean;
     coatsWalls: number;
     coatsCeiling: number;
     coatsTrim: number;
@@ -251,6 +253,14 @@ export function importProjectFromJSON(jsonString: string): {
           includeDoors: roomData.includeDoors ?? true,
           includeTrim: roomData.includeTrim ?? true,
           includeClosetInteriorInQuote: roomData.includeClosetInteriorInQuote ?? true,
+          includeSingleClosetInteriorInQuote:
+            roomData.includeSingleClosetInteriorInQuote ??
+            roomData.includeClosetInteriorInQuote ??
+            true,
+          includeDoubleClosetInteriorInQuote:
+            roomData.includeDoubleClosetInteriorInQuote ??
+            roomData.includeClosetInteriorInQuote ??
+            true,
           coatsWalls: roomData.coatsWalls,
           coatsCeiling: roomData.coatsCeiling,
           coatsTrim: roomData.coatsTrim,
@@ -297,6 +307,8 @@ export function importProjectFromJSON(jsonString: string): {
             paintDoors: room.paintDoors,
             paintBaseboard: room.paintBaseboard,
             includeClosetInteriorInQuote: room.includeClosetInteriorInQuote,
+            includeSingleClosetInteriorInQuote: room.includeSingleClosetInteriorInQuote,
+            includeDoubleClosetInteriorInQuote: room.includeDoubleClosetInteriorInQuote,
           },
         });
 

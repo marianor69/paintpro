@@ -535,6 +535,8 @@ export const useProjectStore = create<ProjectStore>()(
           paintJambs: globalDefaults.paintDoorJambs,
           hasCrownMoulding: globalDefaults.paintCrownMoulding,
           includeClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
+          includeSingleClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
+          includeDoubleClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
         };
         set((state) => ({
           projects: state.projects.map((p) =>

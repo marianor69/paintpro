@@ -201,6 +201,8 @@ export function computeRoomPricingSummary(
   const includedDoors = resolvedInclusions.doors;
   const includedWindows = resolvedInclusions.windows;
   const includedBaseboards = resolvedInclusions.baseboards;
+  const includedClosetSingle = resolvedInclusions.closetInteriorsSingle;
+  const includedClosetDouble = resolvedInclusions.closetInteriorsDouble;
   const includedClosets = resolvedInclusions.closetInteriors;
 
   // Get coats - project-level coats override room-level for all categories
@@ -293,10 +295,20 @@ export function computeRoomPricingSummary(
   let closetCeilingArea = 0;
   let closetBaseboardLF = 0;
 
-  if (includedClosets) {
-    closetWallArea = closetMetrics.totalClosetWallArea;
-    closetCeilingArea = closetMetrics.totalClosetCeilingArea;
-    closetBaseboardLF = closetMetrics.totalClosetBaseboardLF;
+  const includedClosetWallArea =
+    (includedClosetSingle ? closetMetrics.singleClosetWallArea : 0) +
+    (includedClosetDouble ? closetMetrics.doubleClosetWallArea : 0);
+  const includedClosetCeilingArea =
+    (includedClosetSingle ? closetMetrics.singleClosetCeilingArea : 0) +
+    (includedClosetDouble ? closetMetrics.doubleClosetCeilingArea : 0);
+  const includedClosetBaseboardLF =
+    (includedClosetSingle ? closetMetrics.singleClosetBaseboardLF : 0) +
+    (includedClosetDouble ? closetMetrics.doubleClosetBaseboardLF : 0);
+
+  if (includedClosetWallArea > 0 || includedClosetCeilingArea > 0) {
+    closetWallArea = includedClosetWallArea;
+    closetCeilingArea = includedClosetCeilingArea;
+    closetBaseboardLF = includedClosetBaseboardLF;
     wallArea += closetWallArea;
     ceilingArea += closetCeilingArea;
   }
@@ -318,8 +330,8 @@ export function computeRoomPricingSummary(
       baseboardLF = Math.max(0, estimatedPerimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
     }
 
-    if (includedClosets) {
-      baseboardLF += closetBaseboardLF; // feet
+    if (includedClosetBaseboardLF > 0) {
+      baseboardLF += includedClosetBaseboardLF; // feet
     }
   }
 
@@ -491,11 +503,13 @@ export function computeRoomPricingSummary(
   }
 
   // Add closet labor only if closets are included via combined rule
-  if (includedClosets && (singleClosets > 0 || doubleClosets > 0)) {
+  const includedClosetCount =
+    (includedClosetSingle ? singleClosets : 0) + (includedClosetDouble ? doubleClosets : 0);
+  if (includedClosetCount > 0) {
     // Closet labor applies the wall coat multiplier since closet interiors are walls
     const closetLaborMultiplier =
       getCoatLaborMultiplier(coatsWalls) * safeNumber(pricing.closetLaborMultiplier, 1.0);
-    laborCost += (singleClosets + doubleClosets) * safeNumber(pricing.closetLabor, 0) * closetLaborMultiplier;
+    laborCost += includedClosetCount * safeNumber(pricing.closetLabor, 0) * closetLaborMultiplier;
   }
 
   if (room.hasCrownMoulding && crownMouldingLF > 0 && includedTrim && room.includeTrim !== false) {

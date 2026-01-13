@@ -66,7 +66,8 @@ function serializeRoomState(
   paintBaseboard: boolean,
   hasCrownMoulding: boolean,
   hasAccentWall: boolean,
-  includeClosetInteriorInQuote: boolean
+  includeSingleClosetInteriorInQuote: boolean,
+  includeDoubleClosetInteriorInQuote: boolean
 ): string {
   return JSON.stringify({
     name,
@@ -91,7 +92,8 @@ function serializeRoomState(
     paintBaseboard,
     hasCrownMoulding,
     hasAccentWall,
-    includeClosetInteriorInQuote,
+    includeSingleClosetInteriorInQuote,
+    includeDoubleClosetInteriorInQuote,
   });
 }
 
@@ -138,8 +140,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [doubleDoorClosets, setDoubleDoorClosets] = useState(
     room?.doubleDoorClosets && room.doubleDoorClosets > 0 ? room.doubleDoorClosets.toString() : ""
   );
-  const [includeClosetInteriorInQuote, setIncludeClosetInteriorInQuote] = useState(
-    room?.includeClosetInteriorInQuote ?? projectClosetInteriorDefault
+  const [includeSingleClosetInteriorInQuote, setIncludeSingleClosetInteriorInQuote] = useState(
+    room?.includeSingleClosetInteriorInQuote ??
+    room?.includeClosetInteriorInQuote ??
+    projectClosetInteriorDefault
+  );
+  const [includeDoubleClosetInteriorInQuote, setIncludeDoubleClosetInteriorInQuote] = useState(
+    room?.includeDoubleClosetInteriorInQuote ??
+    room?.includeClosetInteriorInQuote ??
+    projectClosetInteriorDefault
   );
 
   // Paint options - room-level overrides
@@ -181,10 +190,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [infoModalTitle, setInfoModalTitle] = useState("");
   const [infoModalBody, setInfoModalBody] = useState("");
-  const includeClosetInteriorTouchedRef = useRef(false);
-  const prevClosetDoorCountRef = useRef<number>(
-    (parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0)
-  );
+  const includeSingleClosetInteriorTouchedRef = useRef(false);
+  const includeDoubleClosetInteriorTouchedRef = useRef(false);
+  const prevSingleClosetCountRef = useRef<number>(parseInt(singleDoorClosets) || 0);
+  const prevDoubleClosetCountRef = useRef<number>(parseInt(doubleDoorClosets) || 0);
 
   // Collapsible sections
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
@@ -323,6 +332,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
         project?.globalPaintDefaults?.paintCrownMoulding ?? true,
         false,
+        projectClosetInteriorDefault,
         projectClosetInteriorDefault
       );
       return;
@@ -354,24 +364,37 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       room.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
       room.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true,
       room.hasAccentWall ?? false,
-      room.includeClosetInteriorInQuote ?? projectClosetInteriorDefault
+      room.includeSingleClosetInteriorInQuote ??
+        room.includeClosetInteriorInQuote ??
+        projectClosetInteriorDefault,
+      room.includeDoubleClosetInteriorInQuote ??
+        room.includeClosetInteriorInQuote ??
+        projectClosetInteriorDefault
     );
   }, [room, project]);
 
   useEffect(() => {
-    const totalClosetDoors =
-      (parseInt(singleDoorClosets) || 0) + (parseInt(doubleDoorClosets) || 0);
-    const previousCount = prevClosetDoorCountRef.current;
+    const currentSingleCount = parseInt(singleDoorClosets) || 0;
+    const currentDoubleCount = parseInt(doubleDoorClosets) || 0;
 
     if (
-      totalClosetDoors > 0 &&
-      previousCount === 0 &&
-      !includeClosetInteriorTouchedRef.current
+      currentSingleCount > 0 &&
+      prevSingleClosetCountRef.current === 0 &&
+      !includeSingleClosetInteriorTouchedRef.current
     ) {
-      setIncludeClosetInteriorInQuote(projectClosetInteriorDefault);
+      setIncludeSingleClosetInteriorInQuote(projectClosetInteriorDefault);
     }
 
-    prevClosetDoorCountRef.current = totalClosetDoors;
+    if (
+      currentDoubleCount > 0 &&
+      prevDoubleClosetCountRef.current === 0 &&
+      !includeDoubleClosetInteriorTouchedRef.current
+    ) {
+      setIncludeDoubleClosetInteriorInQuote(projectClosetInteriorDefault);
+    }
+
+    prevSingleClosetCountRef.current = currentSingleCount;
+    prevDoubleClosetCountRef.current = currentDoubleCount;
   }, [singleDoorClosets, doubleDoorClosets, projectClosetInteriorDefault]);
 
   // Check for changes by comparing current state to initial snapshot
@@ -401,7 +424,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
-      includeClosetInteriorInQuote
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote
     );
 
     const hasChanges = currentState !== initialStateRef.current;
@@ -429,7 +453,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     paintBaseboard,
     hasCrownMoulding,
     hasAccentWall,
-    includeClosetInteriorInQuote,
+    includeSingleClosetInteriorInQuote,
+    includeDoubleClosetInteriorInQuote,
   ]);
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
@@ -594,7 +619,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       includeWindows: true,
       includeDoors: true,
       includeTrim: true,
-      includeClosetInteriorInQuote,
+      includeClosetInteriorInQuote:
+        includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote,
       // Openings
       openings: openings.map(o => ({
         id: o.id,
@@ -675,7 +703,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
-      includeClosetInteriorInQuote
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote
     );
 
     setTimeout(() => {
@@ -766,7 +795,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       includeWindows: true,
       includeDoors: true,
       includeTrim: true,
-      includeClosetInteriorInQuote,
+      includeClosetInteriorInQuote:
+        includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote,
       openings: openings.map(o => ({
         id: o.id,
         width: parseInt(o.width) || 0,
@@ -1427,10 +1459,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 </View>
               </View>
               <Switch
-                value={includeClosetInteriorInQuote}
+                value={includeSingleClosetInteriorInQuote}
                 onValueChange={(value) => {
-                  includeClosetInteriorTouchedRef.current = true;
-                  setIncludeClosetInteriorInQuote(value);
+                  includeSingleClosetInteriorTouchedRef.current = true;
+                  setIncludeSingleClosetInteriorInQuote(value);
                 }}
                 trackColor={{
                   false: Colors.neutralGray,
@@ -1538,10 +1570,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 </View>
               </View>
               <Switch
-                value={includeClosetInteriorInQuote}
+                value={includeDoubleClosetInteriorInQuote}
                 onValueChange={(value) => {
-                  includeClosetInteriorTouchedRef.current = true;
-                  setIncludeClosetInteriorInQuote(value);
+                  includeDoubleClosetInteriorTouchedRef.current = true;
+                  setIncludeDoubleClosetInteriorInQuote(value);
                 }}
                 trackColor={{
                   false: Colors.neutralGray,

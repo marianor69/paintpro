@@ -415,6 +415,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             paintBaseboard: room.paintBaseboard,
             hasCrownMoulding: room.hasCrownMoulding,
             includeClosetInteriorInQuote: room.includeClosetInteriorInQuote,
+            includeSingleClosetInteriorInQuote: room.includeSingleClosetInteriorInQuote,
+            includeDoubleClosetInteriorInQuote: room.includeDoubleClosetInteriorInQuote,
           },
 
           // COVERAGE RULES - Paint consumption rates
