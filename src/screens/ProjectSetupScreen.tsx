@@ -185,6 +185,26 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const currentStep = useMemo(() => calculateCurrentStep(project), [project]);
   const completedSteps = useMemo(() => getCompletedSteps(project), [project]);
   const step1Errors = useMemo(() => getStepValidationErrors(project, 1), [project]);
+  const isSetupDirty = useMemo(() => {
+    if (isNew || !project) return true;
+    const normalized = (value?: string) => (value || "").trim();
+    const clientInfo = project.clientInfo || {};
+
+    return (
+      normalized(name) !== normalized(clientInfo.name) ||
+      normalized(address) !== normalized(clientInfo.address) ||
+      normalized(phone) !== normalized(clientInfo.phone) ||
+      normalized(email) !== normalized(clientInfo.email) ||
+      (coverPhotoUri || "") !== (project.coverPhotoUri || "")
+    );
+  }, [isNew, project, name, address, phone, email, coverPhotoUri]);
+  const disabledSteps = useMemo(() => {
+    const steps: Array<1 | 2 | 3> = [3];
+    if (isNew || isSetupDirty) {
+      steps.push(2);
+    }
+    return steps;
+  }, [isNew, isSetupDirty]);
 
   const minGapBelowIndicator = 16;
   // Increase to move label higher (closer to StepProgressIndicator)
@@ -424,6 +444,12 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     // Just close the modal, user stays on ProjectSetup screen
   };
 
+  const handleStepPress = (step: 1 | 2 | 3) => {
+    if (step === 2 && !isNew && !isSetupDirty) {
+      navigation.replace("ProjectDetail", { projectId: project.id });
+    }
+  };
+
   return (
     <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       {/* Step Progress Indicator */}
@@ -439,7 +465,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
         <StepProgressIndicator
           currentStep={1}
           completedSteps={completedSteps}
-          disabledSteps={[2, 3]}
+          disabledSteps={disabledSteps}
+          onStepPress={handleStepPress}
         />
       </View>
       </View>
