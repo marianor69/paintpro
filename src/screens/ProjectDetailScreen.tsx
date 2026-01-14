@@ -719,6 +719,10 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   useEffect(() => {
     navigation.setOptions({
       headerBackTitle: "Back",
+      headerBackTitleStyle: {
+        fontSize: 14,
+        color: Colors.primaryBlue,
+      },
       headerTitle: () => (
         <StepProgressIndicator
           currentStep={currentStep}
