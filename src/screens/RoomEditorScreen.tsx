@@ -1031,7 +1031,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           style={{
             marginBottom: Spacing.md,
             paddingTop: Spacing.lg,
-            paddingBottom: Spacing.lg,
+            paddingBottom: Spacing.sm,
             backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white,
           }}
         >
