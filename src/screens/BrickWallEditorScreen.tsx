@@ -595,7 +595,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                     TextInputStyles.multiline,
                     {
                       backgroundColor: Colors.backgroundWarmGray,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       padding: Spacing.md,
                       minHeight: 100,
                     }
@@ -623,7 +623,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.primaryBlue,
                       alignItems: "center",
                       justifyContent: "center",
@@ -637,7 +637,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.backgroundWarmGray,
                       alignItems: "center",
                       justifyContent: "center",
@@ -657,7 +657,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                       key={photo.id}
                       style={{
                         backgroundColor: Colors.backgroundWarmGray,
-                        borderRadius: BorderRadius.default,
+                        borderRadius: 8,
                         overflow: "hidden",
                       }}
                     >
@@ -689,7 +689,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                                 TextInputStyles.multiline,
                                 {
                                   backgroundColor: Colors.white,
-                                  borderRadius: BorderRadius.default,
+                                  borderRadius: 8,
                                   padding: Spacing.sm,
                                   minHeight: 60,
                                   marginBottom: Spacing.sm,
@@ -792,7 +792,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
 
                 <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                   {/* Gray section - breakdown list */}
-                  <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                     {/* Header */}
                     <View style={{ marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
@@ -807,7 +807,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
                   </View>
 
                   {/* Blue section - Labor and Materials */}
-                  <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
                     {/* Header Row */}
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
@@ -841,7 +841,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               onPress={handleSave}
               style={{
                 backgroundColor: Colors.primaryBlue,
-                borderRadius: BorderRadius.default,
+                borderRadius: 8,
                 paddingVertical: Spacing.md,
                 alignItems: "center",
                 ...Shadows.card,
@@ -877,7 +877,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
             onPress={() => setInfoModalVisible(false)}
             style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
           />
-          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+          <View style={{ backgroundColor: Colors.white, borderRadius: 8, padding: Spacing.lg, ...Shadows.card }}>
             <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
               {infoModalTitle}
             </Text>
@@ -886,7 +886,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
             </Text>
             <Pressable
               onPress={() => setInfoModalVisible(false)}
-              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: 8, paddingVertical: Spacing.sm, alignItems: "center" }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
                 Close

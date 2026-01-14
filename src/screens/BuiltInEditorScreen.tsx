@@ -487,7 +487,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingHorizontal: 4,
                       paddingVertical: 2,
                       borderWidth: 1,
@@ -508,7 +508,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -542,7 +542,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -597,7 +597,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     TextInputStyles.multiline,
                     {
                       backgroundColor: Colors.backgroundWarmGray,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       padding: Spacing.md,
                       minHeight: 100,
                     }
@@ -625,7 +625,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.primaryBlue,
                       alignItems: "center",
                       justifyContent: "center",
@@ -639,7 +639,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.backgroundWarmGray,
                       alignItems: "center",
                       justifyContent: "center",
@@ -664,7 +664,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                       key={photo.id}
                       style={{
                         backgroundColor: Colors.backgroundWarmGray,
-                        borderRadius: BorderRadius.default,
+                        borderRadius: 8,
                         overflow: "hidden",
                       }}
                     >
@@ -744,7 +744,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                 <Card style={{ marginBottom: Spacing.md }}>
                   <Text style={Typography.h2}>Built-In Summary</Text>
 
-                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                     {frontBackArea > 0 && (
                       <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                         <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Front/Back</Text>
@@ -809,7 +809,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     TEST MODE: Calculation Details
                   </Text>
 
-                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                     {/* Front/Back */}
                     {frontBackArea > 0 && (
                       <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
@@ -898,7 +898,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               disabled={isSaving}
               style={{
                 backgroundColor: isSaving ? Colors.mediumGray : Colors.primaryBlue,
-                borderRadius: BorderRadius.default,
+                borderRadius: 8,
                 paddingVertical: Spacing.md,
                 alignItems: "center",
                 ...Shadows.card,
@@ -951,7 +951,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               <Pressable
                 style={{
                   backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   marginHorizontal: Spacing.lg,
                   padding: Spacing.lg,
                   width: "90%",
@@ -994,7 +994,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     style={{
                       flex: 1,
                       backgroundColor: Colors.neutralGray,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingVertical: Spacing.md,
                       alignItems: "center",
                     }}
@@ -1008,7 +1008,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     style={{
                       flex: 1,
                       backgroundColor: Colors.primaryBlue,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingVertical: Spacing.md,
                       alignItems: "center",
                     }}
@@ -1042,7 +1042,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             <Pressable
               style={{
                 backgroundColor: Colors.white,
-                borderRadius: BorderRadius.default,
+                borderRadius: 8,
                 marginHorizontal: Spacing.lg,
                 padding: Spacing.lg,
                 width: "90%",
@@ -1064,7 +1064,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   style={{
                     flex: 1,
                     backgroundColor: Colors.neutralGray,
-                    borderRadius: BorderRadius.default,
+                    borderRadius: 8,
                     paddingVertical: Spacing.md,
                     alignItems: "center",
                   }}
@@ -1078,7 +1078,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   style={{
                     flex: 1,
                     backgroundColor: Colors.error,
-                    borderRadius: BorderRadius.default,
+                    borderRadius: 8,
                     paddingVertical: Spacing.md,
                     alignItems: "center",
                   }}

@@ -1131,7 +1131,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1153,7 +1153,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1187,7 +1187,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1207,7 +1207,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1229,7 +1229,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1263,7 +1263,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1283,7 +1283,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1308,7 +1308,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1343,7 +1343,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1391,7 +1391,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1416,7 +1416,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1451,7 +1451,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1654,7 +1654,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   TextInputStyles.multiline,
                   {
                     backgroundColor: Colors.backgroundWarmGray,
-                    borderRadius: BorderRadius.default,
+                    borderRadius: 8,
                     padding: Spacing.md,
                     minHeight: 100,
                     marginTop: Spacing.md,
@@ -1684,7 +1684,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 style={{
                   width: 52,
                   height: 40,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: Colors.primaryBlue,
                   alignItems: "center",
                   justifyContent: "center",
@@ -1698,7 +1698,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 style={{
                   width: 52,
                   height: 40,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: Colors.backgroundWarmGray,
                   alignItems: "center",
                   justifyContent: "center",
@@ -1718,7 +1718,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   key={photo.id}
                   style={{
                     backgroundColor: Colors.backgroundWarmGray,
-                    borderRadius: BorderRadius.default,
+                    borderRadius: 8,
                     overflow: "hidden",
                   }}
                 >
@@ -1845,7 +1845,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
               <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                 {/* Left Column - Measurements (Gray) - Wider with 2 columns: structures (left) and measures (right) */}
-                <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                   {/* Empty row to align with blue section headers */}
                   <View style={{ marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
@@ -1897,7 +1897,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 </View>
 
                 {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
-                <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
                   {/* Header Row */}
                   <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
@@ -2010,7 +2010,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 TEST MODE: Calculation Details
               </Text>
 
-              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+              <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                 {/* Walls */}
                 {pricingSummary.wallArea > 0 && (
                   <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
@@ -2156,7 +2156,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           onPress={handleSave}
           style={{
             backgroundColor: Colors.primaryBlue,
-            borderRadius: BorderRadius.default,
+            borderRadius: 8,
             paddingVertical: Spacing.md,
             alignItems: "center",
             ...Shadows.card,
@@ -2182,7 +2182,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             onPress={() => setInfoModalVisible(false)}
             style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
           />
-          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+          <View style={{ backgroundColor: Colors.white, borderRadius: 8, padding: Spacing.lg, ...Shadows.card }}>
             <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
               {infoModalTitle}
             </Text>
@@ -2191,7 +2191,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </Text>
             <Pressable
               onPress={() => setInfoModalVisible(false)}
-              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: 8, paddingVertical: Spacing.sm, alignItems: "center" }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
                 Close
@@ -2238,7 +2238,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           <Pressable
             style={{
               backgroundColor: Colors.white,
-              borderRadius: BorderRadius.default,
+              borderRadius: 8,
               marginHorizontal: Spacing.lg,
               padding: Spacing.lg,
               width: "90%",
@@ -2281,7 +2281,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 style={{
                   flex: 1,
                   backgroundColor: Colors.neutralGray,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingVertical: Spacing.md,
                   alignItems: "center",
                 }}
@@ -2295,7 +2295,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 style={{
                   flex: 1,
                   backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingVertical: Spacing.md,
                   alignItems: "center",
                 }}
@@ -2328,7 +2328,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 backgroundColor: Colors.primaryBlue,
                 paddingHorizontal: Spacing.lg,
                 paddingVertical: Spacing.sm,
-                borderRadius: BorderRadius.default,
+                borderRadius: 8,
               }}
             >
               <Text

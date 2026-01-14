@@ -642,7 +642,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     TextInputStyles.multiline,
                     {
                       backgroundColor: Colors.backgroundWarmGray,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       padding: Spacing.md,
                       minHeight: 100,
                     }
@@ -670,7 +670,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.primaryBlue,
                       alignItems: "center",
                       justifyContent: "center",
@@ -684,7 +684,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.backgroundWarmGray,
                       alignItems: "center",
                       justifyContent: "center",
@@ -704,7 +704,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                       key={photo.id}
                       style={{
                         backgroundColor: Colors.backgroundWarmGray,
-                        borderRadius: BorderRadius.default,
+                        borderRadius: 8,
                         overflow: "hidden",
                       }}
                     >
@@ -736,7 +736,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                                 TextInputStyles.multiline,
                                 {
                                   backgroundColor: Colors.white,
-                                  borderRadius: BorderRadius.default,
+                                  borderRadius: 8,
                                   padding: Spacing.sm,
                                   minHeight: 60,
                                   marginBottom: Spacing.sm,
@@ -865,7 +865,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                   <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                     {/* Gray section - parts list */}
-                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                       {/* Empty row for alignment */}
                       <View style={{ marginBottom: Spacing.xs }}>
                         <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
@@ -902,7 +902,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     </View>
 
                     {/* Blue section - Labor and Materials */}
-                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
                       {/* Header Row */}
                       <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                         <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
@@ -991,7 +991,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     TEST MODE: Calculation Details
                   </Text>
 
-                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                     {/* Front/Back */}
                     {frontBackArea > 0 && (
                       <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
@@ -1093,7 +1093,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               onPress={handleSave}
               style={{
                 backgroundColor: Colors.primaryBlue,
-                borderRadius: BorderRadius.default,
+                borderRadius: 8,
                 paddingVertical: Spacing.md,
                 alignItems: "center",
                 ...Shadows.card,

@@ -879,7 +879,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingHorizontal: 4,
                       paddingVertical: 2,
                       borderWidth: 1,
@@ -900,7 +900,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: walls.length > 1 ? Colors.primaryBlue : Colors.mediumGray, fontWeight: "600" as any }}>−</Text>
@@ -931,7 +931,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -999,7 +999,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           selectionColor={Colors.primaryBlue}
                           style={{
                             backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
+                            borderRadius: 8,
                             borderWidth: 1,
                             borderColor: Colors.neutralGray,
                             paddingHorizontal: Spacing.md,
@@ -1038,7 +1038,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           selectionColor={Colors.primaryBlue}
                           style={{
                             backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
+                            borderRadius: 8,
                             borderWidth: 1,
                             borderColor: Colors.neutralGray,
                             paddingHorizontal: Spacing.md,
@@ -1077,7 +1077,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           selectionColor={Colors.primaryBlue}
                           style={{
                             backgroundColor: Colors.white,
-                            borderRadius: BorderRadius.default,
+                            borderRadius: 8,
                             borderWidth: 1,
                             borderColor: Colors.neutralGray,
                             paddingHorizontal: Spacing.sm,
@@ -1103,7 +1103,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                               alignItems: "center",
                               justifyContent: "center",
                               backgroundColor: hasValues && canDelete ? Colors.error + "15" : Colors.neutralGray,
-                              borderRadius: BorderRadius.default,
+                              borderRadius: 8,
                               opacity: canDelete ? 1 : 0.5,
                             }}
                           >
@@ -1244,7 +1244,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingHorizontal: 4,
                       paddingVertical: 2,
                       borderWidth: 1,
@@ -1264,7 +1264,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1298,7 +1298,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1315,7 +1315,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingHorizontal: 4,
                       paddingVertical: 2,
                       borderWidth: 1,
@@ -1335,7 +1335,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1369,7 +1369,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1386,7 +1386,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingHorizontal: 4,
                       paddingVertical: 2,
                       borderWidth: 1,
@@ -1406,7 +1406,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1440,7 +1440,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1486,7 +1486,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       flexDirection: "row",
                       alignItems: "center",
                       backgroundColor: Colors.primaryBlueLight,
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       paddingHorizontal: 4,
                       paddingVertical: 2,
                       borderWidth: 1,
@@ -1506,7 +1506,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1540,7 +1540,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         height: 28,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: 12,
+                        borderRadius: 8,
                       }}
                     >
                       <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1689,7 +1689,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   selectionColor={Colors.primaryBlue}
                   style={{
                     backgroundColor: Colors.backgroundWarmGray,
-                    borderRadius: BorderRadius.default,
+                    borderRadius: 8,
                     padding: Spacing.md,
                     fontSize: Typography.body.fontSize,
                     color: Colors.darkCharcoal,
@@ -1719,7 +1719,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.primaryBlue,
                       alignItems: "center",
                       justifyContent: "center",
@@ -1733,7 +1733,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     style={{
                       width: 52,
                       height: 40,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: Colors.backgroundWarmGray,
                       alignItems: "center",
                       justifyContent: "center",
@@ -1753,7 +1753,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       key={photo.id}
                       style={{
                         backgroundColor: Colors.backgroundWarmGray,
-                        borderRadius: BorderRadius.default,
+                        borderRadius: 8,
                         overflow: "hidden",
                       }}
                     >
@@ -1785,7 +1785,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                                 TextInputStyles.multiline,
                                 {
                                   backgroundColor: Colors.white,
-                                  borderRadius: BorderRadius.default,
+                                  borderRadius: 8,
                                   padding: Spacing.sm,
                                   minHeight: 60,
                                   marginBottom: Spacing.sm,
@@ -1889,7 +1889,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 </Text>
 
                 {!hasPricingData ? (
-                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                     <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
                       Pricing data unavailable. Please check Settings.
                     </Text>
@@ -1898,7 +1898,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   <View
                     style={{
                       flexDirection: "row",
-                      borderRadius: BorderRadius.default,
+                      borderRadius: 8,
                       overflow: "hidden",
                     }}
                   >
@@ -2000,7 +2000,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               disabled={isSaving}
               style={{
                 backgroundColor: isSaving ? Colors.mediumGray : Colors.primaryBlue,
-                borderRadius: BorderRadius.default,
+                borderRadius: 8,
                 paddingVertical: Spacing.md,
                 alignItems: "center",
                 ...Shadows.card,
@@ -2031,7 +2031,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
                   paddingVertical: Spacing.sm,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                 }}
               >
                 <Text
@@ -2084,7 +2084,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
                   paddingVertical: Spacing.sm,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                 }}
               >
                 <Text
@@ -2113,7 +2113,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             onPress={() => setInfoModalVisible(false)}
             style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
           />
-          <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+          <View style={{ backgroundColor: Colors.white, borderRadius: 8, padding: Spacing.lg, ...Shadows.card }}>
             <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
               {infoModalTitle}
             </Text>
@@ -2122,7 +2122,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Text>
             <Pressable
               onPress={() => setInfoModalVisible(false)}
-              style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+              style={{ backgroundColor: Colors.primaryBlue, borderRadius: 8, paddingVertical: Spacing.sm, alignItems: "center" }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
                 Close
