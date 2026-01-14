@@ -196,9 +196,13 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const prevDoubleClosetCountRef = useRef<number>(parseInt(doubleDoorClosets) || 0);
 
   // Collapsible sections
-  const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
+  const [roomInfoExpanded, setRoomInfoExpanded] = useState(true);
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
+  const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [notesExpanded, setNotesExpanded] = useState(false);
+  const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(false);
+  const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(false);
+  const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(false);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -253,14 +257,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       TextInput.State.blurTextInput(focusedField);
     }
   }, []);
-
-  // Update header title dynamically when room name changes
-  useEffect(() => {
-    const displayName = name || "Unnamed Room";
-    navigation.setOptions({
-      title: displayName + "'s Details",
-    });
-  }, [name, navigation]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
@@ -734,6 +730,35 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     }
   };
 
+  // Update header title and actions when room name changes
+  useEffect(() => {
+    const displayName = name || "Unnamed Room";
+    navigation.setOptions({
+      title: displayName + "'s Details",
+      headerBackTitle: "Back",
+      headerLeft: () => (
+        <Pressable
+          onPress={handleDiscardAndLeave}
+          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+        >
+          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+            Discard
+          </Text>
+        </Pressable>
+      ),
+      headerRight: () => (
+        <Pressable
+          onPress={handleSave}
+          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+        >
+          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
+            Save
+          </Text>
+        </Pressable>
+      ),
+    });
+  }, [name, navigation, handleDiscardAndLeave, handleSave]);
+
   const handleSaveAndLeave = () => {
     setShowSavePrompt(false);
     handleSave();
@@ -842,81 +867,109 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         keyboardDismissMode="on-drag"
       >
         {/* Room Information Section */}
-        <Card style={{ marginBottom: Spacing.md, paddingTop: Spacing.lg, paddingBottom: Spacing.lg }}>
-          {/* Room Name */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Room Name
-            </Text>
-            <View style={TextInputStyles.container}>
-              <TextInput
-                ref={nameRef}
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter room name"
-                placeholderTextColor={Colors.mediumGray}
-                returnKeyType="next"
-                onSubmitEditing={() => lengthRef.current?.focus()}
-                blurOnSubmit={false}
-                style={TextInputStyles.base}
-                inputAccessoryViewID={Platform.OS === "ios" ? `roomName-${nameAccessoryID}` : undefined}
-                accessibilityLabel="Room name input"
-                accessibilityHint="Enter a name for this room"
-              />
+        <Card
+          style={{
+            marginBottom: Spacing.md,
+            paddingTop: Spacing.lg,
+            paddingBottom: Spacing.lg,
+            backgroundColor: roomInfoConfirmed && !roomInfoExpanded ? Colors.success + "15" : Colors.white,
+          }}
+        >
+          <Pressable
+            onPress={() => setRoomInfoExpanded(!roomInfoExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: roomInfoExpanded ? Spacing.md : 0 }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Room Name
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Room name and dimensions
+              </Text>
             </View>
-          </View>
+            <Ionicons
+              name={roomInfoExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
 
-          {/* Room Dimensions: Length × Width = Area */}
-          <View style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Room Size
-            </Text>
-            {/* Labels row */}
-            <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
-                  Length ({unitSystem === "metric" ? "m" : "ft"})
+          {roomInfoExpanded && (
+            <>
+              {/* Room Name */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Room Name
                 </Text>
+                <View style={TextInputStyles.container}>
+                  <TextInput
+                    ref={nameRef}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Enter room name"
+                    placeholderTextColor={Colors.mediumGray}
+                    returnKeyType="next"
+                    onSubmitEditing={() => lengthRef.current?.focus()}
+                    blurOnSubmit={false}
+                    style={TextInputStyles.base}
+                    inputAccessoryViewID={Platform.OS === "ios" ? `roomName-${nameAccessoryID}` : undefined}
+                    accessibilityLabel="Room name input"
+                    accessibilityHint="Enter a name for this room"
+                  />
+                </View>
               </View>
-              <Text style={{ fontSize: 18, color: "transparent" }}>×</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
-                  Width ({unitSystem === "metric" ? "m" : "ft"})
+
+              {/* Room Dimensions: Length × Width = Area */}
+              <View style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                  Room Size
                 </Text>
-              </View>
-              <Text style={{ fontSize: 18, color: "transparent" }}>=</Text>
-              <View style={{ flex: 1.2 }}>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
-                  Area ({unitSystem === "metric" ? "m²" : "sqft"})
-                </Text>
-              </View>
-            </View>
-            {/* Input fields row */}
-            <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
-              {/* Length */}
-              <View style={{ flex: 1 }}>
-                <FormInput
-                  ref={lengthRef}
-                  previousFieldRef={nameRef}
-                  label=""
-                  value={length}
-                  onChangeText={(val) => {
-                    setLength(val);
-                    // Auto-calculate area when both L and W have values
-                    const l = parseFloat(val);
-                    const w = parseFloat(width);
-                    if (!isNaN(l) && l > 0 && !isNaN(w) && w > 0) {
-                      setManualArea((l * w).toFixed(1));
-                    }
-                  }}
-                  keyboardType="numeric"
-                  placeholder="0"
-                  nextFieldRef={widthRef}
-                  accessibilityLabel="Room length"
-                  textAlign="right"
-                  className="mb-0"
-                />
-              </View>
+                {/* Labels row */}
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: 2 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                      Length ({unitSystem === "metric" ? "m" : "ft"})
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 18, color: "transparent" }}>×</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                      Width ({unitSystem === "metric" ? "m" : "ft"})
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 18, color: "transparent" }}>=</Text>
+                  <View style={{ flex: 1.2 }}>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "center" }}>
+                      Area ({unitSystem === "metric" ? "m²" : "sqft"})
+                    </Text>
+                  </View>
+                </View>
+                {/* Input fields row */}
+                <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs }}>
+                  {/* Length */}
+                  <View style={{ flex: 1 }}>
+                    <FormInput
+                      ref={lengthRef}
+                      previousFieldRef={nameRef}
+                      label=""
+                      value={length}
+                      onChangeText={(val) => {
+                        setLength(val);
+                        // Auto-calculate area when both L and W have values
+                        const l = parseFloat(val);
+                        const w = parseFloat(width);
+                        if (!isNaN(l) && l > 0 && !isNaN(w) && w > 0) {
+                          setManualArea((l * w).toFixed(1));
+                        }
+                      }}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      nextFieldRef={widthRef}
+                      accessibilityLabel="Room length"
+                      textAlign="right"
+                      className="mb-0"
+                    />
+                  </View>
 
               {/* × symbol */}
               <Text style={{ fontSize: 18, color: Colors.mediumGray, fontWeight: "600" }}>×</Text>
@@ -1028,10 +1081,35 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </View>
             </View>
           )}
+              <Pressable
+                onPress={() => {
+                  setRoomInfoConfirmed(true);
+                  setRoomInfoExpanded(false);
+                  setOpeningsClosetsExpanded(true);
+                }}
+                style={{
+                  marginTop: Spacing.md,
+                  backgroundColor: Colors.primaryBlue,
+                  borderRadius: BorderRadius.default,
+                  paddingVertical: Spacing.sm,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Confirm
+                </Text>
+              </Pressable>
+            </>
+          )}
         </Card>
 
         {/* Openings & Closets Section - Collapsable */}
-        <Card style={{ marginBottom: Spacing.md }}>
+        <Card
+          style={{
+            marginBottom: Spacing.md,
+            backgroundColor: openingsClosetsConfirmed && !openingsClosetsExpanded ? Colors.success + "15" : Colors.white,
+          }}
+        >
           <Pressable
             onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
             style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
@@ -1603,12 +1681,35 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               />
             </View>
           )}
+              <Pressable
+                onPress={() => {
+                  setOpeningsClosetsConfirmed(true);
+                  setOpeningsClosetsExpanded(false);
+                  setPaintOptionsExpanded(true);
+                }}
+                style={{
+                  marginTop: Spacing.md,
+                  backgroundColor: Colors.primaryBlue,
+                  borderRadius: BorderRadius.default,
+                  paddingVertical: Spacing.sm,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Confirm
+                </Text>
+              </Pressable>
             </View>
           )}
         </Card>
 
         {/* Paint Options Section - Collapsable */}
-        <Card style={{ marginBottom: Spacing.md }}>
+        <Card
+          style={{
+            marginBottom: Spacing.md,
+            backgroundColor: paintOptionsConfirmed && !paintOptionsExpanded ? Colors.success + "15" : Colors.white,
+          }}
+        >
           <Pressable
             onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
             style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
@@ -1683,6 +1784,23 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 description="Adds extra labor for cutting in different colors"
                 className="mb-0"
               />
+              <Pressable
+                onPress={() => {
+                  setPaintOptionsConfirmed(true);
+                  setPaintOptionsExpanded(false);
+                }}
+                style={{
+                  marginTop: Spacing.md,
+                  backgroundColor: Colors.primaryBlue,
+                  borderRadius: BorderRadius.default,
+                  paddingVertical: Spacing.sm,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Confirm
+                </Text>
+              </Pressable>
             </View>
           )}
         </Card>
