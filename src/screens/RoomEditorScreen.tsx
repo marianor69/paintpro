@@ -1131,10 +1131,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
-                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.lg,
+                    paddingVertical: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -1734,10 +1734,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setPaintOptionsExpanded(true);
                   }}
                   style={{
-                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.lg,
+                    paddingVertical: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -1839,10 +1839,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setPaintOptionsExpanded(false);
                   }}
                   style={{
-                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.lg,
+                    paddingVertical: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
