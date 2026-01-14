@@ -1035,7 +1035,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            paddingTop: roomInfoExpanded ? Spacing.sm : Spacing.lg,
+            paddingTop: roomInfoExpanded ? Spacing.xs : Spacing.lg,
             paddingBottom: Spacing.sm,
             backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white,
           }}
@@ -1046,7 +1046,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               style={{
                 position: "absolute",
                 right: Spacing.md,
-                top: Spacing.sm,
+                top: Spacing.xs,
                 width: 32,
                 height: 32,
                 alignItems: "center",
