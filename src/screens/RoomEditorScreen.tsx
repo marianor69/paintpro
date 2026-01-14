@@ -1954,7 +1954,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 description="Adds extra labor for cutting in different colors"
                 className="mb-0"
               />
-              <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                 <Pressable
                   onPress={() => {
                     paintOptionsSnapshotRef.current = paintOptionsSnapshot;
