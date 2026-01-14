@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }: Props) {
               CLAUDE - v1.0.38 - 0582106 - Room editor save cleanup
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v4.5.4 - Confirm vertical padding md
+              GPT - v4.5.5 - Confirm padding 12
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
