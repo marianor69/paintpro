@@ -141,7 +141,7 @@ function StepCircle({
         style={{
           width: size,
           height: size,
-          borderRadius: size / 2,
+          borderRadius: 8,
           backgroundColor,
           borderWidth: 2,
           borderColor,
