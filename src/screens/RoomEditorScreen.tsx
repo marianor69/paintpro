@@ -284,6 +284,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [discardWidth, setDiscardWidth] = useState<number | null>(null);
   // Use ref to track saved state for cleanup - avoids stale closure issues
   const isSavedRef = useRef(false);
   const isKeyboardVisibleRef = useRef(false);
@@ -974,6 +975,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <View style={{ flexDirection: "row", alignItems: "center", marginRight: Spacing.sm }}>
             <Pressable
               onPress={handleDiscardAndLeave}
+              onLayout={(event) => {
+                if (!discardWidth) {
+                  setDiscardWidth(event.nativeEvent.layout.width);
+                }
+              }}
               style={{
               minWidth: 60,
               height: 36,
@@ -997,6 +1003,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               style={{
               minWidth: 60,
               height: 36,
+              width: discardWidth || undefined,
               backgroundColor: Colors.primaryBlue,
               borderRadius: 8,
               paddingHorizontal: Spacing.sm,
