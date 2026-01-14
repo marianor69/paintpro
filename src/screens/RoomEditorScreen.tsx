@@ -203,6 +203,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(false);
   const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(false);
   const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(false);
+  const confirmedCardColor = Colors.success + "30";
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -739,7 +740,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       headerLeft: () => (
         <Pressable
           onPress={handleDiscardAndLeave}
-          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+          style={{
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.xs,
+            borderRadius: BorderRadius.default,
+            backgroundColor: Colors.error + "15",
+          }}
         >
           <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
             Discard
@@ -749,7 +755,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       headerRight: () => (
         <Pressable
           onPress={handleSave}
-          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+          style={{
+            paddingHorizontal: Spacing.md,
+            paddingVertical: Spacing.xs,
+            borderRadius: BorderRadius.default,
+            backgroundColor: Colors.primaryBlue + "15",
+          }}
         >
           <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
             Save
@@ -872,7 +883,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             marginBottom: Spacing.md,
             paddingTop: Spacing.lg,
             paddingBottom: Spacing.lg,
-            backgroundColor: roomInfoConfirmed && !roomInfoExpanded ? Colors.success + "15" : Colors.white,
+            backgroundColor: roomInfoConfirmed && !roomInfoExpanded ? confirmedCardColor : Colors.white,
           }}
         >
           <Pressable
@@ -1081,24 +1092,26 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </View>
             </View>
           )}
-              <Pressable
-                onPress={() => {
-                  setRoomInfoConfirmed(true);
-                  setRoomInfoExpanded(false);
-                  setOpeningsClosetsExpanded(true);
-                }}
-                style={{
-                  marginTop: Spacing.md,
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.sm,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Confirm
-                </Text>
-              </Pressable>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
+                <Pressable
+                  onPress={() => {
+                    setRoomInfoConfirmed(true);
+                    setRoomInfoExpanded(false);
+                    setOpeningsClosetsExpanded(true);
+                  }}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.sm,
+                    paddingHorizontal: Spacing.lg,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </>
           )}
         </Card>
@@ -1107,7 +1120,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            backgroundColor: openingsClosetsConfirmed && !openingsClosetsExpanded ? Colors.success + "15" : Colors.white,
+            backgroundColor: openingsClosetsConfirmed && !openingsClosetsExpanded ? confirmedCardColor : Colors.white,
           }}
         >
           <Pressable
@@ -1681,24 +1694,26 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               />
             </View>
           )}
-              <Pressable
-                onPress={() => {
-                  setOpeningsClosetsConfirmed(true);
-                  setOpeningsClosetsExpanded(false);
-                  setPaintOptionsExpanded(true);
-                }}
-                style={{
-                  marginTop: Spacing.md,
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.sm,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Confirm
-                </Text>
-              </Pressable>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
+                <Pressable
+                  onPress={() => {
+                    setOpeningsClosetsConfirmed(true);
+                    setOpeningsClosetsExpanded(false);
+                    setPaintOptionsExpanded(true);
+                  }}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.sm,
+                    paddingHorizontal: Spacing.lg,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           )}
         </Card>
@@ -1707,7 +1722,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            backgroundColor: paintOptionsConfirmed && !paintOptionsExpanded ? Colors.success + "15" : Colors.white,
+            backgroundColor: paintOptionsConfirmed && !paintOptionsExpanded ? confirmedCardColor : Colors.white,
           }}
         >
           <Pressable
@@ -1784,23 +1799,25 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 description="Adds extra labor for cutting in different colors"
                 className="mb-0"
               />
-              <Pressable
-                onPress={() => {
-                  setPaintOptionsConfirmed(true);
-                  setPaintOptionsExpanded(false);
-                }}
-                style={{
-                  marginTop: Spacing.md,
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
-                  paddingVertical: Spacing.sm,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Confirm
-                </Text>
-              </Pressable>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
+                <Pressable
+                  onPress={() => {
+                    setPaintOptionsConfirmed(true);
+                    setPaintOptionsExpanded(false);
+                  }}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: BorderRadius.default,
+                    paddingVertical: Spacing.sm,
+                    paddingHorizontal: Spacing.lg,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           )}
         </Card>
