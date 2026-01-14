@@ -975,7 +975,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <Pressable
               onPress={handleDiscardAndLeave}
               style={{
-              minWidth: 96,
+              minWidth: 80,
               height: 36,
               paddingHorizontal: Spacing.sm,
               borderRadius: 8,
@@ -995,7 +995,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               onPress={handleSave}
               android_ripple={{ color: "transparent" }}
               style={{
-              minWidth: 96,
+              minWidth: 80,
               height: 36,
               backgroundColor: Colors.primaryBlue,
               borderRadius: 8,
@@ -1035,7 +1035,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            paddingTop: roomInfoExpanded ? Spacing.xs : Spacing.lg,
+            paddingTop: roomInfoExpanded ? Spacing.md : Spacing.md,
             paddingBottom: Spacing.sm,
             backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white,
           }}
@@ -1046,7 +1046,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               style={{
                 position: "absolute",
                 right: Spacing.md,
-                top: Spacing.xs,
+                top: Spacing.sm,
                 width: 32,
                 height: 32,
                 alignItems: "center",
