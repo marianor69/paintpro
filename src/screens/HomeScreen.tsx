@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              CLAUDE - v1.0.37 - 0582106 - Confirm cards green
+              CLAUDE - v1.0.38 - 0582106 - Room editor save cleanup
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
               GPT - v4.3.6 - Revert bubble padding
