@@ -112,13 +112,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     totalDoorSqFt: 0,
   };
 
-  // Set navigation title to project address (street only, no city/state/country)
-  useEffect(() => {
-    const streetAddress = project.clientInfo.address?.split(",")[0] || project.clientInfo.address;
-    navigation.setOptions({
-      title: streetAddress,
-    });
-  }, [navigation, project.clientInfo.address]);
+  const streetAddress = project.clientInfo.address?.split(",")[0] || project.clientInfo.address || "";
 
   const handleAddRoom = (floorNumber?: number) => {
     // Don't create room here - let RoomEditor create it on Save
@@ -721,6 +715,29 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     }
   };
 
+  // Set navigation header content for Project Detail
+  useEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: "Back",
+      headerTitle: () => (
+        <StepProgressIndicator
+          currentStep={currentStep}
+          completedSteps={completedSteps}
+          onStepPress={handleStepPress}
+          disabledSteps={completedSteps.includes(2) ? [] : [3]}
+          showConnectors={false}
+          style={{
+            backgroundColor: Colors.white,
+            borderBottomWidth: 0,
+            paddingTop: Spacing.xs,
+            paddingBottom: Spacing.xs,
+            paddingHorizontal: 0,
+          }}
+        />
+      ),
+    });
+  }, [navigation, currentStep, completedSteps, handleStepPress]);
+
   // Mark estimate as complete (stays on this screen to review)
   const handleDoneBuilding = () => {
     setEstimateBuildComplete(project.id, true);
@@ -743,14 +760,6 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }} edges={["bottom"]}>
-      {/* Step Progress Indicator */}
-      <StepProgressIndicator
-        currentStep={currentStep}
-        completedSteps={completedSteps}
-        onStepPress={handleStepPress}
-        disabledSteps={completedSteps.includes(2) ? [] : [3]}
-        showConnectors={false}
-      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
@@ -790,6 +799,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     </Text>
                   </View>
                 )}
+                {streetAddress ? (
+                  <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                    {streetAddress}
+                  </Text>
+                ) : null}
                 <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                   {formatCurrency(displaySummary.grandTotal)}
                 </Text>
