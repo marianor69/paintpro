@@ -843,7 +843,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
           <View style={{ padding: Spacing.md }}>
             {/* Main Info Card */}
-            <Card style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
               {/* Room Name */}
               <View style={{ marginBottom: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
@@ -1213,7 +1213,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Card>
 
             {/* Openings & Closets Section - Collapsable */}
-            <Card style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
               <Pressable
                 onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
                 style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
@@ -1601,7 +1601,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Card>
 
             {/* Paint Options - Collapsable */}
-            <Card style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
               <Pressable
                 onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
                 style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}

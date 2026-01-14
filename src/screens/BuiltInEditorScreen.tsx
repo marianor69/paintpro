@@ -412,7 +412,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
           <View style={{ padding: Spacing.md }}>
             {/* Built-In Information Card */}
-            <Card style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
               {/* Name/Location */}
               <View style={{ marginBottom: Spacing.md }}>
                 <FormInput

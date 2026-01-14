@@ -883,7 +883,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         keyboardDismissMode="on-drag"
       >
         {/* Bathroom Information Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
+        <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
           {/* Bathroom Name */}
           <View style={{ marginBottom: Spacing.md }}>
             <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
@@ -1098,7 +1098,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         </Card>
 
         {/* Openings & Closets Section - Collapsable */}
-        <Card style={{ marginBottom: Spacing.md }}>
+        <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
           <Pressable
             onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
             style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
@@ -1513,7 +1513,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         </Card>
 
         {/* Paint Options Section - Collapsable */}
-        <Card style={{ marginBottom: Spacing.md }}>
+        <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
           <Pressable
             onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
             style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}

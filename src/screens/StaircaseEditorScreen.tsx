@@ -582,7 +582,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
           <View style={{ padding: Spacing.md }}>
             {/* Staircase Information Card */}
-            <Card style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
               {/* Name/Location */}
               <View style={{ marginBottom: Spacing.md }}>
                 <FormInput
@@ -792,7 +792,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             </Card>
 
             {/* Walls Section */}
-            <Card style={{ marginBottom: Spacing.md }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                 Walls in Stairwell
               </Text>
