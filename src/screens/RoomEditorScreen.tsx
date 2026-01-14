@@ -883,14 +883,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       headerRight: () => (
         <Pressable
           onPress={handleSave}
-          style={{
-            backgroundColor: Colors.primaryBlue,
-            borderRadius: 8,
-            paddingHorizontal: Spacing.sm,
-            paddingVertical: Spacing.sm,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          android_ripple={{ color: "transparent" }}
+          style={({ pressed }) => [
+            {
+              backgroundColor: Colors.primaryBlue,
+              borderRadius: 8,
+              paddingHorizontal: Spacing.sm,
+              paddingVertical: Spacing.sm,
+              alignItems: "center",
+              justifyContent: "center",
+            },
+            { opacity: pressed ? 1 : 1 },
+          ]}
         >
           <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
             Save
