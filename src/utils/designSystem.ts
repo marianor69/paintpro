@@ -59,7 +59,7 @@ export const Spacing = {
 } as const;
 
 export const BorderRadius = {
-  default: 12,
+  default: 8,
 } as const;
 
 export const Shadows = {
@@ -136,4 +136,3 @@ export const TextInputStyles = {
     textAlignVertical: "top" as const,
   } as const,
 } as const;
-
