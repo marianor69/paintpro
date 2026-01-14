@@ -1272,6 +1272,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           style={{
             marginBottom: Spacing.md,
             backgroundColor: openingsClosetsConfirmed ? confirmedCardColor : Colors.white,
+            paddingBottom: Spacing.sm,
           }}
         >
           <Pressable
@@ -1876,6 +1877,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           style={{
             marginBottom: Spacing.md,
             backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white,
+            paddingBottom: Spacing.sm,
           }}
         >
           <Pressable
