@@ -1196,7 +1196,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           />
 
           {isCathedral && (
-            <View style={{ marginTop: Spacing.sm }}>
+            <View>
               <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: Spacing.md }}>
                 <View style={{ flex: 1, marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm }}>
                   <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
