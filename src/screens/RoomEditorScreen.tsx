@@ -975,14 +975,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <Pressable
               onPress={handleDiscardAndLeave}
               style={{
-                minWidth: 60,
-                paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.xs,
-                borderRadius: 8,
-                backgroundColor: Colors.primaryBlueLight,
-                borderWidth: 1,
-                borderColor: Colors.neutralGray,
-                alignItems: "center",
+              minWidth: 60,
+              height: 36,
+              paddingHorizontal: Spacing.lg,
+              borderRadius: 8,
+              backgroundColor: Colors.primaryBlueLight,
+              borderWidth: 1,
+              borderColor: Colors.neutralGray,
+              alignItems: "center",
                 justifyContent: "center",
                 marginRight: Spacing.xs,
               }}
@@ -995,15 +995,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               onPress={handleSave}
               android_ripple={{ color: "transparent" }}
               style={{
-                minWidth: 60,
-                backgroundColor: Colors.primaryBlue,
-                borderRadius: 8,
-                paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.xs,
-                alignItems: "center",
-                justifyContent: "center",
-                marginLeft: -Spacing.xs,
-              }}
+              minWidth: 60,
+              height: 36,
+              backgroundColor: Colors.primaryBlue,
+              borderRadius: 8,
+              paddingHorizontal: Spacing.lg,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: -Spacing.xs,
+            }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
                 Save
