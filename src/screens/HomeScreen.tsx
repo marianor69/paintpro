@@ -88,10 +88,10 @@ export default function HomeScreen({ navigation }: Props) {
           <View style={{ alignItems: "center", marginBottom: Spacing.lg }}>
             <Ionicons name="color-palette" size={56} color={Colors.primaryBlue} />
             <Text style={{ fontSize: 28, fontWeight: "700", color: Colors.darkCharcoal, marginTop: Spacing.md, textAlign: "center" }}>
-              Home Screen
+              Main Screen
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              CLAUDE - v1.0.34 - 0582106 - Home Screen title
+              CLAUDE - v1.0.35 - 0582106 - Main Screen title
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
               GPT - v4.3.6 - Revert bubble padding
