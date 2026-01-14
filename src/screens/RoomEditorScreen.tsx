@@ -1002,6 +1002,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 paddingVertical: Spacing.xs,
                 alignItems: "center",
                 justifyContent: "center",
+                marginLeft: -Spacing.xs,
               }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
