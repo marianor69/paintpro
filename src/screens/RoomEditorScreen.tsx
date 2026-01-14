@@ -974,7 +974,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <Pressable
             onPress={handleDiscardAndLeave}
             style={{
-              minWidth: 80,
+              minWidth: 60,
               paddingHorizontal: Spacing.lg,
               paddingVertical: Spacing.sm,
               borderRadius: 8,
@@ -1006,7 +1006,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             onPress={handleSave}
             android_ripple={{ color: "transparent" }}
             style={{
-              minWidth: 80,
+              minWidth: 60,
               backgroundColor: Colors.primaryBlue,
               borderRadius: 8,
               paddingHorizontal: Spacing.lg,
