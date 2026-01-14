@@ -31,7 +31,7 @@ import { Toggle } from "../components/Toggle";
 import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto, IrregularRoomWall } from "../types/painting";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { formatCurrency, safeNumber } from "../utils/calculations";
 
 type Props = NativeStackScreenProps<RootStackParamList, "IrregularRoomEditor">;
@@ -59,6 +59,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const unitSystem = useAppSettings((s) => s.unitSystem);
   const calcSettings = useCalculationSettings((s) => s.settings);
   const testMode = useAppSettings((s) => s.testMode);
+  const insets = useSafeAreaInsets();
 
   // Default wall height from project
   const defaultHeight = project?.floorHeights?.[0] || 8;
@@ -369,13 +370,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     }
   });
 
-  // Update header title
   useEffect(() => {
-    const displayName = name || "Unnamed Irregular Room";
-    navigation.setOptions({
-      title: displayName + "'s Details",
-    });
-  }, [name, navigation]);
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   // Wall management functions
   const handleAddWall = () => {
@@ -724,6 +721,21 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     handleSave();
   }, [handleSave]);
 
+  const handleDiscardAndLeave = useCallback(() => {
+    if (isSavingRef.current) {
+      return;
+    }
+    setShowSavePrompt(false);
+    setHasUnsavedChanges(false);
+
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+    } else {
+      navigation.goBack();
+    }
+  }, [navigation]);
+
   const handleDiscardFromPrompt = useCallback(() => {
     setShowSavePrompt(false);
     setHasUnsavedChanges(false);
@@ -745,6 +757,65 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   return (
     <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
+      <View
+        style={{
+          paddingTop: insets.top + Spacing.sm,
+          paddingHorizontal: Spacing.md,
+          paddingBottom: Spacing.sm,
+          backgroundColor: Colors.white,
+          borderBottomWidth: 1,
+          borderBottomColor: Colors.neutralGray,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <Pressable
+            onPress={handleDiscardAndLeave}
+            style={{
+              paddingHorizontal: Spacing.lg,
+              paddingVertical: Spacing.sm,
+              borderRadius: 8,
+              backgroundColor: Colors.primaryBlueLight,
+              borderWidth: 1,
+              borderColor: Colors.neutralGray,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+              Discard
+            </Text>
+          </Pressable>
+          <Text
+            style={{
+              flex: 1,
+              marginHorizontal: Spacing.sm,
+              textAlign: "center",
+              fontSize: Typography.h2.fontSize,
+              fontWeight: Typography.h2.fontWeight as any,
+              color: Colors.darkCharcoal,
+            }}
+            numberOfLines={1}
+          >
+            {(name || "Unnamed Irregular Room") + "'s Details"}
+          </Text>
+          <Pressable
+            onPress={handleSave}
+            android_ripple={{ color: "transparent" }}
+            style={{
+              backgroundColor: Colors.primaryBlue,
+              borderRadius: 8,
+              paddingHorizontal: Spacing.lg,
+              paddingVertical: Spacing.sm,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+              Save
+            </Text>
+          </Pressable>
+        </View>
+      </View>
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
