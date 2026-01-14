@@ -550,6 +550,23 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                <Pressable
+                  onPress={() => Keyboard.dismiss()}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.sm,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </Card>
 
             {/* Notes Section */}

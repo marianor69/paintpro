@@ -1190,6 +1190,26 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                 </View>
               )}
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                <Pressable
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    setOpeningsClosetsExpanded(true);
+                  }}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.sm,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </Card>
 
             {/* Openings & Closets Section - Collapsable */}
@@ -1556,6 +1576,26 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     />
                   </View>
                 )}
+                <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                  <Pressable
+                    onPress={() => {
+                      setOpeningsClosetsExpanded(false);
+                      setPaintOptionsExpanded(true);
+                    }}
+                    style={{
+                      backgroundColor: Colors.primaryBlue,
+                      borderRadius: 8,
+                      paddingHorizontal: Spacing.sm,
+                      paddingVertical: Spacing.sm,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                      Confirm
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
             )}
             </Card>
@@ -1593,6 +1633,23 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   <Toggle label="Paint Baseboard" value={paintBaseboard} onValueChange={setPaintBaseboard} />
                   <Toggle label="Crown Moulding" value={hasCrownMoulding} onValueChange={setHasCrownMoulding} />
                   <Toggle label="Accent Wall (Multiple Colors)" value={hasAccentWall} onValueChange={setHasAccentWall} />
+                  <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                    <Pressable
+                      onPress={() => setPaintOptionsExpanded(false)}
+                      style={{
+                        backgroundColor: Colors.primaryBlue,
+                        borderRadius: 8,
+                        paddingHorizontal: Spacing.sm,
+                        paddingVertical: Spacing.sm,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                        Confirm
+                      </Text>
+                    </Pressable>
+                  </View>
                 </View>
               )}
             </Card>

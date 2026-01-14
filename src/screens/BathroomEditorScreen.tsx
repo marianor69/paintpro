@@ -1075,6 +1075,26 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
               </View>
             </View>
           )}
+          <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+            <Pressable
+              onPress={() => {
+                Keyboard.dismiss();
+                setOpeningsClosetsExpanded(true);
+              }}
+              style={{
+                backgroundColor: Colors.primaryBlue,
+                borderRadius: 8,
+                paddingHorizontal: Spacing.sm,
+                paddingVertical: Spacing.sm,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                Confirm
+              </Text>
+            </Pressable>
+          </View>
         </Card>
 
         {/* Openings & Closets Section - Collapsable */}
@@ -1468,6 +1488,26 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   />
                 </View>
               )}
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                <Pressable
+                  onPress={() => {
+                    setOpeningsClosetsExpanded(false);
+                    setPaintOptionsExpanded(true);
+                  }}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.sm,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           )}
         </Card>
@@ -1548,6 +1588,23 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 description="Adds extra labor for cutting in different colors"
                 className="mb-0"
               />
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                <Pressable
+                  onPress={() => setPaintOptionsExpanded(false)}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: Spacing.sm,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Confirm
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           )}
         </Card>
