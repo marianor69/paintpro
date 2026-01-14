@@ -768,7 +768,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             height: 28,
             minWidth: 72,
             paddingHorizontal: Spacing.md,
-            borderRadius: 12,
+            borderRadius: 8,
             backgroundColor: Colors.primaryBlueLight,
             borderWidth: 1,
             borderColor: Colors.neutralGray,
@@ -1189,7 +1189,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1209,7 +1209,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 32,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1247,7 +1247,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 32,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1363,7 +1363,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1385,7 +1385,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1419,7 +1419,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1439,7 +1439,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1461,7 +1461,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1495,7 +1495,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1515,7 +1515,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1540,7 +1540,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1575,7 +1575,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1626,7 +1626,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   flexDirection: "row",
                   alignItems: "center",
                   backgroundColor: Colors.primaryBlueLight,
-                  borderRadius: BorderRadius.default,
+                  borderRadius: 8,
                   paddingHorizontal: 4,
                   paddingVertical: 2,
                   borderWidth: 1,
@@ -1651,7 +1651,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
@@ -1686,7 +1686,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 12,
+                    borderRadius: 8,
                   }}
                 >
                   <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
@@ -1931,7 +1931,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 style={{
                   width: 52,
                   height: 40,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: Colors.primaryBlue,
                   alignItems: "center",
                   justifyContent: "center",
@@ -1945,7 +1945,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 style={{
                   width: 52,
                   height: 40,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: Colors.backgroundWarmGray,
                   alignItems: "center",
                   justifyContent: "center",
