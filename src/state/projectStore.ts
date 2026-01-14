@@ -537,6 +537,9 @@ export const useProjectStore = create<ProjectStore>()(
           includeClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
           includeSingleClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
           includeDoubleClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
+          roomInfoConfirmed: false,
+          openingsClosetsConfirmed: false,
+          paintOptionsConfirmed: false,
         };
         set((state) => ({
           projects: state.projects.map((p) =>

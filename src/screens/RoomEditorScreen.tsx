@@ -67,7 +67,10 @@ function serializeRoomState(
   hasCrownMoulding: boolean,
   hasAccentWall: boolean,
   includeSingleClosetInteriorInQuote: boolean,
-  includeDoubleClosetInteriorInQuote: boolean
+  includeDoubleClosetInteriorInQuote: boolean,
+  roomInfoConfirmed: boolean,
+  openingsClosetsConfirmed: boolean,
+  paintOptionsConfirmed: boolean
 ): string {
   return JSON.stringify({
     name,
@@ -94,6 +97,9 @@ function serializeRoomState(
     hasAccentWall,
     includeSingleClosetInteriorInQuote,
     includeDoubleClosetInteriorInQuote,
+    roomInfoConfirmed,
+    openingsClosetsConfirmed,
+    paintOptionsConfirmed,
   });
 }
 
@@ -200,9 +206,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [notesExpanded, setNotesExpanded] = useState(false);
-  const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(false);
-  const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(false);
-  const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(false);
+  const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(room?.roomInfoConfirmed ?? false);
+  const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(room?.openingsClosetsConfirmed ?? false);
+  const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(room?.paintOptionsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -332,7 +338,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         project?.globalPaintDefaults?.paintCrownMoulding ?? true,
         false,
         projectClosetInteriorDefault,
-        projectClosetInteriorDefault
+        projectClosetInteriorDefault,
+        false,
+        false,
+        false
       );
       return;
     }
@@ -368,7 +377,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         projectClosetInteriorDefault,
       room.includeDoubleClosetInteriorInQuote ??
         room.includeClosetInteriorInQuote ??
-        projectClosetInteriorDefault
+        projectClosetInteriorDefault,
+      room.roomInfoConfirmed ?? false,
+      room.openingsClosetsConfirmed ?? false,
+      room.paintOptionsConfirmed ?? false
     );
   }, [room, project]);
 
@@ -424,7 +436,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       hasCrownMoulding,
       hasAccentWall,
       includeSingleClosetInteriorInQuote,
-      includeDoubleClosetInteriorInQuote
+      includeDoubleClosetInteriorInQuote,
+      roomInfoConfirmed,
+      openingsClosetsConfirmed,
+      paintOptionsConfirmed
     );
 
     const hasChanges = currentState !== initialStateRef.current;
@@ -454,6 +469,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     hasAccentWall,
     includeSingleClosetInteriorInQuote,
     includeDoubleClosetInteriorInQuote,
+    roomInfoConfirmed,
+    openingsClosetsConfirmed,
+    paintOptionsConfirmed,
   ]);
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
@@ -622,6 +640,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
       includeSingleClosetInteriorInQuote,
       includeDoubleClosetInteriorInQuote,
+      roomInfoConfirmed,
+      openingsClosetsConfirmed,
+      paintOptionsConfirmed,
       // Openings
       openings: openings.map(o => ({
         id: o.id,
@@ -703,7 +724,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       hasCrownMoulding,
       hasAccentWall,
       includeSingleClosetInteriorInQuote,
-      includeDoubleClosetInteriorInQuote
+      includeDoubleClosetInteriorInQuote,
+      roomInfoConfirmed,
+      openingsClosetsConfirmed,
+      paintOptionsConfirmed
     );
 
     setTimeout(() => {
@@ -738,10 +762,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       title: displayName + "'s Details",
       headerBackVisible: false,
       headerLeft: () => (
-        <Pressable
-          onPress={handleDiscardAndLeave}
+        <View
           style={{
-            height: 28,
+            height: 32,
             minWidth: 72,
             paddingHorizontal: Spacing.md,
             borderRadius: 12,
@@ -752,16 +775,20 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             justifyContent: "center",
           }}
         >
-          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
-            Discard
-          </Text>
-        </Pressable>
+          <Pressable
+            onPress={handleDiscardAndLeave}
+            style={{ flex: 1, alignItems: "center", justifyContent: "center", width: "100%" }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+              Discard
+            </Text>
+          </Pressable>
+        </View>
       ),
       headerRight: () => (
-        <Pressable
-          onPress={handleSave}
+        <View
           style={{
-            height: 28,
+            height: 32,
             minWidth: 64,
             paddingHorizontal: Spacing.md,
             borderRadius: 12,
@@ -772,10 +799,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             justifyContent: "center",
           }}
         >
-          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
-            Save
-          </Text>
-        </Pressable>
+          <Pressable
+            onPress={handleSave}
+            style={{ flex: 1, alignItems: "center", justifyContent: "center", width: "100%" }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
+              Save
+            </Text>
+          </Pressable>
+        </View>
       ),
     });
   }, [name, navigation, handleDiscardAndLeave, handleSave]);
@@ -1110,7 +1142,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
-                    height: 28,
+                    height: 32,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
@@ -1185,7 +1217,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   }}
                   style={{
                     width: 28,
-                    height: 28,
+                    height: 32,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 12,
@@ -1223,7 +1255,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   }}
                   style={{
                     width: 28,
-                    height: 28,
+                    height: 32,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 12,

@@ -21,6 +21,9 @@ export interface Room {
   includeClosetInteriorInQuote?: boolean; // Whether to include closet interior area in calculations (default: true)
   includeSingleClosetInteriorInQuote?: boolean; // Include single-door closet interiors (default: true)
   includeDoubleClosetInteriorInQuote?: boolean; // Include double-door closet interiors (default: true)
+  roomInfoConfirmed?: boolean;
+  openingsClosetsConfirmed?: boolean;
+  paintOptionsConfirmed?: boolean;
   includeSingleClosetInteriorInQuote?: boolean; // Include single-door closet interiors (default: true)
   includeDoubleClosetInteriorInQuote?: boolean; // Include double-door closet interiors (default: true)
   // Room-level paint options (override global defaults)
