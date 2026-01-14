@@ -762,9 +762,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       title: displayName + "'s Details",
       headerBackVisible: false,
       headerLeft: () => (
-        <View
+        <Pressable
+          onPress={handleDiscardAndLeave}
           style={{
-            height: 32,
+            height: 28,
             minWidth: 72,
             paddingHorizontal: Spacing.md,
             borderRadius: 12,
@@ -775,20 +776,16 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             justifyContent: "center",
           }}
         >
-          <Pressable
-            onPress={handleDiscardAndLeave}
-            style={{ flex: 1, alignItems: "center", justifyContent: "center", width: "100%" }}
-          >
-            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
-              Discard
-            </Text>
-          </Pressable>
-        </View>
+          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+            Discard
+          </Text>
+        </Pressable>
       ),
       headerRight: () => (
-        <View
+        <Pressable
+          onPress={handleSave}
           style={{
-            height: 32,
+            height: 28,
             minWidth: 64,
             paddingHorizontal: Spacing.md,
             borderRadius: 12,
@@ -799,15 +796,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             justifyContent: "center",
           }}
         >
-          <Pressable
-            onPress={handleSave}
-            style={{ flex: 1, alignItems: "center", justifyContent: "center", width: "100%" }}
-          >
-            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
-              Save
-            </Text>
-          </Pressable>
-        </View>
+          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
+            Save
+          </Text>
+        </Pressable>
       ),
     });
   }, [name, navigation, handleDiscardAndLeave, handleSave]);
@@ -1142,10 +1134,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
-                    height: 32,
+                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
-                    paddingHorizontal: Spacing.lg,
+                    paddingHorizontal: Spacing.md,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -1748,7 +1740,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
-                    paddingHorizontal: Spacing.lg,
+                    paddingHorizontal: Spacing.md,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -1853,7 +1845,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
-                    paddingHorizontal: Spacing.lg,
+                    paddingHorizontal: Spacing.md,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
