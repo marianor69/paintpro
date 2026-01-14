@@ -210,6 +210,74 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(room?.openingsClosetsConfirmed ?? false);
   const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(room?.paintOptionsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
+  const roomInfoSnapshotRef = useRef<string>("");
+  const openingsClosetsSnapshotRef = useRef<string>("");
+  const paintOptionsSnapshotRef = useRef<string>("");
+
+  const roomInfoSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        name,
+        length,
+        width,
+        manualArea,
+        isCathedral,
+        cathedralPeakHeight,
+      }),
+    [name, length, width, manualArea, isCathedral, cathedralPeakHeight]
+  );
+  const openingsClosetsSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        openings,
+        windowCount,
+        doorCount,
+        hasCloset,
+        singleDoorClosets,
+        doubleDoorClosets,
+        includeSingleClosetInteriorInQuote,
+        includeDoubleClosetInteriorInQuote,
+      }),
+    [
+      openings,
+      windowCount,
+      doorCount,
+      hasCloset,
+      singleDoorClosets,
+      doubleDoorClosets,
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote,
+    ]
+  );
+  const paintOptionsSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        paintWalls,
+        paintCeilings,
+        paintTrim,
+        paintWindowFrames,
+        paintDoorFrames,
+        paintWindows,
+        paintDoors,
+        paintJambs,
+        paintBaseboard,
+        hasCrownMoulding,
+        hasAccentWall,
+      }),
+    [
+      paintWalls,
+      paintCeilings,
+      paintTrim,
+      paintWindowFrames,
+      paintDoorFrames,
+      paintWindows,
+      paintDoors,
+      paintJambs,
+      paintBaseboard,
+      hasCrownMoulding,
+      hasAccentWall,
+    ]
+  );
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -235,6 +303,37 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const notesCardRef = useRef<View>(null);
   const singleClosetCount = parseInt(singleDoorClosets) || 0;
   const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
+
+  useEffect(() => {
+    if (roomInfoConfirmed && !roomInfoSnapshotRef.current) {
+      roomInfoSnapshotRef.current = roomInfoSnapshot;
+    }
+    if (roomInfoConfirmed && roomInfoSnapshotRef.current && roomInfoSnapshotRef.current !== roomInfoSnapshot) {
+      setRoomInfoConfirmed(false);
+    }
+  }, [roomInfoConfirmed, roomInfoSnapshot]);
+
+  useEffect(() => {
+    if (openingsClosetsConfirmed && !openingsClosetsSnapshotRef.current) {
+      openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
+    }
+    if (
+      openingsClosetsConfirmed &&
+      openingsClosetsSnapshotRef.current &&
+      openingsClosetsSnapshotRef.current !== openingsClosetsSnapshot
+    ) {
+      setOpeningsClosetsConfirmed(false);
+    }
+  }, [openingsClosetsConfirmed, openingsClosetsSnapshot]);
+
+  useEffect(() => {
+    if (paintOptionsConfirmed && !paintOptionsSnapshotRef.current) {
+      paintOptionsSnapshotRef.current = paintOptionsSnapshot;
+    }
+    if (paintOptionsConfirmed && paintOptionsSnapshotRef.current && paintOptionsSnapshotRef.current !== paintOptionsSnapshot) {
+      setPaintOptionsConfirmed(false);
+    }
+  }, [paintOptionsConfirmed, paintOptionsSnapshot]);
 
   const getOpeningRefs = (index: number) => {
     if (!openingRefs.current[index]) {
@@ -787,7 +886,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           style={{
             backgroundColor: Colors.primaryBlue,
             borderRadius: 8,
-            paddingHorizontal: Spacing.lg,
+            paddingHorizontal: Spacing.sm,
             paddingVertical: Spacing.sm,
             alignItems: "center",
             justifyContent: "center",
@@ -1126,6 +1225,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
                 <Pressable
                   onPress={() => {
+                    roomInfoSnapshotRef.current = roomInfoSnapshot;
                     setRoomInfoConfirmed(true);
                     setRoomInfoExpanded(false);
                     setOpeningsClosetsExpanded(true);
@@ -1729,6 +1829,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
                 <Pressable
                   onPress={() => {
+                    openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
                     setOpeningsClosetsConfirmed(true);
                     setOpeningsClosetsExpanded(false);
                     setPaintOptionsExpanded(true);
@@ -1835,6 +1936,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
                 <Pressable
                   onPress={() => {
+                    paintOptionsSnapshotRef.current = paintOptionsSnapshot;
                     setPaintOptionsConfirmed(true);
                     setPaintOptionsExpanded(false);
                   }}
