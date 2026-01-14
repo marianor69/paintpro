@@ -1144,155 +1144,142 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
           {/* Rooms & Structures - Combined */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+            <View style={{ marginBottom: Spacing.md }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
                 Rooms & Structures
               </Text>
-              <Pressable
-                onPress={() => setAddMenuVisible(true)}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: 8,
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Add room or structure"
-              >
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                  Add
-                </Text>
-              </Pressable>
             </View>
 
             {/* Unified List */}
-            {totalItems === 0 ? (
-              <View style={{ alignItems: "center", padding: Spacing.lg }}>
-                <Ionicons name="home-outline" size={48} color={Colors.mediumGray} />
-                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
-                  No rooms or structures yet
-                </Text>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
-                  Tap Add to get started
-                </Text>
-              </View>
-            ) : (
-              <View style={{ gap: Spacing.xs }}>
-                {/* Rooms */}
-                {project.rooms.map((room) => (
-                  <View
-                    key={room.id}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: Spacing.sm,
-                    }}
-                  >
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate("RoomEditor", {
-                          projectId,
-                          roomId: room.id,
-                          roomName: room.name || "Unnamed Room",
-                        })
-                      }
-                      style={{
-                        flex: 1,
-                        backgroundColor: Colors.white,
-                        borderRadius: BorderRadius.default,
-                        padding: Spacing.sm,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Ionicons name="bed-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                          {room.name || "Unnamed Room"} - {getOrdinal(room.floor || 1)} floor
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => {
-                        Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
-                          { text: "Cancel", style: "cancel" },
-                          {
-                            text: "Delete",
-                            style: "destructive",
-                            onPress: () => deleteRoom(projectId, room.id),
-                          },
-                        ]);
-                      }}
-                      style={{
-                        padding: Spacing.sm,
-                        backgroundColor: Colors.backgroundWarmGray,
-                        borderRadius: BorderRadius.default,
-                      }}
-                    >
-                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
-                    </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
+              <View style={{ flex: 1 }}>
+                {totalItems === 0 ? (
+                  <View style={{ alignItems: "center", padding: Spacing.lg }}>
+                    <Ionicons name="home-outline" size={48} color={Colors.mediumGray} />
+                    <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm, textAlign: "center" }}>
+                      No rooms or structures yet
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
+                      Tap Add to get started
+                    </Text>
                   </View>
-                ))}
+                ) : (
+                  <View style={{ gap: Spacing.xs }}>
+                    {/* Rooms */}
+                    {project.rooms.map((room) => (
+                      <View
+                        key={room.id}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: Spacing.sm,
+                        }}
+                      >
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("RoomEditor", {
+                              projectId,
+                              roomId: room.id,
+                              roomName: room.name || "Unnamed Room",
+                            })
+                          }
+                          style={{
+                            flex: 1,
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            padding: Spacing.sm,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Ionicons name="bed-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                              {room.name || "Unnamed Room"} - {getOrdinal(room.floor || 1)} floor
+                            </Text>
+                          </View>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            Alert.alert("Delete Room", `Are you sure you want to delete "${room.name || "Unnamed Room"}"?`, [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: () => deleteRoom(projectId, room.id),
+                              },
+                            ]);
+                          }}
+                          style={{
+                            padding: Spacing.sm,
+                            backgroundColor: Colors.backgroundWarmGray,
+                            borderRadius: BorderRadius.default,
+                          }}
+                        >
+                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                        </Pressable>
+                      </View>
+                    ))}
 
-                {/* Bathrooms */}
-                {project.bathrooms?.map((bathroom) => (
-                  <View
-                    key={bathroom.id}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: Spacing.sm,
-                    }}
-                  >
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate("BathroomEditor", {
-                          projectId,
-                          bathroomId: bathroom.id,
-                          bathroomName: bathroom.name || "Unnamed Bathroom",
-                        })
-                      }
-                      style={{
-                        flex: 1,
-                        backgroundColor: Colors.white,
-                        borderRadius: BorderRadius.default,
-                        padding: Spacing.sm,
-                        borderWidth: 1,
-                        borderColor: Colors.neutralGray,
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Ionicons name="water-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
-                          {bathroom.name || "Unnamed Bathroom"} - {getOrdinal(bathroom.floor || 1)} floor
-                        </Text>
+                    {/* Bathrooms */}
+                    {project.bathrooms?.map((bathroom) => (
+                      <View
+                        key={bathroom.id}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: Spacing.sm,
+                        }}
+                      >
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("BathroomEditor", {
+                              projectId,
+                              bathroomId: bathroom.id,
+                              bathroomName: bathroom.name || "Unnamed Bathroom",
+                            })
+                          }
+                          style={{
+                            flex: 1,
+                            backgroundColor: Colors.white,
+                            borderRadius: BorderRadius.default,
+                            padding: Spacing.sm,
+                            borderWidth: 1,
+                            borderColor: Colors.neutralGray,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Ionicons name="water-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                              {bathroom.name || "Unnamed Bathroom"} - {getOrdinal(bathroom.floor || 1)} floor
+                            </Text>
+                          </View>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => {
+                            Alert.alert("Delete Bathroom", `Are you sure you want to delete "${bathroom.name || "Unnamed Bathroom"}"?`, [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: () => deleteBathroom(projectId, bathroom.id),
+                              },
+                            ]);
+                          }}
+                          style={{
+                            padding: Spacing.sm,
+                            backgroundColor: Colors.backgroundWarmGray,
+                            borderRadius: BorderRadius.default,
+                          }}
+                        >
+                          <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                        </Pressable>
                       </View>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => {
-                        Alert.alert("Delete Bathroom", `Are you sure you want to delete "${bathroom.name || "Unnamed Bathroom"}"?`, [
-                          { text: "Cancel", style: "cancel" },
-                          {
-                            text: "Delete",
-                            style: "destructive",
-                            onPress: () => deleteBathroom(projectId, bathroom.id),
-                          },
-                        ]);
-                      }}
-                      style={{
-                        padding: Spacing.sm,
-                        backgroundColor: Colors.backgroundWarmGray,
-                        borderRadius: BorderRadius.default,
-                      }}
-                    >
-                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
-                    </Pressable>
-                  </View>
-                ))}
+                    ))}
 
                 {/* Staircases */}
                 {project.staircases?.map((staircase, idx) => (
@@ -1588,8 +1575,27 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     </Pressable>
                   </View>
                 ))}
+                  </View>
+                )}
               </View>
-            )}
+              <View style={{ alignItems: "flex-end" }}>
+                <Pressable
+                  onPress={() => setAddMenuVisible(true)}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.lg,
+                    paddingVertical: Spacing.sm,
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Add room or structure"
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Add
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
           </Card>
           {/* Show hint if no items yet */}
           {!canMarkStep2Complete && (

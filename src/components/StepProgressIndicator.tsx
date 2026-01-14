@@ -96,7 +96,8 @@ function StepCircle({
   let backgroundColor: string;
   let borderColor: string;
   let textColor: string;
-  let size = 44;
+  let width = 56;
+  let height = 36;
 
   if (isCompleted) {
     // Green with checkmark
@@ -108,7 +109,8 @@ function StepCircle({
     backgroundColor = Colors.primaryBlue;
     borderColor = Colors.primaryBlue;
     textColor = Colors.white;
-    size = 50;
+    width = 64;
+    height = 40;
   } else if (isDisabled) {
     // Gray and dimmed - use mediumGray for visibility
     backgroundColor = Colors.mediumGray;
@@ -139,8 +141,8 @@ function StepCircle({
     >
       <View
         style={{
-          width: size,
-          height: size,
+          width,
+          height,
           borderRadius: 8,
           backgroundColor,
           borderWidth: 2,
