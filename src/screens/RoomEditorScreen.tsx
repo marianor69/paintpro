@@ -1010,7 +1010,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               backgroundColor: Colors.primaryBlue,
               borderRadius: 8,
               paddingHorizontal: Spacing.lg,
-              paddingVertical: Spacing.sm,
+              paddingVertical: Spacing.xs,
               alignItems: "center",
               justifyContent: "center",
             }}
