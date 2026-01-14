@@ -972,15 +972,14 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View style={{ flexDirection: "row", alignItems: "center", marginRight: Spacing.sm }}>
-            <Pressable
-              onPress={handleDiscardAndLeave}
-              onLayout={(event) => {
-                if (!discardWidth) {
-                  setDiscardWidth(event.nativeEvent.layout.width);
-                }
-              }}
-              style={{
+          <Pressable
+            onPress={handleDiscardAndLeave}
+            onLayout={(event) => {
+              if (!discardWidth) {
+                setDiscardWidth(event.nativeEvent.layout.width);
+              }
+            }}
+            style={{
               minWidth: 60,
               height: 36,
               paddingHorizontal: Spacing.sm,
@@ -989,34 +988,13 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               borderWidth: 1,
               borderColor: Colors.neutralGray,
               alignItems: "center",
-                justifyContent: "center",
-                marginRight: Spacing.xs,
-              }}
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
-                Discard
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={handleSave}
-              android_ripple={{ color: "transparent" }}
-              style={{
-              minWidth: 60,
-              height: 36,
-              width: discardWidth || undefined,
-              backgroundColor: Colors.primaryBlue,
-              borderRadius: 8,
-              paddingHorizontal: Spacing.sm,
-              alignItems: "center",
               justifyContent: "center",
-              marginLeft: -Spacing.xs,
             }}
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
-                Save
-              </Text>
-            </Pressable>
-          </View>
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+              Discard
+            </Text>
+          </Pressable>
           <Text
             style={{
               flex: 1,
@@ -1029,6 +1007,24 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           >
             {(name || "Unnamed Room") + "'s Details"}
           </Text>
+          <Pressable
+            onPress={handleSave}
+            android_ripple={{ color: "transparent" }}
+            style={{
+              minWidth: 60,
+              height: 36,
+              width: discardWidth || undefined,
+              backgroundColor: Colors.primaryBlue,
+              borderRadius: 8,
+              paddingHorizontal: Spacing.sm,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+              Save
+            </Text>
+          </Pressable>
         </View>
       </View>
       <ScrollView
