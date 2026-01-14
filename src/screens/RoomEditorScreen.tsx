@@ -1846,7 +1846,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               />
             </View>
           )}
-              <View style={{ alignItems: "flex-end", marginTop: Spacing.md, marginBottom: Spacing.sm }}>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                 <Pressable
                   onPress={() => {
                     openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
