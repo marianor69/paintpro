@@ -203,7 +203,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(false);
   const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(false);
   const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(false);
-  const confirmedCardColor = Colors.success + "30";
+  const confirmedCardColor = Colors.success + "50";
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -741,11 +741,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Pressable
           onPress={handleDiscardAndLeave}
           style={{
-            height: 32,
+            height: 28,
             minWidth: 72,
             paddingHorizontal: Spacing.md,
             borderRadius: 12,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.primaryBlueLight,
             borderWidth: 1,
             borderColor: Colors.neutralGray,
             alignItems: "center",
@@ -761,11 +761,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Pressable
           onPress={handleSave}
           style={{
-            height: 32,
+            height: 28,
             minWidth: 64,
             paddingHorizontal: Spacing.md,
             borderRadius: 12,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.primaryBlueLight,
             borderWidth: 1,
             borderColor: Colors.neutralGray,
             alignItems: "center",
@@ -1110,7 +1110,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
-                    height: 32,
+                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
@@ -1713,7 +1713,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setPaintOptionsExpanded(true);
                   }}
                   style={{
-                    height: 32,
+                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
@@ -1818,7 +1818,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setPaintOptionsExpanded(false);
                   }}
                   style={{
-                    height: 32,
+                    height: 28,
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
