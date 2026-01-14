@@ -974,6 +974,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           <Pressable
             onPress={handleDiscardAndLeave}
             style={{
+              minWidth: 110,
               paddingHorizontal: Spacing.lg,
               paddingVertical: Spacing.sm,
               borderRadius: 8,
@@ -1005,6 +1006,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             onPress={handleSave}
             android_ripple={{ color: "transparent" }}
             style={{
+              minWidth: 110,
               backgroundColor: Colors.primaryBlue,
               borderRadius: 8,
               paddingHorizontal: Spacing.lg,
@@ -2521,24 +2523,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           );
         })()}
 
-        {/* Save Button */}
-        <Pressable
-          onPress={handleSave}
-          style={{
-            backgroundColor: Colors.primaryBlue,
-            borderRadius: BorderRadius.default,
-            paddingVertical: Spacing.md,
-            alignItems: "center",
-            ...Shadows.card,
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Save room"
-          accessibilityHint="Save all changes to this room"
-        >
-          <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-            Save Room
-          </Text>
-        </Pressable>
       </ScrollView>
 
       <Modal
