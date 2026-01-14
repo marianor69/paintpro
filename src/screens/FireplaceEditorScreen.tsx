@@ -650,7 +650,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
-                    paddingVertical: Spacing.sm,
+                    paddingVertical: 10,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
