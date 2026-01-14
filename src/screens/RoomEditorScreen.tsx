@@ -36,6 +36,7 @@ import { DimensionInput } from "../components/DimensionInput";
 import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto } from "../types/painting";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RoomEditor">;
 
@@ -120,6 +121,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const calcSettings = useCalculationSettings((s) => s.settings);
   const unitSystem = useAppSettings((s) => s.unitSystem);
   const testMode = useAppSettings((s) => s.testMode);
+  const insets = useSafeAreaInsets();
 
   // Store initial state snapshot for dirty checking
   const initialStateRef = useRef<string | null>(null);
@@ -854,52 +856,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     }
   };
 
-  // Update header title and actions when room name changes
   useEffect(() => {
-    const displayName = name || "Unnamed Room";
-    navigation.setOptions({
-      title: displayName + "'s Details",
-      headerBackVisible: false,
-      headerLeft: () => (
-        <Pressable
-          onPress={handleDiscardAndLeave}
-          style={{
-            height: 28,
-            minWidth: 72,
-            paddingHorizontal: Spacing.md,
-            borderRadius: 8,
-            backgroundColor: Colors.primaryBlueLight,
-            borderWidth: 1,
-            borderColor: Colors.neutralGray,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
-            Discard
-          </Text>
-        </Pressable>
-      ),
-      headerRight: () => (
-        <Pressable
-          onPress={handleSave}
-          android_ripple={{ color: "transparent" }}
-          style={{
-            backgroundColor: Colors.primaryBlue,
-            borderRadius: 8,
-            paddingHorizontal: Spacing.sm,
-            paddingVertical: Spacing.sm,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
-            Save
-          </Text>
-        </Pressable>
-      ),
-    });
-  }, [name, navigation, handleDiscardAndLeave, handleSave]);
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const handleSaveAndLeave = () => {
     setShowSavePrompt(false);
@@ -1001,6 +960,65 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
     >
+      <View
+        style={{
+          paddingTop: insets.top + Spacing.sm,
+          paddingHorizontal: Spacing.md,
+          paddingBottom: Spacing.sm,
+          backgroundColor: Colors.white,
+          borderBottomWidth: 1,
+          borderBottomColor: Colors.neutralGray,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <Pressable
+            onPress={handleDiscardAndLeave}
+            style={{
+              paddingHorizontal: Spacing.lg,
+              paddingVertical: Spacing.sm,
+              borderRadius: 8,
+              backgroundColor: Colors.primaryBlueLight,
+              borderWidth: 1,
+              borderColor: Colors.neutralGray,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+              Discard
+            </Text>
+          </Pressable>
+          <Text
+            style={{
+              flex: 1,
+              marginHorizontal: Spacing.sm,
+              textAlign: "center",
+              fontSize: Typography.h2.fontSize,
+              fontWeight: Typography.h2.fontWeight as any,
+              color: Colors.darkCharcoal,
+            }}
+            numberOfLines={1}
+          >
+            {(name || "Unnamed Room") + "'s Details"}
+          </Text>
+          <Pressable
+            onPress={handleSave}
+            android_ripple={{ color: "transparent" }}
+            style={{
+              backgroundColor: Colors.primaryBlue,
+              borderRadius: 8,
+              paddingHorizontal: Spacing.lg,
+              paddingVertical: Spacing.sm,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+              Save
+            </Text>
+          </Pressable>
+        </View>
+      </View>
       <ScrollView
         ref={scrollViewRef}
         style={{ flex: 1 }}
