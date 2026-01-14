@@ -761,6 +761,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const builtInCount = project.builtIns?.length || 0;
   const brickWallCount = project.brickWalls?.length || 0;
   const totalItems = roomCount + bathroomCount + staircaseCount + fireplaceCount + builtInCount + brickWallCount;
+  const itemActionSlotWidth = 20 + Spacing.sm * 2;
+  const itemRowGap = Spacing.sm;
+  const itemRightInset = itemActionSlotWidth + itemRowGap;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }} edges={["bottom"]}>
@@ -1144,7 +1147,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
           {/* Rooms & Structures - Combined */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.md, paddingRight: itemRightInset }}>
               <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
                 Rooms & Structures
               </Text>
