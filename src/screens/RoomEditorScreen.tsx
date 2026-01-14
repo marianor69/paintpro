@@ -1061,7 +1061,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                   Room Name
                 </Text>
-                <View style={[TextInputStyles.container, { paddingVertical: Spacing.xs }]}>
+                <View style={TextInputStyles.container}>
                   <TextInput
                     ref={nameRef}
                     value={name}
@@ -1182,7 +1182,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   nextFieldRef={isCathedral ? cathedralPeakHeightRef : undefined}
                   accessibilityLabel="Room area"
                   textAlign="right"
-                  inputContainerStyle={{ paddingVertical: Spacing.xs }}
                   className="mb-0"
                 />
               </View>
