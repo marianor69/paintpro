@@ -785,18 +785,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Pressable
           onPress={handleSave}
           style={{
-            height: 28,
-            minWidth: 64,
-            paddingHorizontal: Spacing.md,
-            borderRadius: 12,
-            backgroundColor: Colors.primaryBlueLight,
-            borderWidth: 1,
-            borderColor: Colors.neutralGray,
+            backgroundColor: Colors.primaryBlue,
+            borderRadius: 8,
+            paddingHorizontal: Spacing.lg,
+            paddingVertical: Spacing.sm,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
+          <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
             Save
           </Text>
         </Pressable>
