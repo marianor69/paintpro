@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -79,6 +79,50 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   );
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
+  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
+  const confirmedCardColor = Colors.success + "50";
+  const detailsSnapshotRef = useRef<string>("");
+
+  const detailsSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        name,
+        width,
+        height,
+        depth,
+        hasTrim,
+        trimLinearFeet,
+        hasMantel,
+        hasLegs,
+        hasOverMantel,
+        overMantelWidth,
+        overMantelHeight,
+        overMantelDepth,
+      }),
+    [
+      name,
+      width,
+      height,
+      depth,
+      hasTrim,
+      trimLinearFeet,
+      hasMantel,
+      hasLegs,
+      hasOverMantel,
+      overMantelWidth,
+      overMantelHeight,
+      overMantelDepth,
+    ]
+  );
+
+  useEffect(() => {
+    if (detailsConfirmed && !detailsSnapshotRef.current) {
+      detailsSnapshotRef.current = detailsSnapshot;
+    }
+    if (detailsConfirmed && detailsSnapshotRef.current && detailsSnapshotRef.current !== detailsSnapshot) {
+      setDetailsConfirmed(false);
+    }
+  }, [detailsConfirmed, detailsSnapshot]);
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -496,7 +540,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
           <View style={{ padding: Spacing.md }}>
             {/* Fireplace Information Card */}
-            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: detailsConfirmed ? confirmedCardColor : Colors.white }}>
               {/* Name/Location */}
               <View style={{ marginBottom: Spacing.md }}>
                 <FormInput
@@ -597,7 +641,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               )}
               <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                 <Pressable
-                  onPress={() => Keyboard.dismiss()}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    detailsSnapshotRef.current = detailsSnapshot;
+                    setDetailsConfirmed(true);
+                  }}
                   style={{
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,

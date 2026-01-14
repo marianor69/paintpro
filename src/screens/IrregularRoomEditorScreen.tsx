@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useId } from "react";
+import React, { useState, useEffect, useRef, useCallback, useId, useMemo } from "react";
 import {
   View,
   Text,
@@ -129,6 +129,101 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
   const [notesExpanded, setNotesExpanded] = useState(false);
+  const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(false);
+  const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(false);
+  const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(false);
+  const confirmedCardColor = Colors.success + "50";
+  const roomInfoSnapshotRef = useRef<string>("");
+  const openingsClosetsSnapshotRef = useRef<string>("");
+  const paintOptionsSnapshotRef = useRef<string>("");
+
+  const roomInfoSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        name,
+        walls,
+        isCathedral,
+        cathedralPeakHeight,
+      }),
+    [name, walls, isCathedral, cathedralPeakHeight]
+  );
+  const openingsClosetsSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        windowCount,
+        doorCount,
+        singleDoorClosets,
+        doubleDoorClosets,
+        includeSingleClosetInteriorInQuote,
+        includeDoubleClosetInteriorInQuote,
+      }),
+    [
+      windowCount,
+      doorCount,
+      singleDoorClosets,
+      doubleDoorClosets,
+      includeSingleClosetInteriorInQuote,
+      includeDoubleClosetInteriorInQuote,
+    ]
+  );
+  const paintOptionsSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        paintWalls,
+        paintCeilings,
+        paintWindowFrames,
+        paintDoorFrames,
+        paintWindows,
+        paintDoors,
+        paintJambs,
+        paintBaseboard,
+        hasCrownMoulding,
+        hasAccentWall,
+      }),
+    [
+      paintWalls,
+      paintCeilings,
+      paintWindowFrames,
+      paintDoorFrames,
+      paintWindows,
+      paintDoors,
+      paintJambs,
+      paintBaseboard,
+      hasCrownMoulding,
+      hasAccentWall,
+    ]
+  );
+
+  useEffect(() => {
+    if (roomInfoConfirmed && !roomInfoSnapshotRef.current) {
+      roomInfoSnapshotRef.current = roomInfoSnapshot;
+    }
+    if (roomInfoConfirmed && roomInfoSnapshotRef.current && roomInfoSnapshotRef.current !== roomInfoSnapshot) {
+      setRoomInfoConfirmed(false);
+    }
+  }, [roomInfoConfirmed, roomInfoSnapshot]);
+
+  useEffect(() => {
+    if (openingsClosetsConfirmed && !openingsClosetsSnapshotRef.current) {
+      openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
+    }
+    if (
+      openingsClosetsConfirmed &&
+      openingsClosetsSnapshotRef.current &&
+      openingsClosetsSnapshotRef.current !== openingsClosetsSnapshot
+    ) {
+      setOpeningsClosetsConfirmed(false);
+    }
+  }, [openingsClosetsConfirmed, openingsClosetsSnapshot]);
+
+  useEffect(() => {
+    if (paintOptionsConfirmed && !paintOptionsSnapshotRef.current) {
+      paintOptionsSnapshotRef.current = paintOptionsSnapshot;
+    }
+    if (paintOptionsConfirmed && paintOptionsSnapshotRef.current && paintOptionsSnapshotRef.current !== paintOptionsSnapshot) {
+      setPaintOptionsConfirmed(false);
+    }
+  }, [paintOptionsConfirmed, paintOptionsSnapshot]);
 
   // Unsaved changes tracking
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -843,7 +938,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
           <View style={{ padding: Spacing.md }}>
             {/* Main Info Card */}
-            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white }}>
               {/* Room Name */}
               <View style={{ marginBottom: Spacing.md }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
@@ -1194,6 +1289,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 <Pressable
                   onPress={() => {
                     Keyboard.dismiss();
+                    roomInfoSnapshotRef.current = roomInfoSnapshot;
+                    setRoomInfoConfirmed(true);
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
@@ -1213,7 +1310,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Card>
 
             {/* Openings & Closets Section - Collapsable */}
-            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: openingsClosetsConfirmed ? confirmedCardColor : Colors.white }}>
               <Pressable
                 onPress={() => setOpeningsClosetsExpanded(!openingsClosetsExpanded)}
                 style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
@@ -1578,10 +1675,12 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 )}
                 <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                   <Pressable
-                    onPress={() => {
-                      setOpeningsClosetsExpanded(false);
-                      setPaintOptionsExpanded(true);
-                    }}
+                      onPress={() => {
+                        openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
+                        setOpeningsClosetsConfirmed(true);
+                        setOpeningsClosetsExpanded(false);
+                        setPaintOptionsExpanded(true);
+                      }}
                     style={{
                       backgroundColor: Colors.primaryBlue,
                       borderRadius: 8,
@@ -1601,7 +1700,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             </Card>
 
             {/* Paint Options - Collapsable */}
-            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm }}>
+            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white }}>
               <Pressable
                 onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
                 style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
@@ -1635,7 +1734,11 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   <Toggle label="Accent Wall (Multiple Colors)" value={hasAccentWall} onValueChange={setHasAccentWall} />
                   <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                     <Pressable
-                      onPress={() => setPaintOptionsExpanded(false)}
+                        onPress={() => {
+                          paintOptionsSnapshotRef.current = paintOptionsSnapshot;
+                          setPaintOptionsConfirmed(true);
+                          setPaintOptionsExpanded(false);
+                        }}
                       style={{
                         backgroundColor: Colors.primaryBlue,
                         borderRadius: 8,
