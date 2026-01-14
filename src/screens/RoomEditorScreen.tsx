@@ -1133,8 +1133,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     height: 28,
                     backgroundColor: Colors.primaryBlue,
-                    borderRadius: 12,
-                    paddingHorizontal: Spacing.md,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.lg,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -1736,8 +1736,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     height: 28,
                     backgroundColor: Colors.primaryBlue,
-                    borderRadius: 12,
-                    paddingHorizontal: Spacing.md,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.lg,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -1841,8 +1841,8 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     height: 28,
                     backgroundColor: Colors.primaryBlue,
-                    borderRadius: 12,
-                    paddingHorizontal: Spacing.md,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.lg,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
