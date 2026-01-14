@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useId } from "react";
+import React, { useState, useEffect, useRef, useCallback, useId, useMemo } from "react";
 import {
   View,
   Text,
@@ -1133,7 +1133,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
-                    paddingHorizontal: Spacing.lg,
+                    paddingHorizontal: Spacing.sm,
                     paddingVertical: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
@@ -1736,7 +1736,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
-                    paddingHorizontal: Spacing.lg,
+                    paddingHorizontal: Spacing.sm,
                     paddingVertical: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
@@ -1841,7 +1841,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   style={{
                     backgroundColor: Colors.primaryBlue,
                     borderRadius: 8,
-                    paddingHorizontal: Spacing.lg,
+                    paddingHorizontal: Spacing.sm,
                     paddingVertical: Spacing.sm,
                     alignItems: "center",
                     justifyContent: "center",
