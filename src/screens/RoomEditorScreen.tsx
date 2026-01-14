@@ -736,15 +736,20 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     const displayName = name || "Unnamed Room";
     navigation.setOptions({
       title: displayName + "'s Details",
-      headerBackTitle: "Back",
+      headerBackVisible: false,
       headerLeft: () => (
         <Pressable
           onPress={handleDiscardAndLeave}
           style={{
+            height: 32,
+            minWidth: 72,
             paddingHorizontal: Spacing.md,
-            paddingVertical: Spacing.xs,
-            borderRadius: BorderRadius.default,
-            backgroundColor: Colors.error + "15",
+            borderRadius: 12,
+            backgroundColor: Colors.white,
+            borderWidth: 1,
+            borderColor: Colors.neutralGray,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
@@ -756,10 +761,15 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Pressable
           onPress={handleSave}
           style={{
+            height: 32,
+            minWidth: 64,
             paddingHorizontal: Spacing.md,
-            paddingVertical: Spacing.xs,
-            borderRadius: BorderRadius.default,
-            backgroundColor: Colors.primaryBlue + "15",
+            borderRadius: 12,
+            backgroundColor: Colors.white,
+            borderWidth: 1,
+            borderColor: Colors.neutralGray,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>
@@ -883,7 +893,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             marginBottom: Spacing.md,
             paddingTop: Spacing.lg,
             paddingBottom: Spacing.lg,
-            backgroundColor: roomInfoConfirmed && !roomInfoExpanded ? confirmedCardColor : Colors.white,
+            backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white,
           }}
         >
           <Pressable
@@ -1100,11 +1110,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
+                    height: 32,
                     backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.sm,
+                    borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
                     alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
@@ -1120,7 +1131,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            backgroundColor: openingsClosetsConfirmed && !openingsClosetsExpanded ? confirmedCardColor : Colors.white,
+            backgroundColor: openingsClosetsConfirmed ? confirmedCardColor : Colors.white,
           }}
         >
           <Pressable
@@ -1702,11 +1713,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setPaintOptionsExpanded(true);
                   }}
                   style={{
+                    height: 32,
                     backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.sm,
+                    borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
                     alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
@@ -1722,7 +1734,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            backgroundColor: paintOptionsConfirmed && !paintOptionsExpanded ? confirmedCardColor : Colors.white,
+            backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white,
           }}
         >
           <Pressable
@@ -1806,11 +1818,12 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     setPaintOptionsExpanded(false);
                   }}
                   style={{
+                    height: 32,
                     backgroundColor: Colors.primaryBlue,
-                    borderRadius: BorderRadius.default,
-                    paddingVertical: Spacing.sm,
+                    borderRadius: 12,
                     paddingHorizontal: Spacing.lg,
                     alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
