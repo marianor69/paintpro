@@ -977,7 +977,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               style={{
               minWidth: 60,
               height: 36,
-              paddingHorizontal: Spacing.lg,
+              paddingHorizontal: Spacing.sm,
               borderRadius: 8,
               backgroundColor: Colors.primaryBlueLight,
               borderWidth: 1,
@@ -999,7 +999,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               height: 36,
               backgroundColor: Colors.primaryBlue,
               borderRadius: 8,
-              paddingHorizontal: Spacing.lg,
+              paddingHorizontal: Spacing.sm,
               alignItems: "center",
               justifyContent: "center",
               marginLeft: -Spacing.xs,
@@ -1035,33 +1035,43 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         <Card
           style={{
             marginBottom: Spacing.md,
-            paddingTop: Spacing.lg,
+            paddingTop: roomInfoExpanded ? Spacing.sm : Spacing.lg,
             paddingBottom: Spacing.sm,
             backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white,
           }}
         >
-          <Pressable
-            onPress={() => setRoomInfoExpanded(!roomInfoExpanded)}
-            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: roomInfoExpanded ? Spacing.md : 0 }}
-          >
-            <View style={{ flex: 1 }}>
-              {!roomInfoExpanded && (
-                <>
-                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                    Room Name
-                  </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                    Room name and dimensions
-                  </Text>
-                </>
-              )}
-            </View>
-            <Ionicons
-              name={roomInfoExpanded ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={Colors.mediumGray}
-            />
-          </Pressable>
+          {roomInfoExpanded ? (
+            <Pressable
+              onPress={() => setRoomInfoExpanded(false)}
+              style={{
+                position: "absolute",
+                right: Spacing.md,
+                top: Spacing.sm,
+                width: 32,
+                height: 32,
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1,
+              }}
+            >
+              <Ionicons name="chevron-up" size={24} color={Colors.mediumGray} />
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => setRoomInfoExpanded(true)}
+              style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                  Room Name
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                  Room name and dimensions
+                </Text>
+              </View>
+              <Ionicons name="chevron-down" size={24} color={Colors.mediumGray} />
+            </Pressable>
+          )}
 
           {roomInfoExpanded && (
             <>
