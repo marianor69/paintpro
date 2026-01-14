@@ -1223,7 +1223,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
               </View>
             </View>
           )}
-              <View style={{ alignItems: "flex-end", marginTop: Spacing.md }}>
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.md, marginBottom: Spacing.sm }}>
                 <Pressable
                   onPress={() => {
                     roomInfoSnapshotRef.current = roomInfoSnapshot;
