@@ -1045,12 +1045,16 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: roomInfoExpanded ? Spacing.md : 0 }}
           >
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                Room Name
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Room name and dimensions
-              </Text>
+              {!roomInfoExpanded && (
+                <>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                    Room Name
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Room name and dimensions
+                  </Text>
+                </>
+              )}
             </View>
             <Ionicons
               name={roomInfoExpanded ? "chevron-up" : "chevron-down"}
