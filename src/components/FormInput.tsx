@@ -186,7 +186,9 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
                 onPress={handlePrevious}
                 style={{
                   paddingHorizontal: Spacing.lg,
-                  paddingVertical: 6,
+                  height: 34,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <Text
@@ -206,8 +208,10 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
-                  paddingVertical: 6,
+                  height: 34,
                   borderRadius: BorderRadius.default,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <Text
@@ -227,8 +231,10 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
-                  paddingVertical: 6,
+                  height: 34,
                   borderRadius: BorderRadius.default,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <Text
