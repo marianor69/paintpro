@@ -35,7 +35,7 @@ import { DimensionInput } from "../components/DimensionInput";
 import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto } from "../types/painting";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RoomEditor">;
 
@@ -952,10 +952,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   }
 
   return (
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
     <KeyboardAvoidingView
       behavior="padding"
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-      style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
+      style={{ flex: 1 }}
     >
       <View
         style={{
@@ -2674,5 +2675,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       </Modal>
 
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

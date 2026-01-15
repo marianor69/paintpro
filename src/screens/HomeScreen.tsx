@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              CLAUDE - v1.0.41 - InputAccessoryView height constraint
+              CLAUDE - v1.0.42 - SafeAreaView wrap RoomEditor
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
               GPT - v4.6.3 - Keyboard button height 34
