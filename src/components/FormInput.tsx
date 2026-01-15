@@ -23,6 +23,7 @@ interface FormInputProps extends Omit<TextInputProps, "style"> {
   previousFieldRef?: RefObject<TextInput>;
   nextFieldRef?: RefObject<TextInput>;
   inputAccessoryViewID?: string;
+  disableAccessory?: boolean;
   inputContainerStyle?: StyleProp<ViewStyle>;
   inputTextStyle?: StyleProp<TextStyle>;
   labelStyle?: StyleProp<TextStyle>;
@@ -36,6 +37,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   previousFieldRef,
   nextFieldRef,
   inputAccessoryViewID,
+  disableAccessory,
   inputContainerStyle,
   inputTextStyle,
   labelStyle,
@@ -84,8 +86,10 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
   const effectiveOnSubmitEditing = textInputProps.onSubmitEditing || handleSubmit;
 
   // For ALL keyboards on iOS with navigation, use InputAccessoryView with unique ID
-  const shouldShowAccessory = Platform.OS === "ios" && (nextFieldRef || isFinal);
-  const accessoryID = inputAccessoryViewID || (shouldShowAccessory ? `formInput-${uniqueId}` : undefined);
+  const shouldShowAccessory = Platform.OS === "ios" && (nextFieldRef || isFinal) && !disableAccessory;
+  const accessoryID =
+    inputAccessoryViewID ||
+    (shouldShowAccessory ? `formInput-${uniqueId}` : undefined);
 
   return (
     <View className={cn("mb-4", className)}>
@@ -165,7 +169,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
       )}
 
       {/* Keyboard Navigation Toolbar (standard) */}
-      {Platform.OS === "ios" && accessoryID && (
+      {Platform.OS === "ios" && accessoryID && !disableAccessory && (
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
