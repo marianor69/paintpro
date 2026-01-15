@@ -192,7 +192,11 @@ export function DimensionInput({
 
       {/* iOS InputAccessoryView for numeric keyboard */}
       {Platform.OS === "ios" && accessoryID && (
-        <InputAccessoryView nativeID={accessoryID} backgroundColor="#f2f2f7">
+        <InputAccessoryView
+          nativeID={accessoryID}
+          backgroundColor="#f2f2f7"
+          style={{ height: 44, overflow: "hidden" }}
+        >
           <View
             style={{
               backgroundColor: "#f2f2f7",
