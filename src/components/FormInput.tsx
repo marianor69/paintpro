@@ -174,10 +174,11 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
           <View
             style={{
               backgroundColor: "#f2f2f7",
+              height: 44,
               paddingHorizontal: Spacing.md,
-              paddingVertical: Spacing.sm,
               flexDirection: "row",
               justifyContent: "flex-end",
+              alignItems: "center",
             }}
           >
             {!isFirst && (
@@ -185,7 +186,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
                 onPress={handlePrevious}
                 style={{
                   paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
+                  paddingVertical: 6,
                 }}
               >
                 <Text
@@ -205,7 +206,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
+                  paddingVertical: 6,
                   borderRadius: BorderRadius.default,
                 }}
               >
@@ -226,7 +227,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
                 style={{
                   backgroundColor: Colors.primaryBlue,
                   paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
+                  paddingVertical: 6,
                   borderRadius: BorderRadius.default,
                 }}
               >
