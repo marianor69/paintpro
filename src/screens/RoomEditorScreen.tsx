@@ -955,7 +955,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: Colors.white }}>
     <KeyboardAvoidingView
       behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
     >
       <View
