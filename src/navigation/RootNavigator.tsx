@@ -212,13 +212,9 @@ export default function RootNavigator() {
         <Stack.Screen
           name="RoomEditor"
           component={RoomEditorScreen}
-          options={({ route }) => {
-            const roomName = route.params?.roomName || "Edit Room";
-            return {
-              title: `Edit Room: ${roomName}`,
-              headerShown: true,
-              gestureEnabled: true,
-            };
+          options={{
+            headerShown: false,
+            gestureEnabled: true,
           }}
         />
         <Stack.Screen
