@@ -850,7 +850,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       </View>
       <KeyboardAvoidingView
         behavior="padding"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         style={{ flex: 1 }}
       >
         <ScrollView

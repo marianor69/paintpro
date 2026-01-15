@@ -914,7 +914,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   return (
     <KeyboardAvoidingView
       behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
     >
       <View
