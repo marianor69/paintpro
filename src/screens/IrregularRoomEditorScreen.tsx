@@ -242,13 +242,21 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Wall input refs - stored by wall id
-  const wallWidthRefs = useRef<Map<string, TextInput>>(new Map());
-  const wallHeightRefs = useRef<Map<string, TextInput>>(new Map());
-  const wallAreaRefs = useRef<Map<string, TextInput>>(new Map());
+  const wallWidthRefs = useRef<Map<string, React.RefObject<TextInput>>>(new Map());
+  const wallHeightRefs = useRef<Map<string, React.RefObject<TextInput>>>(new Map());
+  const wallAreaRefs = useRef<Map<string, React.RefObject<TextInput>>>(new Map());
 
-  // Track focused wall input
-  const [focusedWall, setFocusedWall] = useState<{ wallId: string; field: "width" | "height" | "area" } | null>(null);
-
+  const getWallRef = useCallback((
+    map: React.MutableRefObject<Map<string, React.RefObject<TextInput>>>,
+    wallId: string
+  ) => {
+    let ref = map.current.get(wallId);
+    if (!ref) {
+      ref = React.createRef<TextInput>();
+      map.current.set(wallId, ref);
+    }
+    return ref;
+  }, []);
 
   // Calculate total area from all walls - use area field directly (may be from width×height or manual entry)
   const totalArea = walls.reduce((sum, wall) => {
@@ -309,16 +317,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const totalLaborCost = wallLaborCost + windowLaborCost + doorLaborCost;
   const totalMaterialsCost = wallMaterialsCost + windowMaterialsCost + doorMaterialsCost;
   const totalRoomCost = totalLaborCost + totalMaterialsCost;
-
-  // Navigate from room name to first wall's width
-  const handleNameNextPress = useCallback(() => {
-    if (walls.length > 0) {
-      const firstWallId = walls[0].id;
-      wallWidthRefs.current.get(firstWallId)?.focus();
-    } else {
-      Keyboard.dismiss();
-    }
-  }, [walls]);
 
   // Validation: check if all walls have valid dimensions
   const hasValidDimensions = walls.every(wall => {
@@ -522,64 +520,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       return { ...w, area: value };
     }));
   };
-
-  // Wall keyboard navigation helpers
-  const getWallInputSequence = useCallback(() => {
-    // Returns flat array of {wallId, field} in order: width0, height0, area0, width1, height1, area1, ...
-    const sequence: { wallId: string; field: "width" | "height" | "area" }[] = [];
-    walls.forEach(wall => {
-      sequence.push({ wallId: wall.id, field: "width" });
-      sequence.push({ wallId: wall.id, field: "height" });
-      sequence.push({ wallId: wall.id, field: "area" });
-    });
-    return sequence;
-  }, [walls]);
-
-  const handleWallPrevious = useCallback(() => {
-    if (!focusedWall) return;
-    const sequence = getWallInputSequence();
-    const currentIndex = sequence.findIndex(
-      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
-    );
-    if (currentIndex > 0) {
-      const prev = sequence[currentIndex - 1];
-      const refMap = prev.field === "width" ? wallWidthRefs : prev.field === "height" ? wallHeightRefs : wallAreaRefs;
-      refMap.current.get(prev.wallId)?.focus();
-    }
-  }, [focusedWall, getWallInputSequence]);
-
-  const handleWallNext = useCallback(() => {
-    if (!focusedWall) return;
-    const sequence = getWallInputSequence();
-    const currentIndex = sequence.findIndex(
-      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
-    );
-    if (currentIndex < sequence.length - 1) {
-      const next = sequence[currentIndex + 1];
-      const refMap = next.field === "width" ? wallWidthRefs : next.field === "height" ? wallHeightRefs : wallAreaRefs;
-      refMap.current.get(next.wallId)?.focus();
-    } else {
-      Keyboard.dismiss();
-    }
-  }, [focusedWall, getWallInputSequence]);
-
-  const isFirstWallInput = useCallback(() => {
-    if (!focusedWall) return true;
-    const sequence = getWallInputSequence();
-    const currentIndex = sequence.findIndex(
-      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
-    );
-    return currentIndex === 0;
-  }, [focusedWall, getWallInputSequence]);
-
-  const isLastWallInput = useCallback(() => {
-    if (!focusedWall) return false;
-    const sequence = getWallInputSequence();
-    const currentIndex = sequence.findIndex(
-      s => s.wallId === focusedWall.wallId && s.field === focusedWall.field
-    );
-    return currentIndex === sequence.length - 1;
-  }, [focusedWall, getWallInputSequence]);
 
   const focusTargetY = 200;
   const scrollFocusedInputIntoView = useCallback(() => {
@@ -938,25 +878,17 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
             <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white }}>
               {/* Room Name */}
               <View style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Room Name
-                </Text>
-                <View style={TextInputStyles.container}>
-                  <TextInput
-                    ref={nameRef}
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Enter room name"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                    onFocus={handleFieldFocus}
-                    style={TextInputStyles.base}
-                    // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
-                    cursorColor={Colors.primaryBlue}
-                    selectionColor={Colors.primaryBlue}
-                  />
-                </View>
+                <FormInput
+                  ref={nameRef}
+                  label="Room Name"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Enter room name"
+                  nextFieldRef={walls.length > 0 ? getWallRef(wallWidthRefs, walls[0].id) : undefined}
+                  returnKeyType="next"
+                  onFocus={handleFieldFocus}
+                  className="mb-0"
+                />
               </View>
 
               {/* Walls Section */}
@@ -1056,6 +988,14 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                 {/* Wall Rows */}
                 {walls.map((wall, index) => {
                   const isLastWall = index === walls.length - 1;
+                  const widthRef = getWallRef(wallWidthRefs, wall.id);
+                  const heightRef = getWallRef(wallHeightRefs, wall.id);
+                  const areaRef = getWallRef(wallAreaRefs, wall.id);
+                  const prevWallId = index > 0 ? walls[index - 1].id : null;
+                  const nextWallId = index < walls.length - 1 ? walls[index + 1].id : null;
+                  const widthPrevRef = index === 0 ? nameRef : getWallRef(wallAreaRefs, prevWallId as string);
+                  const areaNextRef = nextWallId ? getWallRef(wallWidthRefs, nextWallId) : undefined;
+
                   return (
                     <View key={wall.id} style={{ flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginBottom: Spacing.sm }}>
                       {/* Wall number */}
@@ -1067,37 +1007,20 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
                       {/* Width */}
                       <View style={{ flex: 1 }}>
-                        <TextInput
-                          ref={(ref) => {
-                            if (ref) wallWidthRefs.current.set(wall.id, ref);
-                            else wallWidthRefs.current.delete(wall.id);
-                          }}
+                        <FormInput
+                          ref={widthRef}
                           value={wall.width}
                           onChangeText={(val) => handleWallWidthChange(wall.id, val)}
                           keyboardType="numeric"
                           placeholder="0"
-                          placeholderTextColor={Colors.mediumGray}
                           returnKeyType="next"
-                          blurOnSubmit={false}
-                          onSubmitEditing={handleWallNext}
+                          previousFieldRef={widthPrevRef}
+                          nextFieldRef={heightRef}
                           onFocus={() => {
-                            setFocusedWall({ wallId: wall.id, field: "width" });
                             handleFieldFocus();
                           }}
-                          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
-                          cursorColor={Colors.primaryBlue}
-                          selectionColor={Colors.primaryBlue}
-                          style={{
-                            backgroundColor: Colors.white,
-                            borderRadius: 8,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            paddingHorizontal: Spacing.md,
-                            paddingVertical: Spacing.sm,
-                            fontSize: Typography.body.fontSize,
-                            color: Colors.darkCharcoal,
-                            textAlign: "right",
-                          }}
+                          inputTextStyle={{ textAlign: "right" }}
+                          className="mb-0"
                         />
                       </View>
 
@@ -1105,37 +1028,20 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
                       {/* Height */}
                       <View style={{ flex: 1 }}>
-                        <TextInput
-                          ref={(ref) => {
-                            if (ref) wallHeightRefs.current.set(wall.id, ref);
-                            else wallHeightRefs.current.delete(wall.id);
-                          }}
+                        <FormInput
+                          ref={heightRef}
                           value={wall.height}
                           onChangeText={(val) => handleWallHeightChange(wall.id, val)}
                           keyboardType="numeric"
                           placeholder="0"
-                          placeholderTextColor={Colors.mediumGray}
                           returnKeyType="next"
-                          blurOnSubmit={false}
-                          onSubmitEditing={handleWallNext}
+                          previousFieldRef={widthRef}
+                          nextFieldRef={areaRef}
                           onFocus={() => {
-                            setFocusedWall({ wallId: wall.id, field: "height" });
                             handleFieldFocus();
                           }}
-                          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
-                          cursorColor={Colors.primaryBlue}
-                          selectionColor={Colors.primaryBlue}
-                          style={{
-                            backgroundColor: Colors.white,
-                            borderRadius: 8,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            paddingHorizontal: Spacing.md,
-                            paddingVertical: Spacing.sm,
-                            fontSize: Typography.body.fontSize,
-                            color: Colors.darkCharcoal,
-                            textAlign: "right",
-                          }}
+                          inputTextStyle={{ textAlign: "right" }}
+                          className="mb-0"
                         />
                       </View>
 
@@ -1143,37 +1049,21 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
                       {/* Area (editable - can be entered directly or calculated from width×height) */}
                       <View style={{ width: 70 }}>
-                        <TextInput
-                          ref={(ref) => {
-                            if (ref) wallAreaRefs.current.set(wall.id, ref);
-                            else wallAreaRefs.current.delete(wall.id);
-                          }}
+                        <FormInput
+                          ref={areaRef}
                           value={wall.area}
                           onChangeText={(val) => handleWallAreaChange(wall.id, val)}
                           keyboardType="numeric"
                           placeholder="0"
-                          placeholderTextColor={Colors.mediumGray}
                           returnKeyType={isLastWall ? "done" : "next"}
-                          blurOnSubmit={isLastWall}
-                          onSubmitEditing={isLastWall ? () => Keyboard.dismiss() : handleWallNext}
+                          previousFieldRef={heightRef}
+                          nextFieldRef={areaNextRef}
                           onFocus={() => {
-                            setFocusedWall({ wallId: wall.id, field: "area" });
                             handleFieldFocus();
                           }}
-                          // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
-                          cursorColor={Colors.primaryBlue}
-                          selectionColor={Colors.primaryBlue}
-                          style={{
-                            backgroundColor: Colors.white,
-                            borderRadius: 8,
-                            borderWidth: 1,
-                            borderColor: Colors.neutralGray,
-                            paddingHorizontal: Spacing.sm,
-                            paddingVertical: Spacing.sm,
-                            fontSize: Typography.body.fontSize,
-                            color: Colors.darkCharcoal,
-                            textAlign: "right",
-                          }}
+                          inputContainerStyle={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.sm }}
+                          inputTextStyle={{ textAlign: "right" }}
+                          className="mb-0"
                         />
                       </View>
 

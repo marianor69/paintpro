@@ -987,24 +987,18 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white }}>
           {/* Bathroom Name */}
           <View style={{ marginBottom: Spacing.md }}>
-            <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-              Bathroom Name
-            </Text>
-            <View style={TextInputStyles.container}>
-              <TextInput
-                ref={nameRef}
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter bathroom name"
-                placeholderTextColor={Colors.mediumGray}
-                returnKeyType="next"
-                onSubmitEditing={() => lengthRef.current?.focus()}
-                blurOnSubmit={false}
-                style={TextInputStyles.base}
-                accessibilityLabel="Room name input"
-                accessibilityHint="Enter a name for this room"
-              />
-            </View>
+            <FormInput
+              ref={nameRef}
+              label="Bathroom Name"
+              value={name}
+              onChangeText={setName}
+              placeholder="Enter bathroom name"
+              nextFieldRef={lengthRef}
+              returnKeyType="next"
+              className="mb-0"
+              accessibilityLabel="Room name input"
+              accessibilityHint="Enter a name for this room"
+            />
           </View>
 
           {/* Room Dimensions: Length × Width = Area */}

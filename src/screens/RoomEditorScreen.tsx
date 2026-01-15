@@ -1077,24 +1077,18 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             <>
               {/* Room Name */}
               <View style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                  Room Name
-                </Text>
-                <View style={TextInputStyles.container}>
-                  <TextInput
-                    ref={nameRef}
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Enter room name"
-                    placeholderTextColor={Colors.mediumGray}
-                    returnKeyType="next"
-                    onSubmitEditing={() => lengthRef.current?.focus()}
-                    blurOnSubmit={false}
-                    style={TextInputStyles.base}
-                    accessibilityLabel="Room name input"
-                    accessibilityHint="Enter a name for this room"
-                  />
-                </View>
+                <FormInput
+                  ref={nameRef}
+                  label="Room Name"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Enter room name"
+                  nextFieldRef={lengthRef}
+                  returnKeyType="next"
+                  className="mb-0"
+                  accessibilityLabel="Room name input"
+                  accessibilityHint="Enter a name for this room"
+                />
               </View>
 
               {/* Room Dimensions: Length × Width = Area */}
