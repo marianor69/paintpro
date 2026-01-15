@@ -173,50 +173,74 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
-              backgroundColor: "#f1f1f1",
+              backgroundColor: "#f2f2f7",
               paddingHorizontal: Spacing.md,
               paddingVertical: Spacing.sm,
               flexDirection: "row",
               justifyContent: "flex-end",
             }}
           >
-            <Pressable
-              onPress={handlePrevious}
-              disabled={isFirst}
-              style={{
-                paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.sm,
-              }}
-            >
-              <Text
+            {!isFirst && (
+              <Pressable
+                onPress={handlePrevious}
                 style={{
-                  fontSize: Typography.body.fontSize,
-                  color: isFirst ? "#c7c7c7" : "#007AFF",
-                  fontWeight: "400",
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
                 }}
               >
-                Previous
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={isFinal ? handleDone : handleNext}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.sm,
-                borderRadius: BorderRadius.default,
-              }}
-            >
-              <Text
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: "#007AFF",
+                    fontWeight: "400",
+                  }}
+                >
+                  Previous
+                </Text>
+              </Pressable>
+            )}
+            {!isFinal && (
+              <Pressable
+                onPress={handleNext}
                 style={{
-                  fontSize: Typography.body.fontSize,
-                  color: Colors.white,
-                  fontWeight: "600",
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
                 }}
               >
-                {isFinal ? "Done" : "Next"}
-              </Text>
-            </Pressable>
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Next
+                </Text>
+              </Pressable>
+            )}
+            {isFinal && (
+              <Pressable
+                onPress={handleDone}
+                style={{
+                  backgroundColor: Colors.primaryBlue,
+                  paddingHorizontal: Spacing.lg,
+                  paddingVertical: Spacing.sm,
+                  borderRadius: BorderRadius.default,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.body.fontSize,
+                    color: Colors.white,
+                    fontWeight: "600",
+                  }}
+                >
+                  Done
+                </Text>
+              </Pressable>
+            )}
           </View>
         </InputAccessoryView>
       )}
