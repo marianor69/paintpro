@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "600", color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              CLAUDE - v1.0.39 - 10a02f7 - Keyboard toolbar height fix
+              CLAUDE - v1.0.40 - InputAccessoryView background fix
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
               GPT - v4.6.3 - Keyboard button height 34

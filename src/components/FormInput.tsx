@@ -170,7 +170,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(({
 
       {/* Keyboard Navigation Toolbar (standard) */}
       {Platform.OS === "ios" && accessoryID && !disableAccessory && (
-        <InputAccessoryView nativeID={accessoryID}>
+        <InputAccessoryView nativeID={accessoryID} backgroundColor="#f2f2f7">
           <View
             style={{
               backgroundColor: "#f2f2f7",
