@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useId, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,6 @@ import {
   Image,
   Modal,
   Keyboard,
-  InputAccessoryView,
   Switch,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -250,8 +249,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   // Track focused wall input
   const [focusedWall, setFocusedWall] = useState<{ wallId: string; field: "width" | "height" | "area" } | null>(null);
 
-  const nameAccessoryID = useId();
-  const wallInputAccessoryID = useId();
 
   // Calculate total area from all walls - use area field directly (may be from width×height or manual entry)
   const totalArea = walls.reduce((sum, wall) => {
@@ -955,7 +952,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     blurOnSubmit={false}
                     onFocus={handleFieldFocus}
                     style={TextInputStyles.base}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `irregularRoomName-${nameAccessoryID}` : undefined}
                     // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                     cursorColor={Colors.primaryBlue}
                     selectionColor={Colors.primaryBlue}
@@ -1088,7 +1084,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                             setFocusedWall({ wallId: wall.id, field: "width" });
                             handleFieldFocus();
                           }}
-                          inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
@@ -1127,7 +1122,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                             setFocusedWall({ wallId: wall.id, field: "height" });
                             handleFieldFocus();
                           }}
-                          inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
@@ -1166,7 +1160,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                             setFocusedWall({ wallId: wall.id, field: "area" });
                             handleFieldFocus();
                           }}
-                          inputAccessoryViewID={Platform.OS === "ios" ? `wallInputs-${wallInputAccessoryID}` : undefined}
                           // ⛔ DO NOT REMOVE - Required for iOS cursor/selection (KB-003, ADDR-098)
                           cursorColor={Colors.primaryBlue}
                           selectionColor={Colors.primaryBlue}
@@ -2116,93 +2109,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           </View>
         </ScrollView>
 
-        {/* InputAccessoryView for Room Name field */}
-        {Platform.OS === "ios" && (
-          <InputAccessoryView nativeID={`irregularRoomName-${nameAccessoryID}`}>
-            <View
-              style={{
-                backgroundColor: "#f1f1f1",
-                paddingHorizontal: Spacing.md,
-                paddingVertical: Spacing.sm,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Pressable
-                onPress={handleNameNextPress}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                  borderRadius: 8,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: Colors.white,
-                    fontWeight: "600",
-                  }}
-                >
-                  Next
-                </Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-        )}
-
-        {/* InputAccessoryView for Wall inputs with Previous/Next/Done navigation */}
-        {Platform.OS === "ios" && (
-          <InputAccessoryView nativeID={`wallInputs-${wallInputAccessoryID}`}>
-            <View
-              style={{
-                backgroundColor: "#f1f1f1",
-                paddingHorizontal: Spacing.md,
-                paddingVertical: Spacing.sm,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Pressable
-                onPress={handleWallPrevious}
-                disabled={isFirstWallInput()}
-                style={{
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: isFirstWallInput() ? "#c7c7c7" : "#007AFF",
-                    fontWeight: "400",
-                  }}
-                >
-                  Previous
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={isLastWallInput() ? () => Keyboard.dismiss() : handleWallNext}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  paddingHorizontal: Spacing.lg,
-                  paddingVertical: Spacing.sm,
-                  borderRadius: 8,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: Typography.body.fontSize,
-                    color: Colors.white,
-                    fontWeight: "600",
-                  }}
-                >
-                  {isLastWallInput() ? "Done" : "Next"}
-                </Text>
-              </Pressable>
-            </View>
-          </InputAccessoryView>
-        )}
       </KeyboardAvoidingView>
 
       <Modal

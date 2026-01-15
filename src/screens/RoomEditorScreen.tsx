@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useId, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import {
   Image,
   Modal,
   Keyboard,
-  InputAccessoryView,
   Switch,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -292,8 +291,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   // MD-002: Store the navigation action to dispatch when discarding
   const preventedNavigationActionRef = useRef<any>(null);
 
-  // KB-004: Unique ID for Room Name InputAccessoryView
-  const nameAccessoryID = useId();
 
   // W-005, W-006: TextInput refs for focus navigation
   const nameRef = useRef<TextInput>(null);
@@ -1094,7 +1091,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     onSubmitEditing={() => lengthRef.current?.focus()}
                     blurOnSubmit={false}
                     style={TextInputStyles.base}
-                    inputAccessoryViewID={Platform.OS === "ios" ? `roomName-${nameAccessoryID}` : undefined}
                     accessibilityLabel="Room name input"
                     accessibilityHint="Enter a name for this room"
                   />
@@ -2684,40 +2680,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
         </KeyboardAvoidingView>
       </Modal>
 
-      {/* KB-004: InputAccessoryView for Room Name field */}
-      {Platform.OS === "ios" && (
-        <InputAccessoryView nativeID={`roomName-${nameAccessoryID}`}>
-          <View
-            style={{
-              backgroundColor: "#f1f1f1",
-              paddingHorizontal: Spacing.md,
-              paddingVertical: Spacing.sm,
-              flexDirection: "row",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Pressable
-              onPress={() => lengthRef.current?.focus()}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.sm,
-                borderRadius: BorderRadius.default,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: Typography.body.fontSize,
-                  color: Colors.white,
-                  fontWeight: "600",
-                }}
-              >
-                Next
-              </Text>
-            </Pressable>
-          </View>
-        </InputAccessoryView>
-      )}
     </KeyboardAvoidingView>
   );
 }
