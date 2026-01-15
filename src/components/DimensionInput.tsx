@@ -195,11 +195,12 @@ export function DimensionInput({
         <InputAccessoryView nativeID={accessoryID}>
           <View
             style={{
-              backgroundColor: "#f1f1f1",
+              backgroundColor: "#f2f2f7",
+              height: 44,
               paddingHorizontal: Spacing.md,
-              paddingVertical: Spacing.sm,
               flexDirection: "row",
               justifyContent: "flex-end",
+              alignItems: "center",
             }}
           >
             <Pressable
@@ -207,7 +208,9 @@ export function DimensionInput({
               disabled={!previousFieldRef && focusedField !== "inches"}
               style={{
                 paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.sm,
+                height: 34,
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <Text
@@ -225,8 +228,10 @@ export function DimensionInput({
               style={{
                 backgroundColor: Colors.primaryBlue,
                 paddingHorizontal: Spacing.lg,
-                paddingVertical: Spacing.sm,
+                height: 34,
                 borderRadius: BorderRadius.default,
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <Text
