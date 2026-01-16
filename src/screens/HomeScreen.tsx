@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v4.6.7 - Fresh npm lockfile
+              GPT - v4.6.8 - Remove bun.lock
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
