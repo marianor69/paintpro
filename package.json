@@ -134,6 +134,7 @@
     "typescript": "~5.8.3"
   },
   "private": true,
+  "packageManager": "npm@10",
   "patchedDependencies": {
     "react-native@0.79.2": "patches/react-native@0.79.2.patch",
     "expo-asset@11.1.5": "patches/expo-asset@11.1.5.patch"
