@@ -21,9 +21,10 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "This app needs Bluetooth access to connect to your Bosch laser distance meter for capturing measurements.",
-        "NSBluetoothPeripheralUsageDescription": "This app needs Bluetooth access to connect to your Bosch laser distance meter for capturing measurements."
+        "NSBluetoothPeripheralUsageDescription": "This app needs Bluetooth access to connect to your Bosch laser distance meter for capturing measurements.",
+        "ITSAppUsesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.anonymous.vibecode"
+"bundleIdentifier": "com.mariano.paintpro"
     },
     "android": {
       "edgeToEdgeEnabled": true,
@@ -35,17 +36,9 @@
         "ACCESS_FINE_LOCATION",
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",
-        "android.permission.BLUETOOTH_CONNECT",
-        "BLUETOOTH",
-        "BLUETOOTH_ADMIN",
-        "BLUETOOTH_CONNECT",
-        "BLUETOOTH_SCAN",
-        "ACCESS_FINE_LOCATION",
-        "android.permission.BLUETOOTH",
-        "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT"
       ],
-      "package": "com.anonymous.vibecode"
+"package": "com.mariano.paintpro"
     },
     "extra": {
       "eas": {
