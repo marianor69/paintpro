@@ -15,7 +15,10 @@
           "modes": [],
           "bluetoothAlwaysPermission": "This app needs Bluetooth access to connect to your Bosch laser distance meter for capturing measurements."
         }
-      ]
+      ],
+      "expo-asset",
+      "expo-video",
+      "expo-web-browser"
     ],
     "ios": {
       "supportsTablet": true,
@@ -28,7 +31,7 @@
         "NSLocationWhenInUseUsageDescription": "This app uses your location to provide local pricing and find nearby paint suppliers.",
         "ITSAppUsesNonExemptEncryption": false
       },
-"bundleIdentifier": "com.mariano.paintpro"
+      "bundleIdentifier": "com.mariano.paintpro"
     },
     "android": {
       "edgeToEdgeEnabled": true,
@@ -42,7 +45,7 @@
         "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT"
       ],
-"package": "com.mariano.paintpro"
+      "package": "com.mariano.paintpro"
     },
     "extra": {
       "eas": {
