@@ -282,6 +282,13 @@ export function computeRoomPricingSummary(
 
   wallArea = Math.max(0, safeNumber(wallArea - windowDeduction - doorDeduction - closetDeduction));
 
+  const isBathroom = Boolean((room as { isBathroom?: boolean }).isBathroom);
+  if (isBathroom) {
+    const fixturePercent = Math.max(0, safeNumber(calcSettings.bathroomFixtureDeductionPercent, 0));
+    const fixtureMultiplier = Math.max(0, 1 - fixturePercent / 100);
+    wallArea = Math.max(0, safeNumber(wallArea * fixtureMultiplier));
+  }
+
   // Calculate ceiling area
   let ceilingArea = useManualArea ? manualArea : length * width;
   if (room.ceilingType === "cathedral") {

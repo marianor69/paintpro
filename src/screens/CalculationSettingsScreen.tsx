@@ -579,9 +579,18 @@ export default function CalculationSettingsScreen() {
               alignLabelToHeader
               style={{ marginBottom: Spacing.md }}
               label={(
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Wall Height
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Wall Height
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Bathroom Wall Height", "Default wall height used for bathroom calculations. Floor selection does not change this value.")}
+                    hitSlop={8}
+                    style={helpIconPressableStyle}
+                  >
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Bathroom wall height help" />
+                  </Pressable>
+                </View>
               )}
               pos0={(
                 <BubbleStack header="Feet">
@@ -612,9 +621,18 @@ export default function CalculationSettingsScreen() {
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
               label={(
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                  Fixture Deduction
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Fixture Deduction
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Fixture Deduction", "Percent of bathroom wall area deducted for fixtures like shower, toilet, and vanity. Applies to wall paint and wall labor calculations only.")}
+                    hitSlop={8}
+                    style={helpIconPressableStyle}
+                  >
+                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Fixture deduction help" />
+                  </Pressable>
+                </View>
               )}
               pos0={(
                 <BubbleStack header="%">

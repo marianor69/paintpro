@@ -657,14 +657,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     setIsSaved(true);
     isSavedRef.current = true;
 
-    let height = 8;
-    if (project?.floorHeights && project.floorHeights[floor - 1]) {
-      height = project.floorHeights[floor - 1];
-    } else if (floor === 2 && project?.secondFloorHeight) {
-      height = project.secondFloorHeight;
-    } else if (project?.firstFloorHeight) {
-      height = project.firstFloorHeight;
-    }
+    const height =
+      calcSettings.bathroomWallHeight && calcSettings.bathroomWallHeight > 0
+        ? calcSettings.bathroomWallHeight
+        : 8;
 
     // Convert display values back to imperial feet/sq ft for storage
     const lengthFeet = parseDisplayValue(length, 'length', unitSystem);
@@ -721,12 +717,13 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       })),
       // Standalone notes field
       notes: notes.trim() || undefined,
+      isBathroom: true,
     };
 
     // Use the SAME calculation engine that the UI preview uses
     // This ensures saved totals match displayed totals
     const pricingSummaryForSave = computeRoomPricingSummary(
-      updatedBathroom as any,
+      { ...updatedBathroom, isBathroom: true } as any,
       quoteBuilder,
       pricing,
       project?.projectCoats,
@@ -826,14 +823,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   };
 
   // Get height from project
-  let currentHeight = 8;
-  if (project?.floorHeights && project.floorHeights[floor - 1]) {
-    currentHeight = project.floorHeights[floor - 1];
-  } else if (floor === 2 && project?.secondFloorHeight) {
-    currentHeight = project.secondFloorHeight;
-  } else if (project?.firstFloorHeight) {
-    currentHeight = project.firstFloorHeight;
-  }
+  const currentHeight =
+    calcSettings.bathroomWallHeight && calcSettings.bathroomWallHeight > 0
+      ? calcSettings.bathroomWallHeight
+      : 8;
 
   // Get active quote's QuoteBuilder for combined rule calculation
   const getActiveQuote = useProjectStore((s) => s.getActiveQuote);

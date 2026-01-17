@@ -182,7 +182,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
       const bathroomSummaries = (project.bathrooms || []).map(bathroom =>
         computeRoomPricingSummary(
-          bathroom,
+          { ...bathroom, isBathroom: true } as any,
           quoteBuilder,
           pricing,
           project.projectCoats,
