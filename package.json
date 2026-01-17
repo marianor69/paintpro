@@ -96,7 +96,7 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-ble-plx": "^3.5.0",
-    "react-native-css-interop": "^0.1.22",
+    "react-native-css-interop": "0.1.12",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-get-random-values": "~1.11.0",
     "react-native-ios-context-menu": "3.1.0",
@@ -121,6 +121,9 @@
     "victory-native": "^41.16.2",
     "zeego": "^3.0.6",
     "zustand": "^5.0.4"
+  },
+  "overrides": {
+    "react-native-css-interop": "0.1.12"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
