@@ -8,11 +8,15 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAppSettings } from "../state/appSettings";
+import { useProjectStore } from "../state/projectStore";
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/designSystem";
 import SettingsScreen from "./SettingsScreen";
+import { RootStackParamList } from "../navigation/RootNavigator";
 
 /**
  * SettingsGateScreen
@@ -23,8 +27,11 @@ import SettingsScreen from "./SettingsScreen";
  * - Otherwise, shows settings directly
  */
 export default function SettingsGateScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const settingsPin = useAppSettings((s) => s.settingsPin);
   const requireSettingsConfirmation = useAppSettings((s) => s.requireSettingsConfirmation);
+  const testMode = useAppSettings((s) => s.testMode);
+  const currentProjectId = useProjectStore((s) => s.currentProjectId);
 
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
@@ -49,6 +56,26 @@ export default function SettingsGateScreen() {
       }
     }
   }, [needsProtection, hasPin, isUnlocked]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight:
+        testMode && currentProjectId
+          ? () => (
+              <Pressable
+                onPress={() => navigation.navigate("ProjectDetail", { projectId: currentProjectId })}
+                style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+                accessibilityRole="button"
+                accessibilityLabel="Back to project"
+              >
+                <Text style={{ color: Colors.primaryBlue, fontWeight: "600" as any }}>
+                  Project
+                </Text>
+              </Pressable>
+            )
+          : undefined,
+    });
+  }, [navigation, testMode, currentProjectId]);
 
   const handlePinSubmit = () => {
     if (pinInput === settingsPin) {

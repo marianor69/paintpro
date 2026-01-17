@@ -28,6 +28,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const project = useProjectStore((s) =>
     s.projects.find((p) => p.id === projectId)
   );
+  const setCurrentProject = useProjectStore((s) => s.setCurrentProject);
   const addRoom = useProjectStore((s) => s.addRoom);
   const addBathroom = useProjectStore((s) => s.addBathroom);
   const addStaircase = useProjectStore((s) => s.addStaircase);
@@ -43,11 +44,37 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const setEstimateBuildComplete = useProjectStore((s) => s.setEstimateBuildComplete);
   const pricing = usePricingStore();
   const appSettings = useAppSettings();
+  const testMode = useAppSettings((s) => s.testMode);
   const calculationSettings = useCalculationSettings((s) => s.settings);
 
   const [addMenuVisible, setAddMenuVisible] = React.useState(false);
   const [isEstimateExpanded, setIsEstimateExpanded] = React.useState(false);
   const scrollViewRef = React.useRef<ScrollView>(null);
+
+  React.useEffect(() => {
+    setCurrentProject(projectId);
+  }, [projectId, setCurrentProject]);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: testMode
+        ? () => (
+            <Pressable
+              onPress={() =>
+                navigation.navigate("Home" as any, { screen: "SettingsTab" } as any)
+              }
+              style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+              accessibilityRole="button"
+              accessibilityLabel="Open settings"
+            >
+              <Text style={{ color: Colors.primaryBlue, fontWeight: "600" as any }}>
+                Settings
+              </Text>
+            </Pressable>
+          )
+        : undefined,
+    });
+  }, [navigation, testMode]);
 
   // Wrap project loading and preprocessing
   let summary: ReturnType<typeof calculateFilteredProjectSummary> | null = null;
