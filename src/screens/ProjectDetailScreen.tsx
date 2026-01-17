@@ -1182,7 +1182,14 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             ) : (
               <View style={{ gap: Spacing.xs }}>
                     {/* Rooms */}
-                    {project.rooms.map((room) => (
+                    {project.rooms.map((room) => {
+                      const isRoomFullyConfirmed = Boolean(
+                        room.roomInfoConfirmed &&
+                          room.openingsClosetsConfirmed &&
+                          room.paintOptionsConfirmed
+                      );
+
+                      return (
                       <View
                         key={room.id}
                         style={{
@@ -1211,10 +1218,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           }}
                         >
                           <Ionicons name="bed-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
-                          <View style={{ flex: 1 }}>
+                          <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                             <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                               {room.name || "Unnamed Room"} - {getOrdinal(room.floor || 1)} floor
                             </Text>
+                            {isRoomFullyConfirmed && (
+                              <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                            )}
                           </View>
                         </Pressable>
                         <Pressable
@@ -1237,7 +1247,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           <Ionicons name="trash-outline" size={20} color={Colors.error} />
                         </Pressable>
                       </View>
-                    ))}
+                    );
+                    })}
 
                     {/* Bathrooms */}
                     {project.bathrooms?.map((bathroom) => (
