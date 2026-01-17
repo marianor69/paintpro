@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { useEffect } from "react";
@@ -29,11 +29,13 @@ const openai_api_key = Constants.expoConfig.extra.apikey;
 
 export default function App() {
   // v1.0.0 - Metric/Imperial support
+  const navigationRef = useNavigationContainerRef();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <RootNavigator />
+        <NavigationContainer ref={navigationRef}>
+          <RootNavigator navigationRef={navigationRef} />
           <StatusBar style="auto" />
         </NavigationContainer>
       </SafeAreaProvider>

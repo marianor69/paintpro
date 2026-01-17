@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useNavigationState } from "@react-navigation/native";
+import { NavigationContainerRef, NavigationState, PartialState } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../utils/designSystem";
@@ -60,23 +60,42 @@ export type TabParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
+type RootNavigatorProps = {
+  navigationRef: NavigationContainerRef<RootStackParamList>;
+};
+
+function getActiveRouteName(
+  state: NavigationState | PartialState<NavigationState> | undefined
+): string {
+  if (!state || !("routes" in state) || state.routes.length === 0) {
+    return "";
+  }
+  const currentRoute = state.routes[state.index ?? 0];
+  if ("state" in currentRoute && currentRoute.state) {
+    return getActiveRouteName(currentRoute.state as NavigationState);
+  }
+  return currentRoute.name;
+}
+
 // Debug component to show current screen name in test mode
-function ScreenNameDebug() {
+function ScreenNameDebug({ navigationRef }: RootNavigatorProps) {
   const testMode = useAppSettings((s) => s.testMode);
   const insets = useSafeAreaInsets();
+  const [routeName, setRouteName] = useState("");
 
-  // Get the current route name from navigation state
-  const routeName = useNavigationState((state) => {
-    if (!state || !state.routes) return "";
-    const currentRoute = state.routes[state.index];
-    // If it's Home, get the nested tab name
-    if (currentRoute.name === "Home" && currentRoute.state) {
-      const tabState = currentRoute.state;
-      const tabRoute = tabState.routes?.[tabState.index ?? 0];
-      return tabRoute?.name || "Home";
-    }
-    return currentRoute.name;
-  });
+  useEffect(() => {
+    const updateRouteName = () => {
+      if (!navigationRef.isReady()) {
+        return;
+      }
+      const state = navigationRef.getRootState();
+      setRouteName(getActiveRouteName(state));
+    };
+
+    updateRouteName();
+    const unsubscribe = navigationRef.addListener("state", updateRouteName);
+    return unsubscribe;
+  }, [navigationRef]);
 
   if (!testMode || !routeName) return null;
 
@@ -165,7 +184,7 @@ function MainTabs() {
   );
 }
 
-export default function RootNavigator() {
+export default function RootNavigator({ navigationRef }: RootNavigatorProps) {
   return (
     <View style={{ flex: 1 }}>
       <Stack.Navigator
@@ -285,7 +304,7 @@ export default function RootNavigator() {
           options={{ title: "Quote Manager" }}
         />
       </Stack.Navigator>
-      <ScreenNameDebug />
+      <ScreenNameDebug navigationRef={navigationRef} />
     </View>
   );
 }
