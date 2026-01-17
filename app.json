@@ -22,6 +22,10 @@
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "This app needs Bluetooth access to connect to your Bosch laser distance meter for capturing measurements.",
         "NSBluetoothPeripheralUsageDescription": "This app needs Bluetooth access to connect to your Bosch laser distance meter for capturing measurements.",
+        "NSCalendarsUsageDescription": "This app uses calendar access to help schedule your painting projects.",
+        "NSContactsUsageDescription": "This app uses contacts to help you share estimates with clients.",
+        "NSCameraUsageDescription": "This app uses the camera to take photos of rooms and projects.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to provide local pricing and find nearby paint suppliers.",
         "ITSAppUsesNonExemptEncryption": false
       },
 "bundleIdentifier": "com.mariano.paintpro"
