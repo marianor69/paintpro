@@ -214,6 +214,8 @@ export default function CalculationSettingsScreen() {
   const helpIconPressableStyle = { marginLeft: Spacing.xs, transform: [{ translateY: -2 }] };
   const helpIconSize = 13;
   const materialLabelStyle = { marginTop: Spacing.sm };
+  const rowSpacing = Spacing.sm;
+  const cardBottomPadding = Spacing.sm;
 
   const openInfoModal = (title: string, body: string) => {
     setInfoModalTitle(title);
@@ -310,7 +312,7 @@ export default function CalculationSettingsScreen() {
           keyboardDismissMode="on-drag"
         >
           {/* Door Assumptions */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Door Assumptions
             </Text>
@@ -320,7 +322,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
@@ -388,7 +390,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
@@ -486,7 +488,7 @@ export default function CalculationSettingsScreen() {
           </Card>
 
           {/* Window Assumptions */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Window Assumptions
             </Text>
@@ -496,7 +498,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
@@ -562,7 +564,7 @@ export default function CalculationSettingsScreen() {
           </Card>
 
           {/* Bathroom Assumptions */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Bathroom Assumptions
             </Text>
@@ -611,12 +613,12 @@ export default function CalculationSettingsScreen() {
           </Card>
 
           {/* Paint Coverage Rules */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Paint Coverage Rules
             </Text>
 
-            <View style={{ flexDirection: "row", gap: Spacing.md, marginBottom: Spacing.md }}>
+            <View style={{ flexDirection: "row", gap: rowSpacing, marginBottom: rowSpacing }}>
               <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
                   Wall Paint
@@ -724,7 +726,7 @@ export default function CalculationSettingsScreen() {
           </Card>
 
           {/* Closet Assumptions */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Closet Assumptions
             </Text>
@@ -734,7 +736,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
@@ -785,7 +787,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.sm }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
                   Door Width
@@ -900,7 +902,7 @@ export default function CalculationSettingsScreen() {
           </Card>
 
           {/* Casings, Baseboards and Crowns */}
-          <Card style={{ marginBottom: Spacing.md }}>
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Casings, Baseboards and Crowns
             </Text>
@@ -910,7 +912,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
@@ -964,7 +966,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
@@ -1015,7 +1017,7 @@ export default function CalculationSettingsScreen() {
               labelToBubbleSpace={labelToBubbleSpace}
               bubbleToBubbleSpace={bubbleToBubbleSpace}
               alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
+              style={{ marginBottom: rowSpacing }}
               label={(
                 <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                   <Text
