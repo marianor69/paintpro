@@ -196,6 +196,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const [infoModalBody, setInfoModalBody] = useState("");
 
   // Collapsible sections
+  const [roomInfoExpanded, setRoomInfoExpanded] = useState(true);
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
   const [notesExpanded, setNotesExpanded] = useState(false);
@@ -989,6 +990,41 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       >
         {/* Bathroom Information Section */}
         <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white }}>
+          {roomInfoExpanded ? (
+            <Pressable
+              onPress={() => setRoomInfoExpanded(false)}
+              style={{
+                position: "absolute",
+                right: Spacing.md,
+                top: Spacing.sm,
+                width: 32,
+                height: 32,
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1,
+              }}
+            >
+              <Ionicons name="chevron-up" size={24} color={Colors.mediumGray} />
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => setRoomInfoExpanded(true)}
+              style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                  Bathroom Name
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                  Name and dimensions
+                </Text>
+              </View>
+              <Ionicons name="chevron-down" size={24} color={Colors.mediumGray} />
+            </Pressable>
+          )}
+
+          {roomInfoExpanded && (
+            <>
           {/* Bathroom Name */}
           <View style={{ marginBottom: Spacing.md }}>
             <FormInput
@@ -1179,6 +1215,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 Keyboard.dismiss();
                 roomInfoSnapshotRef.current = roomInfoSnapshot;
                 setRoomInfoConfirmed(true);
+                setRoomInfoExpanded(false);
                 setOpeningsClosetsExpanded(true);
               }}
               style={{
@@ -1195,6 +1232,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
               </Text>
             </Pressable>
           </View>
+          </>
+          )}
         </Card>
 
         {/* Openings & Closets Section - Collapsable */}

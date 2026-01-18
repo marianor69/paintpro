@@ -79,6 +79,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   );
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
+  const [detailsExpanded, setDetailsExpanded] = useState(true);
   const [detailsConfirmed, setDetailsConfirmed] = useState(fireplace?.detailsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
   const detailsSnapshotRef = useRef<string>("");
@@ -610,6 +611,41 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
           <View style={{ padding: Spacing.md }}>
             {/* Fireplace Information Card */}
             <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: detailsConfirmed ? confirmedCardColor : Colors.white }}>
+              {detailsExpanded ? (
+                <Pressable
+                  onPress={() => setDetailsExpanded(false)}
+                  style={{
+                    position: "absolute",
+                    right: Spacing.md,
+                    top: Spacing.sm,
+                    width: 32,
+                    height: 32,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 1,
+                  }}
+                >
+                  <Ionicons name="chevron-up" size={24} color={Colors.mediumGray} />
+                </Pressable>
+              ) : (
+                <Pressable
+                  onPress={() => setDetailsExpanded(true)}
+                  style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                      Fireplace Details
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                      Name and dimensions
+                    </Text>
+                  </View>
+                  <Ionicons name="chevron-down" size={24} color={Colors.mediumGray} />
+                </Pressable>
+              )}
+
+              {detailsExpanded && (
+                <>
               {/* Name/Location */}
               <View style={{ marginBottom: Spacing.md }}>
                 <FormInput
@@ -714,6 +750,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     Keyboard.dismiss();
                     detailsSnapshotRef.current = detailsSnapshot;
                     setDetailsConfirmed(true);
+                    setDetailsExpanded(false);
                   }}
                   style={{
                     backgroundColor: Colors.primaryBlue,
@@ -729,6 +766,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                   </Text>
                 </Pressable>
               </View>
+              </>
+              )}
             </Card>
 
             {/* Notes Section */}

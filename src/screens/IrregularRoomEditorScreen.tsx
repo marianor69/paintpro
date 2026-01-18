@@ -125,6 +125,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [photos, setPhotos] = useState<RoomPhoto[]>(!isNew && irregularRoom?.photos ? irregularRoom.photos : []);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
+  const [roomInfoExpanded, setRoomInfoExpanded] = useState(true);
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
   const [notesExpanded, setNotesExpanded] = useState(false);
@@ -879,6 +880,41 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           <View style={{ padding: Spacing.md }}>
             {/* Main Info Card */}
             <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: roomInfoConfirmed ? confirmedCardColor : Colors.white }}>
+              {roomInfoExpanded ? (
+                <Pressable
+                  onPress={() => setRoomInfoExpanded(false)}
+                  style={{
+                    position: "absolute",
+                    right: Spacing.md,
+                    top: Spacing.sm,
+                    width: 32,
+                    height: 32,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 1,
+                  }}
+                >
+                  <Ionicons name="chevron-up" size={24} color={Colors.mediumGray} />
+                </Pressable>
+              ) : (
+                <Pressable
+                  onPress={() => setRoomInfoExpanded(true)}
+                  style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                      Room Name
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                      Walls and dimensions
+                    </Text>
+                  </View>
+                  <Ionicons name="chevron-down" size={24} color={Colors.mediumGray} />
+                </Pressable>
+              )}
+
+              {roomInfoExpanded && (
+                <>
               {/* Room Name */}
               <View style={{ marginBottom: Spacing.md }}>
                 <FormInput
@@ -1177,6 +1213,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     Keyboard.dismiss();
                     roomInfoSnapshotRef.current = roomInfoSnapshot;
                     setRoomInfoConfirmed(true);
+                    setRoomInfoExpanded(false);
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
@@ -1193,6 +1230,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </Text>
                 </Pressable>
               </View>
+              </>
+              )}
             </Card>
 
             {/* Openings & Closets Section - Collapsable */}
