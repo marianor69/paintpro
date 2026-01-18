@@ -8,7 +8,7 @@ interface IconProps {
 
 export const FireplaceIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+    <G fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
       {/* Top mantel */}
       <Path d="M 10 10 L 90 10 L 90 20 L 10 20 Z" />
 
@@ -91,7 +91,7 @@ export const BuiltInIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) 
 
 export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+    <G fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
       {/* Row 1 - Full bricks */}
       <Rect x="10" y="10" width="38" height="14" rx="1" />
       <Rect x="52" y="10" width="38" height="14" rx="1" />
@@ -119,7 +119,7 @@ export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
 
 export const NonFourWallRoomIcon: React.FC<IconProps> = ({ size = 20, color = "#0066CC" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+    <G fill="none" stroke={color} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
       {/* Irregular hexagon with right side removed for testing */}
       <Path d="M 72 15 L 28 15 L 10 50 L 28 85 L 72 85" />
     </G>
