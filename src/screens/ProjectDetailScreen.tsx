@@ -1278,7 +1278,14 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     })}
 
                     {/* Bathrooms */}
-                    {project.bathrooms?.map((bathroom) => (
+                    {project.bathrooms?.map((bathroom) => {
+                      const isBathroomFullyConfirmed = Boolean(
+                        bathroom.roomInfoConfirmed &&
+                          bathroom.openingsClosetsConfirmed &&
+                          bathroom.paintOptionsConfirmed
+                      );
+
+                      return (
                       <View
                         key={bathroom.id}
                         style={{
@@ -1307,10 +1314,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           }}
                         >
                           <Ionicons name="water-outline" size={20} color={Colors.primaryBlue} style={{ marginRight: Spacing.sm }} />
-                          <View style={{ flex: 1 }}>
+                          <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                             <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                               {bathroom.name || "Unnamed Bathroom"} - {getOrdinal(bathroom.floor || 1)} floor
                             </Text>
+                            {isBathroomFullyConfirmed && (
+                              <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                            )}
                           </View>
                         </Pressable>
                         <Pressable
@@ -1333,10 +1343,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                           <Ionicons name="trash-outline" size={20} color={Colors.error} />
                         </Pressable>
                       </View>
-                    ))}
+                    );
+                    })}
 
                 {/* Staircases */}
-                {project.staircases?.map((staircase, idx) => (
+                {project.staircases?.map((staircase, idx) => {
+                  const isStaircaseFullyConfirmed = Boolean(
+                    staircase.detailsConfirmed && staircase.wallsConfirmed
+                  );
+
+                  return (
                   <View
                     key={staircase.id}
                     style={{
@@ -1366,10 +1382,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View style={{ marginRight: Spacing.sm }}>
                         <StaircaseIcon size={20} color={Colors.primaryBlue} />
                       </View>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {staircase.name || `Staircase ${idx + 1}`}
                         </Text>
+                        {isStaircaseFullyConfirmed && (
+                          <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                        )}
                       </View>
                     </Pressable>
                     <Pressable
@@ -1392,10 +1411,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <Ionicons name="trash-outline" size={20} color={Colors.error} />
                     </Pressable>
                   </View>
-                ))}
+                );
+                })}
 
                 {/* Fireplaces */}
-                {project.fireplaces?.map((fireplace, idx) => (
+                {project.fireplaces?.map((fireplace, idx) => {
+                  const isFireplaceFullyConfirmed = Boolean(
+                    fireplace.detailsConfirmed
+                  );
+
+                  return (
                   <View
                     key={fireplace.id}
                     style={{
@@ -1425,10 +1450,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View style={{ marginRight: Spacing.sm }}>
                         <FireplaceIcon size={20} color={Colors.primaryBlue} />
                       </View>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {fireplace.name || `Fireplace ${idx + 1}`}
                         </Text>
+                        {isFireplaceFullyConfirmed && (
+                          <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                        )}
                       </View>
                     </Pressable>
                     <Pressable
@@ -1451,10 +1479,16 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <Ionicons name="trash-outline" size={20} color={Colors.error} />
                     </Pressable>
                   </View>
-                ))}
+                );
+                })}
 
                 {/* Built-Ins */}
-                {project.builtIns?.map((builtIn, idx) => (
+                {project.builtIns?.map((builtIn, idx) => {
+                  const isBuiltInFullyConfirmed = Boolean(
+                    builtIn.detailsConfirmed
+                  );
+
+                  return (
                   <View
                     key={builtIn.id}
                     style={{
@@ -1484,10 +1518,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View style={{ marginRight: Spacing.sm }}>
                         <BuiltInIcon size={20} color={Colors.primaryBlue} />
                       </View>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {builtIn.name || "Unnamed Built-In"}
                         </Text>
+                        {isBuiltInFullyConfirmed && (
+                          <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                        )}
                       </View>
                     </Pressable>
                     <Pressable
@@ -1510,7 +1547,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <Ionicons name="trash-outline" size={20} color={Colors.error} />
                     </Pressable>
                   </View>
-                ))}
+                );
+                })}
 
                 {/* Brick Walls */}
                 {project.brickWalls?.map((brickWall, idx) => (
@@ -1572,7 +1610,14 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 ))}
 
                 {/* Irregular Rooms */}
-                {project.irregularRooms?.map((irregularRoom, idx) => (
+                {project.irregularRooms?.map((irregularRoom, idx) => {
+                  const isIrregularRoomFullyConfirmed = Boolean(
+                    irregularRoom.roomInfoConfirmed &&
+                      irregularRoom.openingsClosetsConfirmed &&
+                      irregularRoom.paintOptionsConfirmed
+                  );
+
+                  return (
                   <View
                     key={irregularRoom.id}
                     style={{
@@ -1602,10 +1647,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View style={{ marginRight: Spacing.sm }}>
                         <Ionicons name="shapes-outline" size={20} color={Colors.primaryBlue} />
                       </View>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {irregularRoom.name || "Unnamed Irregular Room"}
                         </Text>
+                        {isIrregularRoomFullyConfirmed && (
+                          <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                        )}
                       </View>
                     </Pressable>
                     <Pressable
@@ -1628,7 +1676,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <Ionicons name="trash-outline" size={20} color={Colors.error} />
                     </Pressable>
                   </View>
-                ))}
+                );
+                })}
               </View>
             )}
           </Card>

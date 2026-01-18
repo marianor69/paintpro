@@ -152,8 +152,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   );
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
-  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
-  const [wallsConfirmed, setWallsConfirmed] = useState(false);
+  const [detailsConfirmed, setDetailsConfirmed] = useState(staircase?.detailsConfirmed ?? false);
+  const [wallsConfirmed, setWallsConfirmed] = useState(staircase?.wallsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
   const detailsSnapshotRef = useRef<string>("");
   const wallsSnapshotRef = useRef<string>("");
@@ -501,6 +501,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         walls: wallsData.length > 0 ? wallsData : undefined,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
+        detailsConfirmed,
+        wallsConfirmed,
       });
     } else {
       // UPDATE existing staircase
@@ -515,6 +517,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         walls: wallsData.length > 0 ? wallsData : undefined,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
+        detailsConfirmed,
+        wallsConfirmed,
       });
     }
 

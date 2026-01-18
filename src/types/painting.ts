@@ -126,6 +126,9 @@ export interface Bathroom {
   photos?: RoomPhoto[];
   // Standalone notes field (available without photos)
   notes?: string;
+  roomInfoConfirmed?: boolean;
+  openingsClosetsConfirmed?: boolean;
+  paintOptionsConfirmed?: boolean;
 }
 
 export interface Opening {
@@ -164,6 +167,8 @@ export interface Staircase {
   // Notes field (available without photos)
   notes?: string;
   photos?: RoomPhoto[];
+  detailsConfirmed?: boolean;
+  wallsConfirmed?: boolean;
 }
 
 export interface Fireplace {
@@ -186,6 +191,7 @@ export interface Fireplace {
   overMantelWidth?: number; // in feet
   overMantelHeight?: number; // in feet
   overMantelDepth?: number; // in feet
+  detailsConfirmed?: boolean;
 }
 
 export interface BuiltIn {
@@ -199,6 +205,7 @@ export interface BuiltIn {
   // Notes field (available without photos)
   notes?: string;
   photos?: RoomPhoto[];
+  detailsConfirmed?: boolean;
 }
 
 export interface BrickWall {
@@ -261,6 +268,9 @@ export interface IrregularRoom {
   laborTotal?: number;
   materialsTotal?: number;
   grandTotal?: number;
+  roomInfoConfirmed?: boolean;
+  openingsClosetsConfirmed?: boolean;
+  paintOptionsConfirmed?: boolean;
 }
 
 export interface ClientInfo {

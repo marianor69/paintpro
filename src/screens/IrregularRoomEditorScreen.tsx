@@ -128,9 +128,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [paintOptionsExpanded, setPaintOptionsExpanded] = useState(false);
   const [openingsClosetsExpanded, setOpeningsClosetsExpanded] = useState(false);
   const [notesExpanded, setNotesExpanded] = useState(false);
-  const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(false);
-  const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(false);
-  const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(false);
+  const [roomInfoConfirmed, setRoomInfoConfirmed] = useState(irregularRoom?.roomInfoConfirmed ?? false);
+  const [openingsClosetsConfirmed, setOpeningsClosetsConfirmed] = useState(irregularRoom?.openingsClosetsConfirmed ?? false);
+  const [paintOptionsConfirmed, setPaintOptionsConfirmed] = useState(irregularRoom?.paintOptionsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
   const roomInfoSnapshotRef = useRef<string>("");
   const openingsClosetsSnapshotRef = useRef<string>("");
@@ -621,6 +621,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       hasAccentWall,
       notes,
       photos: normalizedPhotos,
+      roomInfoConfirmed,
+      openingsClosetsConfirmed,
+      paintOptionsConfirmed,
     };
 
     if (isNew) {

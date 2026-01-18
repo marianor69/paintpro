@@ -618,6 +618,9 @@ export const useProjectStore = create<ProjectStore>()(
           includeClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
           includeSingleClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
           includeDoubleClosetInteriorInQuote: globalDefaults.paintClosetInteriors,
+          roomInfoConfirmed: false,
+          openingsClosetsConfirmed: false,
+          paintOptionsConfirmed: false,
         };
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -678,6 +681,8 @@ export const useProjectStore = create<ProjectStore>()(
           shortWallHeight: 0,
           doubleSidedWalls: false,
           photos: [],
+          detailsConfirmed: false,
+          wallsConfirmed: false,
         };
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -734,6 +739,7 @@ export const useProjectStore = create<ProjectStore>()(
           trimLinearFeet: 0,
           coats: 2,
           photos: [],
+          detailsConfirmed: false,
         };
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -790,6 +796,7 @@ export const useProjectStore = create<ProjectStore>()(
           shelfCount: 4,
           coats: 2,
           photos: [],
+          detailsConfirmed: false,
         };
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -918,6 +925,9 @@ export const useProjectStore = create<ProjectStore>()(
           coatsTrim: project?.globalPaintDefaults?.defaultTrimCoats ?? 2,
           coatsDoors: project?.globalPaintDefaults?.defaultDoorCoats ?? 2,
           floor: 1,
+          roomInfoConfirmed: false,
+          openingsClosetsConfirmed: false,
+          paintOptionsConfirmed: false,
         };
         set((state) => ({
           projects: state.projects.map((p) =>
