@@ -838,9 +838,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                     </View>
                   </View>
                 </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: -Spacing.xs, marginBottom: Spacing.sm }}>
-                  Applies to standard wall and ceiling labor rates.
-                </Text>
               </View>
             )}
 
@@ -950,7 +947,16 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Enclosed Toilet</Text>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Enclosed Toilet</Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Enclosed Toilet", "Adds a fixed labor amount when the toilet is enclosed as a separate space.")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                  >
+                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Enclosed toilet help" />
+                  </Pressable>
+                </View>
               </View>
               <View style={bubbleHeaderWrapperStyle}>
                 <Text style={bubbleHeaderTextStyle}>Each/$</Text>
