@@ -1647,7 +1647,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       }}
                     >
                       <View style={{ marginRight: Spacing.sm }}>
-                        <Ionicons name="shapes-outline" size={20} color={Colors.primaryBlue} />
+                        <NonFourWallRoomIcon size={20} color={Colors.primaryBlue} />
                       </View>
                       <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
