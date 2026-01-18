@@ -773,7 +773,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Use Multiplier</Text>
+                <Text style={{ ...leftAlignedLabelTextStyle, ...noHeaderLabelStyle }}>Use Multiplier</Text>
               </View>
               <View style={modeToggleContainerStyle}>
                 <Pressable
