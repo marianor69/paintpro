@@ -287,7 +287,6 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   }, []);
 
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
-  const rowLabelTextStyle = { ...leftAlignedLabelTextStyle, flex: 0, width: "auto" as const };
   const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" as const };
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
   const inputWidth = 68;
@@ -301,6 +300,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     paddingHorizontal: 0,
     paddingVertical: 0,
     overflow: "hidden" as const,
+    marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm,
   };
   const modeToggleButtonStyle = { flex: 1, paddingVertical: Spacing.sm, alignItems: "center", justifyContent: "center" };
   const materialRowStyle = { flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm, marginBottom: Spacing.md };
@@ -322,6 +322,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const trimPaintLabelRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs };
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
+  const rowLabelTextStyle = { ...leftAlignedLabelTextStyle, ...mainLabelStyle, flex: 0, width: "auto" as const };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
 
   return (
@@ -810,7 +811,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               <View>
                 <View style={rowStyle}>
                   <View style={leftAlignedLabelWrapperStyle}>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: mainLabelStyle.marginTop }}>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
                       <Text style={rowLabelTextStyle}>Multiplier</Text>
                       <Pressable
                         onPress={() => openInfoModal("Bathroom Labor Multiplier", "Scales standard wall and ceiling labor for bathrooms.")}
@@ -950,7 +951,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <View style={{ flexDirection: "row", alignItems: "center", marginTop: mainLabelStyle.marginTop }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={rowLabelTextStyle}>Enclosed Toilet</Text>
                   <Pressable
                     onPress={() => openInfoModal("Enclosed Toilet", "Adds a fixed labor amount when the toilet is enclosed as a separate space.")}
