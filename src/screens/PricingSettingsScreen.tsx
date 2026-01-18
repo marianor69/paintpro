@@ -767,9 +767,18 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
           {/* Bathroom Labor */}
           <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Bathroom Labor
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.md }}>
+              <Text style={{ ...Typography.h2 }}>
+                Bathroom Labor
+              </Text>
+              <Pressable
+                onPress={() => openInfoModal("Bathroom Labor", "Choose Multiplier to scale standard wall and ceiling labor, or Prices to apply fixed tier amounts by bathroom size.")}
+                hitSlop={8}
+                style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+              >
+                <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Bathroom labor help" />
+              </Pressable>
+            </View>
 
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
