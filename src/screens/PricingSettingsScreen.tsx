@@ -842,7 +842,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             )}
 
             {bathroomLaborMode === "tiers" && (
-              <View style={{ gap: Spacing.md, marginBottom: Spacing.sm }}>
+              <View>
                 <View style={rowStyle}>
                   <View style={leftAlignedLabelWrapperStyle}>
                     <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Small {"(<30 sq ft)"}</Text>
