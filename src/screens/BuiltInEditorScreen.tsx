@@ -63,7 +63,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
   const [photoErrorMessage, setPhotoErrorMessage] = useState("");
   const [deletePhotoId, setDeletePhotoId] = useState<string | null>(null);
-  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
+  const [detailsConfirmed, setDetailsConfirmed] = useState(builtIn?.detailsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
   const detailsSnapshotRef = useRef<string>("");
 
@@ -90,6 +90,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [discardWidth, setDiscardWidth] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
   const isSavingRef = useRef(false); // Ref-based guard for rapid taps (more reliable than state)
   const isKeyboardVisibleRef = useRef(false);
@@ -349,6 +350,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         coats: 1,
         notes: notes.trim() || undefined,
         photos: updatedPhotos,
+        detailsConfirmed,
       });
     } else {
       // UPDATE existing built-in
@@ -361,6 +363,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         coats: builtIn?.coats || 1,
         notes: notes.trim() || undefined,
         photos: updatedPhotos,
+        detailsConfirmed,
       });
     }
 
@@ -412,12 +415,78 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
+    <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
         style={{ flex: 1 }}
       >
+        <View
+          style={{
+            paddingTop: Spacing.sm,
+            paddingHorizontal: Spacing.md,
+            paddingBottom: Spacing.sm,
+            backgroundColor: Colors.white,
+            borderBottomWidth: 1,
+            borderBottomColor: Colors.neutralGray,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Pressable
+              onPress={handleDiscardAndLeave}
+              onLayout={(event) => {
+                if (!discardWidth) {
+                  setDiscardWidth(event.nativeEvent.layout.width);
+                }
+              }}
+              style={{
+                minWidth: 60,
+                height: 36,
+                paddingHorizontal: Spacing.sm,
+                borderRadius: 8,
+                backgroundColor: Colors.primaryBlueLight,
+                borderWidth: 1,
+                borderColor: Colors.neutralGray,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+                Discard
+              </Text>
+            </Pressable>
+            <Text
+              style={{
+                flex: 1,
+                textAlign: "center",
+                fontSize: Typography.h2.fontSize,
+                fontWeight: Typography.h2.fontWeight as any,
+                color: Colors.darkCharcoal,
+              }}
+              numberOfLines={1}
+            >
+              {(name || "Unnamed Built-In") + "'s Details"}
+            </Text>
+            <Pressable
+              onPress={handleSave}
+              android_ripple={{ color: "transparent" }}
+              style={{
+                minWidth: 60,
+                height: 36,
+                width: discardWidth || undefined,
+                backgroundColor: Colors.primaryBlue,
+                borderRadius: 8,
+                paddingHorizontal: Spacing.sm,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+                Save
+              </Text>
+            </Pressable>
+          </View>
+        </View>
         <ScrollView
           ref={scrollViewRef}
           style={{ flex: 1 }}
