@@ -243,7 +243,7 @@ export default function RootNavigator({ navigationRef }: RootNavigatorProps) {
             const bathroomName = route.params?.bathroomName || "Edit Bathroom";
             return {
               title: `Edit Bathroom: ${bathroomName}`,
-              headerShown: true,
+              headerShown: false,
               gestureEnabled: true,
             };
           }}
@@ -251,27 +251,27 @@ export default function RootNavigator({ navigationRef }: RootNavigatorProps) {
         <Stack.Screen
           name="StaircaseEditor"
           component={StaircaseEditorScreen}
-          options={{ title: "Staircase" }}
+          options={{ title: "Staircase", headerShown: false }}
         />
         <Stack.Screen
           name="FireplaceEditor"
           component={FireplaceEditorScreen}
-          options={{ title: "Fireplace" }}
+          options={{ title: "Fireplace", headerShown: false }}
         />
         <Stack.Screen
           name="BuiltInEditor"
           component={BuiltInEditorScreen}
-          options={{ title: "Built-In" }}
+          options={{ title: "Built-In", headerShown: false }}
         />
         <Stack.Screen
           name="BrickWallEditor"
           component={BrickWallEditorScreen}
-          options={{ title: "Brick/Panel" }}
+          options={{ title: "Brick/Panel", headerShown: false }}
         />
         <Stack.Screen
           name="IrregularRoomEditor"
           component={IrregularRoomEditorScreen}
-          options={{ title: "Irregular Room" }}
+          options={{ title: "Irregular Room", headerShown: false }}
         />
         <Stack.Screen
           name="PricingSettings"
