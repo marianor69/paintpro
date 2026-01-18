@@ -1213,11 +1213,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     Keyboard.dismiss();
                     roomInfoSnapshotRef.current = roomInfoSnapshot;
                     setRoomInfoConfirmed(true);
-                    setRoomInfoExpanded(false);
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: roomInfoConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -1226,7 +1225,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Confirm
+                    {roomInfoConfirmed ? "Confirmed" : "Confirm"}
                   </Text>
                 </Pressable>
               </View>
@@ -1599,26 +1598,25 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                 )}
                 <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
-                  <Pressable
+                    <Pressable
                       onPress={() => {
                         openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
                         setOpeningsClosetsConfirmed(true);
-                        setOpeningsClosetsExpanded(false);
                         setPaintOptionsExpanded(true);
                       }}
-                    style={{
-                      backgroundColor: Colors.primaryBlue,
-                      borderRadius: 8,
-                      paddingHorizontal: Spacing.sm,
-                      paddingVertical: 10,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                      Confirm
-                    </Text>
-                  </Pressable>
+                      style={{
+                        backgroundColor: openingsClosetsConfirmed ? Colors.success : Colors.primaryBlue,
+                        borderRadius: 8,
+                        paddingHorizontal: Spacing.sm,
+                        paddingVertical: 10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                      {openingsClosetsConfirmed ? "Confirmed" : "Confirm"}
+                      </Text>
+                    </Pressable>
                 </View>
               </View>
             )}
@@ -1662,10 +1660,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         onPress={() => {
                           paintOptionsSnapshotRef.current = paintOptionsSnapshot;
                           setPaintOptionsConfirmed(true);
-                          setPaintOptionsExpanded(false);
                         }}
                       style={{
-                        backgroundColor: Colors.primaryBlue,
+                        backgroundColor: paintOptionsConfirmed ? Colors.success : Colors.primaryBlue,
                         borderRadius: 8,
                         paddingHorizontal: Spacing.sm,
                         paddingVertical: 10,
@@ -1674,7 +1671,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       }}
                     >
                       <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                        Confirm
+                        {paintOptionsConfirmed ? "Confirmed" : "Confirm"}
                       </Text>
                     </Pressable>
                   </View>

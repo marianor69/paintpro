@@ -1258,11 +1258,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   onPress={() => {
                     roomInfoSnapshotRef.current = roomInfoSnapshot;
                     setRoomInfoConfirmed(true);
-                    setRoomInfoExpanded(false);
                     setOpeningsClosetsExpanded(true);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: roomInfoConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -1863,11 +1862,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   onPress={() => {
                     openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
                     setOpeningsClosetsConfirmed(true);
-                    setOpeningsClosetsExpanded(false);
                     setPaintOptionsExpanded(true);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: openingsClosetsConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -1971,10 +1969,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   onPress={() => {
                     paintOptionsSnapshotRef.current = paintOptionsSnapshot;
                     setPaintOptionsConfirmed(true);
-                    setPaintOptionsExpanded(false);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: paintOptionsConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,

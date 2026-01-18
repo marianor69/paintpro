@@ -1215,11 +1215,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 Keyboard.dismiss();
                 roomInfoSnapshotRef.current = roomInfoSnapshot;
                 setRoomInfoConfirmed(true);
-                setRoomInfoExpanded(false);
                 setOpeningsClosetsExpanded(true);
               }}
               style={{
-                backgroundColor: Colors.primaryBlue,
+                backgroundColor: roomInfoConfirmed ? Colors.success : Colors.primaryBlue,
                 borderRadius: 8,
                 paddingHorizontal: Spacing.sm,
                 paddingVertical: 10,
@@ -1228,7 +1227,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
               }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Confirm
+                {roomInfoConfirmed ? "Confirmed" : "Confirm"}
               </Text>
             </Pressable>
           </View>
@@ -1632,11 +1631,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   onPress={() => {
                     openingsClosetsSnapshotRef.current = openingsClosetsSnapshot;
                     setOpeningsClosetsConfirmed(true);
-                    setOpeningsClosetsExpanded(false);
                     setPaintOptionsExpanded(true);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: openingsClosetsConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -1645,7 +1643,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Confirm
+                    {openingsClosetsConfirmed ? "Confirmed" : "Confirm"}
                   </Text>
                 </Pressable>
               </View>
@@ -1734,10 +1732,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   onPress={() => {
                     paintOptionsSnapshotRef.current = paintOptionsSnapshot;
                     setPaintOptionsConfirmed(true);
-                    setPaintOptionsExpanded(false);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: paintOptionsConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -1746,7 +1743,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Confirm
+                    {paintOptionsConfirmed ? "Confirmed" : "Confirm"}
                   </Text>
                 </Pressable>
               </View>

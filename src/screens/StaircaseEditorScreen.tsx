@@ -923,10 +923,9 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     Keyboard.dismiss();
                     detailsSnapshotRef.current = detailsSnapshot;
                     setDetailsConfirmed(true);
-                    setDetailsExpanded(false);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: detailsConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -935,7 +934,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Confirm
+                    {detailsConfirmed ? "Confirmed" : "Confirm"}
                   </Text>
                 </Pressable>
               </View>
@@ -1094,7 +1093,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                     setWallsConfirmed(true);
                   }}
                   style={{
-                    backgroundColor: Colors.primaryBlue,
+                    backgroundColor: wallsConfirmed ? Colors.success : Colors.primaryBlue,
                     borderRadius: 8,
                     paddingHorizontal: Spacing.sm,
                     paddingVertical: 10,
@@ -1103,7 +1102,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                   }}
                 >
                   <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Confirm
+                    {wallsConfirmed ? "Confirmed" : "Confirm"}
                   </Text>
                 </Pressable>
               </View>
