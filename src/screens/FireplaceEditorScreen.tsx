@@ -520,11 +520,11 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
+    <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: Colors.white }}>
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}
       >
         <View
           style={{
@@ -608,57 +608,56 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          <View style={{ padding: 0 }}>
-            {/* Fireplace Information Card */}
-            <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: detailsConfirmed ? confirmedCardColor : Colors.white }}>
-              {detailsExpanded ? (
-                <Pressable
-                  onPress={() => setDetailsExpanded(false)}
-                  style={{
-                    position: "absolute",
-                    right: Spacing.md,
-                    top: Spacing.sm,
-                    width: 32,
-                    height: 32,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    zIndex: 1,
-                  }}
-                >
-                  <Ionicons name="chevron-up" size={24} color={Colors.mediumGray} />
-                </Pressable>
-              ) : (
-                <Pressable
-                  onPress={() => setDetailsExpanded(true)}
-                  style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}
-                >
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                      Fireplace Details
-                    </Text>
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                      Name and dimensions
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-down" size={24} color={Colors.mediumGray} />
-                </Pressable>
-              )}
+          {/* Fireplace Information Card */}
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: detailsConfirmed ? confirmedCardColor : Colors.white }}>
+            {detailsExpanded ? (
+              <Pressable
+                onPress={() => setDetailsExpanded(false)}
+                style={{
+                  position: "absolute",
+                  right: Spacing.md,
+                  top: Spacing.sm,
+                  width: 32,
+                  height: 32,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 1,
+                }}
+              >
+                <Ionicons name="chevron-up" size={24} color={Colors.mediumGray} />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => setDetailsExpanded(true)}
+                style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                    Fireplace Details
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Name and dimensions
+                  </Text>
+                </View>
+                <Ionicons name="chevron-down" size={24} color={Colors.mediumGray} />
+              </Pressable>
+            )}
 
-              {detailsExpanded && (
-                <>
-              {/* Name/Location */}
-              <View style={{ marginBottom: Spacing.md }}>
-                <FormInput
-                  ref={nameRef}
-                  label="Name/Location"
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="e.g., Living Room Fireplace, Master Bedroom"
-                  nextFieldRef={hasOverMantel ? overMantelWidthRef : undefined}
-                  returnKeyType="next"
-                  className="mb-0"
-                />
-              </View>
+            {detailsExpanded && (
+              <>
+                {/* Name/Location */}
+                <View style={{ marginBottom: Spacing.md }}>
+                  <FormInput
+                    ref={nameRef}
+                    label="Name/Location"
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="e.g., Living Room Fireplace, Master Bedroom"
+                    nextFieldRef={hasOverMantel ? overMantelWidthRef : undefined}
+                    returnKeyType="next"
+                    className="mb-0"
+                  />
+                </View>
 
               {/* PART 1: Mantel */}
               <Toggle
