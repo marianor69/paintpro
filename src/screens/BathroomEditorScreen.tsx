@@ -657,10 +657,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     setIsSaved(true);
     isSavedRef.current = true;
 
-    const height =
-      calcSettings.bathroomWallHeight && calcSettings.bathroomWallHeight > 0
-        ? calcSettings.bathroomWallHeight
-        : 8;
+    let height = 8;
+    if (project?.floorHeights && project.floorHeights[floor - 1]) {
+      height = project.floorHeights[floor - 1];
+    } else if (floor === 2 && project?.secondFloorHeight) {
+      height = project.secondFloorHeight;
+    } else if (project?.firstFloorHeight) {
+      height = project.firstFloorHeight;
+    }
 
     // Convert display values back to imperial feet/sq ft for storage
     const lengthFeet = parseDisplayValue(length, 'length', unitSystem);
@@ -823,10 +827,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   };
 
   // Get height from project
-  const currentHeight =
-    calcSettings.bathroomWallHeight && calcSettings.bathroomWallHeight > 0
-      ? calcSettings.bathroomWallHeight
-      : 8;
+  let currentHeight = 8;
+  if (project?.floorHeights && project.floorHeights[floor - 1]) {
+    currentHeight = project.floorHeights[floor - 1];
+  } else if (floor === 2 && project?.secondFloorHeight) {
+    currentHeight = project.secondFloorHeight;
+  } else if (project?.firstFloorHeight) {
+    currentHeight = project.firstFloorHeight;
+  }
 
   // Get active quote's QuoteBuilder for combined rule calculation
   const getActiveQuote = useProjectStore((s) => s.getActiveQuote);

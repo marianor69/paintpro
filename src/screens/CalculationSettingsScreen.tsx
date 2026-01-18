@@ -138,7 +138,6 @@ export default function CalculationSettingsScreen() {
 
   const [baseboardWidth, setBaseboardWidth] = useState(settings.baseboardWidth.toString());
   const [crownMouldingWidth, setCrownMouldingWidth] = useState(settings.crownMouldingWidth.toString());
-  const [bathroomWallHeight, setBathroomWallHeight] = useState((settings.bathroomWallHeight || 8).toString());
   const [bathroomFixtureDeductionPercent, setBathroomFixtureDeductionPercent] = useState(
     (settings.bathroomFixtureDeductionPercent ?? 20).toString()
   );
@@ -168,7 +167,6 @@ export default function CalculationSettingsScreen() {
   const closetCavityDepthRef = useRef<TextInput>(null);
   const baseboardWidthRef = useRef<TextInput>(null);
   const crownMouldingWidthRef = useRef<TextInput>(null);
-  const bathroomWallHeightRef = useRef<TextInput>(null);
   const bathroomFixtureDeductionRef = useRef<TextInput>(null);
 
   // KB-004: Unique IDs for InputAccessoryViews
@@ -192,7 +190,6 @@ export default function CalculationSettingsScreen() {
   const closetCavityDepthID = useId();
   const baseboardWidthID = useId();
   const crownMouldingWidthID = useId();
-  const bathroomWallHeightID = useId();
   const bathroomFixtureDeductionID = useId();
 
   const inputContainerStyle = [TextInputStyles.container, { width: 68, alignSelf: "flex-start" }];
@@ -248,7 +245,6 @@ export default function CalculationSettingsScreen() {
 
       baseboardWidth: parseFloat(baseboardWidth) || settings.baseboardWidth,
       crownMouldingWidth: parseFloat(crownMouldingWidth) || settings.crownMouldingWidth,
-      bathroomWallHeight: parseFloat(bathroomWallHeight) || settings.bathroomWallHeight || 8,
       bathroomFixtureDeductionPercent: parseFloat(bathroomFixtureDeductionPercent) || settings.bathroomFixtureDeductionPercent || 20,
     };
 
@@ -291,7 +287,6 @@ export default function CalculationSettingsScreen() {
 
             setBaseboardWidth(defaults.baseboardWidth.toString());
             setCrownMouldingWidth(defaults.crownMouldingWidth.toString());
-            setBathroomWallHeight((defaults.bathroomWallHeight || 8).toString());
             setBathroomFixtureDeductionPercent((defaults.bathroomFixtureDeductionPercent ?? 20).toString());
           },
         },
@@ -554,7 +549,7 @@ export default function CalculationSettingsScreen() {
                       placeholder="0"
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
-                      onSubmitEditing={() => bathroomWallHeightRef.current?.focus()}
+                      onSubmitEditing={() => bathroomFixtureDeductionRef.current?.focus()}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `calcWindowWidth-${windowWidthID}` : undefined}
                       style={bubbleInputStyle}
@@ -571,49 +566,6 @@ export default function CalculationSettingsScreen() {
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
               Bathroom Assumptions
             </Text>
-
-            <SettingsRowGrid
-              labelWidth={doorLabelWidth}
-              labelToBubbleSpace={labelToBubbleSpace}
-              bubbleToBubbleSpace={bubbleToBubbleSpace}
-              alignLabelToHeader
-              style={{ marginBottom: Spacing.md }}
-              label={(
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
-                    Wall Height
-                  </Text>
-                  <Pressable
-                    onPress={() => openInfoModal("Bathroom Wall Height", "Default wall height used for bathroom calculations. Floor selection does not change this value.")}
-                    hitSlop={8}
-                    style={helpIconPressableStyle}
-                  >
-                    <Ionicons name="help-circle-outline" size={helpIconSize} color={Colors.mediumGray} accessibilityLabel="Bathroom wall height help" />
-                  </Pressable>
-                </View>
-              )}
-              pos0={(
-                <BubbleStack header="Feet">
-                  <View style={inputContainerStyle}>
-                    <TextInput
-                      ref={bathroomWallHeightRef}
-                      value={bathroomWallHeight}
-                      onChangeText={setBathroomWallHeight}
-                      keyboardType="numeric"
-                      placeholder="8"
-                      placeholderTextColor={Colors.mediumGray}
-                      returnKeyType="next"
-                      onSubmitEditing={() => bathroomFixtureDeductionRef.current?.focus()}
-                      blurOnSubmit={false}
-                      inputAccessoryViewID={Platform.OS === "ios" ? `calcBathroomWallHeight-${bathroomWallHeightID}` : undefined}
-                      style={bubbleInputStyle}
-                    />
-                  </View>
-                </BubbleStack>
-              )}
-              pos1={null}
-              reservePos1
-            />
 
             <SettingsRowGrid
               labelWidth={doorLabelWidth}
@@ -1260,18 +1212,12 @@ export default function CalculationSettingsScreen() {
         <InputAccessoryView nativeID={`calcWindowHeight-${windowHeightID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => windowWidthRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
-            <Pressable onPress={() => bathroomWallHeightRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
-          </View>
-        </InputAccessoryView>
-        <InputAccessoryView nativeID={`calcBathroomWallHeight-${bathroomWallHeightID}`}>
-          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => bathroomFixtureDeductionRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`calcBathroomFixtureDeduction-${bathroomFixtureDeductionID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => bathroomWallHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => windowHeightRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => wallCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

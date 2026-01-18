@@ -35,7 +35,6 @@ export interface CalculationSettings {
   openingTrimWidth: number; // width of trim around openings in inches
 
   // Bathroom settings
-  bathroomWallHeight: number; // in feet
   bathroomFixtureDeductionPercent: number; // percent of wall area to deduct
 }
 
@@ -80,7 +79,6 @@ const DEFAULT_SETTINGS: CalculationSettings = {
   openingTrimWidth: 3.5, // width of trim around openings in inches
 
   // Bathroom defaults
-  bathroomWallHeight: 8,
   bathroomFixtureDeductionPercent: 20,
 };
 
