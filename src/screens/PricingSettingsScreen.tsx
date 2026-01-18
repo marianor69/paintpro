@@ -323,7 +323,8 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
   const rowLabelTextStyle = { ...leftAlignedLabelTextStyle, ...mainLabelStyle, flex: 0, width: "auto" as const };
-  const rowLabelBaselineStyle = { flexDirection: "row", alignItems: "center" as const, paddingTop: Typography.caption.fontSize + Spacing.xs };
+  const rowLabelBaselineStyle = { flexDirection: "row", alignItems: "center" as const };
+  const rowLabelWithBubbleBaselineStyle = { ...leftAlignedLabelWrapperStyle, ...labelAlignWithBubbleValueStyle };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
 
   return (
@@ -811,7 +812,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             {bathroomLaborMode === "multiplier" && (
               <View>
                 <View style={rowStyle}>
-                  <View style={leftAlignedLabelWrapperStyle}>
+                  <View style={rowLabelWithBubbleBaselineStyle}>
                     <View style={rowLabelBaselineStyle}>
                       <Text style={rowLabelTextStyle}>Multiplier</Text>
                       <Pressable
@@ -951,7 +952,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             )}
 
             <View style={rowStyle}>
-              <View style={leftAlignedLabelWrapperStyle}>
+              <View style={rowLabelWithBubbleBaselineStyle}>
                 <View style={rowLabelBaselineStyle}>
                   <Text style={rowLabelTextStyle}>Enclosed Toilet</Text>
                   <Pressable
