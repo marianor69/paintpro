@@ -293,8 +293,15 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
   const inputTextStyle = { textAlign: "right" as const };
   const modeToggleWidth = inputWidth * 2 + Spacing.sm;
-  const modeToggleContainerStyle = { flexDirection: "row", width: modeToggleWidth, borderWidth: 1, borderColor: Colors.neutralGray, borderRadius: BorderRadius.default, overflow: "hidden" as const };
-  const modeToggleButtonStyle = { flex: 1, paddingVertical: Spacing.xs, alignItems: "center", justifyContent: "center" };
+  const modeToggleContainerStyle = {
+    ...TextInputStyles.container,
+    width: modeToggleWidth,
+    flexDirection: "row",
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    overflow: "hidden" as const,
+  };
+  const modeToggleButtonStyle = { flex: 1, paddingVertical: Spacing.sm, alignItems: "center", justifyContent: "center" };
   const materialRowStyle = { flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm, marginBottom: Spacing.md };
   const materialHeaderRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.xs };
   const columnLabelWrapperStyle = { width: inputWidth, paddingHorizontal: Spacing.md, alignItems: "center" as const };
@@ -788,7 +795,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   ]}
                 >
                 <Text style={{ fontSize: Typography.caption.fontSize, color: bathroomLaborMode === "tiers" ? Colors.primaryBlue : Colors.mediumGray, fontWeight: "600" as const }}>
-                  Tiers
+                  Prices
                 </Text>
                 </Pressable>
               </View>
