@@ -440,7 +440,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
       <KeyboardAvoidingView
         behavior="padding"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         style={{ flex: 1 }}
       >
         <View
@@ -512,7 +512,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
         <ScrollView
           ref={scrollViewRef}
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 400 }}
+          contentContainerStyle={{ padding: Spacing.md }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
