@@ -50,7 +50,7 @@ export const FireplaceIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
 
 export const StaircaseIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
-    <G fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <G fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
       {/* Diagonal handrail */}
       <Path d="M 10 70 L 90 10" />
 
