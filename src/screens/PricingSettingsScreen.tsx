@@ -287,6 +287,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   }, []);
 
   const rowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.sm, marginBottom: Spacing.md };
+  const rowLabelTextStyle = { ...leftAlignedLabelTextStyle, flex: 0, width: "auto" as const };
   const inlineFieldStyle = { flex: 1, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" as const };
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
   const inputWidth = 68;
@@ -775,7 +776,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Use Multiplier</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={rowLabelTextStyle}>Use Multiplier</Text>
+                </View>
               </View>
               <View style={modeToggleContainerStyle}>
                 <Pressable
@@ -808,7 +811,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 <View style={rowStyle}>
                   <View style={leftAlignedLabelWrapperStyle}>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: mainLabelStyle.marginTop }}>
-                      <Text style={{ ...leftAlignedLabelTextStyle, width: "auto", flex: 0 }}>Multiplier</Text>
+                      <Text style={rowLabelTextStyle}>Multiplier</Text>
                       <Pressable
                         onPress={() => openInfoModal("Bathroom Labor Multiplier", "Scales standard wall and ceiling labor for bathrooms.")}
                         hitSlop={8}
@@ -948,7 +951,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
                 <View style={{ flexDirection: "row", alignItems: "center", marginTop: mainLabelStyle.marginTop }}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, width: "auto", flex: 0 }}>Enclosed Toilet</Text>
+                  <Text style={rowLabelTextStyle}>Enclosed Toilet</Text>
                   <Pressable
                     onPress={() => openInfoModal("Enclosed Toilet", "Adds a fixed labor amount when the toilet is enclosed as a separate space.")}
                     hitSlop={8}
