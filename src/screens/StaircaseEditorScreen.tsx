@@ -702,7 +702,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          <View style={{ padding: Spacing.md }}>
+          <View style={{ padding: 0 }}>
             {/* Staircase Information Card */}
             <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: detailsConfirmed ? confirmedCardColor : Colors.white }}>
               {detailsExpanded ? (
