@@ -808,7 +808,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 <View style={rowStyle}>
                   <View style={leftAlignedLabelWrapperStyle}>
                     <View style={{ flexDirection: "row", alignItems: "center", marginTop: mainLabelStyle.marginTop }}>
-                      <Text style={{ ...leftAlignedLabelTextStyle }}>Multiplier</Text>
+                      <Text style={{ ...leftAlignedLabelTextStyle, width: "auto" }}>Multiplier</Text>
                       <Pressable
                         onPress={() => openInfoModal("Bathroom Labor Multiplier", "Scales standard wall and ceiling labor for bathrooms.")}
                         hitSlop={8}
@@ -948,7 +948,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={leftAlignedLabelWrapperStyle}>
                 <View style={{ flexDirection: "row", alignItems: "center", marginTop: mainLabelStyle.marginTop }}>
-                  <Text style={{ ...leftAlignedLabelTextStyle }}>Enclosed Toilet</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, width: "auto" }}>Enclosed Toilet</Text>
                   <Pressable
                     onPress={() => openInfoModal("Enclosed Toilet", "Adds a fixed labor amount when the toilet is enclosed as a separate space.")}
                     hitSlop={8}
