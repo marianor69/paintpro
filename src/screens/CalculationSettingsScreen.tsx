@@ -214,8 +214,8 @@ export default function CalculationSettingsScreen() {
   const helpIconPressableStyle = { marginLeft: Spacing.xs, transform: [{ translateY: -2 }] };
   const helpIconSize = 13;
   const materialLabelStyle = { marginTop: Spacing.sm };
-  const rowSpacing = Spacing.sm;
-  const cardBottomPadding = Spacing.sm;
+  const rowSpacing = Spacing.md;
+  const cardBottomPadding = Spacing.md;
 
   const openInfoModal = (title: string, body: string) => {
     setInfoModalTitle(title);
