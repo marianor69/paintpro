@@ -972,7 +972,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 {/* Irregular Rooms */}
                 {project.irregularRooms?.map((irregularRoom, idx) => (
                   <View key={irregularRoom.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
-                    <Ionicons name="shapes-outline" size={14} color={Colors.mediumGray} style={{ marginRight: Spacing.xs }} />
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <NonFourWallRoomIcon size={14} color={Colors.mediumGray} />
+                    </View>
                     <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                       {irregularRoom.name || "Unnamed Irregular Room"}
                     </Text>
