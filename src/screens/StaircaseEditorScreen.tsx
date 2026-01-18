@@ -197,6 +197,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [discardWidth, setDiscardWidth] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
   const [riserHelpVisible, setRiserHelpVisible] = useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [confirmModalBody, setConfirmModalBody] = useState("");
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
   // MD-002: Store the navigation action to dispatch when discarding
@@ -463,6 +465,16 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
     if (!hasAnyData) {
       Alert.alert("No Data Entered", "Please enter at least one measurement before saving.");
+      return;
+    }
+
+    const missingConfirmations = [];
+    if (!detailsConfirmed) missingConfirmations.push("Staircase Details");
+    if (!wallsConfirmed) missingConfirmations.push("Walls in Stairwell");
+
+    if (missingConfirmations.length > 0) {
+      setConfirmModalBody(`Please confirm: ${missingConfirmations.join(", ")}`);
+      setConfirmModalVisible(true);
       return;
     }
 
@@ -1713,6 +1725,36 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                 style={{ backgroundColor: Colors.primaryBlue, borderRadius: 8, paddingVertical: Spacing.sm, alignItems: "center" }}
                 accessibilityRole="button"
                 accessibilityLabel="Close riser help"
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Close
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={confirmModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setConfirmModalVisible(false)}
+        >
+          <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+            <Pressable
+              onPress={() => setConfirmModalVisible(false)}
+              style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+            />
+            <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+              <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                Confirm Required
+              </Text>
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
+                {confirmModalBody}
+              </Text>
+              <Pressable
+                onPress={() => setConfirmModalVisible(false)}
+                style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
               >
                 <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
                   Close

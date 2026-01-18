@@ -640,6 +640,19 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   };
 
   const handleSave = () => {
+    const missingConfirmations = [];
+    if (!roomInfoConfirmed) missingConfirmations.push("Bathroom Info");
+    if (!openingsClosetsConfirmed) missingConfirmations.push("Openings & Closets");
+    if (!paintOptionsConfirmed) missingConfirmations.push("Paint Options");
+
+    if (missingConfirmations.length > 0) {
+      openInfoModal(
+        "Confirm Required",
+        `Please confirm: ${missingConfirmations.join(", ")}`
+      );
+      return;
+    }
+
     const trimmedName = name.trim();
     if (!trimmedName) {
       Alert.alert("Bathroom Name Required", "Please enter a name for this bathroom before saving.");

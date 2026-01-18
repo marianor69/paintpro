@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
   Keyboard,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -129,6 +130,8 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [discardWidth, setDiscardWidth] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false); // Prevent double-save and navigation modal
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [confirmModalBody, setConfirmModalBody] = useState("");
   const isKeyboardVisibleRef = useRef(false);
   const pendingSavePromptRef = useRef(false);
   // MD-002: Store the navigation action to dispatch when discarding
@@ -386,6 +389,15 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
     // Validate over mantel: if enabled, must have both width and height
     if (hasOverMantel && (overMantelWidth === "" || overMantelHeight === "")) {
       Alert.alert("Missing Data", "Please enter both width and height for the over mantel.");
+      return;
+    }
+
+    const missingConfirmations = [];
+    if (!detailsConfirmed) missingConfirmations.push("Fireplace Details");
+
+    if (missingConfirmations.length > 0) {
+      setConfirmModalBody(`Please confirm: ${missingConfirmations.join(", ")}`);
+      setConfirmModalVisible(true);
       return;
     }
 
@@ -1260,8 +1272,37 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                 Save Fireplace
               </Text>
             </Pressable>
-          </View>
         </ScrollView>
+
+        <Modal
+          visible={confirmModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setConfirmModalVisible(false)}
+        >
+          <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: "center", padding: Spacing.lg }}>
+            <Pressable
+              onPress={() => setConfirmModalVisible(false)}
+              style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+            />
+            <View style={{ backgroundColor: Colors.white, borderRadius: BorderRadius.default, padding: Spacing.lg, ...Shadows.card }}>
+              <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                Confirm Required
+              </Text>
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.lg }}>
+                {confirmModalBody}
+              </Text>
+              <Pressable
+                onPress={() => setConfirmModalVisible(false)}
+                style={{ backgroundColor: Colors.primaryBlue, borderRadius: BorderRadius.default, paddingVertical: Spacing.sm, alignItems: "center" }}
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                  Close
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
 
         {/* Save Confirmation Modal */}
         <SavePromptModal

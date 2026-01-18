@@ -672,6 +672,19 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   };
 
   const handleSave = () => {
+    const missingConfirmations = [];
+    if (!roomInfoConfirmed) missingConfirmations.push("Room Info");
+    if (!openingsClosetsConfirmed) missingConfirmations.push("Openings & Closets");
+    if (!paintOptionsConfirmed) missingConfirmations.push("Paint Options");
+
+    if (missingConfirmations.length > 0) {
+      openInfoModal(
+        "Confirm Required",
+        `Please confirm: ${missingConfirmations.join(", ")}`
+      );
+      return;
+    }
+
     const trimmedName = name.trim();
     if (!trimmedName) {
       Alert.alert("Room Name Required", "Please enter a name for this room before saving.");

@@ -555,6 +555,18 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     if (isSavingRef.current) {
       return;
     }
+    const missingConfirmations = [];
+    if (!roomInfoConfirmed) missingConfirmations.push("Room Info");
+    if (!openingsClosetsConfirmed) missingConfirmations.push("Openings & Closets");
+    if (!paintOptionsConfirmed) missingConfirmations.push("Paint Options");
+
+    if (missingConfirmations.length > 0) {
+      openInfoModal(
+        "Confirm Required",
+        `Please confirm: ${missingConfirmations.join(", ")}`
+      );
+      return;
+    }
     // Validate dimensions before saving
     if (!hasValidDimensions) {
       Alert.alert(

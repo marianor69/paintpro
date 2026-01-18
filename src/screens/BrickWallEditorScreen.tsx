@@ -325,6 +325,11 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
       return;
     }
 
+    if (!detailsConfirmed) {
+      openInfoModal("Confirm Required", "Please confirm: Brick/Panel Details");
+      return;
+    }
+
     // IMMEDIATELY set saving state to prevent modal
     setIsSaving(true);
     setHasUnsavedChanges(false);
