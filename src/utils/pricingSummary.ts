@@ -793,6 +793,19 @@ export function computeFireplacePricingSummary(
   fireplace: Fireplace,
   pricing: PricingSettings
 ): FireplacePricingSummary {
+  const hasAnyData = Boolean(
+    fireplace.hasMantel ||
+      fireplace.hasLegs ||
+      fireplace.hasOverMantel ||
+      fireplace.width > 0 ||
+      fireplace.height > 0 ||
+      fireplace.depth > 0 ||
+      (fireplace.hasTrim && fireplace.trimLinearFeet > 0) ||
+      fireplace.overMantelWidth ||
+      fireplace.overMantelHeight ||
+      fireplace.overMantelDepth
+  );
+
   // Calculate fireplace area (3 visible sides: front + 2 sides)
   const frontArea = fireplace.width * fireplace.height;
   const sideArea = fireplace.depth * fireplace.height * 2;
@@ -802,7 +815,7 @@ export function computeFireplacePricingSummary(
   const totalGallons = (paintableArea / safeNumber(pricing.wallCoverageSqFtPerGallon, 350)) * fireplace.coats;
 
   // Calculate labor costs
-  let laborCost = safeNumber(pricing.fireplaceLabor, 0);
+  let laborCost = hasAnyData ? safeNumber(pricing.fireplaceLabor, 0) : 0;
 
   // Add trim labor if applicable
   if (fireplace.hasTrim) {
