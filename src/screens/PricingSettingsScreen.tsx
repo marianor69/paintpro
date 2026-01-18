@@ -322,7 +322,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const trimPaintLabelRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs };
   // Vertical alignment standard: do not change without explicit approval.
   const mainLabelStyle = { marginTop: Typography.caption.fontSize + Spacing.xs + Spacing.sm };
-  const rowLabelTextStyle = { ...leftAlignedLabelTextStyle, ...mainLabelStyle, flex: 0, width: "auto" as const };
+  const rowLabelTextStyle = { ...leftAlignedLabelTextStyle, flex: 0, width: "auto" as const };
   const rowLabelBaselineStyle = { flexDirection: "row", alignItems: "center" as const };
   const rowLabelWithBubbleBaselineStyle = { ...leftAlignedLabelWrapperStyle, ...labelAlignWithBubbleValueStyle };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
