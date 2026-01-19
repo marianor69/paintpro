@@ -1,4 +1,4 @@
-import React, { useState, useRef, useId, useLayoutEffect } from "react";
+import React, { useState, useRef, useId, useLayoutEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -15,11 +15,13 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useCalculationSettings } from "../state/calculationStore";
+import { usePreventRemove } from "@react-navigation/native";
 import { useAppSettings } from "../state/appSettings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
+import { SavePromptModal } from "../components/SavePromptModal";
 
 // ===============================
 // SettingsRowGrid (DEFINITIVE: no gap, fixed label width)
@@ -148,6 +150,13 @@ export default function CalculationSettingsScreen() {
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [infoModalTitle, setInfoModalTitle] = useState("");
   const [infoModalBody, setInfoModalBody] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [discardWidth, setDiscardWidth] = useState<number | null>(null);
+  const isKeyboardVisibleRef = useRef(false);
+  const isSavingRef = useRef(false);
+  const pendingSavePromptRef = useRef(false);
+  const preventedNavigationActionRef = useRef<any>(null);
 
   // KB-004: Refs for keyboard navigation
   const doorHeightRef = useRef<TextInput>(null);
@@ -257,12 +266,143 @@ export default function CalculationSettingsScreen() {
 
     updateSettings(newSettings);
     Keyboard.dismiss();
+    setHasUnsavedChanges(false);
     Alert.alert("Success", "Calculation settings updated successfully");
   };
 
   const handleDiscard = () => {
+    if (hasUnsavedChanges) {
+      if (isKeyboardVisibleRef.current) {
+        pendingSavePromptRef.current = true;
+        Keyboard.dismiss();
+        return;
+      }
+      setShowSavePrompt(true);
+      return;
+    }
     navigation.goBack();
   };
+
+  const handleSaveAndLeave = () => {
+    setShowSavePrompt(false);
+    isSavingRef.current = true;
+    handleSave();
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+      return;
+    }
+    navigation.goBack();
+  };
+
+  const handleDiscardAndLeave = () => {
+    setShowSavePrompt(false);
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+      return;
+    }
+    navigation.goBack();
+  };
+
+  const handleCancelExit = () => {
+    setShowSavePrompt(false);
+  };
+
+  const parseOrDefault = (value: string, fallback: number) => {
+    const parsed = parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
+  const isDirty = useMemo(() => {
+    const doorJambDefault = settings.doorJambWidth || 4.5;
+    const singleClosetBaseboardDefault = settings.singleClosetBaseboardPerimeter || 88;
+    const doubleClosetBaseboardDefault = settings.doubleClosetBaseboardPerimeter || 112;
+    const closetDepthDefault = settings.closetCavityDepth || 2;
+    const bathroomFixtureDefault = settings.bathroomFixtureDeductionPercent || 20;
+
+    return (
+      parseOrDefault(doorHeight, settings.doorHeight) !== settings.doorHeight ||
+      parseOrDefault(doorWidth, settings.doorWidth) !== settings.doorWidth ||
+      parseOrDefault(doorTrimWidth, settings.doorTrimWidth) !== settings.doorTrimWidth ||
+      parseOrDefault(doorJambWidth, doorJambDefault) !== doorJambDefault ||
+      parseOrDefault(windowWidth, settings.windowWidth) !== settings.windowWidth ||
+      parseOrDefault(windowHeight, settings.windowHeight) !== settings.windowHeight ||
+      parseOrDefault(windowTrimWidth, settings.windowTrimWidth) !== settings.windowTrimWidth ||
+      parseOrDefault(singleClosetWidth, settings.singleClosetWidth) !== settings.singleClosetWidth ||
+      parseOrDefault(singleClosetTrimWidth, settings.singleClosetTrimWidth) !== settings.singleClosetTrimWidth ||
+      parseOrDefault(singleClosetBaseboardPerimeter, singleClosetBaseboardDefault) !== singleClosetBaseboardDefault ||
+      parseOrDefault(doubleClosetWidth, settings.doubleClosetWidth) !== settings.doubleClosetWidth ||
+      parseOrDefault(doubleClosetTrimWidth, settings.doubleClosetTrimWidth) !== settings.doubleClosetTrimWidth ||
+      parseOrDefault(doubleClosetBaseboardPerimeter, doubleClosetBaseboardDefault) !== doubleClosetBaseboardDefault ||
+      parseOrDefault(closetCavityDepth, closetDepthDefault) !== closetDepthDefault ||
+      parseOrDefault(baseboardWidth, settings.baseboardWidth) !== settings.baseboardWidth ||
+      parseOrDefault(crownMouldingWidth, settings.crownMouldingWidth) !== settings.crownMouldingWidth ||
+      parseOrDefault(bathroomFixtureDeductionPercent, bathroomFixtureDefault) !== bathroomFixtureDefault
+    );
+  }, [
+    doorHeight,
+    doorWidth,
+    doorTrimWidth,
+    doorJambWidth,
+    windowWidth,
+    windowHeight,
+    windowTrimWidth,
+    singleClosetWidth,
+    singleClosetTrimWidth,
+    singleClosetBaseboardPerimeter,
+    doubleClosetWidth,
+    doubleClosetTrimWidth,
+    doubleClosetBaseboardPerimeter,
+    closetCavityDepth,
+    baseboardWidth,
+    crownMouldingWidth,
+    bathroomFixtureDeductionPercent,
+    settings,
+  ]);
+
+  React.useEffect(() => {
+    setHasUnsavedChanges(isDirty);
+  }, [isDirty]);
+
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      isKeyboardVisibleRef.current = true;
+    });
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      isKeyboardVisibleRef.current = false;
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("gestureStart", () => {
+      if (isKeyboardVisibleRef.current) {
+        Keyboard.dismiss();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  usePreventRemove(hasUnsavedChanges, ({ data }) => {
+    if (isSavingRef.current) return;
+    preventedNavigationActionRef.current = data.action;
+    if (isKeyboardVisibleRef.current) {
+      pendingSavePromptRef.current = true;
+      Keyboard.dismiss();
+    } else {
+      setShowSavePrompt(true);
+    }
+  });
 
   const handleReset = () => {
     Alert.alert(
@@ -1225,6 +1365,13 @@ export default function CalculationSettingsScreen() {
           </View>
         </View>
       </Modal>
+      <SavePromptModal
+        visible={showSavePrompt}
+        onSave={handleSaveAndLeave}
+        onDiscard={handleDiscardAndLeave}
+        onCancel={handleCancelExit}
+        setDiscardButtonWidth={setDiscardWidth}
+      />
 
       {/* KB-004: InputAccessoryViews for all calculation fields */}
       {Platform.OS === "ios" && (<>

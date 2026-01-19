@@ -1,4 +1,4 @@
-import React, { useRef, useId, useCallback, useEffect, useLayoutEffect } from "react";
+import React, { useRef, useId, useCallback, useEffect, useLayoutEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -13,11 +13,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { usePreventRemove } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { usePricingStore } from "../state/pricingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
+import { SavePromptModal } from "../components/SavePromptModal";
 
 type Props = NativeStackScreenProps<RootStackParamList, "PricingSettings">;
 
@@ -27,6 +29,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [infoModalVisible, setInfoModalVisible] = React.useState(false);
   const [infoModalTitle, setInfoModalTitle] = React.useState("");
   const [infoModalBody, setInfoModalBody] = React.useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
+  const [showSavePrompt, setShowSavePrompt] = React.useState(false);
+  const [discardWidth, setDiscardWidth] = React.useState<number | null>(null);
+  const isSavingRef = useRef(false);
+  const pendingSavePromptRef = useRef(false);
+  const preventedNavigationActionRef = useRef<any>(null);
 
   const [wallLaborPerSqFt, setWallLaborPerSqFt] = React.useState(
     pricing.wallLaborPerSqFt.toString()
@@ -46,6 +54,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   );
   const [cabinetDoorLabor, setCabinetDoorLabor] = React.useState(
     (pricing.cabinetDoorLabor || 150).toString()
+  );
+  const [cabinetFrontLabor, setCabinetFrontLabor] = React.useState(
+    (pricing.cabinetFrontLabor || 150).toString()
   );
   const [cabinetDrawerLabor, setCabinetDrawerLabor] = React.useState(
     (pricing.cabinetDrawerLabor || 30).toString()
@@ -150,6 +161,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const windowLaborRef = useRef<TextInput>(null);
   const closetLaborRef = useRef<TextInput>(null);
   const cabinetDoorLaborRef = useRef<TextInput>(null);
+  const cabinetFrontLaborRef = useRef<TextInput>(null);
   const cabinetDrawerLaborRef = useRef<TextInput>(null);
   const wallCabinetLaborRef = useRef<TextInput>(null);
   const vanityDoorLaborRef = useRef<TextInput>(null);
@@ -188,6 +200,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const windowLaborID = useId();
   const closetLaborID = useId();
   const cabinetDoorLaborID = useId();
+  const cabinetFrontLaborID = useId();
   const cabinetDrawerLaborID = useId();
   const wallCabinetLaborID = useId();
   const vanityDoorLaborID = useId();
@@ -256,6 +269,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     });
     const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
       isKeyboardVisibleRef.current = false;
+      if (pendingSavePromptRef.current) {
+        pendingSavePromptRef.current = false;
+        setShowSavePrompt(true);
+      }
     });
 
     return () => {
@@ -265,6 +282,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   }, [scrollFocusedInputIntoView]);
 
   const handleSave = () => {
+    isSavingRef.current = true;
     pricing.updatePricing({
       wallLaborPerSqFt: parseFloat(wallLaborPerSqFt) || 0,
       ceilingLaborPerSqFt: parseFloat(ceilingLaborPerSqFt) || 0,
@@ -308,12 +326,151 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       doorPaintPer5Gallon: parseFloat(trimPaintPer5Gallon) || 225, // Door paint uses trim paint price
       primerPer5Gallon: parseFloat(primerPer5Gallon) || 150,
     });
+    setHasUnsavedChanges(false);
     navigation.goBack();
   };
 
   const handleDiscard = () => {
+    if (hasUnsavedChanges) {
+      if (isKeyboardVisibleRef.current) {
+        pendingSavePromptRef.current = true;
+        Keyboard.dismiss();
+        return;
+      }
+      setShowSavePrompt(true);
+      return;
+    }
     navigation.goBack();
   };
+
+  const handleSaveAndLeave = () => {
+    setShowSavePrompt(false);
+    isSavingRef.current = true;
+    handleSave();
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+      return;
+    }
+    navigation.goBack();
+  };
+
+  const handleDiscardAndLeave = () => {
+    setShowSavePrompt(false);
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+      return;
+    }
+    navigation.goBack();
+  };
+
+  const handleCancelExit = () => {
+    setShowSavePrompt(false);
+  };
+
+  const parseOrDefault = (value: string, fallback: number) => {
+    const parsed = parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
+  const isDirty = useMemo(() => {
+    return (
+      parseOrDefault(wallLaborPerSqFt, pricing.wallLaborPerSqFt) !== pricing.wallLaborPerSqFt ||
+      parseOrDefault(ceilingLaborPerSqFt, pricing.ceilingLaborPerSqFt) !== pricing.ceilingLaborPerSqFt ||
+      parseOrDefault(baseboardLaborPerLF, pricing.baseboardLaborPerLF) !== pricing.baseboardLaborPerLF ||
+      parseOrDefault(doorLabor, pricing.doorLabor) !== pricing.doorLabor ||
+      parseOrDefault(windowLabor, pricing.windowLabor) !== pricing.windowLabor ||
+      parseOrDefault(closetLabor, pricing.closetLabor) !== pricing.closetLabor ||
+      parseOrDefault(cabinetDoorLabor, pricing.cabinetDoorLabor || 150) !== (pricing.cabinetDoorLabor || 150) ||
+      parseOrDefault(vanityDoorLabor, pricing.vanityDoorLabor || 150) !== (pricing.vanityDoorLabor || 150) ||
+      parseOrDefault(cabinetDrawerLabor, pricing.cabinetDrawerLabor || 30) !== (pricing.cabinetDrawerLabor || 30) ||
+      parseOrDefault(wallCabinetLabor, pricing.wallCabinetLabor || 165) !== (pricing.wallCabinetLabor || 165) ||
+      parseOrDefault(riserLabor, pricing.riserLabor) !== pricing.riserLabor ||
+      parseOrDefault(spindleLabor, pricing.spindleLabor) !== pricing.spindleLabor ||
+      parseOrDefault(handrailLaborPerLF, pricing.handrailLaborPerLF) !== pricing.handrailLaborPerLF ||
+      parseOrDefault(fireplaceLabor, pricing.fireplaceLabor) !== pricing.fireplaceLabor ||
+      parseOrDefault(mantelLabor, pricing.mantelLabor) !== pricing.mantelLabor ||
+      parseOrDefault(legsLabor, pricing.legsLabor) !== pricing.legsLabor ||
+      parseOrDefault(crownMouldingLaborPerLF, pricing.crownMouldingLaborPerLF) !== pricing.crownMouldingLaborPerLF ||
+      parseOrDefault(secondCoatLaborMultiplier, pricing.secondCoatLaborMultiplier || 2.0) !== (pricing.secondCoatLaborMultiplier || 2.0) ||
+      parseOrDefault(accentWallLaborMultiplier, pricing.accentWallLaborMultiplier || 1.25) !== (pricing.accentWallLaborMultiplier || 1.25) ||
+      parseOrDefault(bathroomLaborMultiplier, pricing.bathroomLaborMultiplier || 2.5) !== (pricing.bathroomLaborMultiplier || 2.5) ||
+      bathroomLaborMode !== (pricing.bathroomLaborMode || "multiplier") ||
+      parseOrDefault(bathroomTierSmallLabor, pricing.bathroomTierSmallLabor ?? 350) !== (pricing.bathroomTierSmallLabor ?? 350) ||
+      parseOrDefault(bathroomTierMediumLabor, pricing.bathroomTierMediumLabor ?? 400) !== (pricing.bathroomTierMediumLabor ?? 400) ||
+      parseOrDefault(bathroomTierLargeBaseLabor, pricing.bathroomTierLargeBaseLabor ?? 450) !== (pricing.bathroomTierLargeBaseLabor ?? 450) ||
+      parseOrDefault(bathroomTierLargeExtraPerSqFt, pricing.bathroomTierLargeExtraPerSqFt ?? 5) !== (pricing.bathroomTierLargeExtraPerSqFt ?? 5) ||
+      parseOrDefault(bathroomEnclosedToiletAddOn, pricing.bathroomEnclosedToiletAddOn ?? 50) !== (pricing.bathroomEnclosedToiletAddOn ?? 50) ||
+      parseOrDefault(closetLaborMultiplier, pricing.closetLaborMultiplier || 1.0) !== (pricing.closetLaborMultiplier || 1.0) ||
+      parseOrDefault(furnitureMovingFee, pricing.furnitureMovingFee || 100) !== (pricing.furnitureMovingFee || 100) ||
+      parseOrDefault(nailsRemovalFee, pricing.nailsRemovalFee || 75) !== (pricing.nailsRemovalFee || 75) ||
+      parseOrDefault(wallPaintPerGallon, pricing.wallPaintPerGallon) !== pricing.wallPaintPerGallon ||
+      parseOrDefault(ceilingPaintPerGallon, pricing.ceilingPaintPerGallon) !== pricing.ceilingPaintPerGallon ||
+      parseOrDefault(trimPaintPerGallon, pricing.trimPaintPerGallon) !== pricing.trimPaintPerGallon ||
+      parseOrDefault(primerPerGallon, pricing.primerPerGallon) !== pricing.primerPerGallon ||
+      parseOrDefault(wallPaintPer5Gallon, pricing.wallPaintPer5Gallon || 200) !== (pricing.wallPaintPer5Gallon || 200) ||
+      parseOrDefault(ceilingPaintPer5Gallon, pricing.ceilingPaintPer5Gallon || 175) !== (pricing.ceilingPaintPer5Gallon || 175) ||
+      parseOrDefault(trimPaintPer5Gallon, pricing.trimPaintPer5Gallon || 225) !== (pricing.trimPaintPer5Gallon || 225) ||
+      parseOrDefault(primerPer5Gallon, pricing.primerPer5Gallon || 150) !== (pricing.primerPer5Gallon || 150) ||
+      parseOrDefault(cabinetPaintPerGallon, pricing.cabinetPaintPerGallon || 60) !== (pricing.cabinetPaintPerGallon || 60)
+    );
+  }, [
+    wallLaborPerSqFt,
+    ceilingLaborPerSqFt,
+    baseboardLaborPerLF,
+    doorLabor,
+    windowLabor,
+    closetLabor,
+    cabinetDoorLabor,
+    vanityDoorLabor,
+    cabinetDrawerLabor,
+    wallCabinetLabor,
+    riserLabor,
+    spindleLabor,
+    handrailLaborPerLF,
+    fireplaceLabor,
+    mantelLabor,
+    legsLabor,
+    crownMouldingLaborPerLF,
+    secondCoatLaborMultiplier,
+    accentWallLaborMultiplier,
+    bathroomLaborMultiplier,
+    bathroomLaborMode,
+    bathroomTierSmallLabor,
+    bathroomTierMediumLabor,
+    bathroomTierLargeBaseLabor,
+    bathroomTierLargeExtraPerSqFt,
+    bathroomEnclosedToiletAddOn,
+    closetLaborMultiplier,
+    furnitureMovingFee,
+    nailsRemovalFee,
+    wallPaintPerGallon,
+    ceilingPaintPerGallon,
+    trimPaintPerGallon,
+    primerPerGallon,
+    wallPaintPer5Gallon,
+    ceilingPaintPer5Gallon,
+    trimPaintPer5Gallon,
+    primerPer5Gallon,
+    cabinetPaintPerGallon,
+    pricing,
+  ]);
+
+  React.useEffect(() => {
+    setHasUnsavedChanges(isDirty);
+  }, [isDirty]);
+
+  usePreventRemove(hasUnsavedChanges, ({ data }) => {
+    if (isSavingRef.current) return;
+    preventedNavigationActionRef.current = data.action;
+    if (isKeyboardVisibleRef.current) {
+      pendingSavePromptRef.current = true;
+      Keyboard.dismiss();
+    } else {
+      setShowSavePrompt(true);
+    }
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -1481,6 +1638,13 @@ export default function PricingSettingsScreen({ navigation }: Props) {
           </View>
         </View>
       </Modal>
+      <SavePromptModal
+        visible={showSavePrompt}
+        onSave={handleSaveAndLeave}
+        onDiscard={handleDiscardAndLeave}
+        onCancel={handleCancelExit}
+        setDiscardButtonWidth={setDiscardWidth}
+      />
 
       {/* KB-004: InputAccessoryViews for all pricing fields */}
       {Platform.OS === "ios" && (<>
