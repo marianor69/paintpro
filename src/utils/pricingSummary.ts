@@ -531,6 +531,10 @@ export function computeRoomPricingSummary(
     laborCost *= accentWallMultiplier;
   }
 
+  if (isBathroom && (room as { toiletEnclosed?: boolean }).toiletEnclosed) {
+    laborCost += safeNumber(pricing.bathroomEnclosedToiletAddOn, 0);
+  }
+
   laborCost = Math.max(0, safeNumber(laborCost));
 
   // Calculate material costs (using COMBINED RULE)
