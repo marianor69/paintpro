@@ -11,6 +11,7 @@ import {
   Alert,
   Keyboard,
   Modal,
+  InputAccessoryView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -58,6 +59,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const [depth, setDepth] = useState(!isNewBuiltIn && builtIn?.depth && builtIn.depth > 0 ? formatMeasurementValue(builtIn.depth / 12, 'length', unitSystem, 2) : "");
   const [shelfCount, setShelfCount] = useState(!isNewBuiltIn && builtIn?.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "");
   const [notes, setNotes] = useState(!isNewBuiltIn && builtIn?.notes ? builtIn.notes : "");
+  const [notesExpanded, setNotesExpanded] = useState(false);
   const [photos, setPhotos] = useState<RoomPhoto[]>(builtIn?.photos || []);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
@@ -108,6 +110,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const depthRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
+  const notesAccessoryID = useRef(`notes-${Math.random().toString(36).slice(2)}`).current;
   const bubbleWidth = 64;
   const bubbleLabelStyle = { textAlign: "center" as const, width: bubbleWidth, alignSelf: "center" as const, fontSize: 13, lineHeight: 15 };
   const bubbleLabelContainerStyle = { alignItems: "center" as const };
@@ -715,40 +718,62 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               )}
             </Card>
 
-            {/* Notes Section */}
+            {/* Notes Section - Collapsable */}
             <View ref={notesCardRef}>
               <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                  Notes
-                </Text>
-                <TextInput
-                  value={notes}
-                  onChangeText={setNotes}
-                  placeholder="Add any notes about this built-in..."
-                  placeholderTextColor={Colors.mediumGray}
-                  multiline
-                  numberOfLines={3}
-                  onFocus={() => {
-                    setTimeout(() => {
-                      notesCardRef.current?.measureLayout(
-                        scrollViewRef.current as any,
-                        (x, y) => {
-                          scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
-                        },
-                        () => {}
-                      );
-                    }, 100);
-                  }}
-                  style={[
-                    TextInputStyles.multiline,
-                    {
-                      backgroundColor: Colors.backgroundWarmGray,
-                      borderRadius: 8,
-                      padding: Spacing.md,
-                      minHeight: 100,
-                    }
-                  ]}
-                />
+                <Pressable
+                  onPress={() => setNotesExpanded(!notesExpanded)}
+                  style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                      Notes
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                      Built-in notes and reminders
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name={notesExpanded ? "chevron-up" : "chevron-down"}
+                    size={24}
+                    color={Colors.mediumGray}
+                  />
+                </Pressable>
+
+                {notesExpanded && (
+                  <TextInput
+                    value={notes}
+                    onChangeText={setNotes}
+                    placeholder="Add any notes about this built-in..."
+                    placeholderTextColor={Colors.mediumGray}
+                    multiline
+                    numberOfLines={3}
+                    blurOnSubmit
+                    returnKeyType="done"
+                    inputAccessoryViewID={Platform.OS === "ios" ? notesAccessoryID : undefined}
+                    onFocus={() => {
+                      setTimeout(() => {
+                        notesCardRef.current?.measureLayout(
+                          scrollViewRef.current as any,
+                          (x, y) => {
+                            scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                          },
+                          () => {}
+                        );
+                      }, 100);
+                    }}
+                    style={[
+                      TextInputStyles.multiline,
+                      {
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: 8,
+                        padding: Spacing.md,
+                        minHeight: 100,
+                        marginTop: Spacing.md,
+                      }
+                    ]}
+                  />
+                )}
               </Card>
             </View>
 
@@ -1059,6 +1084,23 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </Pressable>
           </View>
         </ScrollView>
+
+        {Platform.OS === "ios" && (
+          <InputAccessoryView nativeID={notesAccessoryID}>
+            <View style={{ backgroundColor: Colors.white, borderTopWidth: 1, borderTopColor: Colors.neutralGray, padding: Spacing.sm, alignItems: "flex-end" }}>
+              <Pressable
+                onPress={() => Keyboard.dismiss()}
+                style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}
+                accessibilityRole="button"
+                accessibilityLabel="Done editing notes"
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+                  Done
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+        )}
 
         <Modal
           visible={confirmModalVisible}

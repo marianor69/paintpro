@@ -11,6 +11,7 @@ import {
   Alert,
   Keyboard,
   Modal,
+  InputAccessoryView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -147,6 +148,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
       : []
   );
   const [notes, setNotes] = useState(!isNewStaircase && staircase?.notes ? staircase.notes : "");
+  const [notesExpanded, setNotesExpanded] = useState(false);
   const [photos, setPhotos] = useState<RoomPhoto[]>(
     !isNewStaircase && staircase?.photos ? staircase.photos : []
   );
@@ -209,6 +211,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const handrailLengthRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
+  const notesAccessoryID = useRef(`notes-${Math.random().toString(36).slice(2)}`).current;
 
   const blurFocusedInput = useCallback(() => {
     const focusedInput = TextInput.State?.currentlyFocusedInput?.();
@@ -1120,40 +1123,62 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
               </View>
             </Card>
 
-            {/* Notes Section */}
+            {/* Notes Section - Collapsable */}
             <View ref={notesCardRef}>
               <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                  Notes
-                </Text>
-                <TextInput
-                  value={notes}
-                  onChangeText={setNotes}
-                  placeholder="Add any notes about this staircase..."
+                <Pressable
+                  onPress={() => setNotesExpanded(!notesExpanded)}
+                  style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                      Notes
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                      Staircase notes and reminders
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name={notesExpanded ? "chevron-up" : "chevron-down"}
+                    size={24}
+                    color={Colors.mediumGray}
+                  />
+                </Pressable>
+
+                {notesExpanded && (
+                  <TextInput
+                    value={notes}
+                    onChangeText={setNotes}
+                    placeholder="Add any notes about this staircase..."
                   placeholderTextColor={Colors.mediumGray}
                   multiline
                   numberOfLines={3}
+                  blurOnSubmit
+                  returnKeyType="done"
+                  inputAccessoryViewID={Platform.OS === "ios" ? notesAccessoryID : undefined}
                   onFocus={() => {
                     setTimeout(() => {
                       notesCardRef.current?.measureLayout(
                         scrollViewRef.current as any,
-                        (x, y) => {
-                          scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
-                        },
-                        () => {}
-                      );
-                    }, 100);
-                  }}
-                  style={[
-                    TextInputStyles.multiline,
-                    {
-                      backgroundColor: Colors.backgroundWarmGray,
-                      borderRadius: 8,
-                      padding: Spacing.md,
-                      minHeight: 100,
-                    }
-                  ]}
-                />
+                          (x, y) => {
+                            scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                          },
+                          () => {}
+                        );
+                      }, 100);
+                    }}
+                    style={[
+                      TextInputStyles.multiline,
+                      {
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: 8,
+                        padding: Spacing.md,
+                        minHeight: 100,
+                        marginTop: Spacing.md,
+                      }
+                    ]}
+                  />
+                )}
               </Card>
             </View>
 
@@ -1701,6 +1726,23 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             </Pressable>
           </View>
         </ScrollView>
+
+        {Platform.OS === "ios" && (
+          <InputAccessoryView nativeID={notesAccessoryID}>
+            <View style={{ backgroundColor: Colors.white, borderTopWidth: 1, borderTopColor: Colors.neutralGray, padding: Spacing.sm, alignItems: "flex-end" }}>
+              <Pressable
+                onPress={() => Keyboard.dismiss()}
+                style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}
+                accessibilityRole="button"
+                accessibilityLabel="Done editing notes"
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+                  Done
+                </Text>
+              </Pressable>
+            </View>
+          </InputAccessoryView>
+        )}
 
         <Modal
           visible={riserHelpVisible}
