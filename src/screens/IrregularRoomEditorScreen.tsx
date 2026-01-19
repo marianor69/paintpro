@@ -1945,15 +1945,13 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     }}
                   >
                     <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
-                      {paintWalls && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
-                            {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
-                          </Text>
-                        </View>
-                      )}
-                      {paintWalls && walls.length > 0 && (
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
+                          {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                        </Text>
+                      </View>
+                      {walls.length > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
@@ -1961,7 +1959,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           </Text>
                         </View>
                       )}
-                      {paintWindows && windowCountValue > 0 && (
+                      {windowCountValue > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
@@ -1969,7 +1967,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           </Text>
                         </View>
                       )}
-                      {paintDoors && doorCountValue > 0 && (
+                      {doorCountValue > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
