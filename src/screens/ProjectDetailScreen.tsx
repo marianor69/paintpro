@@ -856,7 +856,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     accessibilityLabel={project.estimateBuildComplete ? "Estimate completed" : "Complete estimate"}
                   >
                     <View style={{ alignItems: "center" }}>
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
                         {project.estimateBuildComplete ? "Estimate Completed" : "Complete Estimate"}
                       </Text>
                     </View>
