@@ -2279,6 +2279,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const openingsCount = openings.length;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
+          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
           const wallLaborTotal = paintWalls
             ? pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls)
             : 0;
