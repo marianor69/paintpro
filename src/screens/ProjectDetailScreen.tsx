@@ -833,7 +833,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 )}
                 <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                  {formatCurrency(displaySummary.grandTotal)}
+                  {formatCurrency(Math.round(displaySummary.grandTotal))}
                 </Text>
               </Pressable>
 
