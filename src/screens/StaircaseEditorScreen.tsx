@@ -157,6 +157,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
   const [detailsExpanded, setDetailsExpanded] = useState(true);
   const [detailsConfirmed, setDetailsConfirmed] = useState(staircase?.detailsConfirmed ?? false);
   const [wallsConfirmed, setWallsConfirmed] = useState(staircase?.wallsConfirmed ?? false);
+  const [wallsExpanded, setWallsExpanded] = useState(true);
   const confirmedCardColor = Colors.success + "50";
   const detailsSnapshotRef = useRef<string>("");
   const wallsSnapshotRef = useRef<string>("");
@@ -959,168 +960,187 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
 
             {/* Walls Section */}
             <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: wallsConfirmed ? confirmedCardColor : Colors.white }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                Walls in Stairwell
-              </Text>
-
-              {/* Wall Counter */}
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.md, marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                  Wall Count:
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: Colors.primaryBlueLight,
-                    borderRadius: 8,
-                    paddingHorizontal: 4,
-                    paddingVertical: 2,
-                    borderWidth: 1,
-                    borderColor: Colors.neutralGray,
-                    gap: 4,
-                  }}
-                >
-                  <Pressable
-                    onPress={() => {
-                      if (walls.length > 0) {
-                        removeWall();
-                      }
-                    }}
-                    disabled={walls.length === 0}
-                    accessibilityRole="button"
-                    accessibilityLabel="Decrease wall count"
-                    style={{
-                      width: 28,
-                      height: 28,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 8,
-                    }}
-                  >
-                    <Text style={{ fontSize: 22, color: walls.length === 0 ? Colors.mediumGray : Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
-                  </Pressable>
-                  <View
-                    style={{
-                      minWidth: 32,
-                      paddingHorizontal: 8,
-                      paddingVertical: 6,
-                      backgroundColor: Colors.white,
-                      borderRadius: 8,
-                      borderWidth: 1,
-                      borderColor: Colors.neutralGray,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
-                      {walls.length}
-                    </Text>
-                  </View>
-                  <Pressable
-                    onPress={() => {
-                      if (walls.length < 4) {
-                        addWall();
-                      }
-                    }}
-                    disabled={walls.length >= 4}
-                    accessibilityRole="button"
-                    accessibilityLabel="Increase wall count"
-                    style={{
-                      width: 28,
-                      height: 28,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 8,
-                    }}
-                  >
-                    <Text style={{ fontSize: 22, color: walls.length >= 4 ? Colors.mediumGray : Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
-                  </Pressable>
+              <Pressable
+                onPress={() => setWallsExpanded(!wallsExpanded)}
+                style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                    Walls in Stairwell
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                    Wall count and heights
+                  </Text>
                 </View>
-              </View>
+                <Ionicons
+                  name={wallsExpanded ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color={Colors.mediumGray}
+                />
+              </Pressable>
 
-              {/* Wall Inputs (one row per wall; no divider lines) */}
-              {walls.map((wall, index) => (
-                <View
-                  key={wall.id}
-                  style={{
-                    marginBottom: Spacing.md,
-                    paddingTop: index === 0 ? 0 : Spacing.sm,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      gap: Spacing.md,
-                    }}
-                  >
-                    <Text
+              {wallsExpanded && (
+                <>
+                  {/* Wall Counter */}
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.md, marginBottom: Spacing.md }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                      Wall Count:
+                    </Text>
+                    <View
                       style={{
-                        flex: 1,
-                        fontSize: Typography.body.fontSize,
-                        fontWeight: "500" as any,
-                        color: Colors.darkCharcoal,
-                        marginTop: LABEL_TO_VALUE_OFFSET,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        backgroundColor: Colors.primaryBlueLight,
+                        borderRadius: 8,
+                        paddingHorizontal: 4,
+                        paddingVertical: 2,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        gap: 4,
                       }}
                     >
-                      Wall {index + 1}
-                    </Text>
-                    <BubbleStack
-                      header={`Tall Side (${unitSystem === "metric" ? "m" : "ft"})`}
-                      width={68}
-                    >
-                      <FormInput
-                        label=""
-                        value={wall.tallHeight}
-                        onChangeText={(value) => updateWallHeight(index, "tallHeight", value)}
-                        keyboardType="numeric"
-                        placeholder="0"
-                        inputContainerStyle={{ width: 68 }}
-                        inputTextStyle={{ textAlign: "right" }}
-                        className="mb-0"
-                      />
-                    </BubbleStack>
-                    <BubbleStack
-                      header={`Short Side (${unitSystem === "metric" ? "m" : "ft"})`}
-                      width={68}
-                    >
-                      <FormInput
-                        label=""
-                        value={wall.shortHeight}
-                        onChangeText={(value) => updateWallHeight(index, "shortHeight", value)}
-                        keyboardType="numeric"
-                        placeholder="0"
-                        inputContainerStyle={{ width: 68 }}
-                        inputTextStyle={{ textAlign: "right" }}
-                        className="mb-0"
-                      />
-                    </BubbleStack>
+                      <Pressable
+                        onPress={() => {
+                          if (walls.length > 0) {
+                            removeWall();
+                          }
+                        }}
+                        disabled={walls.length === 0}
+                        accessibilityRole="button"
+                        accessibilityLabel="Decrease wall count"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 8,
+                        }}
+                      >
+                        <Text style={{ fontSize: 22, color: walls.length === 0 ? Colors.mediumGray : Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                      </Pressable>
+                      <View
+                        style={{
+                          minWidth: 32,
+                          paddingHorizontal: 8,
+                          paddingVertical: 6,
+                          backgroundColor: Colors.white,
+                          borderRadius: 8,
+                          borderWidth: 1,
+                          borderColor: Colors.neutralGray,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                          {walls.length}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={() => {
+                          if (walls.length < 4) {
+                            addWall();
+                          }
+                        }}
+                        disabled={walls.length >= 4}
+                        accessibilityRole="button"
+                        accessibilityLabel="Increase wall count"
+                        style={{
+                          width: 28,
+                          height: 28,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 8,
+                        }}
+                      >
+                        <Text style={{ fontSize: 22, color: walls.length >= 4 ? Colors.mediumGray : Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                      </Pressable>
+                    </View>
                   </View>
-                </View>
-              ))}
-              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
-                <Pressable
-                  onPress={() => {
-                    Keyboard.dismiss();
-                    wallsSnapshotRef.current = wallsSnapshot;
-                    setWallsConfirmed(true);
-                  }}
-                  style={{
-                    backgroundColor: wallsConfirmed ? Colors.success : Colors.primaryBlue,
-                    borderRadius: 8,
-                    paddingHorizontal: Spacing.sm,
-                    paddingVertical: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    {wallsConfirmed ? "Confirmed" : "Confirm"}
-                  </Text>
-                </Pressable>
-              </View>
+
+                  {/* Wall Inputs (one row per wall; no divider lines) */}
+                  {walls.map((wall, index) => (
+                    <View
+                      key={wall.id}
+                      style={{
+                        marginBottom: Spacing.md,
+                        paddingTop: index === 0 ? 0 : Spacing.sm,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "flex-start",
+                          justifyContent: "space-between",
+                          gap: Spacing.md,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            flex: 1,
+                            fontSize: Typography.body.fontSize,
+                            fontWeight: "500" as any,
+                            color: Colors.darkCharcoal,
+                            marginTop: LABEL_TO_VALUE_OFFSET,
+                          }}
+                        >
+                          Wall {index + 1}
+                        </Text>
+                        <BubbleStack
+                          header={`Tall Side (${unitSystem === "metric" ? "m" : "ft"})`}
+                          width={68}
+                        >
+                          <FormInput
+                            label=""
+                            value={wall.tallHeight}
+                            onChangeText={(value) => updateWallHeight(index, "tallHeight", value)}
+                            keyboardType="numeric"
+                            placeholder="0"
+                            inputContainerStyle={{ width: 68 }}
+                            inputTextStyle={{ textAlign: "right" }}
+                            className="mb-0"
+                          />
+                        </BubbleStack>
+                        <BubbleStack
+                          header={`Short Side (${unitSystem === "metric" ? "m" : "ft"})`}
+                          width={68}
+                        >
+                          <FormInput
+                            label=""
+                            value={wall.shortHeight}
+                            onChangeText={(value) => updateWallHeight(index, "shortHeight", value)}
+                            keyboardType="numeric"
+                            placeholder="0"
+                            inputContainerStyle={{ width: 68 }}
+                            inputTextStyle={{ textAlign: "right" }}
+                            className="mb-0"
+                          />
+                        </BubbleStack>
+                      </View>
+                    </View>
+                  ))}
+                  <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                    <Pressable
+                      onPress={() => {
+                        Keyboard.dismiss();
+                        wallsSnapshotRef.current = wallsSnapshot;
+                        setWallsConfirmed(true);
+                      }}
+                      style={{
+                        backgroundColor: wallsConfirmed ? Colors.success : Colors.primaryBlue,
+                        borderRadius: 8,
+                        paddingHorizontal: Spacing.sm,
+                        paddingVertical: 10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                        {wallsConfirmed ? "Confirmed" : "Confirm"}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </>
+              )}
             </Card>
 
             {/* Notes Section - Collapsable */}
