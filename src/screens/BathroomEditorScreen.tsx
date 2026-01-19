@@ -1829,6 +1829,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   )}
                   {doorCountForSummary > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Door Frames</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {doorCountForSummary}
+                      </Text>
+                    </View>
+                  )}
+                  {doorCountForSummary > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                         {doorCountForSummary}
@@ -2249,6 +2257,36 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doorCountValue = parseInt(doorCount) || 0;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
+          const wallLaborTotal = paintWalls
+            ? pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls)
+            : 0;
+          const wallMaterialsTotal = paintWalls
+            ? Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricing.wallPaintPerGallon, 0)
+            : 0;
+          const ceilingLaborTotal = paintCeilings
+            ? pricingSummary.ceilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling)
+            : 0;
+          const ceilingMaterialsTotal = paintCeilings
+            ? Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricing.ceilingPaintPerGallon, 0)
+            : 0;
+          const baseboardLaborTotal = paintBaseboard
+            ? pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            : 0;
+          const baseboardTrimWidthFt = calcSettings.baseboardWidth / 12;
+          const baseboardTrimSqFt = pricingSummary.baseboardLF * baseboardTrimWidthFt;
+          const baseboardTrimGallons = (baseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const baseboardMaterialsTotal = paintBaseboard
+            ? Math.ceil(baseboardTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
+          const crownLaborTotal = hasCrownMoulding
+            ? pricingSummary.crownMouldingLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            : 0;
+          const crownTrimWidthFt = calcSettings.crownMouldingWidth / 12;
+          const crownTrimSqFt = pricingSummary.crownMouldingLF * crownTrimWidthFt;
+          const crownTrimGallons = (crownTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const crownMaterialsTotal = hasCrownMoulding
+            ? Math.ceil(crownTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
           const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
           const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
           const windowTrimSqFt = windowCountValue * windowTrimPerimeter * windowTrimWidthFt;
@@ -2266,6 +2304,68 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFaceSqFt = doorCountForSummary * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
           const doorFaceGallons = (doorFaceSqFt * pricingSummary.coatsDoors) / trimCoverage;
+          const windowLaborTotal = paintWindowFrames
+            ? windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            : 0;
+          const windowMaterialsTotal = paintWindowFrames
+            ? Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
+          const doorFrameLaborTotal = paintDoorFrames
+            ? doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            : 0;
+          const doorFrameMaterialsTotal = paintDoorFrames
+            ? Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
+          const doorLaborTotal = paintDoors
+            ? doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors)
+            : 0;
+          const doorMaterialsTotal = paintDoors
+            ? Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
+          const closetInteriorEnabled =
+            includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
+          const closetWallLaborTotal = closetInteriorEnabled
+            ? pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls)
+            : 0;
+          const closetWallMaterialsTotal = closetInteriorEnabled
+            ? Math.ceil((pricingSummary.closetWallArea / Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350))) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0)
+            : 0;
+          const closetCeilingLaborTotal = closetInteriorEnabled
+            ? pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling)
+            : 0;
+          const closetCeilingMaterialsTotal = closetInteriorEnabled
+            ? Math.ceil((pricingSummary.closetCeilingArea / Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350))) * pricingSummary.coatsCeiling) * safeNumber(pricing.ceilingPaintPerGallon, 0)
+            : 0;
+          const closetBaseboardLaborTotal = closetInteriorEnabled
+            ? pricingSummary.closetBaseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            : 0;
+          const closetBaseboardTrimSqFt = pricingSummary.closetBaseboardLF * baseboardTrimWidthFt;
+          const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const closetBaseboardMaterialsTotal = closetInteriorEnabled
+            ? Math.ceil(closetBaseboardGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
+          const testSummaryLaborTotal =
+            wallLaborTotal +
+            ceilingLaborTotal +
+            baseboardLaborTotal +
+            crownLaborTotal +
+            windowLaborTotal +
+            doorFrameLaborTotal +
+            doorLaborTotal +
+            closetWallLaborTotal +
+            closetCeilingLaborTotal +
+            closetBaseboardLaborTotal;
+          const testSummaryMaterialsTotal =
+            wallMaterialsTotal +
+            ceilingMaterialsTotal +
+            baseboardMaterialsTotal +
+            crownMaterialsTotal +
+            windowMaterialsTotal +
+            doorFrameMaterialsTotal +
+            doorMaterialsTotal +
+            closetWallMaterialsTotal +
+            closetCeilingMaterialsTotal +
+            closetBaseboardMaterialsTotal;
 
           return (
             <Card style={{ marginBottom: Spacing.md }}>
@@ -2424,13 +2524,13 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     Totals
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Total Labor: ${pricingSummary.laborDisplayed.toFixed(2)}
+                    Total Labor: ${testSummaryLaborTotal.toFixed(2)}
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Total Materials: ${pricingSummary.materialsDisplayed.toFixed(2)}
+                    Total Materials: ${testSummaryMaterialsTotal.toFixed(2)}
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Grand Total: ${pricingSummary.totalDisplayed.toFixed(2)}
+                    Grand Total: ${(testSummaryLaborTotal + testSummaryMaterialsTotal).toFixed(2)}
                   </Text>
                 </View>
               </View>
