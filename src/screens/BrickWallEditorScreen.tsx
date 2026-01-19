@@ -1000,37 +1000,84 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               </Card>
             )}
 
-            {testMode && (
-              <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
-                  TEST MODE: Calculation Settings
-                </Text>
+            {testMode && calculations && (() => {
+              const wallArea = calculations.paintableArea;
+              const wallCoverage = Math.max(1, pricing.wallCoverageSqFtPerGallon);
+              const laborMultiplier = coats === 2 ? pricing.secondCoatLaborMultiplier : 1.0;
+              const paintGallons = (wallArea / wallCoverage) * coats;
+              const paintLaborCost = wallArea * pricing.wallLaborPerSqFt * laborMultiplier;
+              const paintMaterialsCost = Math.ceil(paintGallons) * pricing.wallPaintPerGallon;
 
-                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    Coverage and Rates
+              const primerGallons = includePrimer ? wallArea / wallCoverage : 0;
+              const primerLaborCost = includePrimer ? wallArea * pricing.wallLaborPerSqFt : 0;
+              const primerMaterialsCost = includePrimer ? Math.ceil(primerGallons) * pricing.primerPerGallon : 0;
+
+              return (
+                <Card style={{ marginBottom: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
+                    TEST MODE: Calculation Settings
                   </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Wall Coverage: {pricing.wallCoverageSqFtPerGallon} sqft/gal
-                  </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Primer Coverage: {pricing.primerCoverageSqFtPerGallon} sqft/gal
-                  </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Second Coat Labor Multiplier: {pricing.secondCoatLaborMultiplier.toFixed(2)}
-                  </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm }}>
-                    Wall Labor: ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft
-                  </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Wall Paint: ${pricing.wallPaintPerGallon.toFixed(2)}/gal
-                  </Text>
-                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Primer: ${pricing.primerPerGallon.toFixed(2)}/gal
-                  </Text>
-                </View>
-              </Card>
-            )}
+
+                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Wall Area
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Area: {formatMeasurement(wallArea, "area", unitSystem, 2)} | Coats: {coats}
+                      </Text>
+                    </View>
+
+                    {includePrimer && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Primer
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Coverage: {pricing.wallCoverageSqFtPerGallon} sqft/gal | Gallons: {primerGallons.toFixed(2)}
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {wallArea.toFixed(2)} × ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft = ${primerLaborCost.toFixed(2)}
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Materials: {Math.ceil(primerGallons)} gal × ${pricing.primerPerGallon.toFixed(2)}/gal = ${primerMaterialsCost.toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Paint
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Coverage: {pricing.wallCoverageSqFtPerGallon} sqft/gal | Gallons: {paintGallons.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Labor: {wallArea.toFixed(2)} × ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft × {laborMultiplier.toFixed(2)} = ${paintLaborCost.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(paintGallons)} gal × ${pricing.wallPaintPerGallon.toFixed(2)}/gal = ${paintMaterialsCost.toFixed(2)}
+                      </Text>
+                    </View>
+
+                    <View>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Totals
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Labor: ${calculations.laborDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Materials: ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Grand Total: ${calculations.totalDisplayed.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+                </Card>
+              );
+            })()}
 
             <Pressable
               onPress={handleSave}
