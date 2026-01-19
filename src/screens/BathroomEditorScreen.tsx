@@ -1731,7 +1731,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const openingTrimGallons = (openingTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const openingTrimMaterialsCost = Math.ceil(openingTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const openingTrimLaborCost =
-            openingTrimLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+            openingTrimLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
 
           // Window Frames
           const windowLaborCost = windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
@@ -2358,7 +2358,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             ? Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
             : 0;
           const openingTrimLaborTotal = paintDoorFrames
-            ? openingTrimLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            ? openingTrimLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
             : 0;
           const openingTrimMaterialsTotal = paintDoorFrames
             ? Math.ceil(openingTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
@@ -2547,7 +2547,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       Trim LF: {openingTrimLF.toFixed(2)} | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Labor: {openingTrimLF.toFixed(2)} × ${safeNumber(pricing.trimLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(openingTrimLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                      Labor: {openingTrimLF.toFixed(2)} × ${safeNumber(pricing.baseboardLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(openingTrimLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Materials: {Math.ceil(openingTrimGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(openingTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
