@@ -916,7 +916,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         fileName: generatePhotoFileName(name || "bathroom", idx + 1),
       })),
       notes: notes.trim() || undefined,
-      isBathroom: true,
     } as any,
     quoteBuilder,
     pricing,
@@ -1997,9 +1996,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
           const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const doorTotal = doorLaborCost + doorMaterialsCost;
-          const enclosedToiletLaborCost = toiletEnclosed
-            ? safeNumber(pricing.bathroomEnclosedToiletAddOn, 0)
-            : 0;
 
           return (
             <Card style={{ marginBottom: Spacing.md }}>
@@ -2014,23 +2010,19 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   <View style={{ marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                   </View>
-                  {pricingSummary.includedWalls && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(pricingSummary.wallArea), 'area', unitSystem, 0)}
-                      </Text>
-                    </View>
-                  )}
-                  {pricingSummary.includedCeilings && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), 'area', unitSystem, 0)}
-                      </Text>
-                    </View>
-                  )}
-                  {pricingSummary.includedBaseboards && pricingSummary.baseboardLF > 0 && (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {formatMeasurement(Math.ceil(pricingSummary.wallArea), 'area', unitSystem, 0)}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling</Text>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), 'area', unitSystem, 0)}
+                    </Text>
+                  </View>
+                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Baseboard</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
@@ -2038,7 +2030,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
-                  {pricingSummary.includedTrim && hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Crown Mld</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
@@ -2046,7 +2038,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
-                  {pricingSummary.includedWindows && pricingSummary.windowsCount > 0 && (
+                  {pricingSummary.windowsCount > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
@@ -2054,18 +2046,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
-                  {pricingSummary.includedDoors && pricingSummary.doorsCount > 0 && (
+                  {pricingSummary.doorsCount > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                         {pricingSummary.doorsCount}
                       </Text>
-                    </View>
-                  )}
-                  {toiletEnclosed && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Enclosed Toilet</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Add-on</Text>
                     </View>
                   )}
                 </View>
@@ -2079,31 +2065,27 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   </View>
 
                   {/* Walls */}
-                  {pricingSummary.includedWalls && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(wallLaborCost)}
+                    </Text>
+                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(wallMaterialsCost)}
+                    </Text>
+                  </View>
 
                   {/* Ceiling */}
-                  {pricingSummary.includedCeilings && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(ceilingLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(ceilingMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(ceilingLaborCost)}
+                    </Text>
+                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      ${Math.round(ceilingMaterialsCost)}
+                    </Text>
+                  </View>
 
                   {/* Baseboard */}
-                  {pricingSummary.includedBaseboards && pricingSummary.baseboardLF > 0 && (
+                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(baseboardLaborCost)}
@@ -2115,7 +2097,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   )}
 
                   {/* Crown Moulding */}
-                  {pricingSummary.includedTrim && hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(crownLaborCost)}
@@ -2127,7 +2109,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   )}
 
                   {/* Windows */}
-                  {pricingSummary.includedWindows && pricingSummary.windowsCount > 0 && (
+                  {pricingSummary.windowsCount > 0 && (
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(windowLaborCost)}
@@ -2139,23 +2121,13 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   )}
 
                   {/* Doors */}
-                  {pricingSummary.includedDoors && pricingSummary.doorsCount > 0 && (
+                  {pricingSummary.doorsCount > 0 && (
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(doorLaborCost)}
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(doorMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-                  {toiletEnclosed && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(enclosedToiletLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        $0
                       </Text>
                     </View>
                   )}
