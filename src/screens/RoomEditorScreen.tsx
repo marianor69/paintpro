@@ -535,7 +535,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
-      paintJambs: paintDoorFrames,
+      paintJambs,
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
