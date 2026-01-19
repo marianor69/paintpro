@@ -444,7 +444,7 @@ export function computeRoomPricingSummary(
     doorPaintGallons = (doorFacesSqFt * coatsDoors) / trimCoverage;
 
     // Add jamb area if painting jambs
-    if (room.paintJambs) {
+    if (room.paintDoorFrames || room.paintJambs) {
       const jambWidthFt = safeNumber(calcSettings.doorJambWidth, 4.5) / 12;
       const jambsSqFt = doorCount * (
         (jambWidthFt * calcSettings.doorHeight * 2) +

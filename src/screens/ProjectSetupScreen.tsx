@@ -904,14 +904,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
                   }}
                 />
                 <Toggle
-                  label={t("screens.projectSetup.projectDefaults.paintDoorJambs")}
-                  value={localPaintDefaults.paintDoorJambs}
-                  onValueChange={(value) => {
-                    setLocalPaintDefaults(prev => ({ ...prev, paintDoorJambs: value }));
-                    if (project) updateGlobalPaintDefaults(project.id, { paintDoorJambs: value });
-                  }}
-                />
-                <Toggle
                   label={t("screens.projectSetup.projectDefaults.paintCrownMoulding")}
                   value={localPaintDefaults.paintCrownMoulding}
                   onValueChange={(value) => {

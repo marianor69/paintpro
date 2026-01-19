@@ -95,7 +95,6 @@ export default {
         paintTrim: 'Paint Trim',
         paintBaseboards: 'Paint Baseboards',
         paintDoors: 'Paint Doors',
-        paintDoorJambs: 'Paint Door Jambs',
         paintCrownMoulding: 'Paint Crown Moulding',
         paintClosetInteriors: 'Paint Closet Interiors',
         paintWindowFrames: 'Paint Window Frames',

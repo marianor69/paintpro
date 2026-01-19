@@ -226,6 +226,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     }
   }, [paintOptionsConfirmed, paintOptionsSnapshot]);
 
+  useEffect(() => {
+    setPaintJambs(paintDoorFrames);
+  }, [paintDoorFrames]);
+
   // Unsaved changes tracking
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
@@ -630,7 +634,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       paintDoorFrames,
       paintWindows,
       paintDoors,
-      paintJambs,
+      paintJambs: paintDoorFrames,
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
@@ -1665,7 +1669,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   <Toggle label="Paint Door Frames" value={paintDoorFrames} onValueChange={setPaintDoorFrames} />
                   <Toggle label="Paint Windows" value={paintWindows} onValueChange={setPaintWindows} />
                   <Toggle label="Paint Doors" value={paintDoors} onValueChange={setPaintDoors} />
-                  <Toggle label="Paint Jambs" value={paintJambs} onValueChange={setPaintJambs} />
                   <Toggle label="Paint Baseboard" value={paintBaseboard} onValueChange={setPaintBaseboard} />
                   <Toggle label="Crown Moulding" value={hasCrownMoulding} onValueChange={setHasCrownMoulding} />
                   <Toggle label="Accent Wall (Multiple Colors)" value={hasAccentWall} onValueChange={setHasAccentWall} />

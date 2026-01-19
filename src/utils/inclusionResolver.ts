@@ -105,7 +105,7 @@ export function computeResolvedInclusions(
   const doors = resolveInclusion(room.paintDoors, quoteBuilder.includeDoors);
   const closets = resolveInclusion(undefined, quoteBuilder.includeClosets); // No room-level closet toggle
   const crownMoulding = resolveInclusion(room.hasCrownMoulding, quoteBuilder.includeTrim); // Crown uses trim toggle
-  const jambs = resolveInclusion(room.paintJambs, quoteBuilder.includeDoors); // Jambs use doors toggle
+  const jambs = resolveInclusion(room.paintDoorFrames || room.paintJambs, quoteBuilder.includeDoors); // Jambs follow door frames
 
   // Closet interiors: Check room toggle per closet type, then project default, then QB toggle
   const fallbackClosetInterior =

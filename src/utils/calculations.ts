@@ -539,14 +539,15 @@ export function calculateRoomMetrics(
 
   // Calculate door paint gallons (door faces - both sides, only if doors are included)
   let totalDoorGallons = 0;
-  if (room.paintDoors && room.includeDoors !== false) {
-    const doorFacesSqFt = doorCount * (calcSettings.doorHeight * calcSettings.doorWidth) * 2; // Both sides
-    totalDoorGallons =
-      (doorFacesSqFt * coatsDoors) / wallCoverage;
+  if (room.includeDoors !== false) {
+    if (room.paintDoors) {
+      const doorFacesSqFt = doorCount * (calcSettings.doorHeight * calcSettings.doorWidth) * 2; // Both sides
+      totalDoorGallons += (doorFacesSqFt * coatsDoors) / wallCoverage;
+    }
 
-    // Add jamb area if painting jambs
+    // Add jamb area if painting door frames
     // Jamb area = (jamb width × door height × 2 sides) + (jamb width × door width × 1 top)
-    if (room.paintJambs) {
+    if (room.paintDoorFrames || room.paintJambs) {
       const jambWidthFt = safeNumber(calcSettings.doorJambWidth, 4.5) / 12; // Convert inches to feet, default to 4.5"
       const jambsSqFt = doorCount * (
         (jambWidthFt * calcSettings.doorHeight * 2) + // Two sides
@@ -1461,14 +1462,14 @@ export function calculateFilteredRoomMetrics(
   // HARD FILTER: if includeDoors == false → door slab paint = 0
   // HARD FILTER: if includeJambs == false → jamb paint = 0
   let totalDoorGallons = 0;
-  if (room.paintDoors && room.includeDoors !== false) {
+  if (room.includeDoors !== false) {
     // Door slabs - only if includeDoors
     if ((room.paintDoors ?? false)) {
       const doorFacesSqFt = doorCount * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
       totalDoorGallons += (doorFacesSqFt * coatsDoors) / wallCoverage;
     }
     // Jambs - only if includeJambs
-    if ((room.paintJambs ?? false) && room.paintJambs) {
+    if ((room.paintDoorFrames ?? false) || (room.paintJambs ?? false)) {
       const jambWidthFt = safeNumber(calcSettings.doorJambWidth, 4.5) / 12;
       const jambsSqFt = doorCount * (
         (jambWidthFt * calcSettings.doorHeight * 2) +
@@ -1513,7 +1514,7 @@ export function calculateFilteredRoomMetrics(
   }
 
   // Door labor - only if includeDoors OR includeJambs
-  if (((room.paintDoors ?? false) || (room.paintJambs ?? false)) && room.paintDoors && room.includeDoors !== false) {
+  if (room.includeDoors !== false && ((room.paintDoors ?? false) || (room.paintDoorFrames ?? false) || (room.paintJambs ?? false))) {
     laborCost += doorCount * safeNumber(pricing.doorLabor, 0) * doorLaborMultiplier;
   }
 
@@ -1554,7 +1555,7 @@ export function calculateFilteredRoomMetrics(
   }
 
   // Door paint cost - only if includeDoors OR includeJambs
-  if ((room.paintDoors ?? false) || (room.paintJambs ?? false)) {
+  if ((room.paintDoors ?? false) || (room.paintDoorFrames ?? false) || (room.paintJambs ?? false)) {
     materialCost += Math.ceil(totalDoorGallons) * safeNumber(pricing.doorPaintPerGallon, 0);
   }
 

@@ -274,7 +274,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
-      paintJambs,
+      paintJambs: paintDoorFrames,
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
@@ -335,6 +335,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       setPaintOptionsConfirmed(false);
     }
   }, [paintOptionsConfirmed, paintOptionsSnapshot]);
+
+  useEffect(() => {
+    setPaintJambs(paintDoorFrames);
+  }, [paintDoorFrames]);
 
   const getOpeningRefs = (index: number) => {
     if (!openingRefs.current[index]) {
@@ -531,7 +535,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
-      paintJambs,
+      paintJambs: paintDoorFrames,
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
@@ -742,7 +746,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
-      paintJambs,
+      paintJambs: paintDoorFrames,
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
@@ -1959,14 +1963,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                 onValueChange={setPaintDoors}
                 description="Paint the door faces (both sides)"
               />
-              {paintDoors && (
-                <Toggle
-                  label="Paint Door Jambs"
-                  value={paintJambs}
-                  onValueChange={setPaintJambs}
-                  description="Paint the inside of door frames"
-                />
-              )}
               <Toggle
                 label="Crown Moulding"
                 value={hasCrownMoulding}

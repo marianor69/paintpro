@@ -98,7 +98,7 @@ export default function ClientProposalScreen({ route, navigation }: Props) {
     }
 
     const paintJambs = project.rooms.some(
-      (r) => r.included !== false && r.paintJambs === true
+      (r) => r.included !== false && (r.paintDoorFrames === true || r.paintJambs === true)
     );
     if (paintJambs) {
       text += `• Door jambs\n`;
