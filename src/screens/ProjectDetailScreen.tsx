@@ -2106,7 +2106,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               Delete Cabinet
             </Text>
             <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
-              Are you sure you want to delete \"{cabinetDeleteTarget?.name || \"Unnamed Cabinet\"}\"?
+              {`Are you sure you want to delete "${cabinetDeleteTarget?.name || "Unnamed Cabinet"}"?`}
             </Text>
             <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: Spacing.sm }}>
               <Pressable
