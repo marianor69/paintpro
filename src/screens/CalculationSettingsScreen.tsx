@@ -1,4 +1,4 @@
-import React, { useState, useRef, useId } from "react";
+import React, { useState, useRef, useId, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
   InputAccessoryView,
   useWindowDimensions,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { useCalculationSettings } from "../state/calculationStore";
 import { useAppSettings } from "../state/appSettings";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -105,6 +106,7 @@ function BubbleStack({
   );
 }
 export default function CalculationSettingsScreen() {
+  const navigation = useNavigation();
   const { width: screenWidth } = useWindowDimensions();
   const isTablet = screenWidth >= 768;
   const doorLabelWidth = isTablet ? 180 : 150;
@@ -115,6 +117,7 @@ export default function CalculationSettingsScreen() {
   const ceilingCoverageSqFtPerGallon = useAppSettings((s) => s.ceilingCoverageSqFtPerGallon);
   const trimCoverageSqFtPerGallon = useAppSettings((s) => s.trimCoverageSqFtPerGallon);
   const primerCoverageSqFtPerGallon = useAppSettings((s) => s.primerCoverageSqFtPerGallon);
+  const cabinetPaintCoverageSqFtPerGallon = useAppSettings((s) => s.cabinetPaintCoverageSqFtPerGallon);
   const updateAppSettings = useAppSettings((s) => s.updateSettings);
 
   const [doorHeight, setDoorHeight] = useState(settings.doorHeight.toString());
@@ -158,6 +161,7 @@ export default function CalculationSettingsScreen() {
   const ceilingCoverageRef = useRef<TextInput>(null);
   const trimCoverageRef = useRef<TextInput>(null);
   const primerCoverageRef = useRef<TextInput>(null);
+  const cabinetPaintCoverageRef = useRef<TextInput>(null);
   const singleClosetWidthRef = useRef<TextInput>(null);
   const singleClosetTrimWidthRef = useRef<TextInput>(null);
   const singleClosetBaseboardRef = useRef<TextInput>(null);
@@ -181,6 +185,7 @@ export default function CalculationSettingsScreen() {
   const ceilingCoverageID = useId();
   const trimCoverageID = useId();
   const primerCoverageID = useId();
+  const cabinetPaintCoverageID = useId();
   const singleClosetWidthID = useId();
   const singleClosetTrimWidthID = useId();
   const singleClosetBaseboardID = useId();
@@ -255,6 +260,10 @@ export default function CalculationSettingsScreen() {
     Alert.alert("Success", "Calculation settings updated successfully");
   };
 
+  const handleDiscard = () => {
+    navigation.goBack();
+  };
+
   const handleReset = () => {
     Alert.alert(
       "Reset to Defaults",
@@ -295,6 +304,31 @@ export default function CalculationSettingsScreen() {
       ]
     );
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+          <Pressable
+            onPress={handleDiscard}
+            style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+            accessibilityRole="button"
+            accessibilityLabel="Discard changes"
+          >
+            <Text style={{ color: Colors.mediumGray, fontWeight: "600" as any }}>Discard</Text>
+          </Pressable>
+          <Pressable
+            onPress={handleSave}
+            style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+            accessibilityRole="button"
+            accessibilityLabel="Save changes"
+          >
+            <Text style={{ color: Colors.primaryBlue, fontWeight: "700" as any }}>Save</Text>
+          </Pressable>
+        </View>
+      ),
+    });
+  }, [navigation, handleDiscard, handleSave]);
 
   return (
     <SafeAreaView
@@ -690,7 +724,7 @@ export default function CalculationSettingsScreen() {
                       placeholderTextColor={Colors.mediumGray}
                       returnKeyType="next"
                       blurOnSubmit={false}
-                      onSubmitEditing={() => primerCoverageRef.current?.focus()}
+                      onSubmitEditing={() => cabinetPaintCoverageRef.current?.focus()}
                       inputAccessoryViewID={Platform.OS === "ios" ? `trimCoverage-${trimCoverageID}` : undefined}
                       style={bubbleInputStyle}
                     />
@@ -722,6 +756,35 @@ export default function CalculationSettingsScreen() {
                   </View>
                 </View>
               </View>
+            </View>
+
+            <View style={{ flexDirection: "row", gap: Spacing.md, marginTop: rowSpacing }}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: Spacing.sm }}>
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, ...materialLabelStyle }}>
+                  Cabinet Paint
+                </Text>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                    sqft/gal
+                  </Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetPaintCoverageRef}
+                      value={String(cabinetPaintCoverageSqFtPerGallon)}
+                      onChangeText={(text) => updateAppSettings({ cabinetPaintCoverageSqFtPerGallon: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="350"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      onSubmitEditing={() => primerCoverageRef.current?.focus()}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetPaintCoverage-${cabinetPaintCoverageID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={{ flex: 1 }} />
             </View>
           </Card>
 
@@ -1115,23 +1178,6 @@ export default function CalculationSettingsScreen() {
           {/* Action Buttons */}
           <View style={{ gap: Spacing.sm, marginBottom: Spacing.xl }}>
             <Pressable
-              onPress={handleSave}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                borderRadius: BorderRadius.default,
-                paddingVertical: Spacing.md,
-                alignItems: "center",
-                ...Shadows.card,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Save changes"
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600", color: Colors.white }}>
-                Save Changes
-              </Text>
-            </Pressable>
-
-            <Pressable
               onPress={handleReset}
               style={{
                 backgroundColor: Colors.neutralGray,
@@ -1244,12 +1290,18 @@ export default function CalculationSettingsScreen() {
         <InputAccessoryView nativeID={`trimCoverage-${trimCoverageID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => ceilingCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => cabinetPaintCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`cabinetPaintCoverage-${cabinetPaintCoverageID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => trimCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => primerCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`primerCoverage-${primerCoverageID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => trimCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => cabinetPaintCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => closetCavityDepthRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

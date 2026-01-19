@@ -283,12 +283,12 @@ export default function RootNavigator({ navigationRef }: RootNavigatorProps) {
         <Stack.Screen
           name="PricingSettings"
           component={PricingSettingsScreen}
-          options={{ title: "Pricing Settings", headerBackTitle: "Settings" }}
+          options={{ title: "Pricing Settings", headerBackTitleVisible: false }}
         />
         <Stack.Screen
           name="CalculationSettings"
           component={CalculationSettingsScreen}
-          options={{ title: "Calculation Settings", headerBackTitle: "Settings" }}
+          options={{ title: "Calculation Settings", headerBackTitleVisible: false }}
         />
         <Stack.Screen
           name="MaterialsSummary"
