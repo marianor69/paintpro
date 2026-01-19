@@ -1713,7 +1713,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
           const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
-          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
           const closetInteriorEnabled =
             includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
 
