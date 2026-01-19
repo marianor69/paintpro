@@ -828,7 +828,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: 18, color: Colors.mediumGray }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.mediumGray }}>
                       Running Estimate
                     </Text>
                   </View>
@@ -859,11 +859,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       ...Shadows.card,
                     }}
                     accessibilityRole="button"
-                    accessibilityLabel={project.estimateBuildComplete ? "Reopen estimate" : "Mark estimate complete"}
+                    accessibilityLabel={project.estimateBuildComplete ? "Estimate completed" : "Complete estimate"}
                   >
                     <View style={{ alignItems: "center" }}>
                       <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
-                        {"Estimate\ncomplete."}
+                        {project.estimateBuildComplete ? "Estimate Completed" : "Complete Estimate."}
                       </Text>
                     </View>
                   </Pressable>
