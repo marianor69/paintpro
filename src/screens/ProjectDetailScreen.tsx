@@ -18,7 +18,7 @@ import { Colors, Typography, Spacing, BorderRadius, Shadows } from "../utils/des
 import { Card } from "../components/Card";
 import StepProgressIndicator from "../components/StepProgressIndicator";
 import { calculateCurrentStep, getCompletedSteps, canCompleteStep2 } from "../utils/projectStepLogic";
-import { FireplaceIcon, StaircaseIcon, BuiltInIcon, BrickWallIcon, NonFourWallRoomIcon } from "../components/CustomIcons";
+import { FireplaceIcon, StaircaseIcon, BuiltInIcon, BrickWallIcon, NonFourWallRoomIcon, CabinetIcon } from "../components/CustomIcons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectDetail">;
 
@@ -39,6 +39,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const deleteStaircase = useProjectStore((s) => s.deleteStaircase);
   const deleteFireplace = useProjectStore((s) => s.deleteFireplace);
   const deleteBuiltIn = useProjectStore((s) => s.deleteBuiltIn);
+  const deleteCabinet = useProjectStore((s) => s.deleteCabinet);
   const deleteBrickWall = useProjectStore((s) => s.deleteBrickWall);
   const deleteIrregularRoom = useProjectStore((s) => s.deleteIrregularRoom);
   const setEstimateBuildComplete = useProjectStore((s) => s.setEstimateBuildComplete);
@@ -49,6 +50,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
   const [addMenuVisible, setAddMenuVisible] = React.useState(false);
   const [isEstimateExpanded, setIsEstimateExpanded] = React.useState(false);
+  const [cabinetDeleteTarget, setCabinetDeleteTarget] = React.useState<{ id: string; name: string } | null>(null);
   const scrollViewRef = React.useRef<ScrollView>(null);
 
   React.useEffect(() => {
@@ -178,6 +180,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const handleAddBuiltIn = () => {
     // Don't create built-in here - let BuiltInEditor create it on Save
     navigation.navigate("BuiltInEditor", { projectId });
+  };
+
+  const handleAddCabinet = () => {
+    // Don't create cabinet here - let CabinetEditor create it on Save
+    navigation.navigate("CabinetEditor", { projectId });
   };
 
   const handleAddBrickWall = () => {
@@ -786,8 +793,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const staircaseCount = project.staircases?.length || 0;
   const fireplaceCount = project.fireplaces?.length || 0;
   const builtInCount = project.builtIns?.length || 0;
+  const cabinetCount = project.cabinets?.length || 0;
   const brickWallCount = project.brickWalls?.length || 0;
-  const totalItems = roomCount + bathroomCount + staircaseCount + fireplaceCount + builtInCount + brickWallCount;
+  const totalItems = roomCount + bathroomCount + staircaseCount + fireplaceCount + builtInCount + cabinetCount + brickWallCount;
   const itemActionSlotWidth = 20 + Spacing.sm * 2;
   const itemRowGap = Spacing.sm;
   const itemRightInset = itemActionSlotWidth + itemRowGap;
@@ -948,6 +956,18 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   </View>
                 ))}
 
+                {/* Cabinets */}
+                {project.cabinets?.map((cabinet) => (
+                  <View key={cabinet.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
+                    <View style={{ marginRight: Spacing.xs }}>
+                      <CabinetIcon size={14} color={Colors.mediumGray} />
+                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                      {cabinet.name || "Unnamed Cabinet"}
+                    </Text>
+                  </View>
+                ))}
+
                 {/* Brick Walls */}
                 {project.brickWalls?.map((brickWall, idx) => (
                   <View key={brickWall.id} style={{ flexDirection: "row", alignItems: "center", height: 18, marginBottom: Spacing.xs }}>
@@ -1077,6 +1097,21 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(builtInPricing?.materialsCost || 0)}
+                      </Text>
+                    </View>
+                  );
+                })}
+
+                {/* Cabinets */}
+                {project.cabinets?.map((cabinet) => {
+                  const cabinetPricing = displaySummary.itemizedPrices?.find(p => p.id === cabinet.id);
+                  return (
+                    <View key={cabinet.id} style={{ flexDirection: "row", gap: Spacing.xs, height: 18, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(cabinetPricing?.laborCost || 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(cabinetPricing?.materialsCost || 0)}
                       </Text>
                     </View>
                   );
@@ -1543,6 +1578,70 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                 );
                 })}
 
+                {/* Cabinets */}
+                {project.cabinets?.map((cabinet) => {
+                  const isCabinetFullyConfirmed = Boolean(
+                    cabinet.detailsConfirmed
+                  );
+
+                  return (
+                  <View
+                    key={cabinet.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing.sm,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("CabinetEditor", {
+                          projectId,
+                          cabinetId: cabinet.id,
+                        })
+                      }
+                      style={{
+                        flex: 1,
+                        backgroundColor: Colors.white,
+                        borderRadius: BorderRadius.default,
+                        padding: Spacing.sm,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View style={{ marginRight: Spacing.sm }}>
+                        <CabinetIcon size={20} color={Colors.primaryBlue} />
+                      </View>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
+                          {cabinet.name || "Unnamed Cabinet"}
+                        </Text>
+                        {isCabinetFullyConfirmed && (
+                          <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                        )}
+                      </View>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setCabinetDeleteTarget({
+                          id: cabinet.id,
+                          name: cabinet.name || "Unnamed Cabinet",
+                        });
+                      }}
+                      style={{
+                        padding: Spacing.sm,
+                        backgroundColor: Colors.backgroundWarmGray,
+                        borderRadius: BorderRadius.default,
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                    </Pressable>
+                  </View>
+                );
+                })}
+
                 {/* Brick Walls */}
                 {project.brickWalls?.map((brickWall, idx) => (
                   <View
@@ -1931,6 +2030,29 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               </Text>
             </Pressable>
 
+            {/* Cabinets Option */}
+            <Pressable
+              onPress={() => {
+                setAddMenuVisible(false);
+                handleAddCabinet();
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: Spacing.md,
+                borderRadius: BorderRadius.default,
+                backgroundColor: Colors.backgroundWarmGray,
+                marginBottom: Spacing.md,
+              }}
+            >
+              <View style={{ width: 24, marginRight: Spacing.md }}>
+                <CabinetIcon size={24} color={Colors.primaryBlue} />
+              </View>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal }}>
+                Cabinets
+              </Text>
+            </Pressable>
+
             {/* Brick Wall Option */}
             <Pressable
               onPress={() => {
@@ -1970,6 +2092,43 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             </Pressable>
           </Pressable>
         </Pressable>
+      </Modal>
+      <Modal
+        visible={!!cabinetDeleteTarget}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setCabinetDeleteTarget(null)}
+      >
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", padding: Spacing.lg }}>
+          <Pressable onPress={() => setCabinetDeleteTarget(null)} style={{ flex: 1 }} />
+          <View style={{ backgroundColor: Colors.white, borderRadius: 12, padding: Spacing.lg }}>
+            <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+              Delete Cabinet
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, marginBottom: Spacing.md }}>
+              Are you sure you want to delete \"{cabinetDeleteTarget?.name || \"Unnamed Cabinet\"}\"?
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: Spacing.sm }}>
+              <Pressable
+                onPress={() => setCabinetDeleteTarget(null)}
+                style={{ paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm }}
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.primaryBlue, fontWeight: "600" as any }}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  if (cabinetDeleteTarget) {
+                    deleteCabinet(projectId, cabinetDeleteTarget.id);
+                  }
+                  setCabinetDeleteTarget(null);
+                }}
+                style={{ backgroundColor: Colors.error, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>Delete</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
       </Modal>
     </SafeAreaView>
   );

@@ -8,6 +8,7 @@ import {
   Staircase,
   Fireplace,
   BuiltIn,
+  Cabinet,
   BrickWall,
   IrregularRoom,
   ClientInfo,
@@ -124,6 +125,15 @@ interface ProjectStore {
   ) => void;
   deleteBuiltIn: (projectId: string, builtInId: string) => void;
 
+  // Cabinet operations
+  addCabinet: (projectId: string) => string;
+  updateCabinet: (
+    projectId: string,
+    cabinetId: string,
+    cabinet: Partial<Cabinet>
+  ) => void;
+  deleteCabinet: (projectId: string, cabinetId: string) => void;
+
   // Brick Wall operations
   addBrickWall: (projectId: string) => string;
   updateBrickWall: (
@@ -160,6 +170,7 @@ export const useProjectStore = create<ProjectStore>()(
           staircases: [],
           fireplaces: [],
           builtIns: [],
+          cabinets: [],
           brickWalls: [],
           irregularRooms: [],
           createdAt: now,
@@ -836,6 +847,62 @@ export const useProjectStore = create<ProjectStore>()(
               ? {
                   ...p,
                   builtIns: p.builtIns.filter((b) => b.id !== builtInId),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      addCabinet: (projectId) => {
+        const cabinetId = uuidv4();
+        const newCabinet: Cabinet = {
+          id: cabinetId,
+          name: "Cabinet",
+          baseDoorCount: 0,
+          drawerCount: 0,
+          wallDoorCount: 0,
+          includeWallCabinet42: true,
+          photos: [],
+          detailsConfirmed: false,
+        };
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  cabinets: [...(p.cabinets || []), newCabinet],
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+        return cabinetId;
+      },
+
+      updateCabinet: (projectId, cabinetId, cabinet) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  cabinets: (p.cabinets || []).map((c) =>
+                    c.id === cabinetId ? { ...c, ...cabinet } : c
+                  ),
+                  updatedAt: Date.now(),
+                }
+              : p
+          ),
+        }));
+      },
+
+      deleteCabinet: (projectId, cabinetId) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  cabinets: (p.cabinets || []).filter((c) => c.id !== cabinetId),
                   updatedAt: Date.now(),
                 }
               : p

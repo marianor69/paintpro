@@ -11,7 +11,7 @@
  * - ProjectDetailScreen (Room Details test export)
  */
 
-import { Room, Staircase, Fireplace, BrickWall, PricingSettings, QuoteBuilder } from "../types/painting";
+import { Room, Staircase, Fireplace, BrickWall, Cabinet, PricingSettings, QuoteBuilder } from "../types/painting";
 import {
   safeNumber,
   getClosetInteriorMetrics,
@@ -157,6 +157,20 @@ export interface BrickWallPricingSummary {
   laborDisplayed: number;      // laborCost.toFixed(2) parsed back to number
   materialsDisplayed: number;   // materialsCost.toFixed(2) parsed back to number
   totalDisplayed: number;       // Math.round(totalCost)
+}
+
+export interface CabinetPricingSummary {
+  id: string;
+  baseDoorCount: number;
+  drawerCount: number;
+  wallDoorCount: number;
+  includeWallCabinet42: boolean;
+  laborCost: number;
+  materialsCost: number;
+  totalCost: number;
+  laborDisplayed: number;
+  materialsDisplayed: number;
+  totalDisplayed: number;
 }
 
 // ============================================================================
@@ -911,6 +925,41 @@ export function computeBrickWallPricingSummary(
     // UI-DISPLAYED VALUES (match what user sees in Brick Wall Summary after rounding/formatting)
     laborDisplayed: parseFloat(Math.max(0, safeNumber(laborCost)).toFixed(2)),
     materialsDisplayed: parseFloat(Math.max(0, safeNumber(materialsCost)).toFixed(2)),
+    totalDisplayed: Math.round(totalCost),
+  };
+}
+
+export function computeCabinetPricingSummary(
+  cabinet: Cabinet,
+  pricing: PricingSettings
+): CabinetPricingSummary {
+  const baseDoorCount = safeNumber(cabinet.baseDoorCount, 0);
+  const drawerCount = safeNumber(cabinet.drawerCount, 0);
+  const wallDoorCount = safeNumber(cabinet.wallDoorCount, 0);
+  const includeWallCabinet42 = cabinet.includeWallCabinet42 !== false;
+
+  const baseDoorLabor = baseDoorCount * safeNumber(pricing.cabinetDoorLabor, 0);
+  const drawerLabor = drawerCount * safeNumber(pricing.cabinetDrawerLabor, 0);
+  const wallDoorRate = includeWallCabinet42
+    ? safeNumber(pricing.wallCabinetLabor, 0)
+    : safeNumber(pricing.cabinetDoorLabor, 0);
+  const wallDoorLabor = wallDoorCount * wallDoorRate;
+
+  const laborCost = baseDoorLabor + drawerLabor + wallDoorLabor;
+  const materialsCost = 0;
+  const totalCost = Math.max(0, safeNumber(laborCost + materialsCost));
+
+  return {
+    id: cabinet.id,
+    baseDoorCount,
+    drawerCount,
+    wallDoorCount,
+    includeWallCabinet42,
+    laborCost: Math.max(0, safeNumber(laborCost)),
+    materialsCost,
+    totalCost,
+    laborDisplayed: parseFloat(Math.max(0, safeNumber(laborCost)).toFixed(2)),
+    materialsDisplayed: 0,
     totalDisplayed: Math.round(totalCost),
   };
 }

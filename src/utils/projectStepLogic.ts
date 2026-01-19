@@ -44,8 +44,9 @@ export function isStep2Complete(project: Project | null): boolean {
   const hasStaircases = project.staircases && project.staircases.length > 0;
   const hasFireplaces = project.fireplaces && project.fireplaces.length > 0;
   const hasBuiltIns = project.builtIns && project.builtIns.length > 0;
+  const hasCabinets = project.cabinets && project.cabinets.length > 0;
 
-  return !!(hasRooms || hasStaircases || hasFireplaces || hasBuiltIns);
+  return !!(hasRooms || hasStaircases || hasFireplaces || hasBuiltIns || hasCabinets);
 }
 
 /**
@@ -59,8 +60,9 @@ export function canCompleteStep2(project: Project | null): boolean {
   const hasStaircases = project.staircases && project.staircases.length > 0;
   const hasFireplaces = project.fireplaces && project.fireplaces.length > 0;
   const hasBuiltIns = project.builtIns && project.builtIns.length > 0;
+  const hasCabinets = project.cabinets && project.cabinets.length > 0;
 
-  return !!(hasRooms || hasStaircases || hasFireplaces || hasBuiltIns);
+  return !!(hasRooms || hasStaircases || hasFireplaces || hasBuiltIns || hasCabinets);
 }
 
 /**

@@ -209,6 +209,19 @@ export interface BuiltIn {
   detailsConfirmed?: boolean;
 }
 
+export interface Cabinet {
+  id: string;
+  name: string; // Name/Location identifier
+  baseDoorCount: number;
+  drawerCount: number;
+  wallDoorCount: number;
+  includeWallCabinet42: boolean; // 42" wall cabinet toggle
+  // Notes field (available without photos)
+  notes?: string;
+  photos?: RoomPhoto[];
+  detailsConfirmed?: boolean;
+}
+
 export interface BrickWall {
   id: string;
   name: string; // Name/Location identifier (required)
@@ -371,6 +384,7 @@ export interface Project {
   staircases: Staircase[];
   fireplaces: Fireplace[];
   builtIns: BuiltIn[];
+  cabinets: Cabinet[];
   brickWalls: BrickWall[];
   irregularRooms: IrregularRoom[];
   createdAt: number;
@@ -415,6 +429,8 @@ export interface PricingSettings {
   cabinetDoorLabor: number;
   cabinetFrontLabor: number;
   vanityDoorLabor: number;
+  cabinetDrawerLabor: number;
+  wallCabinetLabor: number;
   riserLabor: number;
   spindleLabor: number;
   handrailLaborPerLF: number;

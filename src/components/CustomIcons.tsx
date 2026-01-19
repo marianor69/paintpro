@@ -117,6 +117,20 @@ export const BrickWallIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }
   </Svg>
 );
 
+export const CabinetIcon: React.FC<IconProps> = ({ size = 20, color = "#000" }) => (
+  <Svg width={size} height={size} viewBox="0 0 100 100">
+    <G fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+      <Rect x="10" y="10" width="80" height="80" rx="4" />
+      <Path d="M 10 32 L 90 32" />
+      <Path d="M 50 32 L 50 90" />
+      <Path d="M 30 52 L 36 52" />
+      <Path d="M 64 52 L 70 52" />
+      <Path d="M 30 72 L 36 72" />
+      <Path d="M 64 72 L 70 72" />
+    </G>
+  </Svg>
+);
+
 export const NonFourWallRoomIcon: React.FC<IconProps> = ({ size = 20, color = "#0066CC" }) => (
   <Svg width={size} height={size} viewBox="0 0 100 100">
     <G fill="none" stroke={color} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">

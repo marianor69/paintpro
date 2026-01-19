@@ -18,7 +18,8 @@ import {
   computeRoomPricingSummary,
   computeStaircasePricingSummary,
   computeFireplacePricingSummary,
-  computeBrickWallPricingSummary
+  computeBrickWallPricingSummary,
+  computeCabinetPricingSummary
 } from "./pricingSummary";
 
 // Helper function to get calculation settings
@@ -1040,6 +1041,20 @@ export function calculateProjectSummary(
     });
   });
 
+  // Calculate cabinet totals
+  (project.cabinets || []).forEach((cabinet) => {
+    const pricingSummary = computeCabinetPricingSummary(cabinet, pricing);
+    totalLaborCost += safeNumber(pricingSummary.laborDisplayed);
+    totalMaterialCost += safeNumber(pricingSummary.materialsDisplayed);
+    itemizedPrices.push({
+      id: cabinet.id,
+      name: cabinet.name || "Cabinet",
+      price: safeNumber(pricingSummary.totalDisplayed),
+      laborCost: safeNumber(pricingSummary.laborDisplayed),
+      materialsCost: safeNumber(pricingSummary.materialsDisplayed),
+    });
+  });
+
   // Add furniture moving fee if enabled
   if (project.includeFurnitureMoving) {
     const furnitureMovingFee = safeNumber(pricing.furnitureMovingFee, 0);
@@ -1864,6 +1879,24 @@ export function calculateFilteredProjectSummary(
     // Placeholder for when built-in pricing is implemented
     console.log("[calculateFilteredProjectSummary] Built-ins exist but pricing not yet implemented:", project.builtIns.length);
   }
+
+  // Calculate cabinet totals
+  console.log("[calculateFilteredProjectSummary] Processing cabinets:", {
+    cabinetCount: (project.cabinets || []).length,
+    cabinets: project.cabinets
+  });
+  (project.cabinets || []).forEach((cabinet) => {
+    const pricingSummary = computeCabinetPricingSummary(cabinet, pricing);
+    totalLaborCost += safeNumber(pricingSummary.laborDisplayed);
+    totalMaterialCost += safeNumber(pricingSummary.materialsDisplayed);
+    itemizedPrices.push({
+      id: cabinet.id,
+      name: cabinet.name || "Cabinet",
+      price: safeNumber(pricingSummary.totalDisplayed),
+      laborCost: safeNumber(pricingSummary.laborDisplayed),
+      materialsCost: safeNumber(pricingSummary.materialsDisplayed),
+    });
+  });
 
   // Calculate brick wall totals
   console.log("[calculateFilteredProjectSummary] Processing brick walls:", {

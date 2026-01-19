@@ -19,6 +19,7 @@ import BathroomEditorScreen from "../screens/BathroomEditorScreen";
 import StaircaseEditorScreen from "../screens/StaircaseEditorScreen";
 import FireplaceEditorScreen from "../screens/FireplaceEditorScreen";
 import BuiltInEditorScreen from "../screens/BuiltInEditorScreen";
+import CabinetEditorScreen from "../screens/CabinetEditorScreen";
 import BrickWallEditorScreen from "../screens/BrickWallEditorScreen";
 import IrregularRoomEditorScreen from "../screens/IrregularRoomEditorScreen";
 import PricingSettingsScreen from "../screens/PricingSettingsScreen";
@@ -42,6 +43,7 @@ export type RootStackParamList = {
   StaircaseEditor: { projectId: string; staircaseId?: string };
   FireplaceEditor: { projectId: string; fireplaceId?: string };
   BuiltInEditor: { projectId: string; builtInId?: string };
+  CabinetEditor: { projectId: string; cabinetId?: string };
   BrickWallEditor: { projectId: string; brickWallId?: string };
   IrregularRoomEditor: { projectId: string; irregularRoomId?: string };
   PricingSettings: undefined;
@@ -262,6 +264,11 @@ export default function RootNavigator({ navigationRef }: RootNavigatorProps) {
           name="BuiltInEditor"
           component={BuiltInEditorScreen}
           options={{ title: "Built-In", headerShown: false }}
+        />
+        <Stack.Screen
+          name="CabinetEditor"
+          component={CabinetEditorScreen}
+          options={{ title: "Cabinet", headerShown: false }}
         />
         <Stack.Screen
           name="BrickWallEditor"

@@ -19,6 +19,8 @@ const defaultPricing: PricingSettings = {
   cabinetDoorLabor: 150,
   cabinetFrontLabor: 150,
   vanityDoorLabor: 150,
+  cabinetDrawerLabor: 30,
+  wallCabinetLabor: 165,
   riserLabor: 15,
   spindleLabor: 8,
   handrailLaborPerLF: 10,
