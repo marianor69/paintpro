@@ -44,6 +44,15 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [closetLabor, setClosetLabor] = React.useState(
     pricing.closetLabor.toString()
   );
+  const [cabinetDoorLabor, setCabinetDoorLabor] = React.useState(
+    (pricing.cabinetDoorLabor || 150).toString()
+  );
+  const [cabinetFrontLabor, setCabinetFrontLabor] = React.useState(
+    (pricing.cabinetFrontLabor || 150).toString()
+  );
+  const [vanityDoorLabor, setVanityDoorLabor] = React.useState(
+    (pricing.vanityDoorLabor || 150).toString()
+  );
   const [riserLabor, setRiserLabor] = React.useState(
     pricing.riserLabor.toString()
   );
@@ -134,6 +143,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const doorLaborRef = useRef<TextInput>(null);
   const windowLaborRef = useRef<TextInput>(null);
   const closetLaborRef = useRef<TextInput>(null);
+  const cabinetDoorLaborRef = useRef<TextInput>(null);
+  const cabinetFrontLaborRef = useRef<TextInput>(null);
+  const vanityDoorLaborRef = useRef<TextInput>(null);
   const riserLaborRef = useRef<TextInput>(null);
   const spindleLaborRef = useRef<TextInput>(null);
   const handrailLaborRef = useRef<TextInput>(null);
@@ -167,6 +179,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const doorLaborID = useId();
   const windowLaborID = useId();
   const closetLaborID = useId();
+  const cabinetDoorLaborID = useId();
+  const cabinetFrontLaborID = useId();
+  const vanityDoorLaborID = useId();
   const riserLaborID = useId();
   const spindleLaborID = useId();
   const handrailLaborID = useId();
@@ -247,6 +262,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       doorLabor: parseFloat(doorLabor) || 0,
       windowLabor: parseFloat(windowLabor) || 0,
       closetLabor: parseFloat(closetLabor) || 0,
+      cabinetDoorLabor: parseFloat(cabinetDoorLabor) || 150,
+      cabinetFrontLabor: parseFloat(cabinetFrontLabor) || 150,
+      vanityDoorLabor: parseFloat(vanityDoorLabor) || 150,
       riserLabor: parseFloat(riserLabor) || 0,
       spindleLabor: parseFloat(spindleLabor) || 0,
       handrailLaborPerLF: parseFloat(handrailLaborPerLF) || 0,
@@ -986,6 +1004,94 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
           </Card>
 
+          {/* Cabinets and Vanities Labor */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Cabinets and Vanities Labor
+            </Text>
+
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <View style={leftAlignedLabelWrapperStyle}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Cabinet Door</Text>
+                </View>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDoorLaborRef}
+                      value={cabinetDoorLabor}
+                      onChangeText={setCabinetDoorLabor}
+                      placeholder="150"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => cabinetFrontLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetDoorLabor-${cabinetDoorLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <View style={leftAlignedLabelWrapperStyle}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Cabinet Front</Text>
+                </View>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetFrontLaborRef}
+                      value={cabinetFrontLabor}
+                      onChangeText={setCabinetFrontLabor}
+                      placeholder="150"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => vanityDoorLaborRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetFrontLabor-${cabinetFrontLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <View style={leftAlignedLabelWrapperStyle}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Vanity Door</Text>
+                </View>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={vanityDoorLaborRef}
+                      value={vanityDoorLabor}
+                      onChangeText={setVanityDoorLabor}
+                      placeholder="150"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingVanityDoorLabor-${vanityDoorLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Card>
+
           {/* Fixed Fees */}
           <Card style={{ marginBottom: Spacing.md }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
@@ -1432,6 +1538,24 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             >
               <Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text>
             </Pressable>
+            <Pressable onPress={() => cabinetDoorLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingCabinetDoorLabor-${cabinetDoorLaborID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => bathroomEnclosedToiletRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => cabinetFrontLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingCabinetFrontLabor-${cabinetFrontLaborID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => cabinetDoorLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => vanityDoorLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingVanityDoorLabor-${vanityDoorLaborID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => cabinetFrontLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

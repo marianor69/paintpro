@@ -81,6 +81,7 @@ export interface Bathroom {
   cathedralPeakHeight?: number; // Height at the peak for cathedral ceilings
   windowCount: number;
   doorCount: number;
+  vanityDoorCount?: number;
   hasCloset: boolean;
   // Closet details
   singleDoorClosets?: number;
@@ -411,6 +412,9 @@ export interface PricingSettings {
   doorLabor: number;
   windowLabor: number;
   closetLabor: number;
+  cabinetDoorLabor: number;
+  cabinetFrontLabor: number;
+  vanityDoorLabor: number;
   riserLabor: number;
   spindleLabor: number;
   handrailLaborPerLF: number;

@@ -54,6 +54,7 @@ function serializeBathroomState(
   toiletEnclosed: boolean,
   windowCount: string,
   doorCount: string,
+  vanityDoorCount: string,
   hasCloset: boolean,
   singleDoorClosets: string,
   doubleDoorClosets: string,
@@ -81,6 +82,7 @@ function serializeBathroomState(
     toiletEnclosed,
     windowCount,
     doorCount,
+    vanityDoorCount,
     hasCloset,
     singleDoorClosets,
     doubleDoorClosets,
@@ -135,6 +137,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   );
   const [doorCount, setDoorCount] = useState(
     bathroom?.doorCount && bathroom.doorCount > 0 ? bathroom.doorCount.toString() : ""
+  );
+  const [vanityDoorCount, setVanityDoorCount] = useState(
+    bathroom?.vanityDoorCount && bathroom.vanityDoorCount > 0 ? bathroom.vanityDoorCount.toString() : ""
   );
   const [hasCloset, setHasCloset] = useState(bathroom?.hasCloset || false);
   const [singleDoorClosets, setSingleDoorClosets] = useState(
@@ -228,6 +233,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         openings,
         windowCount,
         doorCount,
+        vanityDoorCount,
         hasCloset,
         singleDoorClosets,
         doubleDoorClosets,
@@ -238,6 +244,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       openings,
       windowCount,
       doorCount,
+      vanityDoorCount,
       hasCloset,
       singleDoorClosets,
       doubleDoorClosets,
@@ -426,6 +433,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         false,
         "",
         "",
+        "",
         false,
         "",
         "",
@@ -459,6 +467,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       bathroom.toiletEnclosed ?? false,
       bathroom.windowCount && bathroom.windowCount > 0 ? bathroom.windowCount.toString() : "",
       bathroom.doorCount && bathroom.doorCount > 0 ? bathroom.doorCount.toString() : "",
+      bathroom.vanityDoorCount && bathroom.vanityDoorCount > 0 ? bathroom.vanityDoorCount.toString() : "",
       bathroom.hasCloset || false,
       bathroom.singleDoorClosets && bathroom.singleDoorClosets > 0 ? bathroom.singleDoorClosets.toString() : "",
       bathroom.doubleDoorClosets && bathroom.doubleDoorClosets > 0 ? bathroom.doubleDoorClosets.toString() : "",
@@ -498,6 +507,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       toiletEnclosed,
       windowCount,
       doorCount,
+      vanityDoorCount,
       hasCloset,
       singleDoorClosets,
       doubleDoorClosets,
@@ -528,6 +538,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     toiletEnclosed,
     windowCount,
     doorCount,
+    vanityDoorCount,
     hasCloset,
     singleDoorClosets,
     doubleDoorClosets,
@@ -705,6 +716,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       toiletEnclosed,
       windowCount: parseInt(windowCount) || 0,
       doorCount: parseInt(doorCount) || 0,
+      vanityDoorCount: parseInt(vanityDoorCount) || 0,
       hasCloset,
       singleDoorClosets: parseInt(singleDoorClosets) || 0,
       doubleDoorClosets: parseInt(doubleDoorClosets) || 0,
@@ -797,6 +809,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       toiletEnclosed,
       windowCount,
       doorCount,
+      vanityDoorCount,
       hasCloset,
       singleDoorClosets,
       doubleDoorClosets,
@@ -1277,6 +1290,82 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
           {openingsClosetsExpanded && (
             <View style={{ marginTop: Spacing.md }}>
+              {/* Vanity Door Counter */}
+              <View style={{ marginBottom: Spacing.sm }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Vanity Door Count
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: 8,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(vanityDoorCount) || 0;
+                        if (current > 0) {
+                          setVanityDoorCount((current - 1).toString());
+                        }
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease vanity door count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {vanityDoorCount || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(vanityDoorCount) || 0;
+                        setVanityDoorCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase vanity door count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
+
               {/* Windows Counter */}
               <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>

@@ -517,6 +517,7 @@ export const useProjectStore = create<ProjectStore>()(
           ceilingType: "flat",
           windowCount: 0,
           doorCount: 0,
+          vanityDoorCount: 0,
           hasCloset: false,
           coatsWalls: globalDefaults.defaultWallCoats ?? 2,
           coatsCeiling: globalDefaults.defaultCeilingCoats ?? 2,
