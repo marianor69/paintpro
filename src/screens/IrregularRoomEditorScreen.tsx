@@ -32,7 +32,7 @@ import { FormInput } from "../components/FormInput";
 import { SavePromptModal } from "../components/SavePromptModal";
 import { RoomPhoto, IrregularRoomWall } from "../types/painting";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { formatCurrency, safeNumber } from "../utils/calculations";
+import { formatCurrency, getClosetInteriorMetrics, safeNumber } from "../utils/calculations";
 
 type Props = NativeStackScreenProps<RootStackParamList, "IrregularRoomEditor">;
 
@@ -281,13 +281,16 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
 
   const wallCoverage = Math.max(1, safeNumber(pricing?.wallCoverageSqFtPerGallon, 350));
+  const ceilingCoverage = Math.max(1, safeNumber(pricing?.ceilingCoverageSqFtPerGallon, 350));
   const trimCoverage = Math.max(1, safeNumber(pricing?.trimCoverageSqFtPerGallon, 400));
   const wallLaborRate = safeNumber(pricing?.wallLaborPerSqFt, 0);
+  const ceilingLaborRate = safeNumber(pricing?.ceilingLaborPerSqFt, 0);
   const wallPaintRate = safeNumber(pricing?.wallPaintPerGallon, 0);
+  const ceilingPaintRate = safeNumber(pricing?.ceilingPaintPerGallon, 0);
   const windowLaborRate = safeNumber(pricing?.windowLabor, 0);
   const doorLaborRate = safeNumber(pricing?.doorLabor, 0);
   const trimPaintRate = safeNumber(pricing?.trimPaintPerGallon, 0);
-  const doorPaintRate = safeNumber(pricing?.doorPaintPerGallon, 0);
+  const baseboardLaborRate = safeNumber(pricing?.baseboardLaborPerLF, 0);
 
   const hasPricingData = [
     pricing?.wallLaborPerSqFt,
@@ -308,22 +311,66 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const windowTrimWidthFt = safeNumber(calcSettings?.windowTrimWidth, 3.5) / 12;
   const windowPerimeter = 2 * (safeNumber(calcSettings?.windowWidth, 3) + safeNumber(calcSettings?.windowHeight, 5));
   const windowTrimSqFt = windowCountValue * windowPerimeter * windowTrimWidthFt;
-  const windowGallons = paintWindows ? (windowTrimSqFt / trimCoverage) * projectCoats : 0;
-  const windowLaborCost = paintWindows
-    ? windowCountValue * windowLaborRate * getCoatLaborMultiplier(projectCoats)
-    : 0;
-  const windowMaterialsCost = paintWindows ? Math.ceil(windowGallons) * trimPaintRate : 0;
+  const windowGallons = (windowTrimSqFt / trimCoverage) * projectCoats;
+  const windowLaborCost = windowCountValue * windowLaborRate * getCoatLaborMultiplier(projectCoats);
+  const windowMaterialsCost = Math.ceil(windowGallons) * trimPaintRate;
 
-  const doorFacesSqFt = doorCountValue * (safeNumber(calcSettings?.doorWidth, 3) * safeNumber(calcSettings?.doorHeight, 7)) * 2;
-  const doorGallons = paintDoors ? (doorFacesSqFt / wallCoverage) * projectCoats : 0;
-  const doorLaborCost = paintDoors
-    ? doorCountValue * doorLaborRate * getCoatLaborMultiplier(projectCoats)
-    : 0;
-  const doorMaterialsCost = paintDoors ? Math.ceil(doorGallons) * doorPaintRate : 0;
+  const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
+  const doorCountForSummary = doorCountValue + closetDoorCount;
+  const closetInteriorEnabled =
+    includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
 
-  const totalLaborCost = wallLaborCost + windowLaborCost + doorLaborCost;
-  const totalMaterialsCost = wallMaterialsCost + windowMaterialsCost + doorMaterialsCost;
-  const totalRoomCost = totalLaborCost + totalMaterialsCost;
+  const doorTrimWidthFt = safeNumber(calcSettings?.doorTrimWidth, 2.5) / 12;
+  const doorTrimPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + safeNumber(calcSettings?.doorWidth, 3);
+  const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
+  const singleClosetTrimWidthFt = safeNumber(calcSettings?.singleClosetTrimWidth, 2.5) / 12;
+  const singleClosetPerimeter = (2 * defaultHeight) + (safeNumber(calcSettings?.singleClosetWidth, 30) / 12);
+  const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
+  const doubleClosetTrimWidthFt = safeNumber(calcSettings?.doubleClosetTrimWidth, 2.5) / 12;
+  const doubleClosetPerimeter = (2 * defaultHeight) + (safeNumber(calcSettings?.doubleClosetWidth, 60) / 12);
+  const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+  const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+  const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * projectCoats;
+  const doorFrameLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+  const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
+
+  const doorFacesSqFt = doorCountForSummary * (safeNumber(calcSettings?.doorWidth, 3) * safeNumber(calcSettings?.doorHeight, 7)) * 2;
+  const doorGallons = (doorFacesSqFt / trimCoverage) * projectCoats;
+  const doorLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+  const doorMaterialsCost = Math.ceil(doorGallons) * trimPaintRate;
+
+  const closetMetrics = getClosetInteriorMetrics(
+    {
+      height: defaultHeight,
+      singleDoorClosets: singleClosetCount,
+      doubleDoorClosets: doubleClosetCount,
+    } as any,
+    defaultHeight
+  );
+  const closetBaseboardWidthFt = safeNumber(calcSettings?.baseboardWidth, 3.5) / 12;
+  const closetBaseboardTrimSqFt = closetMetrics.totalClosetBaseboardLF * closetBaseboardWidthFt;
+  const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * projectCoats;
+  const closetWallLaborCost = closetMetrics.totalClosetWallArea * wallLaborRate * getCoatLaborMultiplier(projectCoats);
+  const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * projectCoats) * wallPaintRate;
+  const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * ceilingLaborRate * getCoatLaborMultiplier(projectCoats);
+  const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / ceilingCoverage) * projectCoats) * ceilingPaintRate;
+  const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(projectCoats);
+  const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
+  const closetInteriorLaborCost = closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost;
+  const closetInteriorMaterialsCost = closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost;
+
+  const summaryLaborTotal =
+    (paintWalls ? wallLaborCost : 0) +
+    (windowCountValue > 0 ? (paintWindowFrames ? windowLaborCost : 0) : 0) +
+    (doorCountForSummary > 0 ? (paintDoorFrames ? doorFrameLaborCost : 0) : 0) +
+    (doorCountForSummary > 0 ? (paintDoors ? doorLaborCost : 0) : 0) +
+    (hasCloset ? (closetInteriorEnabled ? closetInteriorLaborCost : 0) : 0);
+  const summaryMaterialsTotal =
+    (paintWalls ? wallMaterialsCost : 0) +
+    (windowCountValue > 0 ? (paintWindowFrames ? windowMaterialsCost : 0) : 0) +
+    (doorCountForSummary > 0 ? (paintDoorFrames ? doorFrameMaterialsCost : 0) : 0) +
+    (doorCountForSummary > 0 ? (paintDoors ? doorMaterialsCost : 0) : 0) +
+    (hasCloset ? (closetInteriorEnabled ? closetInteriorMaterialsCost : 0) : 0);
 
   // Validation: check if all walls have valid dimensions
   const hasValidDimensions = walls.every(wall => {
@@ -1948,13 +1995,15 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     }}
                   >
                     <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
-                          {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
-                        </Text>
-                      </View>
-                      {walls.length > 0 && (
+                      {paintWalls && totalArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal, fontWeight: "600" }}>
+                            {Math.ceil(totalArea)} {unitSystem === "metric" ? "m²" : "sq ft"}
+                          </Text>
+                        </View>
+                      )}
+                      {paintWalls && walls.length > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
@@ -1970,11 +2019,27 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           </Text>
                         </View>
                       )}
-                      {doorCountValue > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                      {doorCountForSummary > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Door Frames</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {doorCountForSummary}
+                          </Text>
+                        </View>
+                      )}
+                      {doorCountForSummary > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: hasCloset ? Spacing.sm : 0 }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {doorCountValue}
+                            {doorCountForSummary}
+                          </Text>
+                        </View>
+                      )}
+                      {hasCloset && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {singleClosetCount + doubleClosetCount}
                           </Text>
                         </View>
                       )}
@@ -1997,24 +2062,46 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         </View>
                       )}
 
-                      {paintWindows && windowCountValue > 0 && (
+                      {windowCountValue > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(windowLaborCost)}
+                            ${Math.round(paintWindowFrames ? windowLaborCost : 0)}
                           </Text>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(windowMaterialsCost)}
+                            ${Math.round(paintWindowFrames ? windowMaterialsCost : 0)}
                           </Text>
                         </View>
                       )}
 
-                      {paintDoors && doorCountValue > 0 && (
+                      {doorCountForSummary > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(doorLaborCost)}
+                            ${Math.round(paintDoorFrames ? doorFrameLaborCost : 0)}
                           </Text>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(doorMaterialsCost)}
+                            ${Math.round(paintDoorFrames ? doorFrameMaterialsCost : 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {doorCountForSummary > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(paintDoors ? doorLaborCost : 0)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(paintDoors ? doorMaterialsCost : 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {hasCloset && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(closetInteriorEnabled ? closetInteriorMaterialsCost : 0)}
                           </Text>
                         </View>
                       )}
@@ -2022,15 +2109,15 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
                       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(totalLaborCost)}
+                          ${Math.round(summaryLaborTotal)}
                         </Text>
                         <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(totalMaterialsCost)}
+                          ${Math.round(summaryMaterialsTotal)}
                         </Text>
                       </View>
                       <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: Spacing.xs }}>
                         <Text style={{ fontSize: 14, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          ${Math.round(totalRoomCost).toLocaleString()}
+                          ${Math.round(summaryLaborTotal + summaryMaterialsTotal).toLocaleString()}
                         </Text>
                       </View>
                     </View>
