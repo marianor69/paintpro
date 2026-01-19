@@ -863,7 +863,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   >
                     <View style={{ alignItems: "center" }}>
                       <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
-                        {project.estimateBuildComplete ? "Estimate Completed" : "Complete Estimate."}
+                        {project.estimateBuildComplete ? "Estimate Completed" : "Complete Estimate"}
                       </Text>
                     </View>
                   </Pressable>
