@@ -1901,287 +1901,6 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
-        {/* Paint Options Section - Collapsable */}
-        <Card
-          style={{
-            marginBottom: Spacing.md,
-            backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white,
-            paddingBottom: Spacing.sm,
-          }}
-        >
-          <Pressable
-            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
-            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                Paint Options
-              </Text>
-              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                Customize what to paint in this room
-              </Text>
-            </View>
-            <Ionicons
-              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={Colors.mediumGray}
-            />
-          </Pressable>
-
-          {paintOptionsExpanded && (
-            <View style={{ marginTop: Spacing.md }}>
-              <Toggle
-                label="Paint Walls"
-                value={paintWalls}
-                onValueChange={setPaintWalls}
-              />
-              <Toggle
-                label="Paint Ceilings"
-                value={paintCeilings}
-                onValueChange={setPaintCeilings}
-              />
-              <Toggle
-                label="Paint Window Frames"
-                value={paintWindowFrames}
-                onValueChange={setPaintWindowFrames}
-                description="Paint window trim and frames"
-              />
-              <Toggle
-                label="Paint Door Frames"
-                value={paintDoorFrames}
-                onValueChange={setPaintDoorFrames}
-                description="Paint door frames and closet door frames"
-              />
-              <Toggle
-                label="Paint Baseboard"
-                value={paintBaseboard}
-                onValueChange={setPaintBaseboard}
-              />
-              <Toggle
-                label="Paint Doors"
-                value={paintDoors}
-                onValueChange={setPaintDoors}
-                description="Paint the door faces (both sides)"
-              />
-              <Toggle
-                label="Crown Moulding"
-                value={hasCrownMoulding}
-                onValueChange={setHasCrownMoulding}
-              />
-              <Toggle
-                label="Multiple Colors / Accent Wall"
-                value={hasAccentWall}
-                onValueChange={setHasAccentWall}
-                description="Adds extra labor for cutting in different colors"
-                className="mb-0"
-              />
-              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
-                <Pressable
-                  onPress={() => {
-                    paintOptionsSnapshotRef.current = paintOptionsSnapshot;
-                    setPaintOptionsConfirmed(true);
-                  }}
-                  style={{
-                    backgroundColor: paintOptionsConfirmed ? Colors.success : Colors.primaryBlue,
-                    borderRadius: 8,
-                    paddingHorizontal: Spacing.sm,
-                    paddingVertical: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    {paintOptionsConfirmed ? "Confirmed" : "Confirm"}
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-          )}
-        </Card>
-
-        {/* Notes Section - Collapsable */}
-        <View ref={notesCardRef}>
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Pressable
-              onPress={() => setNotesExpanded(!notesExpanded)}
-              style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-                  Notes
-                </Text>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
-                  Room notes and reminders
-                </Text>
-              </View>
-              <Ionicons
-                name={notesExpanded ? "chevron-up" : "chevron-down"}
-                size={24}
-                color={Colors.mediumGray}
-              />
-            </Pressable>
-
-            {notesExpanded && (
-              <TextInput
-                value={notes}
-                onChangeText={setNotes}
-                placeholder="Add notes about this room..."
-                placeholderTextColor={Colors.mediumGray}
-                multiline
-                numberOfLines={3}
-                blurOnSubmit
-                returnKeyType="done"
-                inputAccessoryViewID={Platform.OS === "ios" ? notesAccessoryID : undefined}
-                onFocus={() => {
-                  setTimeout(() => {
-                    notesCardRef.current?.measureLayout(
-                      scrollViewRef.current as any,
-                      (x, y) => {
-                        scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
-                      },
-                      () => {}
-                    );
-                  }, 100);
-                }}
-                style={[
-                  TextInputStyles.multiline,
-                  {
-                    backgroundColor: Colors.backgroundWarmGray,
-                    borderRadius: BorderRadius.default,
-                    padding: Spacing.md,
-                    minHeight: 100,
-                    marginTop: Spacing.md,
-                  }
-                ]}
-              />
-            )}
-          </Card>
-        </View>
-
-        {/* Room Photos Section */}
-        <Card style={{ marginBottom: Spacing.md }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: photos.length > 0 ? Spacing.md : 0,
-            }}
-          >
-            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
-              {(name ? name : "Room") + "'s Photos"}
-            </Text>
-            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-              <Pressable
-                onPress={() => handleAddPhoto(true)}
-                style={{
-                  width: 52,
-                  height: 40,
-                  borderRadius: 8,
-                  backgroundColor: Colors.primaryBlue,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                accessibilityLabel="Take photo"
-              >
-                <Ionicons name="camera-outline" size={20} color={Colors.white} />
-              </Pressable>
-              <Pressable
-                onPress={() => handleAddPhoto(false)}
-                style={{
-                  width: 52,
-                  height: 40,
-                  borderRadius: 8,
-                  backgroundColor: Colors.backgroundWarmGray,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                accessibilityLabel="Choose photo"
-              >
-                <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
-              </Pressable>
-            </View>
-          </View>
-
-          {/* Photo Grid */}
-          {photos.length > 0 && (
-            <View style={{ gap: Spacing.md }}>
-              {photos.map((photo, index) => (
-                <View
-                  key={photo.id}
-                  style={{
-                    backgroundColor: Colors.backgroundWarmGray,
-                    borderRadius: BorderRadius.default,
-                    overflow: "hidden",
-                  }}
-                >
-                  <Image
-                    source={{ uri: photo.uri }}
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      backgroundColor: Colors.neutralGray,
-                    }}
-                    resizeMode="cover"
-                  />
-                  <View style={{ padding: Spacing.sm }}>
-                    {/* File Name */}
-                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
-                      {photo.fileName}
-                    </Text>
-
-                    {/* Note Display */}
-                    {photo.note ? (
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
-                        {photo.note}
-                      </Text>
-                    ) : (
-                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic", marginBottom: Spacing.sm }}>
-                        No note added
-                      </Text>
-                    )}
-
-                    {/* Action Buttons */}
-                    <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                      <Pressable
-                        onPress={() => handleEditPhotoNote(photo)}
-                        style={{
-                          flex: 1,
-                          backgroundColor: Colors.primaryBlue,
-                          borderRadius: 8,
-                          paddingVertical: Spacing.xs,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Ionicons name="create-outline" size={16} color={Colors.white} />
-                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.xs }}>
-                          {photo.note ? "Edit Note" : "Add Note"}
-                        </Text>
-                      </Pressable>
-                      <Pressable
-                        onPress={() => handleDeletePhoto(photo.id)}
-                        style={{
-                          backgroundColor: Colors.error + "10",
-                          borderRadius: 8,
-                          paddingVertical: Spacing.xs,
-                          paddingHorizontal: Spacing.md,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Ionicons name="trash-outline" size={16} color={Colors.error} />
-                      </Pressable>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
-
-        </Card>
-
         {/* Room Summary Section */}
         {pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
           // Calculate per-category costs
@@ -2503,6 +2222,287 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
             </Card>
           );
         })()}
+
+        {/* Paint Options Section - Collapsable */}
+        <Card
+          style={{
+            marginBottom: Spacing.md,
+            backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white,
+            paddingBottom: Spacing.sm,
+          }}
+        >
+          <Pressable
+            onPress={() => setPaintOptionsExpanded(!paintOptionsExpanded)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                Paint Options
+              </Text>
+              <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                Customize what to paint in this room
+              </Text>
+            </View>
+            <Ionicons
+              name={paintOptionsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={Colors.mediumGray}
+            />
+          </Pressable>
+
+          {paintOptionsExpanded && (
+            <View style={{ marginTop: Spacing.md }}>
+              <Toggle
+                label="Paint Walls"
+                value={paintWalls}
+                onValueChange={setPaintWalls}
+              />
+              <Toggle
+                label="Paint Ceilings"
+                value={paintCeilings}
+                onValueChange={setPaintCeilings}
+              />
+              <Toggle
+                label="Paint Window Frames"
+                value={paintWindowFrames}
+                onValueChange={setPaintWindowFrames}
+                description="Paint window trim and frames"
+              />
+              <Toggle
+                label="Paint Door Frames"
+                value={paintDoorFrames}
+                onValueChange={setPaintDoorFrames}
+                description="Paint door frames and closet door frames"
+              />
+              <Toggle
+                label="Paint Baseboard"
+                value={paintBaseboard}
+                onValueChange={setPaintBaseboard}
+              />
+              <Toggle
+                label="Paint Doors"
+                value={paintDoors}
+                onValueChange={setPaintDoors}
+                description="Paint the door faces (both sides)"
+              />
+              <Toggle
+                label="Crown Moulding"
+                value={hasCrownMoulding}
+                onValueChange={setHasCrownMoulding}
+              />
+              <Toggle
+                label="Multiple Colors / Accent Wall"
+                value={hasAccentWall}
+                onValueChange={setHasAccentWall}
+                description="Adds extra labor for cutting in different colors"
+                className="mb-0"
+              />
+              <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+                <Pressable
+                  onPress={() => {
+                    paintOptionsSnapshotRef.current = paintOptionsSnapshot;
+                    setPaintOptionsConfirmed(true);
+                  }}
+                  style={{
+                    backgroundColor: paintOptionsConfirmed ? Colors.success : Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingHorizontal: Spacing.sm,
+                    paddingVertical: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    {paintOptionsConfirmed ? "Confirmed" : "Confirm"}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
+        </Card>
+
+        {/* Notes Section - Collapsable */}
+        <View ref={notesCardRef}>
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Pressable
+              onPress={() => setNotesExpanded(!notesExpanded)}
+              style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                  Notes
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.xs }}>
+                  Room notes and reminders
+                </Text>
+              </View>
+              <Ionicons
+                name={notesExpanded ? "chevron-up" : "chevron-down"}
+                size={24}
+                color={Colors.mediumGray}
+              />
+            </Pressable>
+
+            {notesExpanded && (
+              <TextInput
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Add notes about this room..."
+                placeholderTextColor={Colors.mediumGray}
+                multiline
+                numberOfLines={3}
+                blurOnSubmit
+                returnKeyType="done"
+                inputAccessoryViewID={Platform.OS === "ios" ? notesAccessoryID : undefined}
+                onFocus={() => {
+                  setTimeout(() => {
+                    notesCardRef.current?.measureLayout(
+                      scrollViewRef.current as any,
+                      (x, y) => {
+                        scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+                      },
+                      () => {}
+                    );
+                  }, 100);
+                }}
+                style={[
+                  TextInputStyles.multiline,
+                  {
+                    backgroundColor: Colors.backgroundWarmGray,
+                    borderRadius: BorderRadius.default,
+                    padding: Spacing.md,
+                    minHeight: 100,
+                    marginTop: Spacing.md,
+                  }
+                ]}
+              />
+            )}
+          </Card>
+        </View>
+
+        {/* Room Photos Section */}
+        <Card style={{ marginBottom: Spacing.md }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: photos.length > 0 ? Spacing.md : 0,
+            }}
+          >
+            <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+              {(name ? name : "Room") + "'s Photos"}
+            </Text>
+            <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+              <Pressable
+                onPress={() => handleAddPhoto(true)}
+                style={{
+                  width: 52,
+                  height: 40,
+                  borderRadius: 8,
+                  backgroundColor: Colors.primaryBlue,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                accessibilityLabel="Take photo"
+              >
+                <Ionicons name="camera-outline" size={20} color={Colors.white} />
+              </Pressable>
+              <Pressable
+                onPress={() => handleAddPhoto(false)}
+                style={{
+                  width: 52,
+                  height: 40,
+                  borderRadius: 8,
+                  backgroundColor: Colors.backgroundWarmGray,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                accessibilityLabel="Choose photo"
+              >
+                <Ionicons name="images-outline" size={20} color={Colors.darkCharcoal} />
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Photo Grid */}
+          {photos.length > 0 && (
+            <View style={{ gap: Spacing.md }}>
+              {photos.map((photo, index) => (
+                <View
+                  key={photo.id}
+                  style={{
+                    backgroundColor: Colors.backgroundWarmGray,
+                    borderRadius: BorderRadius.default,
+                    overflow: "hidden",
+                  }}
+                >
+                  <Image
+                    source={{ uri: photo.uri }}
+                    style={{
+                      width: "100%",
+                      height: 180,
+                      backgroundColor: Colors.neutralGray,
+                    }}
+                    resizeMode="cover"
+                  />
+                  <View style={{ padding: Spacing.sm }}>
+                    {/* File Name */}
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
+                      {photo.fileName}
+                    </Text>
+
+                    {/* Note Display */}
+                    {photo.note ? (
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, marginBottom: Spacing.sm }}>
+                        {photo.note}
+                      </Text>
+                    ) : (
+                      <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray, fontStyle: "italic", marginBottom: Spacing.sm }}>
+                        No note added
+                      </Text>
+                    )}
+
+                    {/* Action Buttons */}
+                    <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                      <Pressable
+                        onPress={() => handleEditPhotoNote(photo)}
+                        style={{
+                          flex: 1,
+                          backgroundColor: Colors.primaryBlue,
+                          borderRadius: 8,
+                          paddingVertical: Spacing.xs,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Ionicons name="create-outline" size={16} color={Colors.white} />
+                        <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, marginLeft: Spacing.xs }}>
+                          {photo.note ? "Edit Note" : "Add Note"}
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => handleDeletePhoto(photo.id)}
+                        style={{
+                          backgroundColor: Colors.error + "10",
+                          borderRadius: 8,
+                          paddingVertical: Spacing.xs,
+                          paddingHorizontal: Spacing.md,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Ionicons name="trash-outline" size={16} color={Colors.error} />
+                      </Pressable>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+        </Card>
 
         {/* Test Mode: Detailed Calculation Breakdown */}
         {testMode && pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
