@@ -1666,6 +1666,247 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           )}
         </Card>
 
+        {/* Room Summary Section */}
+        {pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
+          // Calculate per-category costs
+          const calcSettings = useCalculationSettings.getState().settings;
+          const secondCoatMultiplier = safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
+          const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
+
+          // Walls
+          const wallLaborCost = pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
+          const wallMaterialsCost = Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricing.wallPaintPerGallon, 0);
+          const wallTotal = wallLaborCost + wallMaterialsCost;
+
+          // Ceilings
+          const ceilingLaborCost = pricingSummary.ceilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
+          const ceilingMaterialsCost = Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricing.ceilingPaintPerGallon, 0);
+          const ceilingTotal = ceilingLaborCost + ceilingMaterialsCost;
+
+          // Baseboard
+          const baseboardLaborCost = pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const baseboardTrimWidthFt = calcSettings.baseboardWidth / 12;
+          const baseboardTrimSqFt = pricingSummary.baseboardLF * baseboardTrimWidthFt;
+          const wallCoverage = Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350));
+          const ceilingCoverage = Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350));
+          const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
+          const baseboardTrimGallons = (baseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const baseboardMaterialsCost = Math.ceil(baseboardTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+          const baseboardTotal = baseboardLaborCost + baseboardMaterialsCost;
+
+          // Crown Moulding
+          const crownLaborCost = pricingSummary.crownMouldingLF * safeNumber(pricing.crownMouldingLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const crownTrimWidthFt = calcSettings.crownMouldingWidth / 12;
+          const crownTrimSqFt = pricingSummary.crownMouldingLF * crownTrimWidthFt;
+          const crownTrimGallons = (crownTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+          const crownTotal = crownLaborCost + crownMaterialsCost;
+
+          // Windows
+          const windowLaborCost = pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
+          const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
+          const windowTrimSqFt = pricingSummary.windowsCount * windowTrimPerimeter * windowTrimWidthFt;
+          const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+          const windowTotal = windowLaborCost + windowMaterialsCost;
+
+          // Doors
+          const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
+          const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+          const doorTotal = doorLaborCost + doorMaterialsCost;
+          const openingsCount = openings.length;
+          const closetCount = singleClosetCount + doubleClosetCount;
+          const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
+          const doorCountForSummary = (parseInt(doorCount) || 0) + closetDoorCount;
+          const closetInteriorEnabled =
+            includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
+          const closetWallLaborCost = pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
+          const closetWallMaterialsCost = Math.ceil((pricingSummary.closetWallArea / wallCoverage) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0);
+          const closetCeilingLaborCost = pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
+          const closetCeilingMaterialsCost = Math.ceil((pricingSummary.closetCeilingArea / ceilingCoverage) * pricingSummary.coatsCeiling) * safeNumber(pricing.ceilingPaintPerGallon, 0);
+          const closetBaseboardLaborCost = pricingSummary.closetBaseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const closetBaseboardWidthFt = calcSettings.baseboardWidth / 12;
+          const closetBaseboardTrimSqFt = pricingSummary.closetBaseboardLF * closetBaseboardWidthFt;
+          const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+          const closetInteriorLaborCost = closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost;
+          const closetInteriorMaterialsCost = closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost;
+
+          return (
+            <Card style={{ marginBottom: Spacing.md }}>
+              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
+                Room Summary
+              </Text>
+
+              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                {/* Left Column - Measurements (Gray) - Wider with 2 columns: structures (left) and measures (right) */}
+                <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
+                  {/* Empty row to align with blue section headers */}
+                  <View style={{ marginBottom: Spacing.xs }}>
+                    <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
+                  </View>
+                  {paintWalls && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(pricingSummary.wallArea), "area", unitSystem, 0)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintCeilings && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), "area", unitSystem, 0)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Baseboard</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(pricingSummary.baseboardLF), "linearFeet", unitSystem, 0)}
+                      </Text>
+                    </View>
+                  )}
+                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Crown</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(pricingSummary.crownMouldingLF), "linearFeet", unitSystem, 0)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintWindows && pricingSummary.windowsCount > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {pricingSummary.windowsCount}
+                      </Text>
+                    </View>
+                  )}
+                  {paintDoors && doorCountForSummary > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {doorCountForSummary}
+                      </Text>
+                    </View>
+                  )}
+                  {openingsCount > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Openings</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {openingsCount}
+                      </Text>
+                    </View>
+                  )}
+                  {closetCount > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {closetCount}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* Right Column - Pricing (Blue) */}
+                <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
+                  {/* Header */}
+                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                    <Text style={{ flex: 1, fontSize: 12, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                    <Text style={{ flex: 1, fontSize: 12, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                  </View>
+
+                  {paintWalls && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(wallLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(wallMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintCeilings && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(ceilingLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(ceilingMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(baseboardLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(baseboardMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(crownLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(crownMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintWindows && pricingSummary.windowsCount > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(windowLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(windowMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintDoors && doorCountForSummary > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(doorLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(doorMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {closetInteriorEnabled && (closetWallLaborCost > 0 || closetCeilingLaborCost > 0 || closetBaseboardLaborCost > 0) && (
+                    <>
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(closetInteriorLaborCost)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(closetInteriorMaterialsCost)}
+                        </Text>
+                      </View>
+                    </>
+                  )}
+
+                  <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+                  <View style={{ alignItems: "flex-end" }}>
+                    <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                      ${pricingSummary.totalDisplayed.toLocaleString()}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </Card>
+          );
+        })()}
+
         {/* Paint Options Section - Collapsable */}
         <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white }}>
           <Pressable
@@ -1948,279 +2189,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           )}
 
         </Card>
-
-        {/* Room Summary Section */}
-        {pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
-          // Calculate per-category costs
-          const calcSettings = useCalculationSettings.getState().settings;
-          const secondCoatMultiplier = safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
-          const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
-
-          // Walls
-          const wallLaborCost = pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
-          const wallMaterialsCost = Math.ceil(pricingSummary.wallPaintGallons) * safeNumber(pricing.wallPaintPerGallon, 0);
-          const wallTotal = wallLaborCost + wallMaterialsCost;
-
-          // Ceilings
-          const ceilingLaborCost = pricingSummary.ceilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
-          const ceilingMaterialsCost = Math.ceil(pricingSummary.ceilingPaintGallons) * safeNumber(pricing.ceilingPaintPerGallon, 0);
-          const ceilingTotal = ceilingLaborCost + ceilingMaterialsCost;
-
-          // Baseboard
-          const baseboardLaborCost = pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
-          const baseboardTrimWidthFt = calcSettings.baseboardWidth / 12;
-          const baseboardTrimSqFt = pricingSummary.baseboardLF * baseboardTrimWidthFt;
-          const wallCoverage = Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350));
-          const ceilingCoverage = Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350));
-          const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
-          const baseboardTrimGallons = (baseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const baseboardMaterialsCost = Math.ceil(baseboardTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const baseboardTotal = baseboardLaborCost + baseboardMaterialsCost;
-
-          // Crown Moulding
-          const crownLaborCost = pricingSummary.crownMouldingLF * safeNumber(pricing.crownMouldingLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
-          const crownTrimWidthFt = calcSettings.crownMouldingWidth / 12;
-          const crownTrimSqFt = pricingSummary.crownMouldingLF * crownTrimWidthFt;
-          const crownTrimGallons = (crownTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const crownTotal = crownLaborCost + crownMaterialsCost;
-
-          // Windows
-          const windowLaborCost = pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
-          const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
-          const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
-          const windowTrimSqFt = pricingSummary.windowsCount * windowTrimPerimeter * windowTrimWidthFt;
-          const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const windowTotal = windowLaborCost + windowMaterialsCost;
-
-          // Doors
-          const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
-          const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const doorTotal = doorLaborCost + doorMaterialsCost;
-          const openingsCount = openings.length;
-          const closetCount = singleClosetCount + doubleClosetCount;
-          const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
-          const doorCountForSummary = (parseInt(doorCount) || 0) + closetDoorCount;
-          const closetInteriorEnabled =
-            includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
-          const closetWallLaborCost = pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
-          const closetWallMaterialsCost = Math.ceil((pricingSummary.closetWallArea / wallCoverage) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0);
-          const closetCeilingLaborCost = pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
-          const closetCeilingMaterialsCost = Math.ceil((pricingSummary.closetCeilingArea / ceilingCoverage) * pricingSummary.coatsCeiling) * safeNumber(pricing.ceilingPaintPerGallon, 0);
-          const closetBaseboardLaborCost = pricingSummary.closetBaseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
-          const closetBaseboardWidthFt = calcSettings.baseboardWidth / 12;
-          const closetBaseboardTrimSqFt = pricingSummary.closetBaseboardLF * closetBaseboardWidthFt;
-          const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const closetInteriorLaborCost = closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost;
-          const closetInteriorMaterialsCost = closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost;
-
-          return (
-            <Card style={{ marginBottom: Spacing.md }}>
-              <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.md }}>
-                Room Summary
-              </Text>
-
-              <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                {/* Left Column - Measurements (Gray) - Wider with 2 columns: structures (left) and measures (right) */}
-                <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
-                  {/* Empty row to align with blue section headers */}
-                  <View style={{ marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
-                  </View>
-                  {paintWalls && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(pricingSummary.wallArea), 'area', unitSystem, 0)}
-                      </Text>
-                    </View>
-                  )}
-                  {paintCeilings && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), 'area', unitSystem, 0)}
-                      </Text>
-                    </View>
-                  )}
-                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Baseboard</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(pricingSummary.baseboardLF), 'linearFeet', unitSystem, 0)}
-                      </Text>
-                    </View>
-                  )}
-                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Crown Mld</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(pricingSummary.crownMouldingLF), 'linearFeet', unitSystem, 0)}
-                      </Text>
-                    </View>
-                  )}
-                  {paintWindows && pricingSummary.windowsCount > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {pricingSummary.windowsCount}
-                      </Text>
-                    </View>
-                  )}
-                  {paintDoors && doorCountForSummary > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {doorCountForSummary}
-                      </Text>
-                    </View>
-                  )}
-                  {openingsCount > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Openings</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {openingsCount}
-                      </Text>
-                    </View>
-                  )}
-                  {closetCount > 0 && (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Closets</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {closetCount}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
-                <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
-                  {/* Header Row */}
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
-                  </View>
-
-                  {/* Walls */}
-                  {paintWalls && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-
-                  {/* Ceiling */}
-                  {paintCeilings && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(ceilingLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(ceilingMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-
-                  {/* Baseboard */}
-                  {paintBaseboard && pricingSummary.baseboardLF > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(baseboardLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(baseboardMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-
-                  {/* Crown Moulding */}
-                  {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(crownLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(crownMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-
-                  {/* Windows */}
-                  {paintWindows && pricingSummary.windowsCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(windowLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(windowMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-
-                  {/* Doors */}
-                  {paintDoors && pricingSummary.doorsCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(doorLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(doorMaterialsCost)}
-                      </Text>
-                    </View>
-                  )}
-                  {openingsCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        $0
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        $0
-                      </Text>
-                    </View>
-                  )}
-                  {closetCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(closetInteriorEnabled ? closetInteriorMaterialsCost : 0)}
-                      </Text>
-                    </View>
-                  )}
-
-                  <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-
-                  {/* Subtotals - without labels */}
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                      ${Math.round(pricingSummary.laborDisplayed)}
-                    </Text>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                      ${Math.round(pricingSummary.materialsDisplayed)}
-                    </Text>
-                  </View>
-
-                  <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-
-                  {/* Total */}
-                  <View style={{ alignItems: "flex-end" }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
-                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                      ${pricingSummary.totalDisplayed.toLocaleString()}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </Card>
-          );
-        })()}
 
         {/* Test Mode: Detailed Calculation Breakdown */}
         {testMode && pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
