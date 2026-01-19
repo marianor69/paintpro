@@ -317,6 +317,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
   const doorCountForSummary = doorCountValue + closetDoorCount;
+  const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
   const closetInteriorEnabled =
     includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
 
@@ -331,7 +332,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
   const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
   const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * projectCoats;
-  const doorFrameLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+  const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(projectCoats);
   const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
 
   const doorFacesSqFt = doorCountForSummary * (safeNumber(calcSettings?.doorWidth, 3) * safeNumber(calcSettings?.doorHeight, 7)) * 2;
@@ -362,13 +363,13 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const summaryLaborTotal =
     (paintWalls ? wallLaborCost : 0) +
     (windowCountValue > 0 ? (paintWindowFrames ? windowLaborCost : 0) : 0) +
-    (doorCountForSummary > 0 ? (paintDoorFrames ? doorFrameLaborCost : 0) : 0) +
+    (doorFrameCount > 0 ? (paintDoorFrames ? doorFrameLaborCost : 0) : 0) +
     (doorCountForSummary > 0 ? (paintDoors ? doorLaborCost : 0) : 0) +
     (hasCloset ? (closetInteriorEnabled ? closetInteriorLaborCost : 0) : 0);
   const summaryMaterialsTotal =
     (paintWalls ? wallMaterialsCost : 0) +
     (windowCountValue > 0 ? (paintWindowFrames ? windowMaterialsCost : 0) : 0) +
-    (doorCountForSummary > 0 ? (paintDoorFrames ? doorFrameMaterialsCost : 0) : 0) +
+    (doorFrameCount > 0 ? (paintDoorFrames ? doorFrameMaterialsCost : 0) : 0) +
     (doorCountForSummary > 0 ? (paintDoors ? doorMaterialsCost : 0) : 0) +
     (hasCloset ? (closetInteriorEnabled ? closetInteriorMaterialsCost : 0) : 0);
 
@@ -2019,11 +2020,11 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           </Text>
                         </View>
                       )}
-                      {doorCountForSummary > 0 && (
+                      {doorFrameCount > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Door Frames</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {doorCountForSummary}
+                            {doorFrameCount}
                           </Text>
                         </View>
                       )}
@@ -2073,7 +2074,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         </View>
                       )}
 
-                      {doorCountForSummary > 0 && (
+                      {doorFrameCount > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
                             ${Math.round(paintDoorFrames ? doorFrameLaborCost : 0)}
