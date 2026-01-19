@@ -1000,6 +1000,32 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               </Card>
             )}
 
+            {testMode && (
+              <Card style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.xs }}>
+                  TEST MODE: Calculation Settings
+                </Text>
+                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.sm }}>
+                  Review the sizing defaults used by Brick/Panel calculations.
+                </Text>
+                <Pressable
+                  onPress={() => navigation.navigate("CalculationSettings")}
+                  style={{
+                    backgroundColor: Colors.primaryBlue,
+                    borderRadius: 8,
+                    paddingVertical: Spacing.sm,
+                    alignItems: "center",
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Open calculation settings"
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
+                    Open Calculation Settings
+                  </Text>
+                </Pressable>
+              </Card>
+            )}
+
             <Pressable
               onPress={handleSave}
               style={{
