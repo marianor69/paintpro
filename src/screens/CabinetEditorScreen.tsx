@@ -550,7 +550,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
 
                   <View style={{ marginTop: Spacing.md }}>
                     <Toggle
-                      label="42\" Wall Cabinet"
+                      label={`42" Wall Cabinet`}
                       value={includeWallCabinet42}
                       onValueChange={setIncludeWallCabinet42}
                     />
