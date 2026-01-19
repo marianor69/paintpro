@@ -13,6 +13,7 @@ import {
   Modal,
   Keyboard,
   Switch,
+  InputAccessoryView,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { usePreventRemove } from "@react-navigation/native";
@@ -325,6 +326,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const cathedralPeakHeightRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const notesCardRef = useRef<View>(null);
+  const notesAccessoryID = useRef(`notes-${Math.random().toString(36).slice(2)}`).current;
   const singleClosetCount = parseInt(singleDoorClosets) || 0;
   const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
 
@@ -1794,6 +1796,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 placeholderTextColor={Colors.mediumGray}
                 multiline
                 numberOfLines={3}
+                blurOnSubmit
+                returnKeyType="done"
+                inputAccessoryViewID={Platform.OS === "ios" ? notesAccessoryID : undefined}
                 onFocus={() => {
                   setTimeout(() => {
                     notesCardRef.current?.measureLayout(
@@ -2325,6 +2330,23 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           </Text>
         </Pressable>
       </ScrollView>
+
+      {Platform.OS === "ios" && (
+        <InputAccessoryView nativeID={notesAccessoryID}>
+          <View style={{ backgroundColor: Colors.white, borderTopWidth: 1, borderTopColor: Colors.neutralGray, padding: Spacing.sm, alignItems: "flex-end" }}>
+            <Pressable
+              onPress={() => Keyboard.dismiss()}
+              style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}
+              accessibilityRole="button"
+              accessibilityLabel="Done editing notes"
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" as any }}>
+                Done
+              </Text>
+            </Pressable>
+          </View>
+        </InputAccessoryView>
+      )}
 
       <Modal
         visible={infoModalVisible}

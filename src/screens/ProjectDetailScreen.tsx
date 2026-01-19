@@ -849,10 +849,8 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   <Pressable
                     onPress={project.estimateBuildComplete ? handleReopenEstimate : handleDoneBuilding}
                     style={{
-                      backgroundColor: project.estimateBuildComplete ? Colors.white : Colors.success,
+                      backgroundColor: project.estimateBuildComplete ? Colors.success : Colors.primaryBlue,
                       borderRadius: BorderRadius.default,
-                      borderWidth: project.estimateBuildComplete ? 1 : 0,
-                      borderColor: project.estimateBuildComplete ? Colors.neutralGray : undefined,
                       paddingVertical: Spacing.sm,
                       paddingHorizontal: Spacing.sm,
                       alignItems: "center",
@@ -861,12 +859,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       ...Shadows.card,
                     }}
                     accessibilityRole="button"
-                    accessibilityLabel={project.estimateBuildComplete ? "Edit estimate" : "Done building estimate"}
+                    accessibilityLabel={project.estimateBuildComplete ? "Reopen estimate" : "Mark estimate complete"}
                   >
                     <View style={{ alignItems: "center" }}>
-                      <Ionicons name={project.estimateBuildComplete ? "pencil" : "checkmark-circle"} size={18} color={project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white} style={{ marginBottom: Spacing.xs }} />
-                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: project.estimateBuildComplete ? Colors.darkCharcoal : Colors.white, textAlign: "center" }}>
-                        {project.estimateBuildComplete ? "Edit\nEstimate" : "Click\nwhen Done"}
+                      <Text style={{ fontSize: Typography.caption.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
+                        {"Estimate\ncomplete."}
                       </Text>
                     </View>
                   </Pressable>
