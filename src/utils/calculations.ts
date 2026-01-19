@@ -440,16 +440,16 @@ export function calculateRoomMetrics(
   if ((room.paintDoorFrames ?? true) && room.includeTrim !== false) {
     if (singleClosets > 0) {
       const trimWidthFt = calcSettings.singleClosetTrimWidth / 12; // Convert inches to feet
-      // Calculate perimeter: 2 × height + 1 × width (no trim on floor) - use room height
-      const singleClosetPerimeter = (2 * height) + (calcSettings.singleClosetWidth / 12);
+      // Calculate perimeter: 2 × door height + 1 × width (no trim on floor)
+      const singleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.singleClosetWidth / 12);
       const trimAreaPerCloset = singleClosetPerimeter * trimWidthFt;
       windowDoorTrimSqFt += singleClosets * trimAreaPerCloset;
     }
 
     if (doubleClosets > 0) {
       const trimWidthFt = calcSettings.doubleClosetTrimWidth / 12; // Convert inches to feet
-      // Calculate perimeter: 2 × height + 1 × width (no trim on floor) - use room height
-      const doubleClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
+      // Calculate perimeter: 2 × door height + 1 × width (no trim on floor)
+      const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
       const trimAreaPerCloset = doubleClosetPerimeter * trimWidthFt;
       windowDoorTrimSqFt += doubleClosets * trimAreaPerCloset;
     }

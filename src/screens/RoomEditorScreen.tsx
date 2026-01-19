@@ -1978,10 +1978,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
           const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
           const singleClosetTrimWidthFt = calcSettings.singleClosetTrimWidth / 12;
-          const singleClosetPerimeter = (2 * currentHeight) + (calcSettings.singleClosetWidth / 12);
+          const singleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.singleClosetWidth / 12);
           const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
           const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
-          const doubleClosetPerimeter = (2 * currentHeight) + (calcSettings.doubleClosetWidth / 12);
+          const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
           const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
@@ -2586,10 +2586,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
           const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
           const singleClosetTrimWidthFt = calcSettings.singleClosetTrimWidth / 12;
-          const singleClosetPerimeter = (2 * currentHeight) + (calcSettings.singleClosetWidth / 12);
+          const singleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.singleClosetWidth / 12);
           const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
           const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
-          const doubleClosetPerimeter = (2 * currentHeight) + (calcSettings.doubleClosetWidth / 12);
+          const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
           const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;

@@ -324,10 +324,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const doorTrimPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + safeNumber(calcSettings?.doorWidth, 3);
   const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
   const singleClosetTrimWidthFt = safeNumber(calcSettings?.singleClosetTrimWidth, 2.5) / 12;
-  const singleClosetPerimeter = (2 * defaultHeight) + (safeNumber(calcSettings?.singleClosetWidth, 30) / 12);
+  const singleClosetPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + (safeNumber(calcSettings?.singleClosetWidth, 30) / 12);
   const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
   const doubleClosetTrimWidthFt = safeNumber(calcSettings?.doubleClosetTrimWidth, 2.5) / 12;
-  const doubleClosetPerimeter = (2 * defaultHeight) + (safeNumber(calcSettings?.doubleClosetWidth, 60) / 12);
+  const doubleClosetPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + (safeNumber(calcSettings?.doubleClosetWidth, 60) / 12);
   const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
   const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
   const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * projectCoats;
