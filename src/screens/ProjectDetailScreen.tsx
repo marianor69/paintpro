@@ -821,23 +821,17 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               >
                 {project.estimateBuildComplete ? (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Ionicons name="checkmark-circle" size={20} color={Colors.success} style={{ marginRight: Spacing.xs }} />
-                    <Text style={{ fontSize: 18, color: Colors.success, fontWeight: "600" as any }}>
-                      Estimate Complete
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
+                      Total Estimate
                     </Text>
                   </View>
                 ) : (
                   <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.mediumGray }}>
+                    <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.darkCharcoal }}>
                       Running Estimate
                     </Text>
                   </View>
                 )}
-                {streetAddress ? (
-                  <Text style={{ fontSize: Typography.h3.fontSize, fontWeight: Typography.h3.fontWeight as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                    {streetAddress}
-                  </Text>
-                ) : null}
                 <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                   {formatCurrency(displaySummary.grandTotal)}
                 </Text>
