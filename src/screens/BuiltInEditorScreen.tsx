@@ -166,18 +166,31 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       // For existing: changes are when values differ from stored data
       if (!builtIn) return;
 
+      const storedWidth = builtIn.width && builtIn.width > 0
+        ? formatMeasurementValue(builtIn.width / 12, "length", unitSystem, 2)
+        : "";
+      const storedHeight = builtIn.height && builtIn.height > 0
+        ? formatMeasurementValue(builtIn.height / 12, "length", unitSystem, 2)
+        : "";
+      const storedDepth = builtIn.depth && builtIn.depth > 0
+        ? formatMeasurementValue(builtIn.depth / 12, "length", unitSystem, 2)
+        : "";
+      const storedShelfCount = builtIn.shelfCount && builtIn.shelfCount > 0
+        ? builtIn.shelfCount.toString()
+        : "";
+
       const hasChanges =
         name !== (builtIn.name || "") ||
-        width !== (builtIn.width && builtIn.width > 0 ? builtIn.width.toString() : "") ||
-        height !== (builtIn.height && builtIn.height > 0 ? builtIn.height.toString() : "") ||
-        depth !== (builtIn.depth && builtIn.depth > 0 ? builtIn.depth.toString() : "") ||
-        shelfCount !== (builtIn.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "") ||
+        width !== storedWidth ||
+        height !== storedHeight ||
+        depth !== storedDepth ||
+        shelfCount !== storedShelfCount ||
         notes !== (builtIn.notes || "") ||
         !arePhotosEqual(photos, builtIn.photos || []);
 
       setHasUnsavedChanges(hasChanges);
     }
-  }, [isNewBuiltIn, builtIn, name, width, height, depth, shelfCount, notes, photos, arePhotosEqual]);
+  }, [isNewBuiltIn, builtIn, name, width, height, depth, shelfCount, notes, photos, arePhotosEqual, unitSystem]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
