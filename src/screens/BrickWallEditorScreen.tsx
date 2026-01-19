@@ -1002,27 +1002,33 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
 
             {testMode && (
               <Card style={{ marginBottom: Spacing.md }}>
-                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.xs }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
                   TEST MODE: Calculation Settings
                 </Text>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.sm }}>
-                  Review the sizing defaults used by Brick/Panel calculations.
-                </Text>
-                <Pressable
-                  onPress={() => navigation.navigate("CalculationSettings")}
-                  style={{
-                    backgroundColor: Colors.primaryBlue,
-                    borderRadius: 8,
-                    paddingVertical: Spacing.sm,
-                    alignItems: "center",
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel="Open calculation settings"
-                >
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Open Calculation Settings
+
+                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                    Coverage and Rates
                   </Text>
-                </Pressable>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Wall Coverage: {pricing.wallCoverageSqFtPerGallon} sqft/gal
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Primer Coverage: {pricing.primerCoverageSqFtPerGallon} sqft/gal
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Second Coat Labor Multiplier: {pricing.secondCoatLaborMultiplier.toFixed(2)}
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: Spacing.sm }}>
+                    Wall Labor: ${pricing.wallLaborPerSqFt.toFixed(2)}/sqft
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Wall Paint: ${pricing.wallPaintPerGallon.toFixed(2)}/gal
+                  </Text>
+                  <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                    Primer: ${pricing.primerPerGallon.toFixed(2)}/gal
+                  </Text>
+                </View>
               </Card>
             )}
 
