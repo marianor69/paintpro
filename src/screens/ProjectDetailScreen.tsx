@@ -832,7 +832,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                     </Text>
                   </View>
                 )}
-                <Text style={{ fontSize: 30, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                <Text style={{ fontSize: 24, fontWeight: "700" as any, color: Colors.primaryBlue }}>
                   {formatCurrency(Math.round(displaySummary.grandTotal))}
                 </Text>
               </Pressable>
@@ -857,7 +857,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                   >
                     <View style={{ alignItems: "center" }}>
                       <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white, textAlign: "center" }}>
-                        {project.estimateBuildComplete ? "Estimate Completed" : "Complete\nEstimate"}
+                        {project.estimateBuildComplete ? "Estimate\nCompleted" : "Complete\nEstimate"}
                       </Text>
                     </View>
                   </Pressable>
