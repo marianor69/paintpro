@@ -916,6 +916,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         fileName: generatePhotoFileName(name || "bathroom", idx + 1),
       })),
       notes: notes.trim() || undefined,
+      isBathroom: true,
     } as any,
     quoteBuilder,
     pricing,
@@ -2016,12 +2017,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       {formatMeasurement(Math.ceil(pricingSummary.wallArea), 'area', unitSystem, 0)}
                     </Text>
                   </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling</Text>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                      {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), 'area', unitSystem, 0)}
-                    </Text>
-                  </View>
+                  {pricingSummary.includedCeilings && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Ceiling</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {formatMeasurement(Math.ceil(pricingSummary.ceilingArea), 'area', unitSystem, 0)}
+                      </Text>
+                    </View>
+                  )}
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Baseboard</Text>
@@ -2075,14 +2078,16 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   </View>
 
                   {/* Ceiling */}
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                      ${Math.round(ceilingLaborCost)}
-                    </Text>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                      ${Math.round(ceilingMaterialsCost)}
-                    </Text>
-                  </View>
+                  {pricingSummary.includedCeilings && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(ceilingLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(ceilingMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
 
                   {/* Baseboard */}
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (

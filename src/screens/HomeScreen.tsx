@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen 2
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v5.3.7 - Estimate button text
+              GPT - v5.3.8 - Bathroom summary toggles
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
