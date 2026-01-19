@@ -1702,25 +1702,44 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const crownTotal = crownLaborCost + crownMaterialsCost;
 
-          // Windows
-          const windowLaborCost = pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
-          const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
-          const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
-          const windowTrimSqFt = pricingSummary.windowsCount * windowTrimPerimeter * windowTrimWidthFt;
-          const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
-          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const windowTotal = windowLaborCost + windowMaterialsCost;
-
-          // Doors
-          const doorLaborCost = pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
-          const doorMaterialsCost = Math.ceil(pricingSummary.doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
-          const doorTotal = doorLaborCost + doorMaterialsCost;
-          const openingsCount = openings.length;
+          const windowCountValue = parseInt(windowCount) || 0;
+          const doorCountValue = parseInt(doorCount) || 0;
+          const openingsCount = openings.length + windowCountValue + doorCountValue;
           const closetCount = singleClosetCount + doubleClosetCount;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
-          const doorCountForSummary = (parseInt(doorCount) || 0) + closetDoorCount;
+          const doorCountForSummary = doorCountValue + closetDoorCount;
           const closetInteriorEnabled =
             includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
+
+          // Window Frames
+          const windowLaborCost = windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
+          const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
+          const windowTrimSqFt = windowCountValue * windowTrimPerimeter * windowTrimWidthFt;
+          const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const windowMaterialsCost = Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+
+          // Door Frames
+          const doorFrameLaborCost = doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const doorTrimWidthFt = calcSettings.doorTrimWidth / 12;
+          const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
+          const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
+          const singleClosetTrimWidthFt = calcSettings.singleClosetTrimWidth / 12;
+          const singleClosetPerimeter = (2 * currentHeight) + (calcSettings.singleClosetWidth / 12);
+          const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
+          const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
+          const doubleClosetPerimeter = (2 * currentHeight) + (calcSettings.doubleClosetWidth / 12);
+          const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+          const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+
+          // Doors (faces)
+          const doorLaborCost = doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors);
+          const doorFaceSqFt = doorCountForSummary * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
+          const doorFaceGallons = (doorFaceSqFt * pricingSummary.coatsDoors) / trimCoverage;
+          const doorMaterialsCost = Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+          const doorTotal = doorLaborCost + doorMaterialsCost;
           const closetWallLaborCost = pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
           const closetWallMaterialsCost = Math.ceil((pricingSummary.closetWallArea / wallCoverage) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0);
           const closetCeilingLaborCost = pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
@@ -1778,11 +1797,19 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
-                  {paintWindows && pricingSummary.windowsCount > 0 && (
+                  {paintWindowFrames && windowCountValue > 0 && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Windows</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Window Frames</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {pricingSummary.windowsCount}
+                        {windowCountValue}
+                      </Text>
+                    </View>
+                  )}
+                  {paintDoorFrames && doorCountForSummary > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Door Frames</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {doorCountForSummary}
                       </Text>
                     </View>
                   )}
@@ -1860,13 +1887,23 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
-                  {paintWindows && pricingSummary.windowsCount > 0 && (
+                  {paintWindowFrames && windowCountValue > 0 && (
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(windowLaborCost)}
                       </Text>
                       <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(windowMaterialsCost)}
+                      </Text>
+                    </View>
+                  )}
+                  {paintDoorFrames && doorCountForSummary > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(doorFrameLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(doorFrameMaterialsCost)}
                       </Text>
                     </View>
                   )}
@@ -1880,20 +1917,26 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
-                  {closetInteriorEnabled && (closetWallLaborCost > 0 || closetCeilingLaborCost > 0 || closetBaseboardLaborCost > 0) && (
-                    <>
-                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(closetInteriorLaborCost)}
-                        </Text>
-                        <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(closetInteriorMaterialsCost)}
-                        </Text>
-                      </View>
-                    </>
+                  {openingsCount > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        $0
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        $0
+                      </Text>
+                    </View>
                   )}
-
+                  {closetCount > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(closetInteriorEnabled ? closetInteriorMaterialsCost : 0)}
+                      </Text>
+                    </View>
+                  )}
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
                   <View style={{ alignItems: "flex-end" }}>
                     <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
@@ -2194,6 +2237,29 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         {testMode && pricingSummary && (parseFloat(length) > 0 || parseFloat(width) > 0 || parseFloat(manualArea) > 0) && (() => {
           const secondCoatMultiplier = safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
           const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
+          const calcSettings = useCalculationSettings.getState().settings;
+          const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
+          const windowCountValue = parseInt(windowCount) || 0;
+          const doorCountValue = parseInt(doorCount) || 0;
+          const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
+          const doorCountForSummary = doorCountValue + closetDoorCount;
+          const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
+          const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
+          const windowTrimSqFt = windowCountValue * windowTrimPerimeter * windowTrimWidthFt;
+          const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const doorTrimWidthFt = calcSettings.doorTrimWidth / 12;
+          const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
+          const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
+          const singleClosetTrimWidthFt = calcSettings.singleClosetTrimWidth / 12;
+          const singleClosetPerimeter = (2 * currentHeight) + (calcSettings.singleClosetWidth / 12);
+          const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
+          const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
+          const doubleClosetPerimeter = (2 * currentHeight) + (calcSettings.doubleClosetWidth / 12);
+          const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+          const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
+          const doorFaceSqFt = doorCountForSummary * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
+          const doorFaceGallons = (doorFaceSqFt * pricingSummary.coatsDoors) / trimCoverage;
 
           return (
             <Card style={{ marginBottom: Spacing.md }}>
@@ -2203,7 +2269,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
               <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                 {/* Walls */}
-                {pricingSummary.wallArea > 0 && (
+                {paintWalls && pricingSummary.wallArea > 0 && (
                   <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                       Walls
@@ -2221,7 +2287,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 )}
 
                 {/* Ceiling */}
-                {pricingSummary.ceilingArea > 0 && (
+                {paintCeilings && pricingSummary.ceilingArea > 0 && (
                   <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                       Ceiling
@@ -2269,31 +2335,55 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 )}
 
                 {/* Windows */}
-                {pricingSummary.windowsCount > 0 && (
+                {paintWindowFrames && windowCountValue > 0 && (
                   <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                      Windows
+                      Window Frames
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Count: {pricingSummary.windowsCount} | Coats: {pricingSummary.coatsTrim}
+                      Count: {windowCountValue} | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Labor: {pricingSummary.windowsCount} × ${safeNumber(pricing.windowLabor, 0).toFixed(2)}/window × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.windowsCount * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                      Labor: {windowCountValue} × ${safeNumber(pricing.windowLabor, 0).toFixed(2)}/window × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(windowTrimGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(windowTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Door Frames */}
+                {paintDoorFrames && doorCountForSummary > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Door Frames
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Count: {doorCountForSummary} | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {doorCountForSummary} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(doorFrameGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
                     </Text>
                   </View>
                 )}
 
                 {/* Doors */}
-                {pricingSummary.doorsCount > 0 && (
+                {paintDoors && doorCountForSummary > 0 && (
                   <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
                     <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
                       Doors
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Count: {pricingSummary.doorsCount} | Coats: {pricingSummary.coatsDoors}
+                      Count: {doorCountForSummary} | Coats: {pricingSummary.coatsDoors}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Labor: {pricingSummary.doorsCount} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsDoors).toFixed(2)} = ${(pricingSummary.doorsCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors)).toFixed(2)}
+                      Labor: {doorCountForSummary} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsDoors).toFixed(2)} = ${(doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(doorFaceGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
                     </Text>
                   </View>
                 )}
