@@ -2424,13 +2424,13 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     Totals
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Total Labor: ${summaryLaborTotal.toFixed(2)}
+                    Total Labor: ${pricingSummary.laborDisplayed.toFixed(2)}
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Total Materials: ${summaryMaterialsTotal.toFixed(2)}
+                    Total Materials: ${pricingSummary.materialsDisplayed.toFixed(2)}
                   </Text>
                   <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                    Grand Total: ${(summaryLaborTotal + summaryMaterialsTotal).toFixed(2)}
+                    Grand Total: ${pricingSummary.totalDisplayed.toFixed(2)}
                   </Text>
                 </View>
               </View>
