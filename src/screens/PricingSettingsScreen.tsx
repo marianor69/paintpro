@@ -61,6 +61,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [wallCabinetLabor, setWallCabinetLabor] = React.useState(
     (pricing.wallCabinetLabor || 165).toString()
   );
+  const [builtInShelfLabor, setBuiltInShelfLabor] = React.useState(
+    (pricing.builtInShelfLabor || 25).toString()
+  );
   const [vanityDoorLabor, setVanityDoorLabor] = React.useState(
     (pricing.vanityDoorLabor || 150).toString()
   );
@@ -160,6 +163,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const cabinetDoorLaborRef = useRef<TextInput>(null);
   const cabinetDrawerLaborRef = useRef<TextInput>(null);
   const wallCabinetLaborRef = useRef<TextInput>(null);
+  const builtInShelfLaborRef = useRef<TextInput>(null);
   const vanityDoorLaborRef = useRef<TextInput>(null);
   const riserLaborRef = useRef<TextInput>(null);
   const spindleLaborRef = useRef<TextInput>(null);
@@ -198,6 +202,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const cabinetDoorLaborID = useId();
   const cabinetDrawerLaborID = useId();
   const wallCabinetLaborID = useId();
+  const builtInShelfLaborID = useId();
   const vanityDoorLaborID = useId();
   const riserLaborID = useId();
   const spindleLaborID = useId();
@@ -290,6 +295,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       vanityDoorLabor: parseFloat(vanityDoorLabor) || 150,
       cabinetDrawerLabor: parseFloat(cabinetDrawerLabor) || 30,
       wallCabinetLabor: parseFloat(wallCabinetLabor) || 165,
+      builtInShelfLabor: parseFloat(builtInShelfLabor) || 25,
       riserLabor: parseFloat(riserLabor) || 0,
       spindleLabor: parseFloat(spindleLabor) || 0,
       handrailLaborPerLF: parseFloat(handrailLaborPerLF) || 0,
@@ -381,6 +387,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       parseOrDefault(vanityDoorLabor, pricing.vanityDoorLabor || 150) !== (pricing.vanityDoorLabor || 150) ||
       parseOrDefault(cabinetDrawerLabor, pricing.cabinetDrawerLabor || 30) !== (pricing.cabinetDrawerLabor || 30) ||
       parseOrDefault(wallCabinetLabor, pricing.wallCabinetLabor || 165) !== (pricing.wallCabinetLabor || 165) ||
+      parseOrDefault(builtInShelfLabor, pricing.builtInShelfLabor || 25) !== (pricing.builtInShelfLabor || 25) ||
       parseOrDefault(riserLabor, pricing.riserLabor) !== pricing.riserLabor ||
       parseOrDefault(spindleLabor, pricing.spindleLabor) !== pricing.spindleLabor ||
       parseOrDefault(handrailLaborPerLF, pricing.handrailLaborPerLF) !== pricing.handrailLaborPerLF ||
@@ -421,6 +428,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     vanityDoorLabor,
     cabinetDrawerLabor,
     wallCabinetLabor,
+    builtInShelfLabor,
     riserLabor,
     spindleLabor,
     handrailLaborPerLF,
@@ -1301,10 +1309,44 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
                       returnKeyType="next"
-                      onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                      onSubmitEditing={() => builtInShelfLaborRef.current?.focus()}
                       onFocus={handleFieldFocus}
                       blurOnSubmit={false}
                       inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallCabinetLabor-${wallCabinetLaborID}` : undefined}
+                      style={inputTextStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Card>
+
+          {/* Built-In Labor */}
+          <Card style={{ marginBottom: Spacing.md }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Built-In Labor
+            </Text>
+
+            <View style={rowStyle}>
+              <View style={inlineFieldStyle}>
+                <View style={leftAlignedLabelWrapperStyle}>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Shelf</Text>
+                </View>
+                <View style={bubbleHeaderWrapperStyle}>
+                  <Text style={bubbleHeaderTextStyle}>Each/$</Text>
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={builtInShelfLaborRef}
+                      value={builtInShelfLabor}
+                      onChangeText={setBuiltInShelfLabor}
+                      placeholder="25"
+                      placeholderTextColor={Colors.mediumGray}
+                      keyboardType="numeric"
+                      returnKeyType="next"
+                      onSubmitEditing={() => furnitureMovingFeeRef.current?.focus()}
+                      onFocus={handleFieldFocus}
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `pricingBuiltInShelfLabor-${builtInShelfLaborID}` : undefined}
                       style={inputTextStyle}
                     />
                   </View>
@@ -1790,6 +1832,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingWallCabinetLabor-${wallCabinetLaborID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => cabinetDrawerLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => builtInShelfLaborRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingBuiltInShelfLabor-${builtInShelfLaborID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => wallCabinetLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => furnitureMovingFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
@@ -1818,7 +1866,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingFurnitureMovingFee-${furnitureMovingFeeID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => wallCabinetLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => builtInShelfLaborRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => nailsRemovalFeeRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

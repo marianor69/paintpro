@@ -435,6 +435,7 @@ export interface PricingSettings {
   vanityDoorLabor: number;
   cabinetDrawerLabor: number;
   wallCabinetLabor: number;
+  builtInShelfLabor: number;
   cabinetPaintPerGallon: number;
   riserLabor: number;
   spindleLabor: number;

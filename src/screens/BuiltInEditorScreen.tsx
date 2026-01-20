@@ -1044,6 +1044,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const cabinetCoats = builtIn?.coats || 1;
               const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
               const cabinetDoorLaborCost = cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier;
+              const shelfCountValue = parseInt(shelfCount) || 0;
+              const shelfLaborCost = shelfCountValue * safeNumber(pricing.builtInShelfLabor, 0) * cabinetLaborMultiplier;
               const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
               const cabinetDoorAreaSqFt = cabinetDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
               const cabinetDoorGallons = (cabinetDoorAreaSqFt / cabinetCoverage) * cabinetCoats;
@@ -1122,6 +1124,21 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         </View>
                       </View>
                     )}
+                    {shelfCountValue > 0 && (
+                      <View style={{ marginTop: Spacing.sm }}>
+                        <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelves</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{shelfCountValue}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Labor</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            ${Math.round(shelfLaborCost)}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
                   </View>
                 </Card>
               );
@@ -1142,6 +1159,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const cabinetDoorLaborTotal = paintCabinetDoors
                 ? cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier
                 : 0;
+              const shelfCountValue = parseInt(shelfCount) || 0;
+              const shelfLaborTotal = shelfCountValue * safeNumber(pricing.builtInShelfLabor, 0) * cabinetLaborMultiplier;
               const cabinetDoorMaterialsTotal = paintCabinetDoors
                 ? Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
                 : 0;
@@ -1226,10 +1245,24 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                           Count: {cabinetDoorCountValue} | Coats: {cabinetCoats}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Labor: {cabinetDoorCountValue} × ${safeNumber(pricing.cabinetDoorLabor, 0).toFixed(2)}/door × {cabinetLaborMultiplier.toFixed(2)} = {cabinetDoorLaborTotal.toFixed(2)}
+                          Labor: {cabinetDoorCountValue} x ${safeNumber(pricing.cabinetDoorLabor, 0).toFixed(2)}/door x {cabinetLaborMultiplier.toFixed(2)} = {cabinetDoorLaborTotal.toFixed(2)}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Materials: {Math.ceil(cabinetDoorGallons).toFixed(0)} gal × ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {cabinetDoorMaterialsTotal.toFixed(2)}
+                          Materials: {Math.ceil(cabinetDoorGallons).toFixed(0)} gal x ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {cabinetDoorMaterialsTotal.toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {shelfCountValue > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Shelves
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Count: {shelfCountValue} | Rate: ${safeNumber(pricing.builtInShelfLabor, 0).toFixed(2)} each
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {shelfCountValue} x ${safeNumber(pricing.builtInShelfLabor, 0).toFixed(2)} x {cabinetLaborMultiplier.toFixed(2)} = {shelfLaborTotal.toFixed(2)}
                         </Text>
                       </View>
                     )}
