@@ -263,6 +263,7 @@ export function computeRoomPricingSummary(
   const doorCount = safeNumber(room.doorCount, 0);
   const vanityDoorCount = safeNumber((room as { vanityDoorCount?: number }).vanityDoorCount, 0);
   const paintVanities = Boolean((room as { paintVanities?: boolean }).paintVanities);
+  const toiletEnclosed = Boolean((room as { toiletEnclosed?: boolean }).toiletEnclosed);
   const singleClosets = safeNumber(room.singleDoorClosets, 0);
   const doubleClosets = safeNumber(room.doubleDoorClosets, 0);
   const cabinetPaintCoverageSqFtPerGallon = Math.max(
@@ -515,6 +516,9 @@ export function computeRoomPricingSummary(
   }
   if (paintVanities && vanityDoorCount > 0) {
     laborCost += vanityDoorCount * safeNumber(pricing.vanityDoorLabor, 0);
+  }
+  if (toiletEnclosed && includedWalls) {
+    laborCost += safeNumber(pricing.bathroomEnclosedToiletAddOn, 0);
   }
 
   if (includedWindows && room.includeWindows !== false) {

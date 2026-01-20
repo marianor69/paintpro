@@ -1870,6 +1870,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const vanityDoorGallons = (vanityDoorAreaSqFt / cabinetCoverage) * pricingSummary.coatsTrim;
           const vanityMaterialsCost = Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
           const vanityLaborCost = vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0);
+          const enclosedToiletLaborCost = toiletEnclosed && paintWalls
+            ? safeNumber(pricing.bathroomEnclosedToiletAddOn, 0)
+            : 0;
           const closetWallLaborCost = pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
           const closetWallMaterialsCost = Math.ceil((pricingSummary.closetWallArea / wallCoverage) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0);
           const closetCeilingLaborCost = pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
@@ -1890,6 +1893,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             (doorFrameCount > 0 ? (paintDoorFrames ? doorFrameLaborCost : 0) : 0) +
             (doorCountForSummary > 0 ? (paintDoors ? doorLaborCost : 0) : 0) +
             (vanityDoorCountValue > 0 ? (paintVanities ? vanityLaborCost : 0) : 0) +
+            enclosedToiletLaborCost +
             (openingsCount > 0 ? (paintDoorFrames ? openingTrimLaborCost : 0) : 0) +
             (closetCount > 0 ? (closetInteriorEnabled ? closetInteriorLaborCost : 0) : 0);
           const summaryMaterialsTotal =
@@ -1970,6 +1974,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                         {doorCountForSummary}
+                      </Text>
+                    </View>
+                  )}
+                  {toiletEnclosed && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Enclosed Toilet</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {paintWalls ? "Yes" : "Off"}
                       </Text>
                     </View>
                   )}
@@ -2074,6 +2086,16 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
                         ${Math.round(paintDoors ? doorMaterialsCost : 0)}
+                      </Text>
+                    </View>
+                  )}
+                  {toiletEnclosed && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(enclosedToiletLaborCost)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        $0
                       </Text>
                     </View>
                   )}
@@ -2502,6 +2524,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const vanityMaterialsTotal = paintVanities
             ? Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
             : 0;
+          const enclosedToiletLaborTotal = toiletEnclosed && paintWalls
+            ? safeNumber(pricing.bathroomEnclosedToiletAddOn, 0)
+            : 0;
           const openingTrimLaborTotal = paintDoorFrames
             ? openingTrimLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
             : 0;
@@ -2539,6 +2564,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             doorFrameLaborTotal +
             doorLaborTotal +
             vanityLaborTotal +
+            enclosedToiletLaborTotal +
             openingTrimLaborTotal +
             closetWallLaborTotal +
             closetCeilingLaborTotal +
@@ -2740,6 +2766,18 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Materials: {Math.ceil(doorFaceGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Enclosed Toilet */}
+                {toiletEnclosed && paintWalls && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Enclosed Toilet
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: ${safeNumber(pricing.bathroomEnclosedToiletAddOn, 0).toFixed(2)}
                     </Text>
                   </View>
                 )}
