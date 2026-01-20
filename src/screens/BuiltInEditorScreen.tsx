@@ -1034,123 +1034,95 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             </Card>
 
             {/* Built-In Summary */}
-            {hasAnyDimensions && (() => {
-              // Calculate per-component areas
-              const frontBackArea = 2 * widthVal * heightVal;
-              const leftRightArea = 2 * heightVal * depthVal;
-              const topBottomArea = 2 * widthVal * depthVal;
-              const shelvesArea = shelfCount && parseInt(shelfCount) > 0 ? parseInt(shelfCount) * widthVal : 0;
+            {(() => {
               const cabinetDoorCountValue = parseInt(cabinetDoorCount) || 0;
+              const shelfCountValue = parseInt(shelfCount) || 0;
+              const hasPricingInputs = cabinetDoorCountValue > 0 || shelfCountValue > 0;
+              if (!hasPricingInputs) return null;
+
               const cabinetCoats = builtIn?.coats || 1;
               const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
               const cabinetDoorLaborCost = cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier;
-              const shelfCountValue = parseInt(shelfCount) || 0;
               const shelfLaborCost = shelfCountValue * safeNumber(pricing.builtInShelfLabor, 0) * cabinetLaborMultiplier;
               const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
               const cabinetDoorAreaSqFt = cabinetDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
               const cabinetDoorGallons = (cabinetDoorAreaSqFt / cabinetCoverage) * cabinetCoats;
               const cabinetDoorMaterialsCost = Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
 
+              const laborTotal = (paintCabinetDoors ? cabinetDoorLaborCost : 0) + shelfLaborCost;
+              const materialsTotal = paintCabinetDoors ? cabinetDoorMaterialsCost : 0;
+              const totalCost = Math.round(laborTotal + materialsTotal);
+
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
                   <Text style={Typography.h2}>Built-In Summary</Text>
 
-                  <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
-                    {frontBackArea > 0 && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Front/Back</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {formatMeasurement(Math.ceil(frontBackArea), 'area', unitSystem, 0)}
-                        </Text>
+                  <View style={{ flexDirection: "row", gap: Spacing.sm }}>
+                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
+                      <View style={{ marginBottom: Spacing.xs }}>
+                        <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                       </View>
-                    )}
 
-                    {leftRightArea > 0 && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Left/Right</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {formatMeasurement(Math.ceil(leftRightArea), 'area', unitSystem, 0)}
-                        </Text>
-                      </View>
-                    )}
-
-                    {topBottomArea > 0 && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Top/Bottom</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {formatMeasurement(Math.ceil(topBottomArea), 'area', unitSystem, 0)}
-                        </Text>
-                      </View>
-                    )}
-
-                    {shelvesArea > 0 && (
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelves ({shelfCount})</Text>
-                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                          {formatMeasurement(Math.ceil(shelvesArea), 'area', unitSystem, 0)}
-                        </Text>
-                      </View>
-                    )}
-
-                    <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
-
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
-                        Total Area:
-                      </Text>
-                      <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
-                        {formatMeasurement(Math.ceil(totalPaintableArea), 'area', unitSystem, 0)}
-                      </Text>
-                    </View>
-
-                    {cabinetDoorCountValue > 0 && (
-                      <View style={{ marginTop: Spacing.sm }}>
-                        <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
+                      {cabinetDoorCountValue > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Cabinet Doors</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{cabinetDoorCountValue}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Labor</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            ${Math.round(paintCabinetDoors ? cabinetDoorLaborCost : 0)}
-                          </Text>
-                        </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Material</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            ${Math.round(paintCabinetDoors ? cabinetDoorMaterialsCost : 0)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-                    {shelfCountValue > 0 && (
-                      <View style={{ marginTop: Spacing.sm }}>
-                        <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
+                      )}
+
+                      {shelfCountValue > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelves</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{shelfCountValue}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Labor</Text>
-                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            ${Math.round(shelfLaborCost)}
-                          </Text>
-                        </View>
+                      )}
+
+                      <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
+
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total Items:</Text>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          {cabinetDoorCountValue + shelfCountValue}
+                        </Text>
                       </View>
-                    )}
+                    </View>
+
+                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
+                      </View>
+
+                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(laborTotal)}
+                        </Text>
+                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          ${Math.round(materialsTotal)}
+                        </Text>
+                      </View>
+
+                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
+
+                      <View style={{ alignItems: "flex-end" }}>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${totalCost.toLocaleString()}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
                 </Card>
               );
             })()}
 
             {/* Test Mode: Detailed Calculation Breakdown */}
-            {testMode && hasAnyDimensions && (() => {
-              const frontBackArea = 2 * widthVal * heightVal;
-              const leftRightArea = 2 * heightVal * depthVal;
-              const topBottomArea = 2 * widthVal * depthVal;
-              const shelvesArea = shelfCount && parseInt(shelfCount) > 0 ? parseInt(shelfCount) * widthVal : 0;
+            {testMode && (() => {
               const cabinetDoorCountValue = parseInt(cabinetDoorCount) || 0;
+              const shelfCountValue = parseInt(shelfCount) || 0;
+              const hasPricingInputs = cabinetDoorCountValue > 0 || shelfCountValue > 0;
+              if (!hasPricingInputs) return null;
+
               const cabinetCoats = builtIn?.coats || 1;
               const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
               const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
@@ -1159,11 +1131,12 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const cabinetDoorLaborTotal = paintCabinetDoors
                 ? cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier
                 : 0;
-              const shelfCountValue = parseInt(shelfCount) || 0;
               const shelfLaborTotal = shelfCountValue * safeNumber(pricing.builtInShelfLabor, 0) * cabinetLaborMultiplier;
               const cabinetDoorMaterialsTotal = paintCabinetDoors
                 ? Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
                 : 0;
+              const laborTotal = cabinetDoorLaborTotal + shelfLaborTotal;
+              const materialsTotal = cabinetDoorMaterialsTotal;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -1172,70 +1145,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   </Text>
 
                   <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
-                    {/* Front/Back */}
-                    {frontBackArea > 0 && (
-                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                          Front/Back Faces
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: {frontBackArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {width} × {height})
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Formula: 2 × width × height
-                        </Text>
-                      </View>
-                    )}
-
-                    {/* Left/Right */}
-                    {leftRightArea > 0 && (
-                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                          Left/Right Sides
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: {leftRightArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {height} × {depth})
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Formula: 2 × height × depth
-                        </Text>
-                      </View>
-                    )}
-
-                    {/* Top/Bottom */}
-                    {topBottomArea > 0 && (
-                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                          Top/Bottom
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: {topBottomArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} (2 × {width} × {depth})
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Formula: 2 × width × depth
-                        </Text>
-                      </View>
-                    )}
-
-                    {/* Shelves */}
-                    {shelvesArea > 0 && (
-                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
-                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                          Shelves
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Count: {shelfCount} shelves
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: {shelvesArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} ({shelfCount} × {width})
-                        </Text>
-                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Formula: shelf_count × width
-                        </Text>
-                      </View>
-                    )}
-
-                    {/* Cabinet Doors */}
                     {cabinetDoorCountValue > 0 && (
                       <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
                         <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
@@ -1267,19 +1176,18 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                       </View>
                     )}
 
-                    {/* Total */}
                     <View>
                       <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
-                        Total Paintable Area
+                        Totals
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Total: {totalPaintableArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'}
+                        Total Labor: ${laborTotal.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Formula: Front/Back + Left/Right + Top/Bottom + Shelves
+                        Total Materials: ${materialsTotal.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        = {frontBackArea.toFixed(2)} + {leftRightArea.toFixed(2)} + {topBottomArea.toFixed(2)} + {shelvesArea.toFixed(2)}
+                        Grand Total: ${(laborTotal + materialsTotal).toFixed(2)}
                       </Text>
                     </View>
                   </View>
