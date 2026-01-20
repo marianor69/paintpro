@@ -809,6 +809,7 @@ export const useProjectStore = create<ProjectStore>()(
           depth: 12,
           shelfCount: 4,
           cabinetDoorCount: 0,
+          cabinetDrawerCount: 0,
           paintCabinetDoors: false,
           coats: 2,
           photos: [],

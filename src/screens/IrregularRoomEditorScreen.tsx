@@ -55,7 +55,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const addIrregularRoom = useProjectStore((s) => s.addIrregularRoom);
   const updateIrregularRoom = useProjectStore((s) => s.updateIrregularRoom);
 
-  const pricing = usePricingStore((s) => s.settings);
+  const pricing = usePricingStore();
   const unitSystem = useAppSettings((s) => s.unitSystem);
   const calcSettings = useCalculationSettings((s) => s.settings);
   const testMode = useAppSettings((s) => s.testMode);
@@ -266,7 +266,13 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   }, []);
 
   // Calculate total area from all walls - use area field directly (may be from width×height or manual entry)
-  const totalArea = walls.reduce((sum, wall) => {
+  const activeWalls = walls.filter((wall) => {
+    const hasWidth = parseFloat(wall.width) > 0;
+    const hasArea = parseFloat(wall.area) > 0;
+    return hasWidth || hasArea;
+  });
+
+  const totalArea = activeWalls.reduce((sum, wall) => {
     const areaVal = parseFloat(wall.area) || 0;
     return sum + areaVal;
   }, 0);
@@ -374,7 +380,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     (hasCloset ? (closetInteriorEnabled ? closetInteriorMaterialsCost : 0) : 0);
 
   // Validation: check if all walls have valid dimensions
-  const hasValidDimensions = walls.every(wall => {
+  const hasValidDimensions = activeWalls.length > 0 && activeWalls.every(wall => {
     const hasWidthAndHeight = parseFloat(wall.width) > 0 && parseFloat(wall.height) > 0;
     const hasArea = parseFloat(wall.area) > 0;
     return hasWidthAndHeight || hasArea;
@@ -636,7 +642,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
     // Convert walls to the proper format
     // If only area was entered, we'll store the area value as width×1 for calculations
-    const wallsData: IrregularRoomWall[] = walls.map(w => {
+    const wallsData: IrregularRoomWall[] = activeWalls.map(w => {
       const widthVal = parseDisplayValue(w.width, "length", unitSystem);
       const heightVal = parseDisplayValue(w.height, "length", unitSystem);
       const areaVal = parseFloat(w.area) || 0;
@@ -2004,11 +2010,11 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                           </Text>
                         </View>
                       )}
-                      {paintWalls && walls.length > 0 && (
+                      {paintWalls && activeWalls.length > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Walls</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                            {walls.length}
+                            {activeWalls.length}
                           </Text>
                         </View>
                       )}

@@ -205,6 +205,7 @@ export interface BuiltIn {
   depth: number; // in inches (how far it protrudes from wall)
   shelfCount: number; // number of shelves
   cabinetDoorCount?: number;
+  cabinetDrawerCount?: number;
   paintCabinetDoors?: boolean;
   coats: number; // number of coats to paint
   // Notes field (available without photos)

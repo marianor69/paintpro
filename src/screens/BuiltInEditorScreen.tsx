@@ -62,6 +62,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const [depth, setDepth] = useState(!isNewBuiltIn && builtIn?.depth && builtIn.depth > 0 ? formatMeasurementValue(builtIn.depth / 12, 'length', unitSystem, 2) : "");
   const [shelfCount, setShelfCount] = useState(!isNewBuiltIn && builtIn?.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "");
   const [cabinetDoorCount, setCabinetDoorCount] = useState(!isNewBuiltIn && builtIn?.cabinetDoorCount && builtIn.cabinetDoorCount > 0 ? builtIn.cabinetDoorCount.toString() : "");
+  const [cabinetDrawerCount, setCabinetDrawerCount] = useState(!isNewBuiltIn && builtIn?.cabinetDrawerCount && builtIn.cabinetDrawerCount > 0 ? builtIn.cabinetDrawerCount.toString() : "");
   const [paintCabinetDoors, setPaintCabinetDoors] = useState(builtIn?.paintCabinetDoors ?? false);
   const [notes, setNotes] = useState(!isNewBuiltIn && builtIn?.notes ? builtIn.notes : "");
   const [notesExpanded, setNotesExpanded] = useState(false);
@@ -84,9 +85,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         depth,
         shelfCount,
         cabinetDoorCount,
+        cabinetDrawerCount,
         paintCabinetDoors,
       }),
-    [name, width, height, depth, shelfCount, cabinetDoorCount, paintCabinetDoors]
+    [name, width, height, depth, shelfCount, cabinetDoorCount, cabinetDrawerCount, paintCabinetDoors]
   );
 
   useEffect(() => {
@@ -167,6 +169,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         depth !== "" ||
         shelfCount !== "" ||
         cabinetDoorCount !== "" ||
+        cabinetDrawerCount !== "" ||
         paintCabinetDoors ||
         notes !== "" ||
         photos.length > 0;
@@ -190,6 +193,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       const storedCabinetDoorCount = builtIn.cabinetDoorCount && builtIn.cabinetDoorCount > 0
         ? builtIn.cabinetDoorCount.toString()
         : "";
+      const storedCabinetDrawerCount = builtIn.cabinetDrawerCount && builtIn.cabinetDrawerCount > 0
+        ? builtIn.cabinetDrawerCount.toString()
+        : "";
       const storedPaintCabinetDoors = builtIn.paintCabinetDoors ?? false;
 
       const hasChanges =
@@ -199,6 +205,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         depth !== storedDepth ||
         shelfCount !== storedShelfCount ||
         cabinetDoorCount !== storedCabinetDoorCount ||
+        cabinetDrawerCount !== storedCabinetDrawerCount ||
         paintCabinetDoors !== storedPaintCabinetDoors ||
         notes !== (builtIn.notes || "") ||
         !arePhotosEqual(photos, builtIn.photos || []);
@@ -214,6 +221,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     depth,
     shelfCount,
     cabinetDoorCount,
+    cabinetDrawerCount,
     paintCabinetDoors,
     notes,
     photos,
@@ -359,6 +367,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       depth !== "" ||
       shelfCount !== "" ||
       cabinetDoorCount !== "" ||
+      cabinetDrawerCount !== "" ||
       paintCabinetDoors ||
       notes !== "" ||
       photos.length > 0;
@@ -407,6 +416,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
         cabinetDoorCount: parseInt(cabinetDoorCount) || 0,
+        cabinetDrawerCount: parseInt(cabinetDrawerCount) || 0,
         paintCabinetDoors,
         coats: 1,
         notes: notes.trim() || undefined,
@@ -422,6 +432,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
         cabinetDoorCount: parseInt(cabinetDoorCount) || 0,
+        cabinetDrawerCount: parseInt(cabinetDrawerCount) || 0,
         paintCabinetDoors,
         coats: builtIn?.coats || 1,
         notes: notes.trim() || undefined,
