@@ -2828,24 +2828,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           );
         })()}
 
-        {/* Save Button */}
-        <Pressable
-          onPress={handleSave}
-          style={{
-            backgroundColor: Colors.primaryBlue,
-            borderRadius: 8,
-            paddingVertical: Spacing.md,
-            alignItems: "center",
-            ...Shadows.card,
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Save room"
-          accessibilityHint="Save all changes to this room"
-        >
-          <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-            Save Room
-          </Text>
-        </Pressable>
       </ScrollView>
 
       {Platform.OS === "ios" && (

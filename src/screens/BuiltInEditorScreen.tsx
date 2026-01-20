@@ -1433,24 +1433,6 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
-            <Pressable
-              onPress={handleSave}
-              disabled={isSaving}
-              style={{
-                backgroundColor: isSaving ? Colors.mediumGray : Colors.primaryBlue,
-                borderRadius: 8,
-                paddingVertical: Spacing.md,
-                alignItems: "center",
-                ...Shadows.card,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Save built-in"
-              accessibilityHint="Save all changes to this built-in"
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Save Built-In
-              </Text>
-            </Pressable>
           </View>
         </ScrollView>
 

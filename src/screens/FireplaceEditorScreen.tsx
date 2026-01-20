@@ -1280,23 +1280,6 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
-            <Pressable
-              onPress={handleSave}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                borderRadius: 8,
-                paddingVertical: Spacing.md,
-                alignItems: "center",
-                ...Shadows.card,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Save fireplace"
-              accessibilityHint="Save all changes to this fireplace"
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Save Fireplace
-              </Text>
-            </Pressable>
         </ScrollView>
 
         {Platform.OS === "ios" && (

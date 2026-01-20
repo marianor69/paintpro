@@ -1081,23 +1081,6 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
-            <Pressable
-              onPress={handleSave}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                borderRadius: 8,
-                paddingVertical: Spacing.md,
-                alignItems: "center",
-                ...Shadows.card,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Save brick wall"
-              accessibilityHint="Save all changes to this brick wall"
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Save Brick/Panel
-              </Text>
-            </Pressable>
           </View>
         </ScrollView>
 

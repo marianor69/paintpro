@@ -2256,22 +2256,6 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
             </Card>
 
-            {/* Save Button */}
-            <Pressable
-              onPress={handleSave}
-              disabled={isSaving}
-              style={{
-                backgroundColor: isSaving ? Colors.mediumGray : Colors.primaryBlue,
-                borderRadius: 8,
-                paddingVertical: Spacing.md,
-                alignItems: "center",
-                ...Shadows.card,
-              }}
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                {isSaving ? "Saving..." : "Save Irregular Room"}
-              </Text>
-            </Pressable>
           </View>
         </ScrollView>
 

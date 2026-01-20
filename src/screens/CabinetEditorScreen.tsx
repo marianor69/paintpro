@@ -1084,23 +1084,6 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
               );
             })()}
 
-            <Pressable
-              onPress={handleSave}
-              style={{
-                backgroundColor: Colors.primaryBlue,
-                borderRadius: 8,
-                paddingVertical: Spacing.md,
-                alignItems: "center",
-                ...Shadows.card,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Save cabinet"
-              accessibilityHint="Save all changes to this cabinet"
-            >
-              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                Save Cabinet
-              </Text>
-            </Pressable>
           </View>
         </ScrollView>
 
