@@ -456,15 +456,14 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
     setShowSavePrompt(false);
   };
 
-  // Calculate total paintable area (all 6 faces of the box)
-  const widthVal = parseFloat(width) || 0;
-  const heightVal = parseFloat(height) || 0;
-  const depthVal = parseFloat(depth) || 0;
+  // Calculate total paintable area for shelves and sides (in sqft).
+  const widthVal = parseDisplayValue(width, "length", unitSystem) || 0;
+  const heightVal = parseDisplayValue(height, "length", unitSystem) || 0;
+  const depthVal = parseDisplayValue(depth, "length", unitSystem) || 0;
+  const shelfCountValue = parseInt(shelfCount) || 0;
   const totalPaintableArea =
-    2 * (widthVal * heightVal) + // front and back
-    2 * (heightVal * depthVal) + // left and right sides (height × depth)
-    2 * (widthVal * depthVal) + // top and bottom (width × depth)
-    (shelfCount ? parseInt(shelfCount) * widthVal : 0); // shelves
+    (shelfCountValue > 0 ? shelfCountValue * widthVal * depthVal * 2 : 0) + // shelves (both sides)
+    2 * (heightVal * depthVal); // left + right sides
 
   const hasAnyDimensions = widthVal > 0 || heightVal > 0 || depthVal > 0;
 
@@ -1036,8 +1035,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             {/* Built-In Summary */}
             {(() => {
               const cabinetDoorCountValue = parseInt(cabinetDoorCount) || 0;
-              const shelfCountValue = parseInt(shelfCount) || 0;
-              const hasPricingInputs = cabinetDoorCountValue > 0 || shelfCountValue > 0;
+              const hasPricingInputs = cabinetDoorCountValue > 0 || shelfCountValue > 0 || totalPaintableArea > 0;
               if (!hasPricingInputs) return null;
 
               const cabinetCoats = builtIn?.coats || 1;
@@ -1048,9 +1046,11 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const cabinetDoorAreaSqFt = cabinetDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
               const cabinetDoorGallons = (cabinetDoorAreaSqFt / cabinetCoverage) * cabinetCoats;
               const cabinetDoorMaterialsCost = Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
+              const shelfSurfaceGallons = (totalPaintableArea / cabinetCoverage) * cabinetCoats;
+              const shelfSurfaceMaterialsCost = Math.ceil(shelfSurfaceGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
 
               const laborTotal = (paintCabinetDoors ? cabinetDoorLaborCost : 0) + shelfLaborCost;
-              const materialsTotal = paintCabinetDoors ? cabinetDoorMaterialsCost : 0;
+              const materialsTotal = (paintCabinetDoors ? cabinetDoorMaterialsCost : 0) + shelfSurfaceMaterialsCost;
               const totalCost = Math.round(laborTotal + materialsTotal);
 
               return (
@@ -1074,6 +1074,15 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelves</Text>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{shelfCountValue}</Text>
+                        </View>
+                      )}
+
+                      {totalPaintableArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Paint Area</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(totalPaintableArea), "area", unitSystem, 0)}
+                          </Text>
                         </View>
                       )}
 
@@ -1119,8 +1128,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
             {/* Test Mode: Detailed Calculation Breakdown */}
             {testMode && (() => {
               const cabinetDoorCountValue = parseInt(cabinetDoorCount) || 0;
-              const shelfCountValue = parseInt(shelfCount) || 0;
-              const hasPricingInputs = cabinetDoorCountValue > 0 || shelfCountValue > 0;
+              const hasPricingInputs = cabinetDoorCountValue > 0 || shelfCountValue > 0 || totalPaintableArea > 0;
               if (!hasPricingInputs) return null;
 
               const cabinetCoats = builtIn?.coats || 1;
@@ -1135,8 +1143,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const cabinetDoorMaterialsTotal = paintCabinetDoors
                 ? Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
                 : 0;
+              const shelfSurfaceGallons = (totalPaintableArea / cabinetCoverage) * cabinetCoats;
+              const shelfSurfaceMaterialsTotal = Math.ceil(shelfSurfaceGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
               const laborTotal = cabinetDoorLaborTotal + shelfLaborTotal;
-              const materialsTotal = cabinetDoorMaterialsTotal;
+              const materialsTotal = cabinetDoorMaterialsTotal + shelfSurfaceMaterialsTotal;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -1154,6 +1164,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                           Count: {cabinetDoorCountValue} | Coats: {cabinetCoats}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {cabinetDoorCountValue} x {calcSettings.doorHeight.toFixed(2)} x {calcSettings.doorWidth.toFixed(2)} = {cabinetDoorAreaSqFt.toFixed(2)} sqft
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Labor: {cabinetDoorCountValue} x ${safeNumber(pricing.cabinetDoorLabor, 0).toFixed(2)}/door x {cabinetLaborMultiplier.toFixed(2)} = {cabinetDoorLaborTotal.toFixed(2)}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
@@ -1168,10 +1181,24 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                           Shelves
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Count: {shelfCountValue} | Rate: ${safeNumber(pricing.builtInShelfLabor, 0).toFixed(2)} each
+                          Count: {shelfCountValue} | Coats: {cabinetCoats}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Labor: {shelfCountValue} x ${safeNumber(pricing.builtInShelfLabor, 0).toFixed(2)} x {cabinetLaborMultiplier.toFixed(2)} = {shelfLaborTotal.toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+
+                    {totalPaintableArea > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Built-In Surfaces
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: ({shelfCountValue} x {widthVal.toFixed(2)} x {depthVal.toFixed(2)} x 2) + (2 x {heightVal.toFixed(2)} x {depthVal.toFixed(2)}) = {totalPaintableArea.toFixed(2)} sqft
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Materials: {Math.ceil(shelfSurfaceGallons).toFixed(0)} gal x ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {shelfSurfaceMaterialsTotal.toFixed(2)}
                         </Text>
                       </View>
                     )}

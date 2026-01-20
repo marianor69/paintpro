@@ -2009,9 +2009,6 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                   {toiletEnclosed && (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Enclosed Toilet</Text>
-                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
-                        {paintWalls ? "Yes" : "Off"}
-                      </Text>
                     </View>
                   )}
                   {vanityDoorCountValue > 0 && (
