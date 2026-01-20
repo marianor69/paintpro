@@ -1086,6 +1086,15 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         </View>
                       )}
 
+                      {totalPaintableArea > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Paint Gallons</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {shelfSurfaceGallons.toFixed(2)}
+                          </Text>
+                        </View>
+                      )}
+
                       <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
 
                       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -1196,6 +1205,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Area: ({shelfCountValue} x {widthVal.toFixed(2)} x {depthVal.toFixed(2)} x 2) + (2 x {heightVal.toFixed(2)} x {depthVal.toFixed(2)}) = {totalPaintableArea.toFixed(2)} sqft
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Gallons: {totalPaintableArea.toFixed(2)} / {cabinetCoverage.toFixed(2)} x {cabinetCoats} = {shelfSurfaceGallons.toFixed(2)}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Materials: {Math.ceil(shelfSurfaceGallons).toFixed(0)} gal x ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {shelfSurfaceMaterialsTotal.toFixed(2)}
