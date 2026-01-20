@@ -615,10 +615,16 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     if (isSavingRef.current) {
       return;
     }
+    const resolvedPaintOptionsConfirmed =
+      paintOptionsConfirmed ||
+      (paintOptionsSnapshotRef.current !== "" && paintOptionsSnapshotRef.current === paintOptionsSnapshot);
+    if (resolvedPaintOptionsConfirmed && !paintOptionsConfirmed) {
+      setPaintOptionsConfirmed(true);
+    }
     const missingConfirmations = [];
     if (!roomInfoConfirmed) missingConfirmations.push("Room Info");
     if (!openingsClosetsConfirmed) missingConfirmations.push("Openings & Closets");
-    if (!paintOptionsConfirmed) missingConfirmations.push("Paint Options");
+    if (!resolvedPaintOptionsConfirmed) missingConfirmations.push("Paint Options");
 
     if (missingConfirmations.length > 0) {
       openInfoModal(
