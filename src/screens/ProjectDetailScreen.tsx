@@ -1673,10 +1673,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
                       <View style={{ marginRight: Spacing.sm }}>
                         <BrickWallIcon size={20} color={Colors.primaryBlue} />
                       </View>
-                      <View style={{ flex: 1 }}>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
                         <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal, fontWeight: "600" as any }}>
                           {brickWall.name || "Unnamed Brick/Panel"}
                         </Text>
+                        {brickWall.detailsConfirmed && (
+                          <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={{ marginLeft: Spacing.xs }} />
+                        )}
                       </View>
                     </Pressable>
                     <Pressable

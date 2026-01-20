@@ -77,7 +77,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingPhotoNote, setEditingPhotoNote] = useState("");
   const [detailsExpanded, setDetailsExpanded] = useState(true);
-  const [detailsConfirmed, setDetailsConfirmed] = useState(false);
+  const [detailsConfirmed, setDetailsConfirmed] = useState(brickWall?.detailsConfirmed ?? false);
   const confirmedCardColor = Colors.success + "50";
   const detailsSnapshotRef = useRef<string>("");
 
@@ -360,6 +360,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
         coats,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
+        detailsConfirmed,
       });
     } else {
       // UPDATE existing brick wall
@@ -371,6 +372,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
         coats,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
+        detailsConfirmed,
       });
     }
 
