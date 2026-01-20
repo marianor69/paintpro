@@ -819,29 +819,38 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                     <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                   </View>
 
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Base Doors</Text>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{baseDoorCount}</Text>
-                  </View>
+                  {baseDoorCount > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Base Doors</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{baseDoorCount}</Text>
+                    </View>
+                  )}
 
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Drawers</Text>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{drawerCount}</Text>
-                  </View>
+                  {drawerCount > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Drawers</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{drawerCount}</Text>
+                    </View>
+                  )}
 
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall Doors</Text>
-                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{wallDoorCount}</Text>
-                  </View>
+                  {wallDoorCount > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Wall Doors</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{wallDoorCount}</Text>
+                    </View>
+                  )}
 
-                  <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
-
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total Items:</Text>
-                    <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
-                      {baseDoorCount + drawerCount + wallDoorCount}
-                    </Text>
-                  </View>
+                  {baseDoorCount + drawerCount + wallDoorCount > 0 && (
+                    <>
+                      <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total Items:</Text>
+                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          {baseDoorCount + drawerCount + wallDoorCount}
+                        </Text>
+                      </View>
+                    </>
+                  )}
                 </View>
 
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
