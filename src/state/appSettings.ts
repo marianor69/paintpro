@@ -19,6 +19,7 @@ export interface AppSettings {
   trimCoverageSqFtPerGallon: number;
   doorCoverageSqFtPerGallon: number;
   primerCoverageSqFtPerGallon: number;
+  cabinetPaintCoverageSqFtPerGallon: number;
 
   // Closet settings
   closetCavityDepth: number; // in feet, default 2
@@ -51,6 +52,7 @@ const defaultAppSettings: AppSettings = {
   trimCoverageSqFtPerGallon: 350,
   doorCoverageSqFtPerGallon: 350,
   primerCoverageSqFtPerGallon: 350,
+  cabinetPaintCoverageSqFtPerGallon: 350,
 
   // Closet
   closetCavityDepth: 2, // 2 feet = 24 inches

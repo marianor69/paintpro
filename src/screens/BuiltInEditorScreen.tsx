@@ -19,12 +19,14 @@ import { usePreventRemove } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProjectStore } from "../state/projectStore";
 import { usePricingStore } from "../state/pricingStore";
+import { useCalculationSettings } from "../state/calculationStore";
 import { useAppSettings } from "../state/appSettings";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { FormInput } from "../components/FormInput";
+import { Toggle } from "../components/Toggle";
 import { SavePromptModal } from "../components/SavePromptModal";
-import { formatCurrency } from "../utils/calculations";
+import { safeNumber } from "../utils/calculations";
 import { formatMeasurementValue, parseDisplayValue, formatMeasurement } from "../utils/unitConversion";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -49,7 +51,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const addBuiltIn = useProjectStore((s) => s.addBuiltIn);
   const updateBuiltIn = useProjectStore((s) => s.updateBuiltIn);
   const pricing = usePricingStore();
-  const { testMode, unitSystem } = useAppSettings();
+  const calcSettings = useCalculationSettings((s) => s.settings);
+  const { testMode, unitSystem, cabinetPaintCoverageSqFtPerGallon } = useAppSettings();
 
   // Convert stored imperial values (inches) to display values based on unit system
   // Built-ins store dimensions in INCHES, but unit conversion works with FEET, so convert inches->feet->display
@@ -58,6 +61,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const [height, setHeight] = useState(!isNewBuiltIn && builtIn?.height && builtIn.height > 0 ? formatMeasurementValue(builtIn.height / 12, 'length', unitSystem, 2) : "");
   const [depth, setDepth] = useState(!isNewBuiltIn && builtIn?.depth && builtIn.depth > 0 ? formatMeasurementValue(builtIn.depth / 12, 'length', unitSystem, 2) : "");
   const [shelfCount, setShelfCount] = useState(!isNewBuiltIn && builtIn?.shelfCount && builtIn.shelfCount > 0 ? builtIn.shelfCount.toString() : "");
+  const [cabinetDoorCount, setCabinetDoorCount] = useState(!isNewBuiltIn && builtIn?.cabinetDoorCount && builtIn.cabinetDoorCount > 0 ? builtIn.cabinetDoorCount.toString() : "");
+  const [paintCabinetDoors, setPaintCabinetDoors] = useState(builtIn?.paintCabinetDoors ?? false);
   const [notes, setNotes] = useState(!isNewBuiltIn && builtIn?.notes ? builtIn.notes : "");
   const [notesExpanded, setNotesExpanded] = useState(false);
   const [photos, setPhotos] = useState<RoomPhoto[]>(builtIn?.photos || []);
@@ -78,8 +83,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         height,
         depth,
         shelfCount,
+        cabinetDoorCount,
+        paintCabinetDoors,
       }),
-    [name, width, height, depth, shelfCount]
+    [name, width, height, depth, shelfCount, cabinetDoorCount, paintCabinetDoors]
   );
 
   useEffect(() => {
@@ -159,6 +166,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         height !== "" ||
         depth !== "" ||
         shelfCount !== "" ||
+        cabinetDoorCount !== "" ||
+        paintCabinetDoors ||
         notes !== "" ||
         photos.length > 0;
       setHasUnsavedChanges(hasChanges);
@@ -178,6 +187,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       const storedShelfCount = builtIn.shelfCount && builtIn.shelfCount > 0
         ? builtIn.shelfCount.toString()
         : "";
+      const storedCabinetDoorCount = builtIn.cabinetDoorCount && builtIn.cabinetDoorCount > 0
+        ? builtIn.cabinetDoorCount.toString()
+        : "";
+      const storedPaintCabinetDoors = builtIn.paintCabinetDoors ?? false;
 
       const hasChanges =
         name !== (builtIn.name || "") ||
@@ -185,12 +198,28 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         height !== storedHeight ||
         depth !== storedDepth ||
         shelfCount !== storedShelfCount ||
+        cabinetDoorCount !== storedCabinetDoorCount ||
+        paintCabinetDoors !== storedPaintCabinetDoors ||
         notes !== (builtIn.notes || "") ||
         !arePhotosEqual(photos, builtIn.photos || []);
 
       setHasUnsavedChanges(hasChanges);
     }
-  }, [isNewBuiltIn, builtIn, name, width, height, depth, shelfCount, notes, photos, arePhotosEqual, unitSystem]);
+  }, [
+    isNewBuiltIn,
+    builtIn,
+    name,
+    width,
+    height,
+    depth,
+    shelfCount,
+    cabinetDoorCount,
+    paintCabinetDoors,
+    notes,
+    photos,
+    arePhotosEqual,
+    unitSystem,
+  ]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
@@ -329,6 +358,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
       height !== "" ||
       depth !== "" ||
       shelfCount !== "" ||
+      cabinetDoorCount !== "" ||
+      paintCabinetDoors ||
       notes !== "" ||
       photos.length > 0;
 
@@ -375,6 +406,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         height: heightInches,
         depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
+        cabinetDoorCount: parseInt(cabinetDoorCount) || 0,
+        paintCabinetDoors,
         coats: 1,
         notes: notes.trim() || undefined,
         photos: updatedPhotos,
@@ -388,6 +421,8 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         height: heightInches,
         depth: depthInches,
         shelfCount: parseInt(shelfCount) || 0,
+        cabinetDoorCount: parseInt(cabinetDoorCount) || 0,
+        paintCabinetDoors,
         coats: builtIn?.coats || 1,
         notes: notes.trim() || undefined,
         photos: updatedPhotos,
@@ -706,6 +741,88 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                   </View>
                 </View>
               </View>
+              <View style={{ marginBottom: Spacing.sm }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Cabinet Door Count
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: 8,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(cabinetDoorCount) || 0;
+                        if (current > 0) {
+                          setCabinetDoorCount((current - 1).toString());
+                        }
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease cabinet door count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {cabinetDoorCount || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(cabinetDoorCount) || 0;
+                        setCabinetDoorCount((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase cabinet door count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
+              <View style={{ marginBottom: Spacing.sm }}>
+                <Toggle
+                  label="Paint Cabinet Door"
+                  value={paintCabinetDoors}
+                  onValueChange={setPaintCabinetDoors}
+                  className="mb-0"
+                />
+              </View>
               <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                 <Pressable
                   onPress={() => {
@@ -923,6 +1040,14 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const leftRightArea = 2 * heightVal * depthVal;
               const topBottomArea = 2 * widthVal * depthVal;
               const shelvesArea = shelfCount && parseInt(shelfCount) > 0 ? parseInt(shelfCount) * widthVal : 0;
+              const cabinetDoorCountValue = parseInt(cabinetDoorCount) || 0;
+              const cabinetCoats = builtIn?.coats || 1;
+              const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
+              const cabinetDoorLaborCost = cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier;
+              const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
+              const cabinetDoorAreaSqFt = cabinetDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
+              const cabinetDoorGallons = (cabinetDoorAreaSqFt / cabinetCoverage) * cabinetCoats;
+              const cabinetDoorMaterialsCost = Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -975,6 +1100,28 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         {formatMeasurement(Math.ceil(totalPaintableArea), 'area', unitSystem, 0)}
                       </Text>
                     </View>
+
+                    {cabinetDoorCountValue > 0 && (
+                      <View style={{ marginTop: Spacing.sm }}>
+                        <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Cabinet Doors</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>{cabinetDoorCountValue}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Labor</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            ${Math.round(paintCabinetDoors ? cabinetDoorLaborCost : 0)}
+                          </Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Material</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            ${Math.round(paintCabinetDoors ? cabinetDoorMaterialsCost : 0)}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
                   </View>
                 </Card>
               );
@@ -986,6 +1133,18 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const leftRightArea = 2 * heightVal * depthVal;
               const topBottomArea = 2 * widthVal * depthVal;
               const shelvesArea = shelfCount && parseInt(shelfCount) > 0 ? parseInt(shelfCount) * widthVal : 0;
+              const cabinetDoorCountValue = parseInt(cabinetDoorCount) || 0;
+              const cabinetCoats = builtIn?.coats || 1;
+              const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
+              const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
+              const cabinetDoorAreaSqFt = cabinetDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
+              const cabinetDoorGallons = (cabinetDoorAreaSqFt / cabinetCoverage) * cabinetCoats;
+              const cabinetDoorLaborTotal = paintCabinetDoors
+                ? cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier
+                : 0;
+              const cabinetDoorMaterialsTotal = paintCabinetDoors
+                ? Math.ceil(cabinetDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
+                : 0;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -1053,6 +1212,24 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Formula: shelf_count × width
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Cabinet Doors */}
+                    {cabinetDoorCountValue > 0 && (
+                      <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                          Cabinet Doors
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Count: {cabinetDoorCountValue} | Coats: {cabinetCoats}
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Labor: {cabinetDoorCountValue} × ${safeNumber(pricing.cabinetDoorLabor, 0).toFixed(2)}/door × {cabinetLaborMultiplier.toFixed(2)} = {cabinetDoorLaborTotal.toFixed(2)}
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Materials: {Math.ceil(cabinetDoorGallons).toFixed(0)} gal × ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {cabinetDoorMaterialsTotal.toFixed(2)}
                         </Text>
                       </View>
                     )}

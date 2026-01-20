@@ -34,6 +34,7 @@ export interface Room {
   paintDoorFrames?: boolean; // Whether to paint door frames/trim (includes closet doors)
   paintWindows?: boolean;
   paintDoors?: boolean;
+  paintVanities?: boolean;
   paintJambs?: boolean;
   paintBaseboard?: boolean;
   hasCrownMoulding?: boolean;
@@ -95,6 +96,7 @@ export interface Bathroom {
   paintDoorFrames?: boolean; // Whether to paint door frames/trim (includes closet doors)
   paintWindows?: boolean;
   paintDoors?: boolean;
+  paintVanities?: boolean;
   paintJambs?: boolean;
   paintBaseboard?: boolean;
   hasCrownMoulding?: boolean;
@@ -202,6 +204,8 @@ export interface BuiltIn {
   height: number; // in inches
   depth: number; // in inches (how far it protrudes from wall)
   shelfCount: number; // number of shelves
+  cabinetDoorCount?: number;
+  paintCabinetDoors?: boolean;
   coats: number; // number of coats to paint
   // Notes field (available without photos)
   notes?: string;
@@ -431,6 +435,7 @@ export interface PricingSettings {
   vanityDoorLabor: number;
   cabinetDrawerLabor: number;
   wallCabinetLabor: number;
+  cabinetPaintPerGallon: number;
   riserLabor: number;
   spindleLabor: number;
   handrailLaborPerLF: number;

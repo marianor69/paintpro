@@ -54,6 +54,7 @@ const defaultPricing: PricingSettings = {
   ceilingPaintPerGallon: 40,
   trimPaintPerGallon: 50,
   doorPaintPerGallon: 50,
+  cabinetPaintPerGallon: 60,
   primerPerGallon: 35,
 
   // Material prices - 5-gallon buckets

@@ -18,6 +18,7 @@ import {
   getCathedralMultiplier
 } from "./calculations";
 import { useCalculationSettings } from "../state/calculationStore";
+import { useAppSettings } from "../state/appSettings";
 import {
   computeResolvedInclusions,
   ResolvedInclusions,
@@ -260,8 +261,14 @@ export function computeRoomPricingSummary(
   // Counts
   const windowCount = safeNumber(room.windowCount, 0);
   const doorCount = safeNumber(room.doorCount, 0);
+  const vanityDoorCount = safeNumber((room as { vanityDoorCount?: number }).vanityDoorCount, 0);
+  const paintVanities = Boolean((room as { paintVanities?: boolean }).paintVanities);
   const singleClosets = safeNumber(room.singleDoorClosets, 0);
   const doubleClosets = safeNumber(room.doubleDoorClosets, 0);
+  const cabinetPaintCoverageSqFtPerGallon = Math.max(
+    1,
+    safeNumber(useAppSettings.getState().cabinetPaintCoverageSqFtPerGallon, 350)
+  );
 
   // Deduct window openings (only if windows are included in old logic - now always deduct)
   let windowDeduction = 0;
@@ -506,6 +513,10 @@ export function computeRoomPricingSummary(
     const doorLaborMultiplier = getCoatLaborMultiplier(coatsDoors);
     laborCost += doorCount * safeNumber(pricing.doorLabor, 0) * doorLaborMultiplier;
   }
+  if (paintVanities && vanityDoorCount > 0) {
+    const vanityLaborMultiplier = getCoatLaborMultiplier(coatsTrim);
+    laborCost += vanityDoorCount * safeNumber(pricing.vanityDoorLabor, 0) * vanityLaborMultiplier;
+  }
 
   if (includedWindows && room.includeWindows !== false) {
     // Window labor multiplied by coats (more coats = more labor)
@@ -575,6 +586,11 @@ export function computeRoomPricingSummary(
   // Doors, jambs, baseboards, trim, risers, spindles, handrails, crown moulding all use the same paint
   if (includedDoors) {
     materialsCost += Math.ceil(doorPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
+  }
+  if (paintVanities && vanityDoorCount > 0) {
+    const vanityDoorAreaSqFt = vanityDoorCount * (calcSettings.doorHeight * calcSettings.doorWidth);
+    const vanityDoorGallons = (vanityDoorAreaSqFt / cabinetPaintCoverageSqFtPerGallon) * coatsTrim;
+    materialsCost += Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
   }
 
   materialsCost = Math.max(0, safeNumber(materialsCost));

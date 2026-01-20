@@ -65,6 +65,7 @@ function serializeBathroomState(
   paintDoorFrames: boolean,
   paintWindows: boolean,
   paintDoors: boolean,
+  paintVanities: boolean,
   paintJambs: boolean,
   paintBaseboard: boolean,
   hasCrownMoulding: boolean,
@@ -93,6 +94,7 @@ function serializeBathroomState(
     paintDoorFrames,
     paintWindows,
     paintDoors,
+    paintVanities,
     paintJambs,
     paintBaseboard,
     hasCrownMoulding,
@@ -117,6 +119,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const calcSettings = useCalculationSettings((s) => s.settings);
   const unitSystem = useAppSettings((s) => s.unitSystem);
   const testMode = useAppSettings((s) => s.testMode);
+  const cabinetPaintCoverageSqFtPerGallon = useAppSettings((s) => s.cabinetPaintCoverageSqFtPerGallon);
   const insets = useSafeAreaInsets();
 
   // Store initial state snapshot for dirty checking
@@ -169,6 +172,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const [paintDoorFrames, setPaintDoorFrames] = useState(bathroom?.paintDoorFrames ?? project?.globalPaintDefaults?.paintDoorFrames ?? true);
   const [paintWindows, setPaintWindows] = useState(bathroom?.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? true);
   const [paintDoors, setPaintDoors] = useState(bathroom?.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? true);
+  const [paintVanities, setPaintVanities] = useState(bathroom?.paintVanities ?? false);
   const [paintJambs, setPaintJambs] = useState(bathroom?.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? true);
   const [paintBaseboard, setPaintBaseboard] = useState(
     bathroom?.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true
@@ -262,6 +266,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         paintDoorFrames,
         paintWindows,
         paintDoors,
+        paintVanities,
         paintJambs,
         paintBaseboard,
         hasCrownMoulding,
@@ -275,6 +280,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
+      paintVanities,
       paintJambs,
       paintBaseboard,
       hasCrownMoulding,
@@ -444,6 +450,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         project?.globalPaintDefaults?.paintDoorFrames ?? true,
         project?.globalPaintDefaults?.paintWindows ?? true,
         project?.globalPaintDefaults?.paintDoors ?? true,
+        false,
         project?.globalPaintDefaults?.paintDoorJambs ?? true,
         project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
         project?.globalPaintDefaults?.paintCrownMoulding ?? true,
@@ -478,6 +485,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       bathroom.paintDoorFrames ?? project?.globalPaintDefaults?.paintDoorFrames ?? true,
       bathroom.paintWindows ?? project?.globalPaintDefaults?.paintWindows ?? true,
       bathroom.paintDoors ?? project?.globalPaintDefaults?.paintDoors ?? true,
+      bathroom.paintVanities ?? false,
       bathroom.paintJambs ?? project?.globalPaintDefaults?.paintDoorJambs ?? true,
       bathroom.paintBaseboard ?? project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
       bathroom.hasCrownMoulding ?? project?.globalPaintDefaults?.paintCrownMoulding ?? true,
@@ -518,6 +526,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
+      paintVanities,
       paintJambs,
       paintBaseboard,
       hasCrownMoulding,
@@ -549,6 +558,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     paintDoorFrames,
     paintWindows,
     paintDoors,
+    paintVanities,
     paintJambs,
     paintBaseboard,
     hasCrownMoulding,
@@ -727,6 +737,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
+      paintVanities,
       paintJambs: paintDoorFrames,
       paintBaseboard,
       hasCrownMoulding,
@@ -820,6 +831,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       paintDoorFrames,
       paintWindows,
       paintDoors,
+      paintVanities,
       paintJambs,
       paintBaseboard,
       hasCrownMoulding,
@@ -1783,6 +1795,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const wallCoverage = Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350));
           const ceilingCoverage = Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350));
           const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
+          const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
           const baseboardTrimGallons = (baseboardTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const baseboardMaterialsCost = Math.ceil(baseboardTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const baseboardTotal = baseboardLaborCost + baseboardMaterialsCost;
@@ -1797,6 +1810,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
 
           const windowCountValue = parseInt(windowCount) || 0;
           const doorCountValue = parseInt(doorCount) || 0;
+          const vanityDoorCountValue = parseInt(vanityDoorCount) || 0;
           const openingsCount = openings.length;
           const closetCount = singleClosetCount + doubleClosetCount;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
@@ -1852,6 +1866,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doorFaceGallons = (doorFaceSqFt * pricingSummary.coatsDoors) / trimCoverage;
           const doorMaterialsCost = Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
           const doorTotal = doorLaborCost + doorMaterialsCost;
+          const vanityDoorAreaSqFt = vanityDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
+          const vanityDoorGallons = (vanityDoorAreaSqFt / cabinetCoverage) * pricingSummary.coatsTrim;
+          const vanityMaterialsCost = Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
+          const vanityLaborCost = vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const closetWallLaborCost = pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
           const closetWallMaterialsCost = Math.ceil((pricingSummary.closetWallArea / wallCoverage) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0);
           const closetCeilingLaborCost = pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
@@ -1871,6 +1889,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             (windowCountValue > 0 ? (paintWindowFrames ? windowLaborCost : 0) : 0) +
             (doorFrameCount > 0 ? (paintDoorFrames ? doorFrameLaborCost : 0) : 0) +
             (doorCountForSummary > 0 ? (paintDoors ? doorLaborCost : 0) : 0) +
+            (vanityDoorCountValue > 0 ? (paintVanities ? vanityLaborCost : 0) : 0) +
             (openingsCount > 0 ? (paintDoorFrames ? openingTrimLaborCost : 0) : 0) +
             (closetCount > 0 ? (closetInteriorEnabled ? closetInteriorLaborCost : 0) : 0);
           const summaryMaterialsTotal =
@@ -1881,6 +1900,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             (windowCountValue > 0 ? (paintWindowFrames ? windowMaterialsCost : 0) : 0) +
             (doorFrameCount > 0 ? (paintDoorFrames ? doorFrameMaterialsCost : 0) : 0) +
             (doorCountForSummary > 0 ? (paintDoors ? doorMaterialsCost : 0) : 0) +
+            (vanityDoorCountValue > 0 ? (paintVanities ? vanityMaterialsCost : 0) : 0) +
             (openingsCount > 0 ? (paintDoorFrames ? openingTrimMaterialsCost : 0) : 0) +
             (closetCount > 0 ? (closetInteriorEnabled ? closetInteriorMaterialsCost : 0) : 0);
 
@@ -1950,6 +1970,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Doors</Text>
                       <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
                         {doorCountForSummary}
+                      </Text>
+                    </View>
+                  )}
+                  {vanityDoorCountValue > 0 && (
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Vanity Doors</Text>
+                      <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                        {vanityDoorCountValue}
                       </Text>
                     </View>
                   )}
@@ -2049,6 +2077,16 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       </Text>
                     </View>
                   )}
+                  {vanityDoorCountValue > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(paintVanities ? vanityLaborCost : 0)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(paintVanities ? vanityMaterialsCost : 0)}
+                      </Text>
+                    </View>
+                  )}
                   {openingsCount > 0 && (
                     <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                       <Text style={{ flex: 1, fontSize: 12, color: Colors.darkCharcoal, textAlign: "right" }}>
@@ -2137,6 +2175,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                 value={paintDoors}
                 onValueChange={setPaintDoors}
                 description="Paint the door faces (both sides)"
+              />
+              <Toggle
+                label="Paint Vanities"
+                value={paintVanities}
+                onValueChange={setPaintVanities}
+                description="Paint vanity doors and fronts"
               />
               <Toggle
                 label="Crown Moulding"
@@ -2363,8 +2407,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
           const calcSettings = useCalculationSettings.getState().settings;
           const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
+          const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
           const windowCountValue = parseInt(windowCount) || 0;
           const doorCountValue = parseInt(doorCount) || 0;
+          const vanityDoorCountValue = parseInt(vanityDoorCount) || 0;
           const openingsCount = openings.length;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
@@ -2430,6 +2476,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const openingTrimGallons = (openingTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFaceSqFt = doorCountForSummary * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
           const doorFaceGallons = (doorFaceSqFt * pricingSummary.coatsDoors) / trimCoverage;
+          const vanityDoorAreaSqFt = vanityDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
+          const vanityDoorGallons = (vanityDoorAreaSqFt / cabinetCoverage) * pricingSummary.coatsTrim;
           const windowLaborTotal = paintWindowFrames
             ? windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
             : 0;
@@ -2447,6 +2495,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             : 0;
           const doorMaterialsTotal = paintDoors
             ? Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
+            : 0;
+          const vanityLaborTotal = paintVanities
+            ? vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            : 0;
+          const vanityMaterialsTotal = paintVanities
+            ? Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
             : 0;
           const openingTrimLaborTotal = paintDoorFrames
             ? openingTrimLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
@@ -2484,6 +2538,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             windowLaborTotal +
             doorFrameLaborTotal +
             doorLaborTotal +
+            vanityLaborTotal +
             openingTrimLaborTotal +
             closetWallLaborTotal +
             closetCeilingLaborTotal +
@@ -2496,6 +2551,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             windowMaterialsTotal +
             doorFrameMaterialsTotal +
             doorMaterialsTotal +
+            vanityMaterialsTotal +
             openingTrimMaterialsTotal +
             closetWallMaterialsTotal +
             closetCeilingMaterialsTotal +
@@ -2624,6 +2680,24 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Materials: {Math.ceil(doorFaceGallons).toFixed(0)} gal × ${safeNumber(pricing.trimPaintPerGallon, 0).toFixed(2)}/gal = ${(Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Vanity Doors */}
+                {paintVanities && vanityDoorCountValue > 0 && (
+                  <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Vanity Doors
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Count: {vanityDoorCountValue} | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Labor: {vanityDoorCountValue} × ${safeNumber(pricing.vanityDoorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = {(vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Materials: {Math.ceil(vanityDoorGallons).toFixed(0)} gal × ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {(Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)).toFixed(2)}
                     </Text>
                   </View>
                 )}
