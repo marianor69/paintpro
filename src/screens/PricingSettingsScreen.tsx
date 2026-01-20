@@ -149,6 +149,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const [trimPaintPer5Gallon, setTrimPaintPer5Gallon] = React.useState(
     (pricing.trimPaintPer5Gallon || 225).toString()
   );
+  const [cabinetPaintPer5Gallon, setCabinetPaintPer5Gallon] = React.useState(
+    (pricing.cabinetPaintPer5Gallon || 450).toString()
+  );
   const [primerPer5Gallon, setPrimerPer5Gallon] = React.useState(
     (pricing.primerPer5Gallon || 150).toString()
   );
@@ -190,6 +193,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const wallPaint5GallonRef = useRef<TextInput>(null);
   const ceilingPaint5GallonRef = useRef<TextInput>(null);
   const trimPaint5GallonRef = useRef<TextInput>(null);
+  const cabinetPaint5GallonRef = useRef<TextInput>(null);
   const primer5GallonRef = useRef<TextInput>(null);
 
   // KB-004: Unique IDs for InputAccessoryViews
@@ -229,6 +233,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const wallPaint5GallonID = useId();
   const ceilingPaint5GallonID = useId();
   const trimPaint5GallonID = useId();
+  const cabinetPaint5GallonID = useId();
   const primer5GallonID = useId();
 
   const scrollViewRef = useRef<ScrollView>(null);
@@ -325,6 +330,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       ceilingPaintPer5Gallon: parseFloat(ceilingPaintPer5Gallon) || 175,
       trimPaintPer5Gallon: parseFloat(trimPaintPer5Gallon) || 225,
       doorPaintPer5Gallon: parseFloat(trimPaintPer5Gallon) || 225, // Door paint uses trim paint price
+      cabinetPaintPer5Gallon: parseFloat(cabinetPaintPer5Gallon) || 450,
       primerPer5Gallon: parseFloat(primerPer5Gallon) || 150,
     });
     setHasUnsavedChanges(false);
@@ -414,6 +420,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       parseOrDefault(wallPaintPer5Gallon, pricing.wallPaintPer5Gallon || 200) !== (pricing.wallPaintPer5Gallon || 200) ||
       parseOrDefault(ceilingPaintPer5Gallon, pricing.ceilingPaintPer5Gallon || 175) !== (pricing.ceilingPaintPer5Gallon || 175) ||
       parseOrDefault(trimPaintPer5Gallon, pricing.trimPaintPer5Gallon || 225) !== (pricing.trimPaintPer5Gallon || 225) ||
+      parseOrDefault(cabinetPaintPer5Gallon, pricing.cabinetPaintPer5Gallon || 450) !== (pricing.cabinetPaintPer5Gallon || 450) ||
       parseOrDefault(primerPer5Gallon, pricing.primerPer5Gallon || 150) !== (pricing.primerPer5Gallon || 150) ||
       parseOrDefault(cabinetPaintPerGallon, pricing.cabinetPaintPerGallon || 60) !== (pricing.cabinetPaintPerGallon || 60)
     );
@@ -455,6 +462,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     wallPaintPer5Gallon,
     ceilingPaintPer5Gallon,
     trimPaintPer5Gallon,
+    cabinetPaintPer5Gallon,
     primerPer5Gallon,
     cabinetPaintPerGallon,
     pricing,
@@ -1577,14 +1585,29 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   placeholderTextColor={Colors.mediumGray}
                   keyboardType="numeric"
                   returnKeyType="next"
-                  onSubmitEditing={() => primerGallonRef.current?.focus()}
+                  onSubmitEditing={() => cabinetPaint5GallonRef.current?.focus()}
                   onFocus={handleFieldFocus}
                   blurOnSubmit={false}
                   inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetPaintGallon-${cabinetPaintGallonID}` : undefined}
                   style={inputTextStyle}
                 />
               </View>
-              <View style={inputContainerStyle} />
+              <View style={inputContainerStyle}>
+                <TextInput
+                  ref={cabinetPaint5GallonRef}
+                  value={cabinetPaintPer5Gallon}
+                  onChangeText={setCabinetPaintPer5Gallon}
+                  placeholder="450"
+                  placeholderTextColor={Colors.mediumGray}
+                  keyboardType="numeric"
+                  returnKeyType="next"
+                  onSubmitEditing={() => primerGallonRef.current?.focus()}
+                  onFocus={handleFieldFocus}
+                  blurOnSubmit={false}
+                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetPaint5Gallon-${cabinetPaint5GallonID}` : undefined}
+                  style={inputTextStyle}
+                />
+              </View>
             </View>
 
             <View style={materialRowStyle}>
@@ -1915,12 +1938,18 @@ export default function PricingSettingsScreen({ navigation }: Props) {
         <InputAccessoryView nativeID={`pricingCabinetPaintGallon-${cabinetPaintGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => trimPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => cabinetPaint5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`pricingCabinetPaint5Gallon-${cabinetPaint5GallonID}`}>
+          <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
+            <Pressable onPress={() => cabinetPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => primerGallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`pricingPrimerGallon-${primerGallonID}`}>
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
-            <Pressable onPress={() => cabinetPaintGallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
+            <Pressable onPress={() => cabinetPaint5GallonRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => primer5GallonRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
           </View>
         </InputAccessoryView>

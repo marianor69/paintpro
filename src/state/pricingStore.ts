@@ -63,6 +63,7 @@ const defaultPricing: PricingSettings = {
   ceilingPaintPer5Gallon: 175,
   trimPaintPer5Gallon: 225,
   doorPaintPer5Gallon: 225,
+  cabinetPaintPer5Gallon: 450,
   primerPer5Gallon: 150,
 
   // Coverage settings

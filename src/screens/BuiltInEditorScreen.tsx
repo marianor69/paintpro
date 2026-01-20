@@ -1077,6 +1077,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         </View>
                       )}
 
+                      {(cabinetDoorCountValue > 0 || shelfCountValue > 0) && (
+                        <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
+                      )}
+
                       {shelfAreaSqFt > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelf Area</Text>
@@ -1129,14 +1133,27 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                       </View>
 
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(laborTotal)}
-                        </Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(materialsTotal)}
-                        </Text>
-                      </View>
+                      {cabinetDoorCountValue > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(paintCabinetDoors ? cabinetDoorLaborCost : 0)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(paintCabinetDoors ? cabinetDoorMaterialsCost : 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {shelfCountValue > 0 && (
+                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(shelfLaborCost)}
+                          </Text>
+                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                            ${Math.round(shelfSurfaceMaterialsCost)}
+                          </Text>
+                        </View>
+                      )}
 
                       <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 

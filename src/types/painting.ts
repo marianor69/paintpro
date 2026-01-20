@@ -436,7 +436,6 @@ export interface PricingSettings {
   cabinetDrawerLabor: number;
   wallCabinetLabor: number;
   builtInShelfLabor: number;
-  cabinetPaintPerGallon: number;
   riserLabor: number;
   spindleLabor: number;
   handrailLaborPerLF: number;
@@ -474,6 +473,7 @@ export interface PricingSettings {
   ceilingPaintPerGallon: number;
   trimPaintPerGallon: number;
   doorPaintPerGallon: number;
+  cabinetPaintPerGallon: number;
   primerPerGallon: number;
 
   // Material prices - 5-gallon buckets
@@ -481,6 +481,7 @@ export interface PricingSettings {
   ceilingPaintPer5Gallon?: number;
   trimPaintPer5Gallon?: number;
   doorPaintPer5Gallon?: number;
+  cabinetPaintPer5Gallon?: number;
   primerPer5Gallon?: number;
 
   // Coverage settings
