@@ -1077,6 +1077,24 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                         </View>
                       )}
 
+                      {shelfAreaSqFt > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Shelf Area</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(shelfAreaSqFt), "area", unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
+
+                      {sideAreaSqFt > 0 && (
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Side Area</Text>
+                          <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>
+                            {formatMeasurement(Math.ceil(sideAreaSqFt), "area", unitSystem, 0)}
+                          </Text>
+                        </View>
+                      )}
+
                       {totalPaintableArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.xs }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Paint Area</Text>
@@ -1193,6 +1211,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                           Count: {shelfCountValue} | Coats: {cabinetCoats}
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Area: {shelfCountValue} x {widthVal.toFixed(2)} x {depthVal.toFixed(2)} x 2 = {shelfAreaSqFt.toFixed(2)} sqft
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Labor: {shelfCountValue} x ${safeNumber(pricing.builtInShelfLabor, 0).toFixed(2)} x {cabinetLaborMultiplier.toFixed(2)} = {shelfLaborTotal.toFixed(2)}
                         </Text>
                       </View>
@@ -1204,7 +1225,10 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                           Built-In Surfaces
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                          Area: ({shelfCountValue} x {widthVal.toFixed(2)} x {depthVal.toFixed(2)} x 2) + (2 x {heightVal.toFixed(2)} x {depthVal.toFixed(2)}) = {totalPaintableArea.toFixed(2)} sqft
+                          Side Area: 2 x {heightVal.toFixed(2)} x {depthVal.toFixed(2)} = {sideAreaSqFt.toFixed(2)} sqft
+                        </Text>
+                        <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                          Total Area: {shelfAreaSqFt.toFixed(2)} + {sideAreaSqFt.toFixed(2)} = {totalPaintableArea.toFixed(2)} sqft
                         </Text>
                         <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                           Gallons: {totalPaintableArea.toFixed(2)} / {cabinetCoverage.toFixed(2)} x {cabinetCoats} = {shelfSurfaceGallons.toFixed(2)}
