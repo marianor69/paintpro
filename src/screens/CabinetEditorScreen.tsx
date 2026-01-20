@@ -19,6 +19,7 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProjectStore } from "../state/projectStore";
 import { usePricingStore } from "../state/pricingStore";
 import { useAppSettings } from "../state/appSettings";
+import { useCalculationSettings } from "../state/calculationStore";
 import { Colors, Typography, Spacing, BorderRadius, Shadows, TextInputStyles } from "../utils/designSystem";
 import { Card } from "../components/Card";
 import { FormInput } from "../components/FormInput";
@@ -28,6 +29,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { v4 as uuidv4 } from "uuid";
 import { computeCabinetPricingSummary } from "../utils/pricingSummary";
+import { calculatePaintCost, safeNumber } from "../utils/calculations";
 import { RoomPhoto } from "../types/painting";
 
 type Props = NativeStackScreenProps<RootStackParamList, "CabinetEditor">;
@@ -46,6 +48,8 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
   const updateCabinet = useProjectStore((s) => s.updateCabinet);
   const pricing = usePricingStore();
   const { testMode } = useAppSettings();
+  const cabinetPaintCoverageSqFtPerGallon = useAppSettings((s) => s.cabinetPaintCoverageSqFtPerGallon);
+  const calcSettings = useCalculationSettings((s) => s.settings);
 
   const [name, setName] = useState(!isNewCabinet && cabinet?.name ? cabinet.name : "");
   const [baseDoorCount, setBaseDoorCount] = useState(!isNewCabinet && cabinet ? cabinet.baseDoorCount : 0);
@@ -853,6 +857,23 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                   )}
                 </View>
 
+                {(() => {
+                  const doorAreaSqFt = calcSettings.doorHeight * calcSettings.doorWidth;
+                  const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
+                  const baseDoorGallons = (baseDoorCount * doorAreaSqFt) / cabinetCoverage;
+                  const drawerGallons = (drawerCount * doorAreaSqFt) / cabinetCoverage;
+                  const wallDoorGallons = (wallDoorCount * doorAreaSqFt) / cabinetCoverage;
+                  const totalGallons = baseDoorGallons + drawerGallons + wallDoorGallons;
+                  const totalMaterialsCost = calculatePaintCost(
+                    totalGallons,
+                    safeNumber(pricing.cabinetPaintPerGallon, 0),
+                    pricing.cabinetPaintPer5Gallon
+                  );
+                  const baseDoorMat = totalGallons > 0 ? totalMaterialsCost * (baseDoorGallons / totalGallons) : 0;
+                  const drawerMat = totalGallons > 0 ? totalMaterialsCost * (drawerGallons / totalGallons) : 0;
+                  const wallDoorMat = totalGallons > 0 ? totalMaterialsCost * (wallDoorGallons / totalGallons) : 0;
+
+                  return (
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
                   <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
                     <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
@@ -865,7 +886,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                         ${Math.round(baseDoorCount * pricing.cabinetDoorLabor)}
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        $0
+                        ${Math.round(baseDoorMat)}
                       </Text>
                     </View>
                   )}
@@ -876,7 +897,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                         ${Math.round(drawerCount * pricing.cabinetDrawerLabor)}
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        $0
+                        ${Math.round(drawerMat)}
                       </Text>
                     </View>
                   )}
@@ -887,7 +908,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                         ${Math.round(wallDoorCount * (includeWallCabinet42 ? pricing.wallCabinetLabor : pricing.cabinetDoorLabor))}
                       </Text>
                       <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        $0
+                        ${Math.round(wallDoorMat)}
                       </Text>
                     </View>
                   )}
@@ -901,6 +922,8 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                     </Text>
                   </View>
                 </View>
+                  );
+                })()}
               </View>
             </Card>
 
@@ -911,6 +934,20 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
               const baseDoorsLabor = baseDoorCount * pricing.cabinetDoorLabor;
               const drawersLabor = drawerCount * pricing.cabinetDrawerLabor;
               const wallDoorsLabor = wallDoorCount * wallDoorRate;
+              const doorAreaSqFt = calcSettings.doorHeight * calcSettings.doorWidth;
+              const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
+              const baseDoorGallons = (baseDoorCount * doorAreaSqFt) / cabinetCoverage;
+              const drawerGallons = (drawerCount * doorAreaSqFt) / cabinetCoverage;
+              const wallDoorGallons = (wallDoorCount * doorAreaSqFt) / cabinetCoverage;
+              const totalGallons = baseDoorGallons + drawerGallons + wallDoorGallons;
+              const totalMaterialsCost = calculatePaintCost(
+                totalGallons,
+                safeNumber(pricing.cabinetPaintPerGallon, 0),
+                pricing.cabinetPaintPer5Gallon
+              );
+              const baseDoorMat = totalGallons > 0 ? totalMaterialsCost * (baseDoorGallons / totalGallons) : 0;
+              const drawerMat = totalGallons > 0 ? totalMaterialsCost * (drawerGallons / totalGallons) : 0;
+              const wallDoorMat = totalGallons > 0 ? totalMaterialsCost * (wallDoorGallons / totalGallons) : 0;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
@@ -929,6 +966,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Labor: {baseDoorCount} x ${pricing.cabinetDoorLabor.toFixed(2)} = ${baseDoorsLabor.toFixed(2)}
                       </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {baseDoorGallons.toFixed(2)} gal → ${baseDoorMat.toFixed(2)}
+                      </Text>
                     </View>
 
                     <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
@@ -940,6 +980,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Labor: {drawerCount} x ${pricing.cabinetDrawerLabor.toFixed(2)} = ${drawersLabor.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {drawerGallons.toFixed(2)} gal → ${drawerMat.toFixed(2)}
                       </Text>
                     </View>
 
@@ -956,6 +999,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Labor: {wallDoorCount} x ${wallDoorRate.toFixed(2)} = ${wallDoorsLabor.toFixed(2)}
                       </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {wallDoorGallons.toFixed(2)} gal → ${wallDoorMat.toFixed(2)}
+                      </Text>
                     </View>
 
                     <View>
@@ -967,6 +1013,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Total Materials: ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Gallons: {totalGallons.toFixed(2)} | Material Cost: ${totalMaterialsCost.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Grand Total: ${calculations.totalDisplayed.toFixed(2)}

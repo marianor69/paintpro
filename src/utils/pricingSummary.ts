@@ -15,7 +15,8 @@ import { Room, Staircase, Fireplace, BrickWall, Cabinet, PricingSettings, QuoteB
 import {
   safeNumber,
   getClosetInteriorMetrics,
-  getCathedralMultiplier
+  getCathedralMultiplier,
+  calculatePaintCost
 } from "./calculations";
 import { useCalculationSettings } from "../state/calculationStore";
 import { useAppSettings } from "../state/appSettings";
@@ -952,6 +953,11 @@ export function computeCabinetPricingSummary(
   cabinet: Cabinet,
   pricing: PricingSettings
 ): CabinetPricingSummary {
+  const calcSettings = useCalculationSettings.getState().settings;
+  const cabinetPaintCoverageSqFtPerGallon = Math.max(
+    1,
+    safeNumber(useAppSettings.getState().cabinetPaintCoverageSqFtPerGallon, 350)
+  );
   const baseDoorCount = safeNumber(cabinet.baseDoorCount, 0);
   const drawerCount = safeNumber(cabinet.drawerCount, 0);
   const wallDoorCount = safeNumber(cabinet.wallDoorCount, 0);
@@ -965,7 +971,15 @@ export function computeCabinetPricingSummary(
   const wallDoorLabor = wallDoorCount * wallDoorRate;
 
   const laborCost = baseDoorLabor + drawerLabor + wallDoorLabor;
-  const materialsCost = 0;
+  const doorAreaSqFt = calcSettings.doorHeight * calcSettings.doorWidth;
+  const totalItemCount = baseDoorCount + drawerCount + wallDoorCount;
+  const totalPaintSqFt = totalItemCount * doorAreaSqFt;
+  const totalGallons = totalPaintSqFt / cabinetPaintCoverageSqFtPerGallon;
+  const materialsCost = calculatePaintCost(
+    totalGallons,
+    safeNumber(pricing.cabinetPaintPerGallon, 0),
+    pricing.cabinetPaintPer5Gallon
+  );
   const totalCost = Math.max(0, safeNumber(laborCost + materialsCost));
 
   return {
