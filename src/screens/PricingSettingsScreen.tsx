@@ -537,6 +537,10 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const columnLabelStyle = { textAlign: "center" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const, marginBottom: Spacing.xs };
   const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
+  const bubbleStyleFor = (value: string, originalValue: number) => [
+    inputContainerStyle,
+    parseOrDefault(value, originalValue) !== originalValue && { borderColor: Colors.warning },
+  ];
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const labelAlignWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs };
   const rightAlignedLabelTextStyle = { ...labelStyle, textAlign: "right" as const, paddingRight: Spacing.md };
@@ -588,7 +592,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(wallLaborPerSqFt, pricing.wallLaborPerSqFt || 1.5)}>
                     <TextInput
                       ref={wallLaborRef}
                       value={wallLaborPerSqFt}
@@ -612,7 +616,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(ceilingLaborPerSqFt, pricing.ceilingLaborPerSqFt || 1.75)}>
                     <TextInput
                       ref={ceilingLaborRef}
                       value={ceilingLaborPerSqFt}
@@ -639,7 +643,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(doorLabor, pricing.doorLabor || 50)}>
                     <TextInput
                       ref={doorLaborRef}
                       value={doorLabor}
@@ -663,7 +667,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(windowLabor, pricing.windowLabor || 35)}>
                     <TextInput
                       ref={windowLaborRef}
                       value={windowLabor}
@@ -690,7 +694,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/lf</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(baseboardLaborPerLF, pricing.baseboardLaborPerLF || 1.25)}>
                     <TextInput
                       ref={baseboardLaborRef}
                       value={baseboardLaborPerLF}
@@ -714,7 +718,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/lf</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(crownMouldingLaborPerLF, pricing.crownMouldingLaborPerLF || 1.5)}>
                     <TextInput
                       ref={crownMouldingRef}
                       value={crownMouldingLaborPerLF}
@@ -741,7 +745,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(closetLabor, pricing.closetLabor || 75)}>
                     <TextInput
                       ref={closetLaborRef}
                       value={closetLabor}
@@ -775,7 +779,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(riserLabor, pricing.riserLabor || 15)}>
                     <TextInput
                       ref={riserLaborRef}
                       value={riserLabor}
@@ -799,7 +803,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(spindleLabor, pricing.spindleLabor || 8)}>
                     <TextInput
                       ref={spindleLaborRef}
                       value={spindleLabor}
@@ -826,7 +830,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/lf</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(handrailLaborPerLF, pricing.handrailLaborPerLF || 10)}>
                     <TextInput
                       ref={handrailLaborRef}
                       value={handrailLaborPerLF}
@@ -860,7 +864,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(mantelLabor, pricing.mantelLabor || 100)}>
                     <TextInput
                       ref={mantelLaborRef}
                       value={mantelLabor}
@@ -884,7 +888,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(legsLabor, pricing.legsLabor || 100)}>
                     <TextInput
                       ref={legsLaborRef}
                       value={legsLabor}
@@ -918,7 +922,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(secondCoatLaborMultiplier, pricing.secondCoatLaborMultiplier || 2.0)}>
                     <TextInput
                       ref={secondCoatMultiplierRef}
                       value={secondCoatLaborMultiplier}
@@ -942,7 +946,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(accentWallLaborMultiplier, pricing.accentWallLaborMultiplier || 1.25)}>
                     <TextInput
                       ref={accentWallMultiplierRef}
                       value={accentWallLaborMultiplier}
@@ -969,7 +973,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(closetLaborMultiplier, pricing.closetLaborMultiplier || 1.0)}>
                     <TextInput
                       ref={closetMultiplierRef}
                       value={closetLaborMultiplier}
@@ -1054,7 +1058,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>x</Text>
-                    <View style={inputContainerStyle}>
+                    <View style={bubbleStyleFor(bathroomLaborMultiplier, pricing.bathroomLaborMultiplier || 2.5)}>
                       <TextInput
                         ref={bathroomMultiplierRef}
                         value={bathroomLaborMultiplier}
@@ -1083,7 +1087,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                    <View style={inputContainerStyle}>
+                    <View style={bubbleStyleFor(bathroomTierSmallLabor, pricing.bathroomTierSmallLabor || 350)}>
                       <TextInput
                         ref={bathroomTierSmallRef}
                         value={bathroomTierSmallLabor}
@@ -1108,7 +1112,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                    <View style={inputContainerStyle}>
+                    <View style={bubbleStyleFor(bathroomTierMediumLabor, pricing.bathroomTierMediumLabor || 400)}>
                       <TextInput
                         ref={bathroomTierMediumRef}
                         value={bathroomTierMediumLabor}
@@ -1133,7 +1137,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                    <View style={inputContainerStyle}>
+                    <View style={bubbleStyleFor(bathroomTierLargeBaseLabor, pricing.bathroomTierLargeBaseLabor || 450)}>
                       <TextInput
                         ref={bathroomTierLargeBaseRef}
                         value={bathroomTierLargeBaseLabor}
@@ -1158,7 +1162,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
-                    <View style={inputContainerStyle}>
+                    <View style={bubbleStyleFor(bathroomTierLargeExtraPerSqFt, pricing.bathroomTierLargeExtraPerSqFt || 5)}>
                       <TextInput
                         ref={bathroomTierLargeExtraRef}
                         value={bathroomTierLargeExtraPerSqFt}
@@ -1194,7 +1198,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={bubbleHeaderWrapperStyle}>
                 <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                <View style={inputContainerStyle}>
+                <View style={bubbleStyleFor(bathroomEnclosedToiletAddOn, pricing.bathroomEnclosedToiletAddOn || 50)}>
                   <TextInput
                     ref={bathroomEnclosedToiletRef}
                     value={bathroomEnclosedToiletAddOn}
@@ -1220,7 +1224,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(vanityDoorLabor, pricing.vanityDoorLabor || 150)}>
                     <TextInput
                       ref={vanityDoorLaborRef}
                       value={vanityDoorLabor}
@@ -1254,7 +1258,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(cabinetDoorLabor, pricing.cabinetDoorLabor || 150)}>
                     <TextInput
                       ref={cabinetDoorLaborRef}
                       value={cabinetDoorLabor}
@@ -1281,7 +1285,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(cabinetDrawerLabor, pricing.cabinetDrawerLabor || 30)}>
                     <TextInput
                       ref={cabinetDrawerLaborRef}
                       value={cabinetDrawerLabor}
@@ -1308,7 +1312,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(wallCabinetLabor, pricing.wallCabinetLabor || 165)}>
                     <TextInput
                       ref={wallCabinetLaborRef}
                       value={wallCabinetLabor}
@@ -1342,7 +1346,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(builtInShelfLabor, pricing.builtInShelfLabor || 25)}>
                     <TextInput
                       ref={builtInShelfLaborRef}
                       value={builtInShelfLabor}
@@ -1376,7 +1380,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(furnitureMovingFee, pricing.furnitureMovingFee || 100)}>
                     <TextInput
                       ref={furnitureMovingFeeRef}
                       value={furnitureMovingFee}
@@ -1403,7 +1407,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={inputContainerStyle}>
+                  <View style={bubbleStyleFor(nailsRemovalFee, pricing.nailsRemovalFee || 75)}>
                     <TextInput
                       ref={nailsRemovalFeeRef}
                       value={nailsRemovalFee}
@@ -1444,7 +1448,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               <View style={leftAlignedLabelWrapperStyle}>
                 <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Wall Paint</Text>
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(wallPaintPerGallon, pricing.wallPaintPerGallon || 45)}>
                 <TextInput
                   ref={wallPaintGallonRef}
                   value={wallPaintPerGallon}
@@ -1460,7 +1464,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   style={inputTextStyle}
                 />
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(wallPaintPer5Gallon, pricing.wallPaintPer5Gallon || 200)}>
                 <TextInput
                   ref={wallPaint5GallonRef}
                   value={wallPaintPer5Gallon}
@@ -1482,7 +1486,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               <View style={leftAlignedLabelWrapperStyle}>
                 <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Ceiling Paint</Text>
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(ceilingPaintPerGallon, pricing.ceilingPaintPerGallon || 40)}>
                 <TextInput
                   ref={ceilingPaintGallonRef}
                   value={ceilingPaintPerGallon}
@@ -1498,7 +1502,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   style={inputTextStyle}
                 />
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(ceilingPaintPer5Gallon, pricing.ceilingPaintPer5Gallon || 175)}>
                 <TextInput
                   ref={ceilingPaint5GallonRef}
                   value={ceilingPaintPer5Gallon}
@@ -1538,7 +1542,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </Pressable>
                 </View>
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(trimPaintPerGallon, pricing.trimPaintPerGallon || 50)}>
                 <TextInput
                   ref={trimPaintGallonRef}
                   value={trimPaintPerGallon}
@@ -1554,7 +1558,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   style={inputTextStyle}
                 />
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(trimPaintPer5Gallon, pricing.trimPaintPer5Gallon || 225)}>
                 <TextInput
                   ref={trimPaint5GallonRef}
                   value={trimPaintPer5Gallon}
@@ -1576,7 +1580,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               <View style={leftAlignedLabelWrapperStyle}>
                 <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Cabinet Paint</Text>
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(cabinetPaintPerGallon, pricing.cabinetPaintPerGallon || 60)}>
                 <TextInput
                   ref={cabinetPaintGallonRef}
                   value={cabinetPaintPerGallon}
@@ -1592,7 +1596,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   style={inputTextStyle}
                 />
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(cabinetPaintPer5Gallon, pricing.cabinetPaintPer5Gallon || 450)}>
                 <TextInput
                   ref={cabinetPaint5GallonRef}
                   value={cabinetPaintPer5Gallon}
@@ -1614,7 +1618,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               <View style={leftAlignedLabelWrapperStyle}>
                 <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Primer</Text>
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(primerPerGallon, pricing.primerPerGallon || 35)}>
                 <TextInput
                   ref={primerGallonRef}
                   value={primerPerGallon}
@@ -1630,7 +1634,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   style={inputTextStyle}
                 />
               </View>
-              <View style={inputContainerStyle}>
+              <View style={bubbleStyleFor(primerPer5Gallon, pricing.primerPer5Gallon || 150)}>
                 <TextInput
                   ref={primer5GallonRef}
                   value={primerPer5Gallon}

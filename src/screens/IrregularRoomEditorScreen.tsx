@@ -1854,6 +1854,122 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
               </Card>
             )}
 
+            {/* Test Mode: Calculation Details */}
+            {testMode && totalArea > 0 && (
+              <Card style={{ marginBottom: Spacing.md }}>
+                <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: Typography.h2.fontWeight as any, color: Colors.error, marginBottom: Spacing.md }}>
+                  TEST MODE: Calculation Details
+                </Text>
+
+                <View style={{ backgroundColor: Colors.backgroundWarmGray, borderRadius: BorderRadius.default, padding: Spacing.md }}>
+                  {/* Walls */}
+                  {paintWalls && totalArea > 0 && (
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Walls
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Area: {totalArea.toFixed(2)} sqft | Coats: {projectCoats}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Labor: {totalArea.toFixed(2)} × ${wallLaborRate.toFixed(2)}/sqft × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {wallLaborCost.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(wallGallons).toFixed(0)} gal × ${wallPaintRate.toFixed(2)}/gal = {wallMaterialsCost.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* Window Frames */}
+                  {paintWindowFrames && windowCountValue > 0 && (
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Window Frames
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Count: {windowCountValue} | Coats: {projectCoats}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Labor: {windowCountValue} × ${windowLaborRate.toFixed(2)}/window × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {windowLaborCost.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(windowGallons).toFixed(0)} gal × ${trimPaintRate.toFixed(2)}/gal = {windowMaterialsCost.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* Door Frames */}
+                  {paintDoorFrames && doorFrameCount > 0 && (
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Door Frames
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Count: {doorFrameCount} | Coats: {projectCoats}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Labor: {doorFrameCount} × ${doorLaborRate.toFixed(2)}/door × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {doorFrameLaborCost.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(doorFrameGallons).toFixed(0)} gal × ${trimPaintRate.toFixed(2)}/gal = {doorFrameMaterialsCost.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* Doors */}
+                  {paintDoors && doorCountForSummary > 0 && (
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Doors
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Count: {doorCountForSummary} | Coats: {projectCoats}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Labor: {doorCountForSummary} × ${doorLaborRate.toFixed(2)}/door × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {doorLaborCost.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {Math.ceil(doorGallons).toFixed(0)} gal × ${trimPaintRate.toFixed(2)}/gal = {doorMaterialsCost.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* Closet Interior */}
+                  {hasCloset && (
+                    <View style={{ marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.neutralGray }}>
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                        Closet Interior
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Walls: {closetMetrics.totalClosetWallArea.toFixed(2)} sqft | Ceilings: {closetMetrics.totalClosetCeilingArea.toFixed(2)} sqft
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Labor: {closetInteriorEnabled ? closetInteriorLaborCost.toFixed(2) : "0.00"}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Materials: {closetInteriorEnabled ? closetInteriorMaterialsCost.toFixed(2) : "0.00"}
+                      </Text>
+                    </View>
+                  )}
+
+                  <View>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal, marginBottom: Spacing.xs }}>
+                      Totals
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Total Labor: {summaryLaborTotal.toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Total Materials: {summaryMaterialsTotal.toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Grand Total: {(summaryLaborTotal + summaryMaterialsTotal).toFixed(2)}
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            )}
+
             {/* Paint Options - Collapsable */}
             <Card style={{ marginBottom: Spacing.md, paddingBottom: Spacing.sm, backgroundColor: paintOptionsConfirmed ? confirmedCardColor : Colors.white }}>
               <Pressable
