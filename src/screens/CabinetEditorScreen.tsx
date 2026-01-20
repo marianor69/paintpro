@@ -1013,6 +1013,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                         Labor: {baseDoorCount} x ${pricing.cabinetDoorLabor.toFixed(2)} = ${baseDoorsLabor.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Area: {(baseDoorCount * baseDoorAreaSqFt).toFixed(2)} sq ft
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {baseDoorGallons.toFixed(2)} gal → ${baseDoorMat.toFixed(2)}
                       </Text>
                     </View>
@@ -1026,6 +1029,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Labor: {drawerCount} x ${pricing.cabinetDrawerLabor.toFixed(2)} = ${drawersLabor.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Area: {(drawerCount * drawerAreaSqFt).toFixed(2)} sq ft
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {drawerGallons.toFixed(2)} gal → ${drawerMat.toFixed(2)}
@@ -1046,6 +1052,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                         Labor: {wallDoorCount} x ${wallDoorRate.toFixed(2)} = ${wallDoorsLabor.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Area: {(wallDoorCount * wallDoorAreaSqFt).toFixed(2)} sq ft
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {wallDoorGallons.toFixed(2)} gal → ${wallDoorMat.toFixed(2)}
                       </Text>
                     </View>
@@ -1059,6 +1068,9 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Total Materials: ${calculations.materialsDisplayed.toFixed(2)}
+                      </Text>
+                      <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                        Total Area: {(totalGallons * cabinetCoverage).toFixed(2)} sq ft
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Gallons: {totalGallons.toFixed(2)} | Material Cost: ${totalMaterialsCost.toFixed(2)}
