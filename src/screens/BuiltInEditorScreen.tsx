@@ -669,7 +669,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     className="mb-0"
                   />
                 </View>
-                <View style={bubbleLabelContainerStyle}>
+                <View style={[bubbleLabelContainerStyle, { alignItems: "flex-end", marginLeft: "auto" }]}>
                   <Text style={[bubbleLabelStyle, { color: Colors.darkCharcoal, fontWeight: "500" as any }]}>
                     Shelves
                   </Text>

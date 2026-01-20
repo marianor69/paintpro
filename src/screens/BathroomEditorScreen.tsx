@@ -1869,7 +1869,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const vanityDoorAreaSqFt = vanityDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);
           const vanityDoorGallons = (vanityDoorAreaSqFt / cabinetCoverage) * pricingSummary.coatsTrim;
           const vanityMaterialsCost = Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0);
-          const vanityLaborCost = vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
+          const vanityLaborCost = vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0);
           const closetWallLaborCost = pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls);
           const closetWallMaterialsCost = Math.ceil((pricingSummary.closetWallArea / wallCoverage) * pricingSummary.coatsWalls) * safeNumber(pricing.wallPaintPerGallon, 0);
           const closetCeilingLaborCost = pricingSummary.closetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsCeiling);
@@ -2497,7 +2497,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             ? Math.ceil(doorFaceGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
             : 0;
           const vanityLaborTotal = paintVanities
-            ? vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)
+            ? vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0)
             : 0;
           const vanityMaterialsTotal = paintVanities
             ? Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)
@@ -2694,7 +2694,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                       Count: {vanityDoorCountValue} | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Labor: {vanityDoorCountValue} × ${safeNumber(pricing.vanityDoorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = {(vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
+                      Labor: {vanityDoorCountValue} × ${safeNumber(pricing.vanityDoorLabor, 0).toFixed(2)}/door = {(vanityDoorCountValue * safeNumber(pricing.vanityDoorLabor, 0)).toFixed(2)}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Materials: {Math.ceil(vanityDoorGallons).toFixed(0)} gal × ${safeNumber(pricing.cabinetPaintPerGallon, 0).toFixed(2)}/gal = {(Math.ceil(vanityDoorGallons) * safeNumber(pricing.cabinetPaintPerGallon, 0)).toFixed(2)}

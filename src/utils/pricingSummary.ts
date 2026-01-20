@@ -514,8 +514,7 @@ export function computeRoomPricingSummary(
     laborCost += doorCount * safeNumber(pricing.doorLabor, 0) * doorLaborMultiplier;
   }
   if (paintVanities && vanityDoorCount > 0) {
-    const vanityLaborMultiplier = getCoatLaborMultiplier(coatsTrim);
-    laborCost += vanityDoorCount * safeNumber(pricing.vanityDoorLabor, 0) * vanityLaborMultiplier;
+    laborCost += vanityDoorCount * safeNumber(pricing.vanityDoorLabor, 0);
   }
 
   if (includedWindows && room.includeWindows !== false) {

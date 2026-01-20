@@ -1242,7 +1242,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             <View style={rowStyle}>
               <View style={inlineFieldStyle}>
                 <View style={leftAlignedLabelWrapperStyle}>
-                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Cabinet Door and Front</Text>
+                  <Text style={{ ...leftAlignedLabelTextStyle, ...mainLabelStyle }}>Cabinet Door & Front</Text>
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
