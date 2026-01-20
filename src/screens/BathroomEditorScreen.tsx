@@ -1194,11 +1194,40 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          <Toggle
-            label="Toilet Enclosed"
-            value={toiletEnclosed}
-            onValueChange={setToiletEnclosed}
-          />
+          <View style={{ marginBottom: Spacing.md }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ flex: 1, marginRight: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                    Toilet Enclosed
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Enclosed Toilet", "Adds the enclosed toilet labor cost when Paint Walls is on.")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, transform: [{ translateY: -4 }] }}
+                  >
+                    <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Enclosed toilet help" />
+                  </Pressable>
+                </View>
+              </View>
+              <Switch
+                value={toiletEnclosed}
+                onValueChange={setToiletEnclosed}
+                trackColor={{
+                  false: Colors.neutralGray,
+                  true: Colors.primaryBlue,
+                }}
+                thumbColor={Colors.white}
+                ios_backgroundColor={Colors.neutralGray}
+              />
+            </View>
+          </View>
 
           {/* Cathedral Ceiling Toggle */}
           <Toggle
