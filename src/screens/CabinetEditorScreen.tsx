@@ -451,10 +451,27 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Pressable
-              onPress={() => navigation.goBack()}
-              style={{ padding: Spacing.sm, marginLeft: -Spacing.sm }}
+              onPress={handleDiscardAndLeave}
+              onLayout={(event) => {
+                if (!discardWidth) {
+                  setDiscardWidth(event.nativeEvent.layout.width);
+                }
+              }}
+              style={{
+                minWidth: 60,
+                height: 36,
+                paddingHorizontal: Spacing.sm,
+                borderRadius: 8,
+                backgroundColor: Colors.primaryBlueLight,
+                borderWidth: 1,
+                borderColor: Colors.neutralGray,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <Ionicons name="chevron-back" size={28} color={Colors.darkCharcoal} />
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
+                Discard
+              </Text>
             </Pressable>
 
             <View style={{ flex: 1, alignItems: "center" }}>
@@ -467,6 +484,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
               <Pressable
                 onPress={handleSave}
                 style={{
+                  minWidth: 60,
                   height: 36,
                   width: discardWidth || undefined,
                   backgroundColor: Colors.primaryBlue,
