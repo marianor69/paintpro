@@ -735,6 +735,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     paintWalls, paintCeilings, paintWindowFrames,
     paintDoorFrames, paintWindows, paintDoors, paintJambs, paintBaseboard,
     hasCrownMoulding, hasAccentWall, notes, photos,
+    roomInfoConfirmed, openingsClosetsConfirmed, paintOptionsConfirmed, paintOptionsSnapshot,
     isNew, projectId, irregularRoomId, unitSystem, addIrregularRoom, updateIrregularRoom, navigation, hasValidDimensions
   ]);
 
