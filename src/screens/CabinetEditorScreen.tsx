@@ -859,14 +859,38 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                     <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
                   </View>
 
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                      ${Math.round(calculations.laborDisplayed)}
-                    </Text>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                      ${Math.round(calculations.materialsDisplayed)}
-                    </Text>
-                  </View>
+                  {baseDoorCount > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(baseDoorCount * pricing.cabinetDoorLabor)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        $0
+                      </Text>
+                    </View>
+                  )}
+
+                  {drawerCount > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(drawerCount * pricing.cabinetDrawerLabor)}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        $0
+                      </Text>
+                    </View>
+                  )}
+
+                  {wallDoorCount > 0 && (
+                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        ${Math.round(wallDoorCount * (includeWallCabinet42 ? pricing.wallCabinetLabor : pricing.cabinetDoorLabor))}
+                      </Text>
+                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                        $0
+                      </Text>
+                    </View>
+                  )}
 
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 

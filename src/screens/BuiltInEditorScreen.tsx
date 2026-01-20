@@ -461,9 +461,9 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const heightVal = parseDisplayValue(height, "length", unitSystem) || 0;
   const depthVal = parseDisplayValue(depth, "length", unitSystem) || 0;
   const shelfCountValue = parseInt(shelfCount) || 0;
-  const totalPaintableArea =
-    (shelfCountValue > 0 ? shelfCountValue * widthVal * depthVal * 2 : 0) + // shelves (both sides)
-    2 * (heightVal * depthVal); // left + right sides
+  const shelfAreaSqFt = shelfCountValue > 0 ? shelfCountValue * widthVal * depthVal * 2 : 0;
+  const sideAreaSqFt = 2 * (heightVal * depthVal);
+  const totalPaintableArea = shelfAreaSqFt + sideAreaSqFt;
 
   const hasAnyDimensions = widthVal > 0 || heightVal > 0 || depthVal > 0;
 
