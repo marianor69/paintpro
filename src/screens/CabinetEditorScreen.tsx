@@ -869,9 +869,10 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                     safeNumber(pricing.cabinetPaintPerGallon, 0),
                     pricing.cabinetPaintPer5Gallon
                   );
-                  const baseDoorMat = totalGallons > 0 ? totalMaterialsCost * (baseDoorGallons / totalGallons) : 0;
-                  const drawerMat = totalGallons > 0 ? totalMaterialsCost * (drawerGallons / totalGallons) : 0;
-                  const wallDoorMat = totalGallons > 0 ? totalMaterialsCost * (wallDoorGallons / totalGallons) : 0;
+                  const firstLine = baseDoorCount > 0 ? "base" : drawerCount > 0 ? "drawer" : wallDoorCount > 0 ? "wall" : "none";
+                  const baseDoorMat = firstLine === "base" ? totalMaterialsCost : 0;
+                  const drawerMat = firstLine === "drawer" ? totalMaterialsCost : 0;
+                  const wallDoorMat = firstLine === "wall" ? totalMaterialsCost : 0;
 
                   return (
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
@@ -945,9 +946,10 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                 safeNumber(pricing.cabinetPaintPerGallon, 0),
                 pricing.cabinetPaintPer5Gallon
               );
-              const baseDoorMat = totalGallons > 0 ? totalMaterialsCost * (baseDoorGallons / totalGallons) : 0;
-              const drawerMat = totalGallons > 0 ? totalMaterialsCost * (drawerGallons / totalGallons) : 0;
-              const wallDoorMat = totalGallons > 0 ? totalMaterialsCost * (wallDoorGallons / totalGallons) : 0;
+              const firstLine = baseDoorCount > 0 ? "base" : drawerCount > 0 ? "drawer" : wallDoorCount > 0 ? "wall" : "none";
+              const baseDoorMat = firstLine === "base" ? totalMaterialsCost : 0;
+              const drawerMat = firstLine === "drawer" ? totalMaterialsCost : 0;
+              const wallDoorMat = firstLine === "wall" ? totalMaterialsCost : 0;
 
               return (
                 <Card style={{ marginBottom: Spacing.md }}>
