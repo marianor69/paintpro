@@ -120,6 +120,16 @@ export default function CalculationSettingsScreen() {
   const trimCoverageSqFtPerGallon = useAppSettings((s) => s.trimCoverageSqFtPerGallon);
   const primerCoverageSqFtPerGallon = useAppSettings((s) => s.primerCoverageSqFtPerGallon);
   const cabinetPaintCoverageSqFtPerGallon = useAppSettings((s) => s.cabinetPaintCoverageSqFtPerGallon);
+  const cabinetDoorWidthIn = useAppSettings((s) => s.cabinetDoorWidthIn);
+  const cabinetDoorHeightIn = useAppSettings((s) => s.cabinetDoorHeightIn);
+  const cabinetDoorSides = useAppSettings((s) => s.cabinetDoorSides);
+  const cabinetWallDoor42WidthIn = useAppSettings((s) => s.cabinetWallDoor42WidthIn);
+  const cabinetWallDoor42HeightIn = useAppSettings((s) => s.cabinetWallDoor42HeightIn);
+  const cabinetWallDoor42Sides = useAppSettings((s) => s.cabinetWallDoor42Sides);
+  const cabinetDrawerWidthIn = useAppSettings((s) => s.cabinetDrawerWidthIn);
+  const cabinetDrawerHeightIn = useAppSettings((s) => s.cabinetDrawerHeightIn);
+  const cabinetDrawerSides = useAppSettings((s) => s.cabinetDrawerSides);
+  const cabinetFrontAreaSqIn = useAppSettings((s) => s.cabinetFrontAreaSqIn);
   const updateAppSettings = useAppSettings((s) => s.updateSettings);
 
   const [doorHeight, setDoorHeight] = useState(settings.doorHeight.toString());
@@ -171,6 +181,16 @@ export default function CalculationSettingsScreen() {
   const trimCoverageRef = useRef<TextInput>(null);
   const primerCoverageRef = useRef<TextInput>(null);
   const cabinetPaintCoverageRef = useRef<TextInput>(null);
+  const cabinetDoorWidthRef = useRef<TextInput>(null);
+  const cabinetDoorHeightRef = useRef<TextInput>(null);
+  const cabinetDoorSidesRef = useRef<TextInput>(null);
+  const cabinetWallDoor42WidthRef = useRef<TextInput>(null);
+  const cabinetWallDoor42HeightRef = useRef<TextInput>(null);
+  const cabinetWallDoor42SidesRef = useRef<TextInput>(null);
+  const cabinetDrawerWidthRef = useRef<TextInput>(null);
+  const cabinetDrawerHeightRef = useRef<TextInput>(null);
+  const cabinetDrawerSidesRef = useRef<TextInput>(null);
+  const cabinetFrontAreaRef = useRef<TextInput>(null);
   const singleClosetWidthRef = useRef<TextInput>(null);
   const singleClosetTrimWidthRef = useRef<TextInput>(null);
   const singleClosetBaseboardRef = useRef<TextInput>(null);
@@ -195,6 +215,7 @@ export default function CalculationSettingsScreen() {
   const trimCoverageID = useId();
   const primerCoverageID = useId();
   const cabinetPaintCoverageID = useId();
+  const cabinetAssumptionsID = useId();
   const singleClosetWidthID = useId();
   const singleClosetTrimWidthID = useId();
   const singleClosetBaseboardID = useId();
@@ -928,6 +949,291 @@ export default function CalculationSettingsScreen() {
             </View>
           </Card>
 
+          {/* Cabinet Paint Assumptions */}
+          <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
+            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+              Cabinet Paint Assumptions
+            </Text>
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              style={{ marginBottom: rowSpacing }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Base/Wall Door
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="Width (in)">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDoorWidthRef}
+                      value={String(cabinetDoorWidthIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetDoorWidthIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="30"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={(
+                <BubbleStack header="Height (in)">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDoorHeightRef}
+                      value={String(cabinetDoorHeightIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetDoorHeightIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="25"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+            />
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              style={{ marginBottom: rowSpacing }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Base/Wall Door Sides
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="Sides">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDoorSidesRef}
+                      value={String(cabinetDoorSides)}
+                      onChangeText={(text) => updateAppSettings({ cabinetDoorSides: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="2"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={null}
+              reservePos1
+            />
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              style={{ marginBottom: rowSpacing }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Wall Door 42"
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="Width (in)">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetWallDoor42WidthRef}
+                      value={String(cabinetWallDoor42WidthIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetWallDoor42WidthIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="30"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={(
+                <BubbleStack header="Height (in)">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetWallDoor42HeightRef}
+                      value={String(cabinetWallDoor42HeightIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetWallDoor42HeightIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="42"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+            />
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              style={{ marginBottom: rowSpacing }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Wall Door 42" Sides
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="Sides">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetWallDoor42SidesRef}
+                      value={String(cabinetWallDoor42Sides)}
+                      onChangeText={(text) => updateAppSettings({ cabinetWallDoor42Sides: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="2"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={null}
+              reservePos1
+            />
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              style={{ marginBottom: rowSpacing }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Drawer
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="Width (in)">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDrawerWidthRef}
+                      value={String(cabinetDrawerWidthIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetDrawerWidthIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="30"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={(
+                <BubbleStack header="Height (in)">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDrawerHeightRef}
+                      value={String(cabinetDrawerHeightIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetDrawerHeightIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="10"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+            />
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              style={{ marginBottom: rowSpacing }}
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Drawer Sides
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="Sides">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetDrawerSidesRef}
+                      value={String(cabinetDrawerSides)}
+                      onChangeText={(text) => updateAppSettings({ cabinetDrawerSides: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="1"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={null}
+              reservePos1
+            />
+
+            <SettingsRowGrid
+              labelWidth={doorLabelWidth}
+              labelToBubbleSpace={labelToBubbleSpace}
+              bubbleToBubbleSpace={bubbleToBubbleSpace}
+              alignLabelToHeader
+              label={(
+                <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal }}>
+                  Cabinet Front Add-on
+                </Text>
+              )}
+              pos0={(
+                <BubbleStack header="sq in">
+                  <View style={inputContainerStyle}>
+                    <TextInput
+                      ref={cabinetFrontAreaRef}
+                      value={String(cabinetFrontAreaSqIn)}
+                      onChangeText={(text) => updateAppSettings({ cabinetFrontAreaSqIn: parseFloat(text) || 0 })}
+                      keyboardType="numeric"
+                      placeholder="450"
+                      placeholderTextColor={Colors.mediumGray}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      inputAccessoryViewID={Platform.OS === "ios" ? `cabinetAssumptions-${cabinetAssumptionsID}` : undefined}
+                      style={bubbleInputStyle}
+                    />
+                  </View>
+                </BubbleStack>
+              )}
+              pos1={null}
+              reservePos1
+            />
+          </Card>
+
           {/* Closet Assumptions */}
           <Card style={{ marginBottom: Spacing.md, paddingBottom: cardBottomPadding }}>
             <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
@@ -1444,6 +1750,16 @@ export default function CalculationSettingsScreen() {
           <View style={{ backgroundColor: "#f1f1f1", paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, flexDirection: "row", justifyContent: "flex-end" }}>
             <Pressable onPress={() => trimCoverageRef.current?.focus()} style={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}><Text style={{ fontSize: Typography.body.fontSize, color: "#007AFF", fontWeight: "400" }}>Previous</Text></Pressable>
             <Pressable onPress={() => primerCoverageRef.current?.focus()} style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}><Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Next</Text></Pressable>
+          </View>
+        </InputAccessoryView>
+        <InputAccessoryView nativeID={`cabinetAssumptions-${cabinetAssumptionsID}`}>
+          <View style={{ backgroundColor: Colors.white, borderTopWidth: 1, borderTopColor: Colors.neutralGray, padding: Spacing.sm, alignItems: "flex-end" }}>
+            <Pressable
+              onPress={() => Keyboard.dismiss()}
+              style={{ backgroundColor: Colors.primaryBlue, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm, borderRadius: BorderRadius.default }}
+            >
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.white, fontWeight: "600" }}>Done</Text>
+            </Pressable>
           </View>
         </InputAccessoryView>
         <InputAccessoryView nativeID={`primerCoverage-${primerCoverageID}`}>

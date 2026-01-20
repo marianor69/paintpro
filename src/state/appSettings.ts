@@ -21,6 +21,18 @@ export interface AppSettings {
   primerCoverageSqFtPerGallon: number;
   cabinetPaintCoverageSqFtPerGallon: number;
 
+  // Cabinet paint assumptions (inches)
+  cabinetDoorWidthIn: number;
+  cabinetDoorHeightIn: number;
+  cabinetDoorSides: number;
+  cabinetWallDoor42WidthIn: number;
+  cabinetWallDoor42HeightIn: number;
+  cabinetWallDoor42Sides: number;
+  cabinetDrawerWidthIn: number;
+  cabinetDrawerHeightIn: number;
+  cabinetDrawerSides: number;
+  cabinetFrontAreaSqIn: number;
+
   // Closet settings
   closetCavityDepth: number; // in feet, default 2
 
@@ -53,6 +65,18 @@ const defaultAppSettings: AppSettings = {
   doorCoverageSqFtPerGallon: 350,
   primerCoverageSqFtPerGallon: 350,
   cabinetPaintCoverageSqFtPerGallon: 350,
+
+  // Cabinet paint assumptions (inches)
+  cabinetDoorWidthIn: 30,
+  cabinetDoorHeightIn: 25,
+  cabinetDoorSides: 2,
+  cabinetWallDoor42WidthIn: 30,
+  cabinetWallDoor42HeightIn: 42,
+  cabinetWallDoor42Sides: 2,
+  cabinetDrawerWidthIn: 30,
+  cabinetDrawerHeightIn: 10,
+  cabinetDrawerSides: 1,
+  cabinetFrontAreaSqIn: 450,
 
   // Closet
   closetCavityDepth: 2, // 2 feet = 24 inches

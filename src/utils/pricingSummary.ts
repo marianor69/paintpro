@@ -958,6 +958,16 @@ export function computeCabinetPricingSummary(
     1,
     safeNumber(useAppSettings.getState().cabinetPaintCoverageSqFtPerGallon, 350)
   );
+  const cabinetDoorWidthIn = safeNumber(useAppSettings.getState().cabinetDoorWidthIn, 30);
+  const cabinetDoorHeightIn = safeNumber(useAppSettings.getState().cabinetDoorHeightIn, 25);
+  const cabinetDoorSides = safeNumber(useAppSettings.getState().cabinetDoorSides, 2);
+  const cabinetWallDoor42WidthIn = safeNumber(useAppSettings.getState().cabinetWallDoor42WidthIn, 30);
+  const cabinetWallDoor42HeightIn = safeNumber(useAppSettings.getState().cabinetWallDoor42HeightIn, 42);
+  const cabinetWallDoor42Sides = safeNumber(useAppSettings.getState().cabinetWallDoor42Sides, 2);
+  const cabinetDrawerWidthIn = safeNumber(useAppSettings.getState().cabinetDrawerWidthIn, 30);
+  const cabinetDrawerHeightIn = safeNumber(useAppSettings.getState().cabinetDrawerHeightIn, 10);
+  const cabinetDrawerSides = safeNumber(useAppSettings.getState().cabinetDrawerSides, 1);
+  const cabinetFrontAreaSqIn = safeNumber(useAppSettings.getState().cabinetFrontAreaSqIn, 450);
   const baseDoorCount = safeNumber(cabinet.baseDoorCount, 0);
   const drawerCount = safeNumber(cabinet.drawerCount, 0);
   const wallDoorCount = safeNumber(cabinet.wallDoorCount, 0);
@@ -971,9 +981,19 @@ export function computeCabinetPricingSummary(
   const wallDoorLabor = wallDoorCount * wallDoorRate;
 
   const laborCost = baseDoorLabor + drawerLabor + wallDoorLabor;
-  const doorAreaSqFt = calcSettings.doorHeight * calcSettings.doorWidth;
-  const totalItemCount = baseDoorCount + drawerCount + wallDoorCount;
-  const totalPaintSqFt = totalItemCount * doorAreaSqFt;
+  const baseDoorAreaSqFt =
+    ((cabinetDoorWidthIn * cabinetDoorHeightIn * Math.max(1, cabinetDoorSides)) + cabinetFrontAreaSqIn) / 144;
+  const wallDoorWidthIn = includeWallCabinet42 ? cabinetWallDoor42WidthIn : cabinetDoorWidthIn;
+  const wallDoorHeightIn = includeWallCabinet42 ? cabinetWallDoor42HeightIn : cabinetDoorHeightIn;
+  const wallDoorSides = includeWallCabinet42 ? cabinetWallDoor42Sides : cabinetDoorSides;
+  const wallDoorAreaSqFt =
+    ((wallDoorWidthIn * wallDoorHeightIn * Math.max(1, wallDoorSides)) + cabinetFrontAreaSqIn) / 144;
+  const drawerAreaSqFt =
+    (cabinetDrawerWidthIn * cabinetDrawerHeightIn * Math.max(1, cabinetDrawerSides)) / 144;
+  const totalPaintSqFt =
+    (baseDoorCount * baseDoorAreaSqFt) +
+    (wallDoorCount * wallDoorAreaSqFt) +
+    (drawerCount * drawerAreaSqFt);
   const totalGallons = totalPaintSqFt / cabinetPaintCoverageSqFtPerGallon;
   const materialsCost = calculatePaintCost(
     totalGallons,

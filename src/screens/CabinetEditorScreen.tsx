@@ -49,6 +49,16 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
   const pricing = usePricingStore();
   const { testMode } = useAppSettings();
   const cabinetPaintCoverageSqFtPerGallon = useAppSettings((s) => s.cabinetPaintCoverageSqFtPerGallon);
+  const cabinetDoorWidthIn = useAppSettings((s) => s.cabinetDoorWidthIn);
+  const cabinetDoorHeightIn = useAppSettings((s) => s.cabinetDoorHeightIn);
+  const cabinetDoorSides = useAppSettings((s) => s.cabinetDoorSides);
+  const cabinetWallDoor42WidthIn = useAppSettings((s) => s.cabinetWallDoor42WidthIn);
+  const cabinetWallDoor42HeightIn = useAppSettings((s) => s.cabinetWallDoor42HeightIn);
+  const cabinetWallDoor42Sides = useAppSettings((s) => s.cabinetWallDoor42Sides);
+  const cabinetDrawerWidthIn = useAppSettings((s) => s.cabinetDrawerWidthIn);
+  const cabinetDrawerHeightIn = useAppSettings((s) => s.cabinetDrawerHeightIn);
+  const cabinetDrawerSides = useAppSettings((s) => s.cabinetDrawerSides);
+  const cabinetFrontAreaSqIn = useAppSettings((s) => s.cabinetFrontAreaSqIn);
   const calcSettings = useCalculationSettings((s) => s.settings);
 
   const [name, setName] = useState(!isNewCabinet && cabinet?.name ? cabinet.name : "");
@@ -876,11 +886,19 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                 </View>
 
                 {(() => {
-                  const doorAreaSqFt = calcSettings.doorHeight * calcSettings.doorWidth;
                   const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
-                  const baseDoorGallons = (baseDoorCount * doorAreaSqFt) / cabinetCoverage;
-                  const drawerGallons = (drawerCount * doorAreaSqFt) / cabinetCoverage;
-                  const wallDoorGallons = (wallDoorCount * doorAreaSqFt) / cabinetCoverage;
+                  const baseDoorAreaSqFt =
+                    ((cabinetDoorWidthIn * cabinetDoorHeightIn * Math.max(1, cabinetDoorSides)) + cabinetFrontAreaSqIn) / 144;
+                  const wallDoorWidthIn = includeWallCabinet42 ? cabinetWallDoor42WidthIn : cabinetDoorWidthIn;
+                  const wallDoorHeightIn = includeWallCabinet42 ? cabinetWallDoor42HeightIn : cabinetDoorHeightIn;
+                  const wallDoorSides = includeWallCabinet42 ? cabinetWallDoor42Sides : cabinetDoorSides;
+                  const wallDoorAreaSqFt =
+                    ((wallDoorWidthIn * wallDoorHeightIn * Math.max(1, wallDoorSides)) + cabinetFrontAreaSqIn) / 144;
+                  const drawerAreaSqFt =
+                    (cabinetDrawerWidthIn * cabinetDrawerHeightIn * Math.max(1, cabinetDrawerSides)) / 144;
+                  const baseDoorGallons = (baseDoorCount * baseDoorAreaSqFt) / cabinetCoverage;
+                  const drawerGallons = (drawerCount * drawerAreaSqFt) / cabinetCoverage;
+                  const wallDoorGallons = (wallDoorCount * wallDoorAreaSqFt) / cabinetCoverage;
                   const totalGallons = baseDoorGallons + drawerGallons + wallDoorGallons;
                   const totalMaterialsCost = calculatePaintCost(
                     totalGallons,
@@ -953,11 +971,19 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
               const baseDoorsLabor = baseDoorCount * pricing.cabinetDoorLabor;
               const drawersLabor = drawerCount * pricing.cabinetDrawerLabor;
               const wallDoorsLabor = wallDoorCount * wallDoorRate;
-              const doorAreaSqFt = calcSettings.doorHeight * calcSettings.doorWidth;
               const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
-              const baseDoorGallons = (baseDoorCount * doorAreaSqFt) / cabinetCoverage;
-              const drawerGallons = (drawerCount * doorAreaSqFt) / cabinetCoverage;
-              const wallDoorGallons = (wallDoorCount * doorAreaSqFt) / cabinetCoverage;
+              const baseDoorAreaSqFt =
+                ((cabinetDoorWidthIn * cabinetDoorHeightIn * Math.max(1, cabinetDoorSides)) + cabinetFrontAreaSqIn) / 144;
+              const wallDoorWidthIn = includeWallCabinet42 ? cabinetWallDoor42WidthIn : cabinetDoorWidthIn;
+              const wallDoorHeightIn = includeWallCabinet42 ? cabinetWallDoor42HeightIn : cabinetDoorHeightIn;
+              const wallDoorSides = includeWallCabinet42 ? cabinetWallDoor42Sides : cabinetDoorSides;
+              const wallDoorAreaSqFt =
+                ((wallDoorWidthIn * wallDoorHeightIn * Math.max(1, wallDoorSides)) + cabinetFrontAreaSqIn) / 144;
+              const drawerAreaSqFt =
+                (cabinetDrawerWidthIn * cabinetDrawerHeightIn * Math.max(1, cabinetDrawerSides)) / 144;
+              const baseDoorGallons = (baseDoorCount * baseDoorAreaSqFt) / cabinetCoverage;
+              const drawerGallons = (drawerCount * drawerAreaSqFt) / cabinetCoverage;
+              const wallDoorGallons = (wallDoorCount * wallDoorAreaSqFt) / cabinetCoverage;
               const totalGallons = baseDoorGallons + drawerGallons + wallDoorGallons;
               const totalMaterialsCost = calculatePaintCost(
                 totalGallons,
