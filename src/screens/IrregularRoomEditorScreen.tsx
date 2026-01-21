@@ -282,7 +282,22 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const singleClosetCount = parseInt(singleDoorClosets) || 0;
   const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
   const hasCloset = singleClosetCount > 0 || doubleClosetCount > 0;
-  const projectCoats = safeNumber(project?.projectCoats, 2);
+  const coatsWalls = safeNumber(
+    !isNew ? irregularRoom?.coatsWalls : project?.globalPaintDefaults?.defaultWallCoats,
+    2
+  );
+  const coatsCeiling = safeNumber(
+    !isNew ? irregularRoom?.coatsCeiling : project?.globalPaintDefaults?.defaultCeilingCoats,
+    2
+  );
+  const coatsTrim = safeNumber(
+    !isNew ? irregularRoom?.coatsTrim : project?.globalPaintDefaults?.defaultTrimCoats,
+    2
+  );
+  const coatsDoors = safeNumber(
+    !isNew ? irregularRoom?.coatsDoors : project?.globalPaintDefaults?.defaultDoorCoats,
+    2
+  );
   const secondCoatMultiplier = safeNumber(pricing?.secondCoatLaborMultiplier, 2.0);
   const getCoatLaborMultiplier = (coats: number): number => coats <= 1 ? 1.0 : secondCoatMultiplier;
 
@@ -309,16 +324,16 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   ].every((val) => Number.isFinite(val));
 
   const wallLaborCost = paintWalls
-    ? totalArea * wallLaborRate * getCoatLaborMultiplier(projectCoats)
+    ? totalArea * wallLaborRate * getCoatLaborMultiplier(coatsWalls)
     : 0;
-  const wallGallons = paintWalls ? (totalArea / wallCoverage) * projectCoats : 0;
+  const wallGallons = paintWalls ? (totalArea / wallCoverage) * coatsWalls : 0;
   const wallMaterialsCost = paintWalls ? Math.ceil(wallGallons) * wallPaintRate : 0;
 
   const windowTrimWidthFt = safeNumber(calcSettings?.windowTrimWidth, 3.5) / 12;
   const windowPerimeter = 2 * (safeNumber(calcSettings?.windowWidth, 3) + safeNumber(calcSettings?.windowHeight, 5));
   const windowTrimSqFt = windowCountValue * windowPerimeter * windowTrimWidthFt;
-  const windowGallons = (windowTrimSqFt / trimCoverage) * projectCoats;
-  const windowLaborCost = windowCountValue * windowLaborRate * getCoatLaborMultiplier(projectCoats);
+  const windowGallons = (windowTrimSqFt / trimCoverage) * coatsTrim;
+  const windowLaborCost = windowCountValue * windowLaborRate * getCoatLaborMultiplier(coatsTrim);
   const windowMaterialsCost = Math.ceil(windowGallons) * trimPaintRate;
 
   const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
@@ -337,13 +352,13 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const doubleClosetPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + (safeNumber(calcSettings?.doubleClosetWidth, 60) / 12);
   const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
   const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
-  const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * projectCoats;
-  const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+  const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * coatsTrim;
+  const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(coatsTrim);
   const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
 
   const doorFacesSqFt = doorCountForSummary * (safeNumber(calcSettings?.doorWidth, 3) * safeNumber(calcSettings?.doorHeight, 7)) * 2;
-  const doorGallons = (doorFacesSqFt / trimCoverage) * projectCoats;
-  const doorLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+  const doorGallons = (doorFacesSqFt / trimCoverage) * coatsDoors;
+  const doorLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(coatsDoors);
   const doorMaterialsCost = Math.ceil(doorGallons) * trimPaintRate;
 
   const closetMetrics = getClosetInteriorMetrics(
@@ -356,12 +371,12 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   );
   const closetBaseboardWidthFt = safeNumber(calcSettings?.baseboardWidth, 3.5) / 12;
   const closetBaseboardTrimSqFt = closetMetrics.totalClosetBaseboardLF * closetBaseboardWidthFt;
-  const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * projectCoats;
-  const closetWallLaborCost = closetMetrics.totalClosetWallArea * wallLaborRate * getCoatLaborMultiplier(projectCoats);
-  const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * projectCoats) * wallPaintRate;
-  const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * ceilingLaborRate * getCoatLaborMultiplier(projectCoats);
-  const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / ceilingCoverage) * projectCoats) * ceilingPaintRate;
-  const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(projectCoats);
+  const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * coatsTrim;
+  const closetWallLaborCost = closetMetrics.totalClosetWallArea * wallLaborRate * getCoatLaborMultiplier(coatsWalls);
+  const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * coatsWalls) * wallPaintRate;
+  const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * ceilingLaborRate * getCoatLaborMultiplier(coatsCeiling);
+  const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / ceilingCoverage) * coatsCeiling) * ceilingPaintRate;
+  const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(coatsTrim);
   const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
   const closetInteriorLaborCost = closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost;
   const closetInteriorMaterialsCost = closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost;
@@ -1869,10 +1884,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         Walls
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Area: {totalArea.toFixed(2)} sqft | Coats: {projectCoats}
+                        Area: {totalArea.toFixed(2)} sqft | Coats: {coatsWalls}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Labor: {totalArea.toFixed(2)} × ${wallLaborRate.toFixed(2)}/sqft × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {wallLaborCost.toFixed(2)}
+                        Labor: {totalArea.toFixed(2)} × ${wallLaborRate.toFixed(2)}/sqft × {getCoatLaborMultiplier(coatsWalls).toFixed(2)} = {wallLaborCost.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {Math.ceil(wallGallons).toFixed(0)} gal × ${wallPaintRate.toFixed(2)}/gal = {wallMaterialsCost.toFixed(2)}
@@ -1887,10 +1902,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         Window Frames
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Count: {windowCountValue} | Coats: {projectCoats}
+                        Count: {windowCountValue} | Coats: {coatsTrim}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Labor: {windowCountValue} × ${windowLaborRate.toFixed(2)}/window × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {windowLaborCost.toFixed(2)}
+                        Labor: {windowCountValue} × ${windowLaborRate.toFixed(2)}/window × {getCoatLaborMultiplier(coatsTrim).toFixed(2)} = {windowLaborCost.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {Math.ceil(windowGallons).toFixed(0)} gal × ${trimPaintRate.toFixed(2)}/gal = {windowMaterialsCost.toFixed(2)}
@@ -1905,10 +1920,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         Door Frames
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Count: {doorFrameCount} | Coats: {projectCoats}
+                        Count: {doorFrameCount} | Coats: {coatsTrim}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Labor: {doorFrameCount} × ${doorLaborRate.toFixed(2)}/door × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {doorFrameLaborCost.toFixed(2)}
+                        Labor: {doorFrameCount} × ${doorLaborRate.toFixed(2)}/door × {getCoatLaborMultiplier(coatsTrim).toFixed(2)} = {doorFrameLaborCost.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {Math.ceil(doorFrameGallons).toFixed(0)} gal × ${trimPaintRate.toFixed(2)}/gal = {doorFrameMaterialsCost.toFixed(2)}
@@ -1923,10 +1938,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                         Doors
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Count: {doorCountForSummary} | Coats: {projectCoats}
+                        Count: {doorCountForSummary} | Coats: {coatsDoors}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Labor: {doorCountForSummary} × ${doorLaborRate.toFixed(2)}/door × {getCoatLaborMultiplier(projectCoats).toFixed(2)} = {doorLaborCost.toFixed(2)}
+                        Labor: {doorCountForSummary} × ${doorLaborRate.toFixed(2)}/door × {getCoatLaborMultiplier(coatsDoors).toFixed(2)} = {doorLaborCost.toFixed(2)}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Materials: {Math.ceil(doorGallons).toFixed(0)} gal × ${trimPaintRate.toFixed(2)}/gal = {doorMaterialsCost.toFixed(2)}

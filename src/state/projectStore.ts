@@ -282,6 +282,27 @@ export const useProjectStore = create<ProjectStore>()(
                     ...p.globalPaintDefaults,
                     ...defaults,
                   },
+                  rooms: p.rooms.map((room) => ({
+                    ...room,
+                    coatsWalls: defaults.defaultWallCoats ?? room.coatsWalls,
+                    coatsCeiling: defaults.defaultCeilingCoats ?? room.coatsCeiling,
+                    coatsTrim: defaults.defaultTrimCoats ?? room.coatsTrim,
+                    coatsDoors: defaults.defaultDoorCoats ?? room.coatsDoors,
+                  })),
+                  bathrooms: (p.bathrooms || []).map((bathroom) => ({
+                    ...bathroom,
+                    coatsWalls: defaults.defaultWallCoats ?? bathroom.coatsWalls,
+                    coatsCeiling: defaults.defaultCeilingCoats ?? bathroom.coatsCeiling,
+                    coatsTrim: defaults.defaultTrimCoats ?? bathroom.coatsTrim,
+                    coatsDoors: defaults.defaultDoorCoats ?? bathroom.coatsDoors,
+                  })),
+                  irregularRooms: (p.irregularRooms || []).map((irregularRoom) => ({
+                    ...irregularRoom,
+                    coatsWalls: defaults.defaultWallCoats ?? irregularRoom.coatsWalls,
+                    coatsCeiling: defaults.defaultCeilingCoats ?? irregularRoom.coatsCeiling,
+                    coatsTrim: defaults.defaultTrimCoats ?? irregularRoom.coatsTrim,
+                    coatsDoors: defaults.defaultDoorCoats ?? irregularRoom.coatsDoors,
+                  })),
                   updatedAt: Date.now(),
                 }
               : p

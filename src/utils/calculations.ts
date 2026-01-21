@@ -1866,7 +1866,10 @@ export function calculateFilteredProjectSummary(
     const closetDoorCount = singleClosets + (doubleClosets * 2);
     const doorCountForSummary = doorCount + closetDoorCount;
 
-    const projectCoats = safeNumber(project.projectCoats, 2);
+    const coatsWalls = safeNumber(irregularRoom.coatsWalls, 2);
+    const coatsCeiling = safeNumber(irregularRoom.coatsCeiling, 2);
+    const coatsTrim = safeNumber(irregularRoom.coatsTrim, 2);
+    const coatsDoors = safeNumber(irregularRoom.coatsDoors, 2);
     const getCoatLaborMultiplier = (coats: number): number =>
       coats <= 1 ? 1.0 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
 
@@ -1880,16 +1883,16 @@ export function calculateFilteredProjectSummary(
     const baseboardLaborRate = safeNumber(pricing.baseboardLaborPerLF, 0);
 
     const wallLaborCost = irregularRoom.paintWalls
-      ? totalArea * wallLaborRate * getCoatLaborMultiplier(projectCoats)
+      ? totalArea * wallLaborRate * getCoatLaborMultiplier(coatsWalls)
       : 0;
-    const wallGallons = irregularRoom.paintWalls ? (totalArea / wallCoverage) * projectCoats : 0;
+    const wallGallons = irregularRoom.paintWalls ? (totalArea / wallCoverage) * coatsWalls : 0;
     const wallMaterialsCost = irregularRoom.paintWalls ? Math.ceil(wallGallons) * wallPaintRate : 0;
 
     const windowTrimWidthFt = safeNumber(calcSettings.windowTrimWidth, 3.5) / 12;
     const windowPerimeter = 2 * (safeNumber(calcSettings.windowWidth, 3) + safeNumber(calcSettings.windowHeight, 5));
     const windowTrimSqFt = windowCount * windowPerimeter * windowTrimWidthFt;
-    const windowGallons = (windowTrimSqFt / trimCoverage) * projectCoats;
-    const windowLaborCost = windowCount * windowLaborRate * getCoatLaborMultiplier(projectCoats);
+    const windowGallons = (windowTrimSqFt / trimCoverage) * coatsTrim;
+    const windowLaborCost = windowCount * windowLaborRate * getCoatLaborMultiplier(coatsTrim);
     const windowMaterialsCost = Math.ceil(windowGallons) * trimPaintRate;
 
     const doorTrimWidthFt = safeNumber(calcSettings.doorTrimWidth, 2.5) / 12;
@@ -1902,13 +1905,13 @@ export function calculateFilteredProjectSummary(
     const doubleClosetPerimeter = (2 * safeNumber(calcSettings.doorHeight, 7)) + (safeNumber(calcSettings.doubleClosetWidth, 60) / 12);
     const doubleClosetTrimSqFt = doubleClosets * doubleClosetPerimeter * doubleClosetTrimWidthFt;
     const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
-    const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * projectCoats;
-    const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+    const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * coatsTrim;
+    const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(coatsTrim);
     const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
 
     const doorFacesSqFt = doorCountForSummary * (safeNumber(calcSettings.doorWidth, 3) * safeNumber(calcSettings.doorHeight, 7)) * 2;
-    const doorGallons = (doorFacesSqFt / trimCoverage) * projectCoats;
-    const doorLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+    const doorGallons = (doorFacesSqFt / trimCoverage) * coatsDoors;
+    const doorLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(coatsDoors);
     const doorMaterialsCost = Math.ceil(doorGallons) * trimPaintRate;
 
     const closetMetrics = getClosetInteriorMetrics(
@@ -1921,12 +1924,12 @@ export function calculateFilteredProjectSummary(
     );
     const closetBaseboardWidthFt = safeNumber(calcSettings.baseboardWidth, 3.5) / 12;
     const closetBaseboardTrimSqFt = closetMetrics.totalClosetBaseboardLF * closetBaseboardWidthFt;
-    const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * projectCoats;
-    const closetWallLaborCost = closetMetrics.totalClosetWallArea * wallLaborRate * getCoatLaborMultiplier(projectCoats);
-    const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * projectCoats) * wallPaintRate;
-    const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(projectCoats);
-    const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350))) * projectCoats) * safeNumber(pricing.ceilingPaintPerGallon, 0);
-    const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(projectCoats);
+    const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * coatsTrim;
+    const closetWallLaborCost = closetMetrics.totalClosetWallArea * wallLaborRate * getCoatLaborMultiplier(coatsWalls);
+    const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * coatsWalls) * wallPaintRate;
+    const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(coatsCeiling);
+    const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350))) * coatsCeiling) * safeNumber(pricing.ceilingPaintPerGallon, 0);
+    const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(coatsTrim);
     const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
 
     const closetInteriorEnabled =
