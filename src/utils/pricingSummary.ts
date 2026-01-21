@@ -844,28 +844,33 @@ export function computeFireplacePricingSummary(
       fireplace.overMantelDepth
   );
 
-  // Calculate fireplace area (3 visible sides: front + 2 sides)
-  const frontArea = fireplace.width * fireplace.height;
-  const sideArea = fireplace.depth * fireplace.height * 2;
-  const paintableArea = frontArea + sideArea;
+  const coats = Math.max(1, safeNumber(fireplace.coats, 2));
+  const mantelArea = fireplace.hasMantel ? 6 : 0;
+  const legsArea = fireplace.hasLegs ? 6 * (8 / 12) * 2 : 0;
+  const overMantelArea =
+    fireplace.hasOverMantel && fireplace.overMantelWidth && fireplace.overMantelHeight
+      ? fireplace.overMantelWidth * fireplace.overMantelHeight
+      : 0;
+  const paintableArea = mantelArea + legsArea + overMantelArea;
 
-  // Calculate paint gallons
-  const totalGallons = (paintableArea / wallCoverageSqFtPerGallon) * fireplace.coats;
+  const mantelGallons = mantelArea > 0 ? (mantelArea / wallCoverageSqFtPerGallon) * coats : 0;
+  const legsGallons = legsArea > 0 ? (legsArea / wallCoverageSqFtPerGallon) * coats : 0;
+  const overMantelGallons = overMantelArea > 0 ? (overMantelArea / wallCoverageSqFtPerGallon) * coats : 0;
+  const totalGallons = mantelGallons + legsGallons + overMantelGallons;
 
-  // Calculate labor costs
-  let laborCost = hasAnyData ? safeNumber(pricing.fireplaceLabor, 0) : 0;
-
-  // Add trim labor if applicable
-  if (fireplace.hasTrim) {
-    laborCost += fireplace.trimLinearFeet * safeNumber(pricing.baseboardLaborPerLF, 0);
+  const mantelLabor = fireplace.hasMantel ? safeNumber(pricing.mantelLabor, 0) : 0;
+  const legsLabor = fireplace.hasLegs ? safeNumber(pricing.legsLabor, 0) : 0;
+  const overMantelLabor =
+    overMantelArea > 0 ? overMantelArea * safeNumber(pricing.wallLaborPerSqFt, 0) * coats : 0;
+  let laborCost = mantelLabor + legsLabor + overMantelLabor;
+  if (laborCost === 0 && hasAnyData) {
+    laborCost = safeNumber(pricing.fireplaceLabor, 0);
   }
 
-  // Calculate material costs
-  const materialsCost = calculatePaintCost(
-    totalGallons,
-    safeNumber(pricing.wallPaintPerGallon, 0),
-    pricing.wallPaintPer5Gallon
-  );
+  const materialsCost =
+    Math.ceil(mantelGallons) * safeNumber(pricing.wallPaintPerGallon, 0) +
+    Math.ceil(legsGallons) * safeNumber(pricing.wallPaintPerGallon, 0) +
+    Math.ceil(overMantelGallons) * safeNumber(pricing.wallPaintPerGallon, 0);
 
   const totalCost = Math.max(0, safeNumber(laborCost + materialsCost));
 
