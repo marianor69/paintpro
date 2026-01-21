@@ -220,6 +220,8 @@ export function computeRoomPricingSummary(
   const includedClosetSingle = resolvedInclusions.closetInteriorsSingle;
   const includedClosetDouble = resolvedInclusions.closetInteriorsDouble;
   const includedClosets = resolvedInclusions.closetInteriors;
+  const includeWindowFrames = (room.paintWindowFrames !== false) && quoteBuilder.includeWindows;
+  const includeDoorFrames = ((room.paintDoorFrames || room.paintJambs) !== false) && quoteBuilder.includeDoors;
 
   // Get coats - project-level coats override room-level for all categories
   const coatsWalls = safeNumber(projectCoats || room.coatsWalls, 2);
@@ -368,9 +370,10 @@ export function computeRoomPricingSummary(
   // Calculate trim area for windows, doors, closets
   let windowDoorTrimSqFt = 0;
   let windowTrimSqFt = 0; // Track window trim separately for proper paint calculation
+  let doorTrimSqFt = 0;
 
   // Window trim (if painting windows - independent of general trim toggle)
-  if (includedWindows && windowCount > 0 && room.includeWindows !== false) {
+  if (includeWindowFrames && windowCount > 0 && room.includeWindows !== false) {
     const trimWidthFt = calcSettings.windowTrimWidth / 12;
     const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
     const trimAreaPerWindow = windowTrimPerimeter * trimWidthFt;
@@ -378,22 +381,22 @@ export function computeRoomPricingSummary(
     windowDoorTrimSqFt += windowTrimSqFt;
   }
 
-  // Door trim (if painting doors AND doors/trim included)
-  if (includedDoors && doorCount > 0 && room.includeDoors !== false && room.includeTrim !== false) {
+  // Door trim (if painting door frames)
+  if (includeDoorFrames && doorCount > 0 && room.includeDoors !== false && room.includeTrim !== false) {
     const trimWidthFt = calcSettings.doorTrimWidth / 12;
     const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
     const trimAreaPerDoor = doorTrimPerimeter * trimWidthFt;
-    windowDoorTrimSqFt += doorCount * trimAreaPerDoor;
+    doorTrimSqFt += doorCount * trimAreaPerDoor;
   }
 
-  // Closet door trim (if trim included)
-  if (includedTrim && room.includeTrim !== false) {
+  // Closet door trim (if painting door frames)
+  if (includeDoorFrames && room.includeTrim !== false) {
     if (singleClosets > 0) {
       const trimWidthFt = calcSettings.singleClosetTrimWidth / 12;
       // Use room height for closet perimeter
       const singleClosetPerimeter = (2 * height) + (calcSettings.singleClosetWidth / 12);
       const trimAreaPerCloset = singleClosetPerimeter * trimWidthFt;
-      windowDoorTrimSqFt += singleClosets * trimAreaPerCloset;
+      doorTrimSqFt += singleClosets * trimAreaPerCloset;
     }
 
     if (doubleClosets > 0) {
@@ -401,9 +404,11 @@ export function computeRoomPricingSummary(
       // Use room height for closet perimeter
       const doubleClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
       const trimAreaPerCloset = doubleClosetPerimeter * trimWidthFt;
-      windowDoorTrimSqFt += doubleClosets * trimAreaPerCloset;
+      doorTrimSqFt += doubleClosets * trimAreaPerCloset;
     }
   }
+
+  windowDoorTrimSqFt += doorTrimSqFt;
 
   // Baseboard trim area (if baseboards/trim included)
   let baseboardTrimSqFt = 0;
@@ -449,13 +454,16 @@ export function computeRoomPricingSummary(
 
   // Trim paint: includes baseboards, window/door trim, crown moulding, AND doors/jambs
   // All "trim" items use the same paint type per user specification
-  if (includedTrim || includedWindows) {
-    // Calculate based on what's actually included
+  if (includedTrim || includeWindowFrames || includeDoorFrames) {
     let effectiveTrimSqFt = 0;
     if (includedTrim) {
-      effectiveTrimSqFt = trimSqFt; // Full trim including window trim
-    } else if (includedWindows) {
-      effectiveTrimSqFt = windowTrimSqFt; // Only window trim
+      effectiveTrimSqFt += baseboardTrimSqFt + crownMouldingTrimSqFt;
+    }
+    if (includeWindowFrames) {
+      effectiveTrimSqFt += windowTrimSqFt;
+    }
+    if (includeDoorFrames) {
+      effectiveTrimSqFt += doorTrimSqFt;
     }
     trimPaintGallons = (effectiveTrimSqFt / trimCoverage) * coatsTrim;
   }
@@ -522,7 +530,7 @@ export function computeRoomPricingSummary(
     laborCost += safeNumber(pricing.bathroomEnclosedToiletAddOn, 0);
   }
 
-  if (includedWindows && room.includeWindows !== false) {
+  if (includeWindowFrames && room.includeWindows !== false) {
     // Window labor multiplied by coats (more coats = more labor)
     const windowLaborMultiplier = getCoatLaborMultiplier(coatsTrim);
     const windowLaborAmount = windowCount * safeNumber(pricing.windowLabor, 0) * windowLaborMultiplier;
@@ -536,6 +544,12 @@ export function computeRoomPricingSummary(
       windowLaborAmount,
     });
     laborCost += windowLaborAmount;
+  }
+
+  if (includeDoorFrames && room.includeDoors !== false) {
+    const doorFrameCount = doorCount + singleClosets + doubleClosets;
+    const doorFrameLaborMultiplier = getCoatLaborMultiplier(coatsTrim);
+    laborCost += doorFrameCount * safeNumber(pricing.doorLabor, 0) * doorFrameLaborMultiplier;
   }
 
   // Add closet labor only if closets are included via combined rule
@@ -574,7 +588,7 @@ export function computeRoomPricingSummary(
   }
 
   // Trim paint cost: include if trim OR windows enabled (window trim uses trim paint)
-  if ((includedTrim || includedWindows) && trimPaintGallons > 0) {
+  if ((includedTrim || includeWindowFrames || includeDoorFrames) && trimPaintGallons > 0) {
     const trimMaterialCost = Math.ceil(trimPaintGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
     console.log("[TRIM MATERIALS DEBUG]", {
       roomName: room.name,
@@ -615,7 +629,7 @@ export function computeRoomPricingSummary(
   let primerBase = 0;
   if (includedWalls && wallPaintGallons > 0) primerBase += wallPaintGallons;
   if (includedCeilings && ceilingPaintGallons > 0) primerBase += ceilingPaintGallons;
-  if ((includedTrim || includedWindows) && trimPaintGallons > 0) primerBase += trimPaintGallons;
+  if ((includedTrim || includeWindowFrames || includeDoorFrames) && trimPaintGallons > 0) primerBase += trimPaintGallons;
   if (includedDoors && doorPaintGallons > 0) primerBase += doorPaintGallons;
   primerGallons = primerBase * 0.2;
 
