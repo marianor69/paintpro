@@ -2543,6 +2543,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const crownMaterialsCost = Math.ceil(crownTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
 
           const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
+          const windowTrimLF = windowCountValue * windowTrimPerimeter;
           const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
           const windowTrimSqFt = windowCountValue * windowTrimPerimeter * windowTrimWidthFt;
           const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
@@ -2552,13 +2553,17 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const doorFrameLaborCost = doorFrameCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const doorTrimWidthFt = calcSettings.doorTrimWidth / 12;
           const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
+          const doorTrimLF = doorCountValue * doorTrimPerimeter;
           const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
           const singleClosetTrimWidthFt = calcSettings.singleClosetTrimWidth / 12;
           const singleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.singleClosetWidth / 12);
+          const singleClosetTrimLF = singleClosetCount * singleClosetPerimeter;
           const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
           const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
           const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
+          const doubleClosetTrimLF = doubleClosetCount * doubleClosetPerimeter;
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimLF = doorTrimLF + singleClosetTrimLF + doubleClosetTrimLF;
           const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
