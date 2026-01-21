@@ -750,6 +750,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
+      coatsWalls: coatsWallsForRoom,
+      coatsCeiling: coatsCeilingForRoom,
+      coatsTrim: coatsTrimForRoom,
+      coatsDoors: coatsDoorsForRoom,
       includeWindows: true,
       includeDoors: true,
       includeTrim: true,
@@ -909,6 +913,11 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
   const previewManualAreaSqFt = manualArea ? parseDisplayValue(manualArea, 'area', unitSystem) : undefined;
   const previewCathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
 
+  const coatsWallsForRoom = room?.coatsWalls ?? project?.globalPaintDefaults?.defaultWallCoats ?? 2;
+  const coatsCeilingForRoom = room?.coatsCeiling ?? project?.globalPaintDefaults?.defaultCeilingCoats ?? 2;
+  const coatsTrimForRoom = room?.coatsTrim ?? project?.globalPaintDefaults?.defaultTrimCoats ?? 2;
+  const coatsDoorsForRoom = room?.coatsDoors ?? project?.globalPaintDefaults?.defaultDoorCoats ?? 2;
+
   const pricingSummary = computeRoomPricingSummary(
     {
       id: roomId || "temp-new-room",
@@ -936,6 +945,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
+      coatsWalls: coatsWallsForRoom,
+      coatsCeiling: coatsCeilingForRoom,
+      coatsTrim: coatsTrimForRoom,
+      coatsDoors: coatsDoorsForRoom,
       includeWindows: true,
       includeDoors: true,
       includeTrim: true,

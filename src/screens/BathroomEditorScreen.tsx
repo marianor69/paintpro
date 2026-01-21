@@ -742,6 +742,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
+      coatsWalls: coatsWallsForBathroom,
+      coatsCeiling: coatsCeilingForBathroom,
+      coatsTrim: coatsTrimForBathroom,
+      coatsDoors: coatsDoorsForBathroom,
       includeWindows: true,
       includeDoors: true,
       includeTrim: true,
@@ -898,6 +902,11 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const previewManualAreaSqFt = manualArea ? parseDisplayValue(manualArea, 'area', unitSystem) : undefined;
   const previewCathedralPeakHeightFeet = cathedralPeakHeight ? parseDisplayValue(cathedralPeakHeight, 'length', unitSystem) : undefined;
 
+  const coatsWallsForBathroom = bathroom?.coatsWalls ?? project?.globalPaintDefaults?.defaultWallCoats ?? 2;
+  const coatsCeilingForBathroom = bathroom?.coatsCeiling ?? project?.globalPaintDefaults?.defaultCeilingCoats ?? 2;
+  const coatsTrimForBathroom = bathroom?.coatsTrim ?? project?.globalPaintDefaults?.defaultTrimCoats ?? 2;
+  const coatsDoorsForBathroom = bathroom?.coatsDoors ?? project?.globalPaintDefaults?.defaultDoorCoats ?? 2;
+
   const pricingSummary = computeRoomPricingSummary(
     {
       id: bathroomId || "temp-new-bathroom",
@@ -926,6 +935,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       paintBaseboard,
       hasCrownMoulding,
       hasAccentWall,
+      coatsWalls: coatsWallsForBathroom,
+      coatsCeiling: coatsCeilingForBathroom,
+      coatsTrim: coatsTrimForBathroom,
+      coatsDoors: coatsDoorsForBathroom,
       includeWindows: true,
       includeDoors: true,
       includeTrim: true,
