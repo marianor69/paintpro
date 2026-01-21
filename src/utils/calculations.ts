@@ -1,5 +1,8 @@
 import {
   Room,
+  Bathroom,
+  BuiltIn,
+  IrregularRoom,
   Staircase,
   Fireplace,
   BrickWall,
@@ -14,6 +17,7 @@ import {
   PaintOptionResult,
 } from "../types/painting";
 import { useCalculationSettings } from "../state/calculationStore";
+import { useAppSettings } from "../state/appSettings";
 import {
   computeRoomPricingSummary,
   computeStaircasePricingSummary,
@@ -1679,6 +1683,7 @@ export function calculateFilteredProjectSummary(
   pricing: PricingSettings,
   quoteBuilder?: QuoteBuilder
 ): ProjectSummary {
+  const calcSettings = getCalculationSettings();
   // IMPORTANT: Prioritize passed quoteBuilder parameter first!
   // This allows callers to pass the active quote's QB for consistency
   // Fallback chain: passed param -> project.quoteBuilder -> default
@@ -1807,6 +1812,158 @@ export function calculateFilteredProjectSummary(
     });
   });
 
+  // Calculate bathroom totals (always included)
+  (project.bathrooms || []).forEach((bathroom) => {
+    const pricingSummary = computeRoomPricingSummary(
+      { ...bathroom, isBathroom: true } as Bathroom,
+      qb,
+      pricing,
+      project.projectCoats,
+      project.projectIncludeClosetInteriorInQuote
+    );
+
+    const bathroomLaborCost = safeNumber(pricingSummary.laborDisplayed);
+    const bathroomMaterialCost = safeNumber(pricingSummary.materialsDisplayed);
+    const bathroomTotalPrice = safeNumber(pricingSummary.totalDisplayed);
+
+    totalLaborCost += bathroomLaborCost;
+    totalMaterialCost += bathroomMaterialCost;
+
+    totalWallGallons += safeNumber(pricingSummary.wallPaintGallons);
+    totalCeilingGallons += safeNumber(pricingSummary.ceilingPaintGallons);
+    totalTrimGallons += safeNumber(pricingSummary.trimPaintGallons);
+    totalDoorGallons += safeNumber(pricingSummary.doorPaintGallons);
+
+    totalDoors += safeNumber(bathroom.doorCount);
+    totalDoors += safeNumber(bathroom.singleDoorClosets) + safeNumber(bathroom.doubleDoorClosets);
+    totalWindows += safeNumber(bathroom.windowCount);
+
+    totalWallSqFt += safeNumber(pricingSummary.wallArea);
+    totalCeilingSqFt += safeNumber(pricingSummary.ceilingArea);
+
+    itemizedPrices.push({
+      id: bathroom.id,
+      name: bathroom.name || "Bathroom",
+      price: bathroomTotalPrice,
+      laborCost: bathroomLaborCost,
+      materialsCost: bathroomMaterialCost,
+    });
+  });
+
+  // Calculate irregular room totals
+  (project.irregularRooms || []).forEach((irregularRoom, index) => {
+    const wallAreas = (irregularRoom.walls || []).map((wall) => safeNumber(wall.width) * safeNumber(wall.height));
+    const totalArea = wallAreas.reduce((sum, area) => sum + area, 0);
+    if (totalArea <= 0) {
+      return;
+    }
+
+    const windowCount = safeNumber(irregularRoom.windowCount, 0);
+    const doorCount = safeNumber(irregularRoom.doorCount, 0);
+    const singleClosets = safeNumber(irregularRoom.singleDoorClosets, 0);
+    const doubleClosets = safeNumber(irregularRoom.doubleDoorClosets, 0);
+    const doorFrameCount = doorCount + singleClosets + doubleClosets;
+    const closetDoorCount = singleClosets + (doubleClosets * 2);
+    const doorCountForSummary = doorCount + closetDoorCount;
+
+    const projectCoats = safeNumber(project.projectCoats, 2);
+    const getCoatLaborMultiplier = (coats: number): number =>
+      coats <= 1 ? 1.0 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
+
+    const wallCoverage = Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350));
+    const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
+    const wallLaborRate = safeNumber(pricing.wallLaborPerSqFt, 0);
+    const wallPaintRate = safeNumber(pricing.wallPaintPerGallon, 0);
+    const windowLaborRate = safeNumber(pricing.windowLabor, 0);
+    const doorLaborRate = safeNumber(pricing.doorLabor, 0);
+    const trimPaintRate = safeNumber(pricing.trimPaintPerGallon, 0);
+    const baseboardLaborRate = safeNumber(pricing.baseboardLaborPerLF, 0);
+
+    const wallLaborCost = irregularRoom.paintWalls
+      ? totalArea * wallLaborRate * getCoatLaborMultiplier(projectCoats)
+      : 0;
+    const wallGallons = irregularRoom.paintWalls ? (totalArea / wallCoverage) * projectCoats : 0;
+    const wallMaterialsCost = irregularRoom.paintWalls ? Math.ceil(wallGallons) * wallPaintRate : 0;
+
+    const windowTrimWidthFt = safeNumber(calcSettings.windowTrimWidth, 3.5) / 12;
+    const windowPerimeter = 2 * (safeNumber(calcSettings.windowWidth, 3) + safeNumber(calcSettings.windowHeight, 5));
+    const windowTrimSqFt = windowCount * windowPerimeter * windowTrimWidthFt;
+    const windowGallons = (windowTrimSqFt / trimCoverage) * projectCoats;
+    const windowLaborCost = windowCount * windowLaborRate * getCoatLaborMultiplier(projectCoats);
+    const windowMaterialsCost = Math.ceil(windowGallons) * trimPaintRate;
+
+    const doorTrimWidthFt = safeNumber(calcSettings.doorTrimWidth, 2.5) / 12;
+    const doorTrimPerimeter = (2 * safeNumber(calcSettings.doorHeight, 7)) + safeNumber(calcSettings.doorWidth, 3);
+    const doorTrimSqFt = doorCount * doorTrimPerimeter * doorTrimWidthFt;
+    const singleClosetTrimWidthFt = safeNumber(calcSettings.singleClosetTrimWidth, 2.5) / 12;
+    const singleClosetPerimeter = (2 * safeNumber(calcSettings.doorHeight, 7)) + (safeNumber(calcSettings.singleClosetWidth, 30) / 12);
+    const singleClosetTrimSqFt = singleClosets * singleClosetPerimeter * singleClosetTrimWidthFt;
+    const doubleClosetTrimWidthFt = safeNumber(calcSettings.doubleClosetTrimWidth, 2.5) / 12;
+    const doubleClosetPerimeter = (2 * safeNumber(calcSettings.doorHeight, 7)) + (safeNumber(calcSettings.doubleClosetWidth, 60) / 12);
+    const doubleClosetTrimSqFt = doubleClosets * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+    const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+    const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * projectCoats;
+    const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+    const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
+
+    const doorFacesSqFt = doorCountForSummary * (safeNumber(calcSettings.doorWidth, 3) * safeNumber(calcSettings.doorHeight, 7)) * 2;
+    const doorGallons = (doorFacesSqFt / trimCoverage) * projectCoats;
+    const doorLaborCost = doorCountForSummary * doorLaborRate * getCoatLaborMultiplier(projectCoats);
+    const doorMaterialsCost = Math.ceil(doorGallons) * trimPaintRate;
+
+    const closetMetrics = getClosetInteriorMetrics(
+      {
+        height: safeNumber(project.floorHeights?.[0], 8),
+        singleDoorClosets: singleClosets,
+        doubleDoorClosets: doubleClosets,
+      } as Room,
+      safeNumber(project.floorHeights?.[0], 8)
+    );
+    const closetBaseboardWidthFt = safeNumber(calcSettings.baseboardWidth, 3.5) / 12;
+    const closetBaseboardTrimSqFt = closetMetrics.totalClosetBaseboardLF * closetBaseboardWidthFt;
+    const closetBaseboardGallons = (closetBaseboardTrimSqFt / trimCoverage) * projectCoats;
+    const closetWallLaborCost = closetMetrics.totalClosetWallArea * wallLaborRate * getCoatLaborMultiplier(projectCoats);
+    const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * projectCoats) * wallPaintRate;
+    const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * safeNumber(pricing.ceilingLaborPerSqFt, 0) * getCoatLaborMultiplier(projectCoats);
+    const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350))) * projectCoats) * safeNumber(pricing.ceilingPaintPerGallon, 0);
+    const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(projectCoats);
+    const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
+
+    const closetInteriorEnabled =
+      irregularRoom.includeSingleClosetInteriorInQuote || irregularRoom.includeDoubleClosetInteriorInQuote;
+
+    const totalLabor =
+      (irregularRoom.paintWalls ? wallLaborCost : 0) +
+      (irregularRoom.paintWindows ? windowLaborCost : 0) +
+      (irregularRoom.paintDoorFrames ? doorFrameLaborCost : 0) +
+      (irregularRoom.paintDoors ? doorLaborCost : 0) +
+      (closetInteriorEnabled ? closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost : 0);
+
+    const totalMaterials =
+      (irregularRoom.paintWalls ? wallMaterialsCost : 0) +
+      (irregularRoom.paintWindows ? windowMaterialsCost : 0) +
+      (irregularRoom.paintDoorFrames ? doorFrameMaterialsCost : 0) +
+      (irregularRoom.paintDoors ? doorMaterialsCost : 0) +
+      (closetInteriorEnabled ? closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost : 0);
+
+    totalLaborCost += totalLabor;
+    totalMaterialCost += totalMaterials;
+    totalWallGallons += safeNumber(wallGallons);
+    totalTrimGallons += safeNumber(windowGallons + doorFrameGallons);
+    totalDoorGallons += safeNumber(doorGallons);
+    totalDoors += doorCountForSummary;
+    totalWindows += windowCount;
+    totalWallSqFt += safeNumber(totalArea);
+
+    itemizedPrices.push({
+      id: irregularRoom.id,
+      name: irregularRoom.name || `Irregular Room ${index + 1}`,
+      price: safeNumber(totalLabor + totalMaterials),
+      laborCost: safeNumber(totalLabor),
+      materialsCost: safeNumber(totalMaterials),
+    });
+  });
+
   // Calculate staircase totals (if included) - defaults to true if undefined
   console.log("[STAIRCASE DEBUG]", {
     includeStaircases: qb.includeStaircases,
@@ -1873,11 +2030,64 @@ export function calculateFilteredProjectSummary(
   }
 
   // Calculate built-in totals (if included)
-  // NOTE: Built-ins don't have a pricing summary function yet, so we skip them for now
-  // TODO: Implement computeBuiltInPricingSummary() and add calculation here
-  if (qb.includeBuiltIns && project.builtIns) {
-    // Placeholder for when built-in pricing is implemented
-    console.log("[calculateFilteredProjectSummary] Built-ins exist but pricing not yet implemented:", project.builtIns.length);
+  if (qb.includeBuiltIns !== false) {
+    const cabinetCoverage = Math.max(
+      1,
+      safeNumber(useAppSettings.getState().cabinetPaintCoverageSqFtPerGallon, 350)
+    );
+    (project.builtIns || []).forEach((builtIn, index) => {
+      const widthFt = safeNumber(builtIn.width, 0) / 12;
+      const heightFt = safeNumber(builtIn.height, 0) / 12;
+      const depthFt = safeNumber(builtIn.depth, 0) / 12;
+      const shelfCount = safeNumber(builtIn.shelfCount, 0);
+      const cabinetDoorCount = safeNumber(builtIn.cabinetDoorCount, 0);
+      const cabinetDrawerCount = safeNumber(builtIn.cabinetDrawerCount, 0);
+      const cabinetCoats = safeNumber(builtIn.coats, 1);
+      const cabinetLaborMultiplier =
+        cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
+
+      const shelfAreaSqFt = shelfCount > 0 ? shelfCount * widthFt * depthFt * 2 : 0;
+      const sideAreaSqFt = 2 * heightFt * depthFt;
+      const sideCount = sideAreaSqFt > 0 ? 2 : 0;
+
+      const cabinetDoorAreaSqFt = cabinetDoorCount * (calcSettings.doorHeight * calcSettings.doorWidth);
+      const cabinetDrawerAreaSqFt = cabinetDrawerCount * (calcSettings.doorHeight * calcSettings.doorWidth);
+
+      const shelfGallons = (shelfAreaSqFt / cabinetCoverage) * cabinetCoats;
+      const sideGallons = (sideAreaSqFt / cabinetCoverage) * cabinetCoats;
+      const doorGallons = (cabinetDoorAreaSqFt / cabinetCoverage) * cabinetCoats;
+      const drawerGallons = (cabinetDrawerAreaSqFt / cabinetCoverage) * cabinetCoats;
+
+      const includedDoorGallons = builtIn.paintCabinetDoors ? doorGallons + drawerGallons : 0;
+      const totalGallons = shelfGallons + sideGallons + includedDoorGallons;
+      const materialsCost = calculatePaintCost(
+        totalGallons,
+        safeNumber(pricing.cabinetPaintPerGallon, 0),
+        pricing.cabinetPaintPer5Gallon
+      );
+
+      const shelfLaborCost = shelfCount * safeNumber(pricing.builtInShelfLabor, 0) * cabinetLaborMultiplier;
+      const sideLaborCost = sideCount * safeNumber(pricing.builtInShelfLabor, 0) * cabinetLaborMultiplier;
+      const doorLaborCost = builtIn.paintCabinetDoors
+        ? cabinetDoorCount * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier
+        : 0;
+      const drawerLaborCost = builtIn.paintCabinetDoors
+        ? cabinetDrawerCount * safeNumber(pricing.cabinetDrawerLabor, 0) * cabinetLaborMultiplier
+        : 0;
+
+      const laborCost = shelfLaborCost + sideLaborCost + doorLaborCost + drawerLaborCost;
+      const totalCost = laborCost + materialsCost;
+
+      totalLaborCost += laborCost;
+      totalMaterialCost += materialsCost;
+      itemizedPrices.push({
+        id: builtIn.id,
+        name: builtIn.name || `Built-In ${index + 1}`,
+        price: safeNumber(totalCost),
+        laborCost: safeNumber(laborCost),
+        materialsCost: safeNumber(materialsCost),
+      });
+    });
   }
 
   // Calculate cabinet totals
