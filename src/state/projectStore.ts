@@ -272,6 +272,11 @@ export const useProjectStore = create<ProjectStore>()(
       },
 
       updateGlobalPaintDefaults: (projectId, defaults) => {
+        const shouldClearProjectCoats =
+          "defaultWallCoats" in defaults ||
+          "defaultCeilingCoats" in defaults ||
+          "defaultTrimCoats" in defaults ||
+          "defaultDoorCoats" in defaults;
         set((state) => ({
           projects: state.projects.map((p) =>
             p.id === projectId
@@ -282,6 +287,7 @@ export const useProjectStore = create<ProjectStore>()(
                     ...p.globalPaintDefaults,
                     ...defaults,
                   },
+                  projectCoats: shouldClearProjectCoats ? undefined : p.projectCoats,
                   rooms: p.rooms.map((room) => ({
                     ...room,
                     coatsWalls: defaults.defaultWallCoats ?? room.coatsWalls,
@@ -302,6 +308,22 @@ export const useProjectStore = create<ProjectStore>()(
                     coatsCeiling: defaults.defaultCeilingCoats ?? irregularRoom.coatsCeiling,
                     coatsTrim: defaults.defaultTrimCoats ?? irregularRoom.coatsTrim,
                     coatsDoors: defaults.defaultDoorCoats ?? irregularRoom.coatsDoors,
+                  })),
+                  staircases: p.staircases.map((staircase) => ({
+                    ...staircase,
+                    coats: defaults.defaultTrimCoats ?? staircase.coats,
+                  })),
+                  fireplaces: p.fireplaces.map((fireplace) => ({
+                    ...fireplace,
+                    coats: defaults.defaultWallCoats ?? fireplace.coats,
+                  })),
+                  builtIns: p.builtIns.map((builtIn) => ({
+                    ...builtIn,
+                    coats: defaults.defaultTrimCoats ?? builtIn.coats,
+                  })),
+                  brickWalls: p.brickWalls.map((brickWall) => ({
+                    ...brickWall,
+                    coats: defaults.defaultWallCoats ?? brickWall.coats,
                   })),
                   updatedAt: Date.now(),
                 }
@@ -703,6 +725,9 @@ export const useProjectStore = create<ProjectStore>()(
 
       addStaircase: (projectId) => {
         const staircaseId = uuidv4();
+        const state = get();
+        const project = state.projects.find((p) => p.id === projectId);
+        const defaultTrimCoats = project?.globalPaintDefaults?.defaultTrimCoats ?? 2;
         const newStaircase: Staircase = {
           id: staircaseId,
           riserCount: 0,
@@ -710,7 +735,7 @@ export const useProjectStore = create<ProjectStore>()(
           treadDepth: 0,
           handrailLength: 0,
           spindleCount: 0,
-          coats: 2,
+          coats: defaultTrimCoats,
           hasSecondaryStairwell: false,
           tallWallHeight: 0,
           shortWallHeight: 0,
@@ -765,6 +790,9 @@ export const useProjectStore = create<ProjectStore>()(
 
       addFireplace: (projectId) => {
         const fireplaceId = uuidv4();
+        const state = get();
+        const project = state.projects.find((p) => p.id === projectId);
+        const defaultWallCoats = project?.globalPaintDefaults?.defaultWallCoats ?? 2;
         const newFireplace: Fireplace = {
           id: fireplaceId,
           width: 0,
@@ -772,7 +800,7 @@ export const useProjectStore = create<ProjectStore>()(
           depth: 0,
           hasTrim: false,
           trimLinearFeet: 0,
-          coats: 2,
+          coats: defaultWallCoats,
           photos: [],
           detailsConfirmed: false,
         };
@@ -822,6 +850,9 @@ export const useProjectStore = create<ProjectStore>()(
 
       addBuiltIn: (projectId) => {
         const builtInId = uuidv4();
+        const state = get();
+        const project = state.projects.find((p) => p.id === projectId);
+        const defaultTrimCoats = project?.globalPaintDefaults?.defaultTrimCoats ?? 2;
         const newBuiltIn: BuiltIn = {
           id: builtInId,
           name: "Built-In",
@@ -832,7 +863,7 @@ export const useProjectStore = create<ProjectStore>()(
           cabinetDoorCount: 0,
           cabinetDrawerCount: 0,
           paintCabinetDoors: false,
-          coats: 2,
+          coats: defaultTrimCoats,
           photos: [],
           detailsConfirmed: false,
         };
@@ -938,13 +969,16 @@ export const useProjectStore = create<ProjectStore>()(
 
       addBrickWall: (projectId) => {
         const brickWallId = uuidv4();
+        const state = get();
+        const project = state.projects.find((p) => p.id === projectId);
+        const defaultWallCoats = project?.globalPaintDefaults?.defaultWallCoats ?? 2;
         const newBrickWall: BrickWall = {
           id: brickWallId,
           name: "",
           width: 10,
           height: 8,
           includePrimer: true,
-          coats: 2,
+          coats: defaultWallCoats,
           photos: [],
         };
         set((state) => ({
