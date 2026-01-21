@@ -2113,131 +2113,92 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                   )}
                 </View>
 
-                {/* Right Section - Pricing (Blue) with Labor and Mat columns - Both columns right-aligned */}
+                {/* Right Section - Labor + Materials (Gallons) */}
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: BorderRadius.default, padding: Spacing.md }}>
-                  {/* Header Row */}
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
-                  </View>
+                  <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                    Labor
+                  </Text>
 
-                  {/* Walls */}
                   {paintWalls && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallMaterialsCost)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(wallLaborCost)}
+                    </Text>
                   )}
-
-                  {/* Ceiling */}
                   {paintCeilings && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(ceilingLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(ceilingMaterialsCost)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(ceilingLaborCost)}
+                    </Text>
                   )}
-
-                  {/* Baseboard */}
                   {paintBaseboard && pricingSummary.baseboardLF > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(baseboardLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(baseboardMaterialsCost)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(baseboardLaborCost)}
+                    </Text>
                   )}
-
-                  {/* Crown Moulding */}
                   {hasCrownMoulding && pricingSummary.crownMouldingLF > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(crownLaborCost)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(crownMaterialsCost)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(crownLaborCost)}
+                    </Text>
                   )}
-
-                  {/* Windows */}
                   {windowCountValue > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintWindowFrames ? windowLaborCost : 0)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintWindowFrames ? windowMaterialsCost : 0)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(paintWindowFrames ? windowLaborCost : 0)}
+                    </Text>
                   )}
-
-                  {/* Door Frames */}
                   {doorFrameCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintDoorFrames ? doorFrameLaborCost : 0)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintDoorFrames ? doorFrameMaterialsCost : 0)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(paintDoorFrames ? doorFrameLaborCost : 0)}
+                    </Text>
                   )}
-
-                  {/* Doors */}
                   {doorCountForSummary > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintDoors ? doorLaborCost : 0)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintDoors ? doorMaterialsCost : 0)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(paintDoors ? doorLaborCost : 0)}
+                    </Text>
                   )}
-
-                  {/* Openings */}
                   {openingsCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintDoorFrames ? openingTrimLaborCost : 0)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(paintDoorFrames ? openingTrimMaterialsCost : 0)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(paintDoorFrames ? openingTrimLaborCost : 0)}
+                    </Text>
                   )}
-
-                  {/* Closets */}
                   {closetCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(closetInteriorEnabled ? closetInteriorMaterialsCost : 0)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
+                    </Text>
                   )}
 
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                  {/* Total */}
-                  <View style={{ alignItems: "flex-end" }}>
-                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                  <View style={{ alignItems: "flex-end", marginBottom: Spacing.sm }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                      Labor Total:
+                    </Text>
                     <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                      ${Math.round(summaryLaborTotal + summaryMaterialsTotal).toLocaleString()}
+                      ${Math.round(summaryLaborTotal).toLocaleString()}
                     </Text>
                   </View>
+
+                  <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                    Materials (Gallons)
+                  </Text>
+                  {paintWalls && pricingSummary.wallPaintGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      Wall: {pricingSummary.wallPaintGallons.toFixed(2)} gal
+                    </Text>
+                  )}
+                  {paintCeilings && pricingSummary.ceilingPaintGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      Ceiling: {pricingSummary.ceilingPaintGallons.toFixed(2)} gal
+                    </Text>
+                  )}
+                  {pricingSummary.trimPaintGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      Trim: {pricingSummary.trimPaintGallons.toFixed(2)} gal
+                    </Text>
+                  )}
+                  {paintDoors && pricingSummary.doorPaintGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      Doors: {pricingSummary.doorPaintGallons.toFixed(2)} gal
+                    </Text>
+                  )}
                 </View>
               </View>
             </Card>
