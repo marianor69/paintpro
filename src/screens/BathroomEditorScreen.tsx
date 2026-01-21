@@ -776,7 +776,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       { ...updatedBathroom, isBathroom: true } as any,
       quoteBuilder,
       pricing,
-      project?.projectCoats,
+      undefined,
       project?.projectIncludeClosetInteriorInQuote
     );
 
@@ -948,7 +948,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     } as any,
     quoteBuilder,
     pricing,
-    project?.projectCoats,
+    undefined,
     project?.projectIncludeClosetInteriorInQuote
   );
 

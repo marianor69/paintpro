@@ -275,7 +275,7 @@ export function importProjectFromJSON(jsonString: string): {
           room,
           quoteBuilderForCalcs,
           pricing,
-          freshProject?.projectCoats,
+          undefined,
           freshProject?.projectIncludeClosetInteriorInQuote
         );
 

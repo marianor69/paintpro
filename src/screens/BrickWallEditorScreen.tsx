@@ -52,6 +52,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
   const updateBrickWall = useProjectStore((s) => s.updateBrickWall);
   const pricing = usePricingStore();
   const { testMode, unitSystem } = useAppSettings();
+  const defaultWallCoats = project?.globalPaintDefaults?.defaultWallCoats ?? 2;
 
   // Brick wall name/location
   const [name, setName] = useState(!isNewBrickWall && brickWall?.name ? brickWall.name : "");
@@ -64,7 +65,7 @@ export default function BrickWallEditorScreen({ route, navigation }: Props) {
   const [includePrimer, setIncludePrimer] = useState(!isNewBrickWall && brickWall?.includePrimer !== undefined ? brickWall.includePrimer : true);
 
   // Coats (1 or 2, default 2)
-  const [coats, setCoats] = useState(!isNewBrickWall && brickWall?.coats ? brickWall.coats : 2);
+  const [coats, setCoats] = useState(!isNewBrickWall && brickWall?.coats ? brickWall.coats : defaultWallCoats);
 
   const [notes, setNotes] = useState(!isNewBrickWall && brickWall?.notes ? brickWall.notes : "");
   const [notesExpanded, setNotesExpanded] = useState(false);

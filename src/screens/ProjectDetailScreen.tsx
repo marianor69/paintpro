@@ -210,7 +210,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           room,
           quoteBuilder,
           pricing,
-          project.projectCoats,
+          undefined,
           project.projectIncludeClosetInteriorInQuote
         )
       );
@@ -220,13 +220,13 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           { ...bathroom, isBathroom: true } as any,
           quoteBuilder,
           pricing,
-          project.projectCoats,
+          undefined,
           project.projectIncludeClosetInteriorInQuote
         )
       );
 
       const staircaseSummaries = (project.staircases || []).map(stair =>
-        computeStaircasePricingSummary(stair, pricing, project.projectCoats)
+        computeStaircasePricingSummary(stair, pricing, undefined)
       );
 
       const fireplaceSummaries = (project.fireplaces || []).map(fp =>
@@ -413,7 +413,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           room,
           quoteBuilder,
           pricing,
-          project.projectCoats,
+          undefined,
           project.projectIncludeClosetInteriorInQuote
         );
 
@@ -586,7 +586,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
 
       // Build calculation traces for staircases
       const staircaseTraces = (project.staircases || []).map((staircase) => {
-        const pricingSummary = computeStaircasePricingSummary(staircase, pricing, project.projectCoats);
+        const pricingSummary = computeStaircasePricingSummary(staircase, pricing, undefined);
 
         return {
           staircaseId: staircase.id,
@@ -599,7 +599,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             hasSecondaryStairwell: staircase.hasSecondaryStairwell,
             doubleSidedWalls: staircase.doubleSidedWalls,
             coats: staircase.coats,
-            projectCoats: project.projectCoats,
+            projectCoats: undefined,
           },
 
           laborRates: {

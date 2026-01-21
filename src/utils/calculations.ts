@@ -993,7 +993,7 @@ export function calculateProjectSummary(
     // Skip if room is explicitly excluded
     if (room.included === false) return;
 
-    const calc = calculateRoomMetrics(room, pricing, project.projectCoats, project.projectIncludeClosetInteriorInQuote);
+    const calc = calculateRoomMetrics(room, pricing, undefined, project.projectIncludeClosetInteriorInQuote);
     totalWallGallons += safeNumber(calc.totalWallGallons);
     totalCeilingGallons += safeNumber(calc.totalCeilingGallons);
     totalTrimGallons += safeNumber(calc.totalTrimGallons);
@@ -1769,7 +1769,7 @@ export function calculateFilteredProjectSummary(
       room,
       qb,
       pricing,
-      project.projectCoats,
+      undefined,
       project.projectIncludeClosetInteriorInQuote
     );
 
@@ -1818,7 +1818,7 @@ export function calculateFilteredProjectSummary(
       { ...bathroom, isBathroom: true } as Bathroom,
       qb,
       pricing,
-      project.projectCoats,
+      undefined,
       project.projectIncludeClosetInteriorInQuote
     );
 
@@ -1976,7 +1976,7 @@ export function calculateFilteredProjectSummary(
   });
   if (qb.includeStaircases !== false) {
     (project.staircases || []).forEach((staircase, index) => {
-      const pricingSummary = computeStaircasePricingSummary(staircase, pricing, project.projectCoats);
+      const pricingSummary = computeStaircasePricingSummary(staircase, pricing, undefined);
       console.log(`[STAIRCASE ${index + 1}]`, {
         riserCount: staircase.riserCount,
         handrailLength: staircase.handrailLength,

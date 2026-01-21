@@ -53,6 +53,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
   const pricing = usePricingStore();
   const calcSettings = useCalculationSettings((s) => s.settings);
   const { testMode, unitSystem, cabinetPaintCoverageSqFtPerGallon } = useAppSettings();
+  const defaultTrimCoats = project?.globalPaintDefaults?.defaultTrimCoats ?? 2;
 
   // Convert stored imperial values (inches) to display values based on unit system
   // Built-ins store dimensions in INCHES, but unit conversion works with FEET, so convert inches->feet->display
@@ -418,7 +419,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         cabinetDoorCount: parseInt(cabinetDoorCount) || 0,
         cabinetDrawerCount: parseInt(cabinetDrawerCount) || 0,
         paintCabinetDoors,
-        coats: 1,
+        coats: defaultTrimCoats,
         notes: notes.trim() || undefined,
         photos: updatedPhotos,
         detailsConfirmed,
@@ -434,7 +435,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
         cabinetDoorCount: parseInt(cabinetDoorCount) || 0,
         cabinetDrawerCount: parseInt(cabinetDrawerCount) || 0,
         paintCabinetDoors,
-        coats: builtIn?.coats || 1,
+        coats: builtIn?.coats ?? defaultTrimCoats,
         notes: notes.trim() || undefined,
         photos: updatedPhotos,
         detailsConfirmed,
@@ -1124,7 +1125,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const hasPricingInputs = cabinetDoorCountValue > 0 || cabinetDrawerCountValue > 0 || shelfCountValue > 0 || sideAreaSqFt > 0;
               if (!hasPricingInputs) return null;
 
-              const cabinetCoats = builtIn?.coats || 1;
+              const cabinetCoats = builtIn?.coats ?? defaultTrimCoats;
               const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
               const cabinetDoorLaborCost = cabinetDoorCountValue * safeNumber(pricing.cabinetDoorLabor, 0) * cabinetLaborMultiplier;
               const cabinetDrawerLaborCost = cabinetDrawerCountValue * safeNumber(pricing.cabinetDrawerLabor, 0) * cabinetLaborMultiplier;
@@ -1283,7 +1284,7 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
               const hasPricingInputs = cabinetDoorCountValue > 0 || cabinetDrawerCountValue > 0 || shelfCountValue > 0 || totalPaintableArea > 0;
               if (!hasPricingInputs) return null;
 
-              const cabinetCoats = builtIn?.coats || 1;
+              const cabinetCoats = builtIn?.coats ?? defaultTrimCoats;
               const cabinetLaborMultiplier = cabinetCoats <= 1 ? 1 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
               const cabinetCoverage = Math.max(1, safeNumber(cabinetPaintCoverageSqFtPerGallon, 350));
               const cabinetDoorAreaSqFt = cabinetDoorCountValue * (calcSettings.doorHeight * calcSettings.doorWidth);

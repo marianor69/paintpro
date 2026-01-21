@@ -55,6 +55,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const pricing = usePricingStore();
   const { testMode, unitSystem } = useAppSettings();
   const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
+  const defaultWallCoats = project?.globalPaintDefaults?.defaultWallCoats ?? 2;
 
   // Fireplace name/location
   const [name, setName] = useState(!isNewFireplace && fireplace?.name ? fireplace.name : "");
@@ -444,7 +445,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         overMantelWidth: overMantelWidthFeet,
         overMantelHeight: overMantelHeightFeet,
         overMantelDepth: overMantelDepthFeet,
-        coats: 2,
+        coats: defaultWallCoats,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
         detailsConfirmed,
@@ -466,7 +467,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
         overMantelWidth: overMantelWidthFeet,
         overMantelHeight: overMantelHeightFeet,
         overMantelDepth: overMantelDepthFeet,
-        coats: fireplace?.coats || 2,
+        coats: fireplace?.coats ?? defaultWallCoats,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
         detailsConfirmed,
@@ -509,7 +510,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             depth: parseFloat(depth) || 0,
             hasTrim,
             trimLinearFeet: parseFloat(trimLinearFeet) || 0,
-            coats: 2,
+            coats: defaultWallCoats,
             notes: "",
           },
           pricing
@@ -1027,7 +1028,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
             {/* Fireplace Summary */}
             {calculations && (() => {
               // Calculate costs per part (new 3-part structure)
-              const coats = fireplace?.coats || 2;
+              const coats = fireplace?.coats ?? defaultWallCoats;
 
               // Mantel: 6ft x 1ft = 6 sq ft
               const mantelLabor = hasMantel ? pricing.mantelLabor : 0;
@@ -1248,7 +1249,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                         Paint
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Total Area: {calculations.paintableArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} | Coats: {fireplace?.coats || 2}
+                        Total Area: {calculations.paintableArea.toFixed(2)} {unitSystem === "metric" ? "m²" : "sq ft"} | Coats: {fireplace?.coats ?? defaultWallCoats}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Coverage: {wallCoverageSqFtPerGallon} sqft/gal

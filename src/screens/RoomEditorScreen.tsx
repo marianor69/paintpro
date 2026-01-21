@@ -783,7 +783,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
       updatedRoom as any,
       quoteBuilder,
       pricing,
-      project?.projectCoats,
+      undefined,
       projectClosetInteriorDefault
     );
 
@@ -958,7 +958,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
     } as any,
     quoteBuilder,
     pricing,
-    project?.projectCoats,
+    undefined,
     projectClosetInteriorDefault
   );
 

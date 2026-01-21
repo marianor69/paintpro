@@ -514,7 +514,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         treadDepth: 0,
         handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
-        coats: 2,
+        coats: defaultTrimCoats,
         walls: wallsData.length > 0 ? wallsData : undefined,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
@@ -530,7 +530,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
         treadDepth: 0,
         handrailLength: handrailLengthFeet,
         spindleCount: parseInt(spindleCount) || 0,
-        coats: staircase?.coats || 2,
+        coats: staircase?.coats ?? defaultTrimCoats,
         walls: wallsData.length > 0 ? wallsData : undefined,
         notes: notes.trim() || undefined,
         photos: normalizedPhotos,
@@ -565,6 +565,8 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
     setShowSavePrompt(false);
   };
 
+  const defaultTrimCoats = project?.globalPaintDefaults?.defaultTrimCoats ?? 2;
+
   const calculations =
     isNewStaircase || !staircase
       ? computeStaircasePricingSummary(
@@ -576,7 +578,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             treadDepth: 0,
             handrailLength: parseFloat(handrailLength) || 0,
             spindleCount: parseInt(spindleCount) || 0,
-            coats: 2,
+            coats: defaultTrimCoats,
             walls: walls.map(w => ({
               id: w.id,
               tallHeight: parseFloat(w.tallHeight) || 0,
@@ -585,7 +587,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             notes: "",
           },
           pricing,
-          project?.projectCoats
+          undefined
         )
       : computeStaircasePricingSummary(
           {
@@ -602,7 +604,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
             })),
           },
           pricing,
-          project?.projectCoats
+          undefined
         );
 
   // Only show preview if at least riser count is entered
@@ -1697,7 +1699,7 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                         Paint
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Total Area: {calculations.paintableArea.toFixed(2)} sqft | Coats: {staircase?.coats || 2}
+                        Total Area: {calculations.paintableArea.toFixed(2)} sqft | Coats: {staircase?.coats ?? defaultTrimCoats}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Gallons: {calculations.totalGallons.toFixed(2)} gal
