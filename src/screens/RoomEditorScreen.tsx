@@ -1968,6 +1968,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           // Window Frames
           const windowLaborCost = windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const windowTrimPerimeter = 2 * (calcSettings.windowWidth + calcSettings.windowHeight);
+          const windowTrimLF = windowCountValue * windowTrimPerimeter;
           const windowTrimWidthFt = calcSettings.windowTrimWidth / 12;
           const windowTrimSqFt = windowCountValue * windowTrimPerimeter * windowTrimWidthFt;
           const windowTrimGallons = (windowTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
@@ -1977,13 +1978,17 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const doorFrameLaborCost = doorFrameCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim);
           const doorTrimWidthFt = calcSettings.doorTrimWidth / 12;
           const doorTrimPerimeter = (2 * calcSettings.doorHeight) + calcSettings.doorWidth;
+          const doorTrimLF = doorCountValue * doorTrimPerimeter;
           const doorTrimSqFt = doorCountValue * doorTrimPerimeter * doorTrimWidthFt;
           const singleClosetTrimWidthFt = calcSettings.singleClosetTrimWidth / 12;
           const singleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.singleClosetWidth / 12);
+          const singleClosetTrimLF = singleClosetCount * singleClosetPerimeter;
           const singleClosetTrimSqFt = singleClosetCount * singleClosetPerimeter * singleClosetTrimWidthFt;
           const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
           const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
+          const doubleClosetTrimLF = doubleClosetCount * doubleClosetPerimeter;
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimLF = doorTrimLF + singleClosetTrimLF + doubleClosetTrimLF;
           const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
@@ -2646,7 +2651,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Baseboard
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Length: {pricingSummary.baseboardLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
+                      Lineal feet: {pricingSummary.baseboardLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Area: {baseboardTrimSqFt.toFixed(2)} sqft
@@ -2664,7 +2669,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Crown Moulding
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                      Length: {pricingSummary.crownMouldingLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
+                      Lineal feet: {pricingSummary.crownMouldingLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Area: {crownTrimSqFt.toFixed(2)} sqft
@@ -2683,6 +2688,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Count: {windowCountValue} | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Lineal feet: {windowTrimLF.toFixed(2)} ft
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Area: {windowTrimSqFt.toFixed(2)} sqft
@@ -2704,6 +2712,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Count: {doorFrameCount} | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Lineal feet: {doorFrameTrimLF.toFixed(2)} ft
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Area: {doorFrameTrimSqFt.toFixed(2)} sqft
