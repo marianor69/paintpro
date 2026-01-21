@@ -827,6 +827,10 @@ export function computeFireplacePricingSummary(
   fireplace: Fireplace,
   pricing: PricingSettings
 ): FireplacePricingSummary {
+  const wallCoverageSqFtPerGallon = Math.max(
+    1,
+    safeNumber(useAppSettings.getState().wallCoverageSqFtPerGallon, 350)
+  );
   const hasAnyData = Boolean(
     fireplace.hasMantel ||
       fireplace.hasLegs ||
@@ -846,7 +850,7 @@ export function computeFireplacePricingSummary(
   const paintableArea = frontArea + sideArea;
 
   // Calculate paint gallons
-  const totalGallons = (paintableArea / safeNumber(pricing.wallCoverageSqFtPerGallon, 350)) * fireplace.coats;
+  const totalGallons = (paintableArea / wallCoverageSqFtPerGallon) * fireplace.coats;
 
   // Calculate labor costs
   let laborCost = hasAnyData ? safeNumber(pricing.fireplaceLabor, 0) : 0;
@@ -857,7 +861,11 @@ export function computeFireplacePricingSummary(
   }
 
   // Calculate material costs
-  const materialsCost = Math.ceil(totalGallons) * safeNumber(pricing.wallPaintPerGallon, 0);
+  const materialsCost = calculatePaintCost(
+    totalGallons,
+    safeNumber(pricing.wallPaintPerGallon, 0),
+    pricing.wallPaintPer5Gallon
+  );
 
   const totalCost = Math.max(0, safeNumber(laborCost + materialsCost));
 

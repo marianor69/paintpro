@@ -54,6 +54,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
   const updateFireplace = useProjectStore((s) => s.updateFireplace);
   const pricing = usePricingStore();
   const { testMode, unitSystem } = useAppSettings();
+  const wallCoverageSqFtPerGallon = useAppSettings((s) => s.wallCoverageSqFtPerGallon);
 
   // Fireplace name/location
   const [name, setName] = useState(!isNewFireplace && fireplace?.name ? fireplace.name : "");
@@ -1031,13 +1032,13 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
               // Mantel: 6ft x 1ft = 6 sq ft
               const mantelLabor = hasMantel ? pricing.mantelLabor : 0;
               const mantelArea = hasMantel ? 6 : 0;
-              const mantelGallons = mantelArea > 0 ? (mantelArea / pricing.wallCoverageSqFtPerGallon) * coats : 0;
+              const mantelGallons = mantelArea > 0 ? (mantelArea / wallCoverageSqFtPerGallon) * coats : 0;
               const mantelMaterials = Math.ceil(mantelGallons) * pricing.wallPaintPerGallon;
 
               // Legs: 6ft x 8" x 2 = 8 sq ft
               const legsLabor = hasLegs ? pricing.legsLabor : 0;
               const legsArea = hasLegs ? 6 * (8 / 12) * 2 : 0;
-              const legsGallons = legsArea > 0 ? (legsArea / pricing.wallCoverageSqFtPerGallon) * coats : 0;
+              const legsGallons = legsArea > 0 ? (legsArea / wallCoverageSqFtPerGallon) * coats : 0;
               const legsMaterials = Math.ceil(legsGallons) * pricing.wallPaintPerGallon;
 
               // Over mantel: area-based
@@ -1045,7 +1046,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                 ? parseFloat(overMantelWidth) * parseFloat(overMantelHeight)
                 : 0;
               const overMantelLabor = overMantelArea > 0 ? (overMantelArea * pricing.wallLaborPerSqFt * coats) : 0;
-              const overMantelGallons = overMantelArea > 0 ? (overMantelArea / pricing.wallCoverageSqFtPerGallon) * coats : 0;
+              const overMantelGallons = overMantelArea > 0 ? (overMantelArea / wallCoverageSqFtPerGallon) * coats : 0;
               const overMantelMaterials = Math.ceil(overMantelGallons) * pricing.wallPaintPerGallon;
 
               const anyPart = hasMantel || hasLegs || hasOverMantel;
@@ -1250,7 +1251,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                         Total Area: {calculations.paintableArea.toFixed(2)} {unitSystem === 'metric' ? 'm²' : 'sq ft'} | Coats: {fireplace?.coats || 2}
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
-                        Coverage: {pricing.wallCoverageSqFtPerGallon} sqft/gal
+                        Coverage: {wallCoverageSqFtPerGallon} sqft/gal
                       </Text>
                       <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                         Gallons: {calculations.totalGallons.toFixed(2)} gal
