@@ -2649,6 +2649,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Length: {pricingSummary.baseboardLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {baseboardTrimSqFt.toFixed(2)} sqft
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {pricingSummary.baseboardLF.toFixed(2)} × ${safeNumber(pricing.baseboardLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.baseboardLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
                   </View>
@@ -2664,6 +2667,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Length: {pricingSummary.crownMouldingLF.toFixed(2)} ft | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {crownTrimSqFt.toFixed(2)} sqft
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {pricingSummary.crownMouldingLF.toFixed(2)} × ${safeNumber(pricing.trimLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(pricingSummary.crownMouldingLF * safeNumber(pricing.trimLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
                   </View>
@@ -2677,6 +2683,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Count: {windowCountValue} | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {windowTrimSqFt.toFixed(2)} sqft
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {windowCountValue} × ${safeNumber(pricing.windowLabor, 0).toFixed(2)}/window × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(windowCountValue * safeNumber(pricing.windowLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
@@ -2697,6 +2706,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                       Count: {doorFrameCount} | Coats: {pricingSummary.coatsTrim}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {doorFrameTrimSqFt.toFixed(2)} sqft
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {doorFrameCount} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(doorFrameCount * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
@@ -2713,6 +2725,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Count: {doorCountForSummary} | Coats: {pricingSummary.coatsDoors}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {doorFaceSqFt.toFixed(2)} sqft
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {doorCountForSummary} × ${safeNumber(pricing.doorLabor, 0).toFixed(2)}/door × {getCoatLaborMultiplier(pricingSummary.coatsDoors).toFixed(2)} = ${(doorCountForSummary * safeNumber(pricing.doorLabor, 0) * getCoatLaborMultiplier(pricingSummary.coatsDoors)).toFixed(2)}
@@ -2755,6 +2770,9 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Trim LF: {openingTrimLF.toFixed(2)} | Coats: {pricingSummary.coatsTrim}
+                    </Text>
+                    <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
+                      Area: {openingTrimSqFt.toFixed(2)} sqft
                     </Text>
                     <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray }}>
                       Labor: {openingTrimLF.toFixed(2)} × ${safeNumber(pricing.baseboardLaborPerLF, 0).toFixed(2)}/ft × {getCoatLaborMultiplier(pricingSummary.coatsTrim).toFixed(2)} = ${(openingTrimLF * safeNumber(pricing.baseboardLaborPerLF, 0) * getCoatLaborMultiplier(pricingSummary.coatsTrim)).toFixed(2)}
