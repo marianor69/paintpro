@@ -1094,75 +1094,65 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                       )}
                     </View>
 
-                    {/* Blue section - Labor and Materials */}
+                    {/* Blue section - Labor + Materials (Gallons) */}
                     <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
-                      {/* Header Row */}
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
-                      </View>
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Labor
+                      </Text>
 
                       {hasMantel && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(mantelLabor)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(mantelMaterials)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(mantelLabor)}
+                        </Text>
                       )}
 
                       {hasLegs && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(legsLabor)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(legsMaterials)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(legsLabor)}
+                        </Text>
                       )}
 
                       {hasOverMantel && overMantelArea > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(overMantelLabor)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(overMantelMaterials)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(overMantelLabor)}
+                        </Text>
                       )}
 
                       {!anyPart && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>-</Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                          -
+                        </Text>
                       )}
 
                       <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                      {/* Subtotals */}
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(calculations.laborDisplayed)}
+                      <View style={{ alignItems: "flex-end", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          Labor Total:
                         </Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(calculations.materialsDisplayed)}
-                        </Text>
-                      </View>
-
-                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-
-                      {/* Total */}
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
                         <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          ${calculations.totalDisplayed.toLocaleString()}
+                          ${Math.round(calculations.laborDisplayed).toLocaleString()}
                         </Text>
                       </View>
+
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Materials (Gallons)
+                      </Text>
+                      {hasMantel && mantelGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Mantel: {mantelGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {hasLegs && legsGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Legs: {legsGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {hasOverMantel && overMantelGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          Over Mantel: {overMantelGallons.toFixed(2)} gal
+                        </Text>
+                      )}
                     </View>
                   </View>
                 </Card>

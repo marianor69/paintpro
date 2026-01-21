@@ -1493,93 +1493,74 @@ export default function StaircaseEditorScreen({ route, navigation }: Props) {
                       ))}
                     </View>
 
-                    {/* Blue section - flex: 2, 2 columns right-aligned */}
+                    {/* Blue section - Labor + Materials (Gallons) */}
                     <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
-                      {/* Header Row */}
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
-                      </View>
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Labor
+                      </Text>
 
                       {parseFloat(riserCount) > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(riserLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(riserMaterialsCost)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(riserLaborCost)}
+                        </Text>
                       )}
 
                       {parseFloat(spindleCount) > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(spindleLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(spindleMaterialsCost)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(spindleLaborCost)}
+                        </Text>
                       )}
 
                       {parseFloat(handrailLength) > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(handrailLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(handrailMaterialsCost)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(handrailLaborCost)}
+                        </Text>
                       )}
 
                       {wallsData.map((wallData, idx) => (
                         <React.Fragment key={idx}>
                           {wallData.wallArea > 0 && (
-                            <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                                ${Math.round(wallData.wallLaborCost)}
-                              </Text>
-                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                                ${Math.round(wallsMaterialsCost[idx].wallMaterialsCost)}
-                              </Text>
-                            </View>
+                            <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                              ${Math.round(wallData.wallLaborCost)}
+                            </Text>
                           )}
                           {wallData.ceilingArea > 0 && (
-                            <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                                ${Math.round(wallData.ceilingLaborCost)}
-                              </Text>
-                              <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                                ${Math.round(wallsMaterialsCost[idx].ceilingMaterialsCost)}
-                              </Text>
-                            </View>
+                            <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                              ${Math.round(wallData.ceilingLaborCost)}
+                            </Text>
                           )}
                         </React.Fragment>
                       ))}
 
                       <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                      {/* Subtotals - without labels */}
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(calculations.laborDisplayed)}
+                      <View style={{ alignItems: "flex-end", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          Labor Total:
                         </Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(calculations.materialsDisplayed)}
-                        </Text>
-                      </View>
-
-                      <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
-
-                      {/* Total */}
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
                         <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          ${calculations.totalDisplayed.toLocaleString()}
+                          ${Math.round(calculations.laborDisplayed).toLocaleString()}
                         </Text>
                       </View>
+
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Materials (Gallons)
+                      </Text>
+                      {calculations.trimGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Trim: {calculations.trimGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {calculations.wallGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Wall: {calculations.wallGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {calculations.ceilingGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          Ceiling: {calculations.ceilingGallons.toFixed(2)} gal
+                        </Text>
+                      )}
                     </View>
                   </View>
                 </Card>

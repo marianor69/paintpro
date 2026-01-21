@@ -376,8 +376,17 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const closetWallMaterialsCost = Math.ceil((closetMetrics.totalClosetWallArea / wallCoverage) * coatsWalls) * wallPaintRate;
   const closetCeilingLaborCost = closetMetrics.totalClosetCeilingArea * ceilingLaborRate * getCoatLaborMultiplier(coatsCeiling);
   const closetCeilingMaterialsCost = Math.ceil((closetMetrics.totalClosetCeilingArea / ceilingCoverage) * coatsCeiling) * ceilingPaintRate;
-  const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(coatsTrim);
-  const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
+          const closetBaseboardLaborCost = closetMetrics.totalClosetBaseboardLF * baseboardLaborRate * getCoatLaborMultiplier(coatsTrim);
+          const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
+          const closetWallGallons = (closetMetrics.totalClosetWallArea / wallCoverage) * coatsWalls;
+          const closetCeilingGallons = (closetMetrics.totalClosetCeilingArea / ceilingCoverage) * coatsCeiling;
+          const closetGallonsEnabled = hasCloset && closetInteriorEnabled;
+          const wallGallonsTotal = wallGallons + (closetGallonsEnabled ? closetWallGallons : 0);
+          const ceilingGallonsTotal = closetGallonsEnabled ? closetCeilingGallons : 0;
+          const trimGallonsTotal =
+            (paintWindowFrames ? windowGallons : 0) +
+            (paintDoorFrames ? doorFrameGallons : 0) +
+            (closetGallonsEnabled ? closetBaseboardGallons : 0);
   const closetInteriorLaborCost = closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost;
   const closetInteriorMaterialsCost = closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost;
 
@@ -1789,80 +1798,73 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     </View>
 
                     <View style={{ flex: 1, backgroundColor: Colors.primaryBlueLight, padding: Spacing.md }}>
-                      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Materials</Text>
-                      </View>
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Labor
+                      </Text>
 
                       {paintWalls && totalArea > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(wallLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(wallMaterialsCost)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.sm }}>
+                          ${Math.round(wallLaborCost)}
+                        </Text>
                       )}
 
                       {windowCountValue > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintWindowFrames ? windowLaborCost : 0)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintWindowFrames ? windowMaterialsCost : 0)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.sm }}>
+                          ${Math.round(paintWindowFrames ? windowLaborCost : 0)}
+                        </Text>
                       )}
 
                       {doorFrameCount > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintDoorFrames ? doorFrameLaborCost : 0)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintDoorFrames ? doorFrameMaterialsCost : 0)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.sm }}>
+                          ${Math.round(paintDoorFrames ? doorFrameLaborCost : 0)}
+                        </Text>
                       )}
 
                       {doorCountForSummary > 0 && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintDoors ? doorLaborCost : 0)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintDoors ? doorMaterialsCost : 0)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.sm }}>
+                          ${Math.round(paintDoors ? doorLaborCost : 0)}
+                        </Text>
                       )}
 
                       {hasCloset && (
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(closetInteriorEnabled ? closetInteriorMaterialsCost : 0)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.sm }}>
+                          ${Math.round(closetInteriorEnabled ? closetInteriorLaborCost : 0)}
+                        </Text>
                       )}
 
                       <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.xs }} />
-                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(summaryLaborTotal)}
+                      <View style={{ alignItems: "flex-end", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          Labor Total:
                         </Text>
-                        <Text style={{ flex: 1, fontSize: 13, fontWeight: "600" as any, color: Colors.darkCharcoal, textAlign: "right" }}>
-                          ${Math.round(summaryMaterialsTotal)}
-                        </Text>
-                      </View>
-                      <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: Spacing.xs }}>
-                        <Text style={{ fontSize: 14, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          ${Math.round(summaryLaborTotal + summaryMaterialsTotal).toLocaleString()}
+                        <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
+                          ${Math.round(summaryLaborTotal).toLocaleString()}
                         </Text>
                       </View>
+
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Materials (Gallons)
+                      </Text>
+                      {wallGallonsTotal > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Wall: {wallGallonsTotal.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {ceilingGallonsTotal > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Ceiling: {ceilingGallonsTotal.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {trimGallonsTotal > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Trim: {trimGallonsTotal.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {paintDoors && doorGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          Doors: {doorGallons.toFixed(2)} gal
+                        </Text>
+                      )}
                     </View>
                   </View>
                 )}

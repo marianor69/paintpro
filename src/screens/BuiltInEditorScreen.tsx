@@ -1214,63 +1214,68 @@ export default function BuiltInEditorScreen({ route, navigation }: Props) {
                     </View>
 
                     <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
-                      <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                        <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
-                      </View>
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Labor
+                      </Text>
 
                       {shelfCountValue > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(shelfLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(shelvesMat)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(shelfLaborCost)}
+                        </Text>
                       )}
 
                       {sideAreaSqFt > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(sideLaborCost)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(sidesMat)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(sideLaborCost)}
+                        </Text>
                       )}
 
                       {cabinetDoorCountValue > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintCabinetDoors ? cabinetDoorLaborCost : 0)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintCabinetDoors ? doorsMat : 0)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(paintCabinetDoors ? cabinetDoorLaborCost : 0)}
+                        </Text>
                       )}
 
                       {cabinetDrawerCountValue > 0 && (
-                        <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintCabinetDoors ? cabinetDrawerLaborCost : 0)}
-                          </Text>
-                          <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                            ${Math.round(paintCabinetDoors ? drawersMat : 0)}
-                          </Text>
-                        </View>
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          ${Math.round(paintCabinetDoors ? cabinetDrawerLaborCost : 0)}
+                        </Text>
                       )}
 
                       <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                      <View style={{ alignItems: "flex-end", marginBottom: Spacing.sm }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                          Labor Total:
+                        </Text>
                         <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                          ${totalCost.toLocaleString()}
+                          ${Math.round(laborTotal).toLocaleString()}
                         </Text>
                       </View>
+
+                      <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                        Materials (Gallons)
+                      </Text>
+                      {shelfCountValue > 0 && shelfSurfaceGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Shelves: {shelfSurfaceGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {sideAreaSqFt > 0 && sideSurfaceGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Sides: {sideSurfaceGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {paintCabinetDoors && cabinetDoorCountValue > 0 && cabinetDoorGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                          Doors: {cabinetDoorGallons.toFixed(2)} gal
+                        </Text>
+                      )}
+                      {paintCabinetDoors && cabinetDrawerCountValue > 0 && cabinetDrawerGallons > 0 && (
+                        <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                          Drawers: {cabinetDrawerGallons.toFixed(2)} gal
+                        </Text>
+                      )}
                     </View>
                   </View>
                 </Card>

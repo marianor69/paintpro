@@ -912,52 +912,57 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
 
                   return (
                 <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
-                  <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Labor</Text>
-                    <Text style={{ flex: 1, fontSize: 13, color: Colors.mediumGray, textAlign: "right" }}>Mat</Text>
-                  </View>
+                  <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                    Labor
+                  </Text>
 
                   {baseDoorCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(baseDoorCount * pricing.cabinetDoorLabor)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(baseDoorMat)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(baseDoorCount * pricing.cabinetDoorLabor)}
+                    </Text>
                   )}
 
                   {drawerCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(drawerCount * pricing.cabinetDrawerLabor)}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(drawerMat)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(drawerCount * pricing.cabinetDrawerLabor)}
+                    </Text>
                   )}
 
                   {wallDoorCount > 0 && (
-                    <View style={{ flexDirection: "row", gap: Spacing.xs, marginBottom: Spacing.xs }}>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallDoorCount * (includeWallCabinet42 ? pricing.wallCabinetLabor : pricing.cabinetDoorLabor))}
-                      </Text>
-                      <Text style={{ flex: 1, fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
-                        ${Math.round(wallDoorMat)}
-                      </Text>
-                    </View>
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      ${Math.round(wallDoorCount * (includeWallCabinet42 ? pricing.wallCabinetLabor : pricing.cabinetDoorLabor))}
+                    </Text>
                   )}
 
                   <View style={{ height: 1, backgroundColor: "#90CAF9", marginVertical: Spacing.xs }} />
 
-                  <View style={{ alignItems: "flex-end" }}>
-                    <Text style={{ fontSize: 13, fontWeight: "700" as any, color: Colors.darkCharcoal }}>Total:</Text>
+                  <View style={{ alignItems: "flex-end", marginBottom: Spacing.sm }}>
+                    <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "700" as any, color: Colors.darkCharcoal }}>
+                      Labor Total:
+                    </Text>
                     <Text style={{ fontSize: Typography.h2.fontSize, fontWeight: "700" as any, color: Colors.primaryBlue }}>
-                      ${calculations.totalDisplayed.toLocaleString()}
+                      ${Math.round(calculations.laborDisplayed).toLocaleString()}
                     </Text>
                   </View>
+
+                  <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
+                    Materials (Gallons)
+                  </Text>
+                  {baseDoorCount > 0 && baseDoorGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      Base Doors: {baseDoorGallons.toFixed(2)} gal
+                    </Text>
+                  )}
+                  {drawerCount > 0 && drawerGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right", marginBottom: Spacing.xs }}>
+                      Drawers: {drawerGallons.toFixed(2)} gal
+                    </Text>
+                  )}
+                  {wallDoorCount > 0 && wallDoorGallons > 0 && (
+                    <Text style={{ fontSize: 13, color: Colors.darkCharcoal, textAlign: "right" }}>
+                      Wall Doors: {wallDoorGallons.toFixed(2)} gal
+                    </Text>
+                  )}
                 </View>
                   );
                 })()}
