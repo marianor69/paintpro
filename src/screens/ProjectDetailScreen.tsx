@@ -43,6 +43,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   const deleteBrickWall = useProjectStore((s) => s.deleteBrickWall);
   const deleteIrregularRoom = useProjectStore((s) => s.deleteIrregularRoom);
   const setEstimateBuildComplete = useProjectStore((s) => s.setEstimateBuildComplete);
+  const getActiveQuote = useProjectStore((s) => s.getActiveQuote);
   const pricing = usePricingStore();
   const appSettings = useAppSettings();
   const testMode = useAppSettings((s) => s.testMode);
@@ -86,7 +87,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     if (project) {
       // Calculate summary using ACTIVE QUOTE's QuoteBuilder (single source of truth)
       // This ensures consistency with RoomEditorScreen which also uses activeQuote
-      const activeQuote = project.quotes?.find(q => q.id === project.activeQuoteId);
+      const activeQuote = getActiveQuote(project.id);
       const quoteBuilder = activeQuote?.quoteBuilder || project.quoteBuilder || getDefaultQuoteBuilder();
       summary = calculateFilteredProjectSummary(project, pricing, quoteBuilder);
     }
