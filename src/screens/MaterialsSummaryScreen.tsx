@@ -673,7 +673,10 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
               {summary.totalWallGallons.toFixed(1)} gallons
             </Text>
             <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-              {buckets.wall.fiveGal} × 5-gal + {buckets.wall.singleGal} × 1-gal
+              {buckets.wall.fiveGal} X 5-gal
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+              {buckets.wall.singleGal} X 1-gal
             </Text>
           </View>
 
@@ -700,7 +703,10 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
               {summary.totalCeilingGallons.toFixed(1)} gallons
             </Text>
             <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-              {buckets.ceiling.fiveGal} × 5-gal + {buckets.ceiling.singleGal} × 1-gal
+              {buckets.ceiling.fiveGal} X 5-gal
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+              {buckets.ceiling.singleGal} X 1-gal
             </Text>
           </View>
 
@@ -727,7 +733,10 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
               {summary.totalTrimGallons.toFixed(1)} gallons
             </Text>
             <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-              {buckets.trim.fiveGal} × 5-gal + {buckets.trim.singleGal} × 1-gal
+              {buckets.trim.fiveGal} X 5-gal
+            </Text>
+            <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+              {buckets.trim.singleGal} X 1-gal
             </Text>
           </View>
 
@@ -754,7 +763,10 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
                 {summary.totalDoorGallons.toFixed(1)} gallons
               </Text>
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                {buckets.door.fiveGal} × 5-gal + {buckets.door.singleGal} × 1-gal
+                {buckets.door.fiveGal} X 5-gal
+              </Text>
+              <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                {buckets.door.singleGal} X 1-gal
               </Text>
             </View>
           )}
