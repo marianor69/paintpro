@@ -1058,7 +1058,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
 
                   <View style={{ flexDirection: "row", gap: Spacing.sm }}>
                     {/* Gray section - parts list */}
-                    <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
+                    <View style={{ flex: 2.8, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                       {/* Empty row for alignment */}
                       <View style={{ marginBottom: Spacing.xs }}>
                         <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
@@ -1095,7 +1095,7 @@ export default function FireplaceEditorScreen({ route, navigation }: Props) {
                     </View>
 
                     {/* Blue section - Labor + Materials (Gallons) */}
-                    <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
+                    <View style={{ flex: 2.2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
                       <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
                         Labor
                       </Text>

@@ -846,7 +846,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
               <Text style={Typography.h2}>Cabinet Summary</Text>
 
               <View style={{ flexDirection: "row", gap: Spacing.sm }}>
-                <View style={{ flex: 3, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
+                <View style={{ flex: 2.8, backgroundColor: Colors.backgroundWarmGray, borderRadius: 8, padding: Spacing.md }}>
                   <View style={{ marginBottom: Spacing.xs }}>
                     <Text style={{ fontSize: 13, color: "transparent" }}>-</Text>
                   </View>
@@ -911,7 +911,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
                   const wallDoorMat = firstLine === "wall" ? totalMaterialsCost : 0;
 
                   return (
-                <View style={{ flex: 2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
+                <View style={{ flex: 2.2, backgroundColor: "#E3F2FD", borderRadius: 8, padding: Spacing.md }}>
                   <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
                     Labor
                   </Text>

@@ -217,6 +217,7 @@ export function computeRoomPricingSummary(
   const includedDoors = resolvedInclusions.doors;
   const includedWindows = resolvedInclusions.windows;
   const includedBaseboards = resolvedInclusions.baseboards;
+  const includedCrownMoulding = resolvedInclusions.crownMoulding;
   const includedClosetSingle = resolvedInclusions.closetInteriorsSingle;
   const includedClosetDouble = resolvedInclusions.closetInteriorsDouble;
   const includedClosets = resolvedInclusions.closetInteriors;
@@ -454,10 +455,16 @@ export function computeRoomPricingSummary(
 
   // Trim paint: includes baseboards, window/door trim, crown moulding, AND doors/jambs
   // All "trim" items use the same paint type per user specification
-  if (includedTrim || includeWindowFrames || includeDoorFrames) {
+  if (includedTrim || includeWindowFrames || includeDoorFrames || includedBaseboards || includedCrownMoulding) {
     let effectiveTrimSqFt = 0;
     if (includedTrim) {
       effectiveTrimSqFt += baseboardTrimSqFt + crownMouldingTrimSqFt;
+    }
+    if (!includedTrim && includedBaseboards) {
+      effectiveTrimSqFt += baseboardTrimSqFt;
+    }
+    if (!includedTrim && includedCrownMoulding) {
+      effectiveTrimSqFt += crownMouldingTrimSqFt;
     }
     if (includeWindowFrames) {
       effectiveTrimSqFt += windowTrimSqFt;

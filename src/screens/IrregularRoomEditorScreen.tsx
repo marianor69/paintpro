@@ -1746,7 +1746,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       overflow: "hidden",
                     }}
                   >
-                    <View style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
+                    <View style={{ flex: 1.05, backgroundColor: Colors.backgroundWarmGray, padding: Spacing.md }}>
                       {paintWalls && totalArea > 0 && (
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: Spacing.sm }}>
                           <Text style={{ fontSize: 13, color: Colors.darkCharcoal }}>Total Wall Area</Text>
@@ -1797,7 +1797,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                       )}
                     </View>
 
-                    <View style={{ flex: 1, backgroundColor: Colors.primaryBlueLight, padding: Spacing.md }}>
+                    <View style={{ flex: 0.95, backgroundColor: Colors.primaryBlueLight, padding: Spacing.md }}>
                       <Text style={{ fontSize: 13, color: Colors.mediumGray, textAlign: "right", marginBottom: Spacing.xs }}>
                         Labor
                       </Text>
