@@ -8,7 +8,7 @@ interface PricingStore extends PricingSettings {
   resetToDefaults: () => void;
 }
 
-const defaultPricing: PricingSettings = {
+export const defaultPricing: PricingSettings = {
   // Labor rates
   wallLaborPerSqFt: 1.5,
   ceilingLaborPerSqFt: 1.75,
