@@ -430,11 +430,12 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
     text += `\n`;
     text += `Total Doors: ${summary.totalDoors}\n`;
     text += `Total Windows: ${summary.totalWindows}\n`;
-    if (closetStats.includedSingleClosets > 0 || closetStats.includedDoubleClosets > 0) {
+    if (closetStats.includedSingleClosets > 0 || closetStats.includedDoubleClosets > 0 || closetStats.includedDoorlessClosets > 0) {
       text += `\n`;
       text += `Closet Interiors (2' deep cavities):\n`;
       text += `  Single-door closets: ${closetStats.includedSingleClosets}\n`;
       text += `  Double-door closets: ${closetStats.includedDoubleClosets}\n`;
+      text += `  Doorless closets: ${closetStats.includedDoorlessClosets}\n`;
       text += `  Wall area: ${closetStats.includedClosetWallArea.toFixed(0)} sq ft\n`;
       text += `  Ceiling area: ${closetStats.includedClosetCeilingArea.toFixed(0)} sq ft\n`;
     }
@@ -888,7 +889,7 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginBottom: (closetStats.includedSingleClosets > 0 || closetStats.includedDoubleClosets > 0) ? Spacing.sm : 0,
+                marginBottom: (closetStats.includedSingleClosets > 0 || closetStats.includedDoubleClosets > 0 || closetStats.includedDoorlessClosets > 0) ? Spacing.sm : 0,
               }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
@@ -906,7 +907,7 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
             </View>
 
             {/* Closet Stats if applicable */}
-            {(closetStats.includedSingleClosets > 0 || closetStats.includedDoubleClosets > 0) && (
+            {(closetStats.includedSingleClosets > 0 || closetStats.includedDoubleClosets > 0 || closetStats.includedDoorlessClosets > 0) && (
               <>
                 <View style={{ height: 1, backgroundColor: Colors.neutralGray, marginVertical: Spacing.sm }} />
                 <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginBottom: Spacing.xs }}>
@@ -950,6 +951,26 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
                     }}
                   >
                     {closetStats.includedDoubleClosets}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginBottom: Spacing.xs,
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.mediumGray }}>
+                    Doorless closets:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "600",
+                      color: Colors.darkCharcoal,
+                    }}
+                  >
+                    {closetStats.includedDoorlessClosets}
                   </Text>
                 </View>
                 <View

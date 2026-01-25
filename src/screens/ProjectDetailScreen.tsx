@@ -438,6 +438,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             windows: room.windowCount,
             singleDoorClosets: room.singleDoorClosets,
             doubleDoorClosets: room.doubleDoorClosets,
+            doorlessClosets: room.doorlessClosets,
             paintWalls: room.paintWalls,
             paintCeilings: room.paintCeilings,
             paintTrim: room.paintTrim,
@@ -448,6 +449,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
             includeClosetInteriorInQuote: room.includeClosetInteriorInQuote,
             includeSingleClosetInteriorInQuote: room.includeSingleClosetInteriorInQuote,
             includeDoubleClosetInteriorInQuote: room.includeDoubleClosetInteriorInQuote,
+            includeDoorlessClosetInteriorInQuote: room.includeDoorlessClosetInteriorInQuote,
           },
 
           // COVERAGE RULES - Paint consumption rates
@@ -546,7 +548,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               ? pricingSummary.windowsCount * pricing.windowLabor * pricingSummary.coatsTrim
               : 0,
             laborClosetsRaw: pricingSummary.includedClosets
-              ? (pricingSummary.singleDoorClosets + pricingSummary.doubleDoorClosets)
+              ? (pricingSummary.singleDoorClosets + pricingSummary.doubleDoorClosets + pricingSummary.doorlessClosets)
                 * pricing.closetLabor
                 * safeNumber(pricing.closetLaborMultiplier, 1.0)
                 * (pricingSummary.coatsWalls > 1 ? safeNumber(pricing.secondCoatLaborMultiplier, 2.0) : 1.0)

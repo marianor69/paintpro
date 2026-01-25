@@ -18,14 +18,17 @@ export interface Room {
   // Closet details
   singleDoorClosets?: number;
   doubleDoorClosets?: number;
+  doorlessClosets?: number;
   includeClosetInteriorInQuote?: boolean; // Whether to include closet interior area in calculations (default: true)
   includeSingleClosetInteriorInQuote?: boolean; // Include single-door closet interiors (default: true)
   includeDoubleClosetInteriorInQuote?: boolean; // Include double-door closet interiors (default: true)
+  includeDoorlessClosetInteriorInQuote?: boolean; // Include doorless closet interiors (default: true)
   roomInfoConfirmed?: boolean;
   openingsClosetsConfirmed?: boolean;
   paintOptionsConfirmed?: boolean;
   includeSingleClosetInteriorInQuote?: boolean; // Include single-door closet interiors (default: true)
   includeDoubleClosetInteriorInQuote?: boolean; // Include double-door closet interiors (default: true)
+  includeDoorlessClosetInteriorInQuote?: boolean; // Include doorless closet interiors (default: true)
   // Room-level paint options (override global defaults)
   paintWalls?: boolean; // Whether to paint walls in this room
   paintCeilings?: boolean; // Whether to paint ceilings in this room
@@ -87,7 +90,11 @@ export interface Bathroom {
   // Closet details
   singleDoorClosets?: number;
   doubleDoorClosets?: number;
+  doorlessClosets?: number;
   includeClosetInteriorInQuote?: boolean; // Whether to include closet interior area in calculations (default: true)
+  includeSingleClosetInteriorInQuote?: boolean; // Include single-door closet interiors (default: true)
+  includeDoubleClosetInteriorInQuote?: boolean; // Include double-door closet interiors (default: true)
+  includeDoorlessClosetInteriorInQuote?: boolean; // Include doorless closet interiors (default: true)
   // Bathroom-level paint options (override global defaults)
   paintWalls?: boolean; // Whether to paint walls in this bathroom
   paintCeilings?: boolean; // Whether to paint ceilings in this bathroom
@@ -259,9 +266,11 @@ export interface IrregularRoom {
   hasCloset: boolean;
   singleDoorClosets?: number;
   doubleDoorClosets?: number;
+  doorlessClosets?: number;
   includeClosetInteriorInQuote?: boolean;
   includeSingleClosetInteriorInQuote?: boolean;
   includeDoubleClosetInteriorInQuote?: boolean;
+  includeDoorlessClosetInteriorInQuote?: boolean;
   // Paint options
   paintWalls?: boolean;
   paintCeilings?: boolean;

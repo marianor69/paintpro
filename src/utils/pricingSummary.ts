@@ -48,6 +48,7 @@ export interface RoomPricingSummary {
   doorsCount: number;
   singleDoorClosets: number;
   doubleDoorClosets: number;
+  doorlessClosets: number;
 
   // Coats
   coatsWalls: number;
@@ -270,6 +271,7 @@ export function computeRoomPricingSummary(
   const toiletEnclosed = Boolean((room as { toiletEnclosed?: boolean }).toiletEnclosed);
   const singleClosets = safeNumber(room.singleDoorClosets, 0);
   const doubleClosets = safeNumber(room.doubleDoorClosets, 0);
+  const doorlessClosets = safeNumber(room.doorlessClosets, 0);
   const cabinetPaintCoverageSqFtPerGallon = Math.max(
     1,
     safeNumber(useAppSettings.getState().cabinetPaintCoverageSqFtPerGallon, 350)
@@ -304,7 +306,10 @@ export function computeRoomPricingSummary(
   const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
   const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
-  const closetDeduction = singleClosetDeduction + doubleClosetDeduction;
+  const doorlessClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * height;
+  const doorlessClosetDeduction = doorlessClosets * doorlessClosetOpeningArea;
+
+  const closetDeduction = singleClosetDeduction + doubleClosetDeduction + doorlessClosetDeduction;
 
   wallArea = Math.max(0, safeNumber(wallArea - windowDeduction - doorDeduction - closetDeduction));
 
@@ -330,13 +335,16 @@ export function computeRoomPricingSummary(
 
   const includedClosetWallArea =
     (includedClosetSingle ? closetMetrics.singleClosetWallArea : 0) +
-    (includedClosetDouble ? closetMetrics.doubleClosetWallArea : 0);
+    (includedClosetDouble ? closetMetrics.doubleClosetWallArea : 0) +
+    (resolvedInclusions.closetInteriorsDoorless ? closetMetrics.doorlessClosetWallArea : 0);
   const includedClosetCeilingArea =
     (includedClosetSingle ? closetMetrics.singleClosetCeilingArea : 0) +
-    (includedClosetDouble ? closetMetrics.doubleClosetCeilingArea : 0);
+    (includedClosetDouble ? closetMetrics.doubleClosetCeilingArea : 0) +
+    (resolvedInclusions.closetInteriorsDoorless ? closetMetrics.doorlessClosetCeilingArea : 0);
   const includedClosetBaseboardLF =
     (includedClosetSingle ? closetMetrics.singleClosetBaseboardLF : 0) +
-    (includedClosetDouble ? closetMetrics.doubleClosetBaseboardLF : 0);
+    (includedClosetDouble ? closetMetrics.doubleClosetBaseboardLF : 0) +
+    (resolvedInclusions.closetInteriorsDoorless ? closetMetrics.doorlessClosetBaseboardLF : 0);
 
   if (includedClosetWallArea > 0 || includedClosetCeilingArea > 0) {
     closetWallArea = includedClosetWallArea;
@@ -354,13 +362,28 @@ export function computeRoomPricingSummary(
     const doorOpeningWidthForBaseboard = calcSettings.doorWidth + (calcSettings.doorTrimWidth * 2 / 12); // feet
     const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12); // feet
     const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12); // feet
+    const doorlessClosetOpeningWidth = calcSettings.singleClosetWidth / 12; // feet
 
     if (hasLengthWidth) {
       // Use perimeter (in feet) minus opening widths (in feet) = result in feet
-      baseboardLF = Math.max(0, perimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
+      baseboardLF = Math.max(
+        0,
+        perimeter
+          - (doorCount * doorOpeningWidthForBaseboard)
+          - (singleClosets * singleClosetOpeningWidth)
+          - (doubleClosets * doubleClosetOpeningWidth)
+          - (doorlessClosets * doorlessClosetOpeningWidth)
+      );
     } else if (useManualArea) {
       const estimatedPerimeter = 4 * Math.sqrt(manualArea); // feet
-      baseboardLF = Math.max(0, estimatedPerimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
+      baseboardLF = Math.max(
+        0,
+        estimatedPerimeter
+          - (doorCount * doorOpeningWidthForBaseboard)
+          - (singleClosets * singleClosetOpeningWidth)
+          - (doubleClosets * doubleClosetOpeningWidth)
+          - (doorlessClosets * doorlessClosetOpeningWidth)
+      );
     }
 
     if (includedClosetBaseboardLF > 0) {
@@ -561,7 +584,9 @@ export function computeRoomPricingSummary(
 
   // Add closet labor only if closets are included via combined rule
   const includedClosetCount =
-    (includedClosetSingle ? singleClosets : 0) + (includedClosetDouble ? doubleClosets : 0);
+    (includedClosetSingle ? singleClosets : 0) +
+    (includedClosetDouble ? doubleClosets : 0) +
+    (resolvedInclusions.closetInteriorsDoorless ? doorlessClosets : 0);
   if (includedClosetCount > 0) {
     // Closet labor applies the wall coat multiplier since closet interiors are walls
     const closetLaborMultiplier =
@@ -658,6 +683,7 @@ export function computeRoomPricingSummary(
     doorsCount: doorCount,
     singleDoorClosets: singleClosets,
     doubleDoorClosets: doubleClosets,
+    doorlessClosets: doorlessClosets,
 
     // Coats
     coatsWalls,

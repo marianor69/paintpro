@@ -57,6 +57,7 @@ interface ImportedProject {
     hasCloset: boolean;
     singleDoorClosets?: number;
     doubleDoorClosets?: number;
+    doorlessClosets?: number;
     // Room-level paint toggles (all default to true if not specified)
     paintWalls?: boolean;
     paintCeilings?: boolean;
@@ -74,6 +75,7 @@ interface ImportedProject {
     includeClosetInteriorInQuote?: boolean;
     includeSingleClosetInteriorInQuote?: boolean;
     includeDoubleClosetInteriorInQuote?: boolean;
+    includeDoorlessClosetInteriorInQuote?: boolean;
     coatsWalls: number;
     coatsCeiling: number;
     coatsTrim: number;
@@ -237,6 +239,7 @@ export function importProjectFromJSON(jsonString: string): {
           hasCloset: roomData.hasCloset,
           singleDoorClosets: roomData.singleDoorClosets || 0,
           doubleDoorClosets: roomData.doubleDoorClosets || 0,
+          doorlessClosets: roomData.doorlessClosets || 0,
           // Room-level paint toggles - match global defaults from getDefaultGlobalPaintDefaults()
           // This ensures imported rooms calculate consistently with manually created rooms
           paintWalls: roomData.paintWalls ?? true,
@@ -259,6 +262,10 @@ export function importProjectFromJSON(jsonString: string): {
             true,
           includeDoubleClosetInteriorInQuote:
             roomData.includeDoubleClosetInteriorInQuote ??
+            roomData.includeClosetInteriorInQuote ??
+            true,
+          includeDoorlessClosetInteriorInQuote:
+            roomData.includeDoorlessClosetInteriorInQuote ??
             roomData.includeClosetInteriorInQuote ??
             true,
           coatsWalls: roomData.coatsWalls,

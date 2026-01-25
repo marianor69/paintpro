@@ -157,18 +157,23 @@ export function getClosetInteriorMetrics(room: Room, defaultHeight: number): {
   totalClosetCount: number;
   singleCount: number;
   doubleCount: number;
+  doorlessCount: number;
   singleClosetWallArea: number;
   doubleClosetWallArea: number;
+  doorlessClosetWallArea: number;
   singleClosetCeilingArea: number;
   doubleClosetCeilingArea: number;
+  doorlessClosetCeilingArea: number;
   singleClosetBaseboardLF: number;
   doubleClosetBaseboardLF: number;
+  doorlessClosetBaseboardLF: number;
 } {
   const h = getRoomHeight(room, defaultHeight);
   const singleCount = safeNumber(room.singleDoorClosets, 0);
   const doubleCount = safeNumber(room.doubleDoorClosets, 0);
+  const doorlessCount = safeNumber(room.doorlessClosets, 0);
 
-  if (singleCount <= 0 && doubleCount <= 0) {
+  if (singleCount <= 0 && doubleCount <= 0 && doorlessCount <= 0) {
     return {
       totalClosetWallArea: 0,
       totalClosetCeilingArea: 0,
@@ -176,12 +181,16 @@ export function getClosetInteriorMetrics(room: Room, defaultHeight: number): {
       totalClosetCount: 0,
       singleCount: 0,
       doubleCount: 0,
+      doorlessCount: 0,
       singleClosetWallArea: 0,
       doubleClosetWallArea: 0,
+      doorlessClosetWallArea: 0,
       singleClosetCeilingArea: 0,
       doubleClosetCeilingArea: 0,
+      doorlessClosetCeilingArea: 0,
       singleClosetBaseboardLF: 0,
-      doubleClosetBaseboardLF: 0
+      doubleClosetBaseboardLF: 0,
+      doorlessClosetBaseboardLF: 0
     };
   }
 
@@ -199,41 +208,49 @@ export function getClosetInteriorMetrics(room: Room, defaultHeight: number): {
 
   const singleClosetWallArea = singleCount * singleWallAreaPer;
   const doubleClosetWallArea = doubleCount * doubleWallAreaPer;
-  const totalClosetWallArea = singleClosetWallArea + doubleClosetWallArea;
+  const doorlessClosetWallArea = doorlessCount * singleWallAreaPer;
+  const totalClosetWallArea = singleClosetWallArea + doubleClosetWallArea + doorlessClosetWallArea;
 
   const singleClosetCeilingArea = singleCount * singleCeilingPer;
   const doubleClosetCeilingArea = doubleCount * doubleCeilingPer;
-  const totalClosetCeilingArea = singleClosetCeilingArea + doubleClosetCeilingArea;
+  const doorlessClosetCeilingArea = doorlessCount * singleCeilingPer;
+  const totalClosetCeilingArea = singleClosetCeilingArea + doubleClosetCeilingArea + doorlessClosetCeilingArea;
 
   const singleClosetBaseboardLF = singleCount * singleBaseboardLFPer;
   const doubleClosetBaseboardLF = doubleCount * doubleBaseboardLFPer;
-  const totalClosetBaseboardLF = singleClosetBaseboardLF + doubleClosetBaseboardLF;
+  const doorlessClosetBaseboardLF = doorlessCount * singleBaseboardLFPer;
+  const totalClosetBaseboardLF = singleClosetBaseboardLF + doubleClosetBaseboardLF + doorlessClosetBaseboardLF;
 
   return {
     totalClosetWallArea: Math.max(0, safeNumber(totalClosetWallArea)),
     totalClosetCeilingArea: Math.max(0, safeNumber(totalClosetCeilingArea)),
     totalClosetBaseboardLF: Math.max(0, safeNumber(totalClosetBaseboardLF)),
-    totalClosetCount: singleCount + doubleCount,
+    totalClosetCount: singleCount + doubleCount + doorlessCount,
     singleCount,
     doubleCount,
+    doorlessCount,
     singleClosetWallArea: Math.max(0, safeNumber(singleClosetWallArea)),
     doubleClosetWallArea: Math.max(0, safeNumber(doubleClosetWallArea)),
+    doorlessClosetWallArea: Math.max(0, safeNumber(doorlessClosetWallArea)),
     singleClosetCeilingArea: Math.max(0, safeNumber(singleClosetCeilingArea)),
     doubleClosetCeilingArea: Math.max(0, safeNumber(doubleClosetCeilingArea)),
+    doorlessClosetCeilingArea: Math.max(0, safeNumber(doorlessClosetCeilingArea)),
     singleClosetBaseboardLF: Math.max(0, safeNumber(singleClosetBaseboardLF)),
-    doubleClosetBaseboardLF: Math.max(0, safeNumber(doubleClosetBaseboardLF))
+    doubleClosetBaseboardLF: Math.max(0, safeNumber(doubleClosetBaseboardLF)),
+    doorlessClosetBaseboardLF: Math.max(0, safeNumber(doorlessClosetBaseboardLF))
   };
 }
 
 function resolveClosetInteriorIncludes(
   room: Room,
   projectIncludeClosetInteriorInQuote?: boolean
-): { includeSingle: boolean; includeDouble: boolean } {
+): { includeSingle: boolean; includeDouble: boolean; includeDoorless: boolean } {
   const fallbackClosetInterior =
     room.includeClosetInteriorInQuote ?? projectIncludeClosetInteriorInQuote ?? true;
   return {
     includeSingle: room.includeSingleClosetInteriorInQuote ?? fallbackClosetInterior,
     includeDouble: room.includeDoubleClosetInteriorInQuote ?? fallbackClosetInterior,
+    includeDoorless: room.includeDoorlessClosetInteriorInQuote ?? fallbackClosetInterior,
   };
 }
 
@@ -314,6 +331,8 @@ export function calculateRoomMetrics(
   const doorCount = safeNumber(room.doorCount, 0);
   const singleClosets = safeNumber(room.singleDoorClosets, 0);
   const doubleClosets = safeNumber(room.doubleDoorClosets, 0);
+  const doorlessClosets = safeNumber(room.doorlessClosets, 0);
+  const doorlessClosets = safeNumber(room.doorlessClosets, 0);
 
   // Window opening deduction: opening area + trim area (only if windows are included)
   let windowDeduction = 0;
@@ -346,7 +365,10 @@ export function calculateRoomMetrics(
   const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
   const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
-  const closetDeduction = singleClosetDeduction + doubleClosetDeduction;
+  const doorlessClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * closetHeightFt;
+  const doorlessClosetDeduction = doorlessClosets * doorlessClosetOpeningArea;
+
+  const closetDeduction = singleClosetDeduction + doubleClosetDeduction + doorlessClosetDeduction;
 
   wallSqFt = Math.max(0, safeNumber(wallSqFt - windowDeduction - doorDeduction - closetDeduction));
 
@@ -376,16 +398,18 @@ export function calculateRoomMetrics(
 
   // Calculate closet interior metrics and add to areas if included
   const closetMetrics = getClosetInteriorMetrics(room, height);
-  const { includeSingle, includeDouble } = resolveClosetInteriorIncludes(
+  const { includeSingle, includeDouble, includeDoorless } = resolveClosetInteriorIncludes(
     room,
     projectIncludeClosetInteriorInQuote
   );
   const includedClosetWallArea =
     (includeSingle ? closetMetrics.singleClosetWallArea : 0) +
-    (includeDouble ? closetMetrics.doubleClosetWallArea : 0);
+    (includeDouble ? closetMetrics.doubleClosetWallArea : 0) +
+    (includeDoorless ? closetMetrics.doorlessClosetWallArea : 0);
   const includedClosetCeilingArea =
     (includeSingle ? closetMetrics.singleClosetCeilingArea : 0) +
-    (includeDouble ? closetMetrics.doubleClosetCeilingArea : 0);
+    (includeDouble ? closetMetrics.doubleClosetCeilingArea : 0) +
+    (includeDoorless ? closetMetrics.doorlessClosetCeilingArea : 0);
 
   if (includedClosetWallArea > 0 || includedClosetCeilingArea > 0) {
     wallSqFt += includedClosetWallArea;
@@ -401,19 +425,35 @@ export function calculateRoomMetrics(
     // Closet opening widths for baseboard
     const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12);
     const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
+    const doorlessClosetOpeningWidth = calcSettings.singleClosetWidth / 12;
 
     if (hasLengthWidth) {
-      baseboardLF = Math.max(0, perimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
+      baseboardLF = Math.max(
+        0,
+        perimeter
+          - (doorCount * doorOpeningWidthForBaseboard)
+          - (singleClosets * singleClosetOpeningWidth)
+          - (doubleClosets * doubleClosetOpeningWidth)
+          - (doorlessClosets * doorlessClosetOpeningWidth)
+      );
     } else if (useManualArea) {
       // Estimate baseboard from area
       const estimatedPerimeter = 4 * Math.sqrt(manualArea);
-      baseboardLF = Math.max(0, estimatedPerimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
+      baseboardLF = Math.max(
+        0,
+        estimatedPerimeter
+          - (doorCount * doorOpeningWidthForBaseboard)
+          - (singleClosets * singleClosetOpeningWidth)
+          - (doubleClosets * doubleClosetOpeningWidth)
+          - (doorlessClosets * doorlessClosetOpeningWidth)
+      );
     }
 
     // Add closet interior baseboard if included
     const includedClosetBaseboardLF =
       (includeSingle ? closetMetrics.singleClosetBaseboardLF : 0) +
-      (includeDouble ? closetMetrics.doubleClosetBaseboardLF : 0);
+      (includeDouble ? closetMetrics.doubleClosetBaseboardLF : 0) +
+      (includeDoorless ? closetMetrics.doorlessClosetBaseboardLF : 0);
     if (includedClosetBaseboardLF > 0) {
       baseboardLF += includedClosetBaseboardLF;
     }
@@ -686,6 +726,9 @@ export function calculateRoomMetricsWithQB(
   const effectiveIncludeDoubleCloset =
     (room.includeDoubleClosetInteriorInQuote ?? fallbackClosetInterior) &&
     quoteBuilder.includeClosets;
+  const effectiveIncludeDoorlessCloset =
+    (room.includeDoorlessClosetInteriorInQuote ?? fallbackClosetInterior) &&
+    quoteBuilder.includeClosets;
 
   // Create a modified room object with effective paint settings
   const effectiveRoom: Room = {
@@ -697,9 +740,11 @@ export function calculateRoomMetricsWithQB(
     paintDoorFrames: effectivePaintDoorFrames,
     paintDoors: effectivePaintDoors,
     paintBaseboard: effectivePaintBaseboard,
-    includeClosetInteriorInQuote: effectiveIncludeSingleCloset || effectiveIncludeDoubleCloset,
+    includeClosetInteriorInQuote:
+      effectiveIncludeSingleCloset || effectiveIncludeDoubleCloset || effectiveIncludeDoorlessCloset,
     includeSingleClosetInteriorInQuote: effectiveIncludeSingleCloset,
     includeDoubleClosetInteriorInQuote: effectiveIncludeDoubleCloset,
+    includeDoorlessClosetInteriorInQuote: effectiveIncludeDoorlessCloset,
     // includeWindows controls whether windows count toward deductions and labor
     includeWindows: quoteBuilder.includeWindows !== false ? room.includeWindows : false,
   };
@@ -1130,8 +1175,10 @@ export function calculateProjectClosetStats(
 ): {
   includedSingleClosets: number;
   includedDoubleClosets: number;
+  includedDoorlessClosets: number;
   excludedSingleClosets: number;
   excludedDoubleClosets: number;
+  excludedDoorlessClosets: number;
   includedClosetWallArea: number;
   includedClosetCeilingArea: number;
   includedClosetBaseboardLF: number;
@@ -1143,8 +1190,10 @@ export function calculateProjectClosetStats(
   const qb = project.quoteBuilder || quoteBuilder || getDefaultQuoteBuilder();
   let includedSingleClosets = 0;
   let includedDoubleClosets = 0;
+  let includedDoorlessClosets = 0;
   let excludedSingleClosets = 0;
   let excludedDoubleClosets = 0;
+  let excludedDoorlessClosets = 0;
   let includedClosetWallArea = 0;
   let includedClosetCeilingArea = 0;
   let includedClosetBaseboardLF = 0;
@@ -1170,7 +1219,7 @@ export function calculateProjectClosetStats(
     }
 
     const closetMetrics = getClosetInteriorMetrics(room, floorHeight);
-    const { includeSingle, includeDouble } = resolveClosetInteriorIncludes(
+    const { includeSingle, includeDouble, includeDoorless } = resolveClosetInteriorIncludes(
       room,
       project.projectIncludeClosetInteriorInQuote
     );
@@ -1180,6 +1229,7 @@ export function calculateProjectClosetStats(
       // All closets go to excluded, regardless of room-level setting
       excludedSingleClosets += closetMetrics.singleCount;
       excludedDoubleClosets += closetMetrics.doubleCount;
+      excludedDoorlessClosets += closetMetrics.doorlessCount;
       excludedClosetWallArea += closetMetrics.totalClosetWallArea;
       excludedClosetCeilingArea += closetMetrics.totalClosetCeilingArea;
       excludedClosetBaseboardLF += closetMetrics.totalClosetBaseboardLF;
@@ -1207,14 +1257,28 @@ export function calculateProjectClosetStats(
         excludedClosetCeilingArea += closetMetrics.doubleClosetCeilingArea;
         excludedClosetBaseboardLF += closetMetrics.doubleClosetBaseboardLF;
       }
+
+      if (includeDoorless) {
+        includedDoorlessClosets += closetMetrics.doorlessCount;
+        includedClosetWallArea += closetMetrics.doorlessClosetWallArea;
+        includedClosetCeilingArea += closetMetrics.doorlessClosetCeilingArea;
+        includedClosetBaseboardLF += closetMetrics.doorlessClosetBaseboardLF;
+      } else {
+        excludedDoorlessClosets += closetMetrics.doorlessCount;
+        excludedClosetWallArea += closetMetrics.doorlessClosetWallArea;
+        excludedClosetCeilingArea += closetMetrics.doorlessClosetCeilingArea;
+        excludedClosetBaseboardLF += closetMetrics.doorlessClosetBaseboardLF;
+      }
     }
   });
 
   return {
     includedSingleClosets,
     includedDoubleClosets,
+    includedDoorlessClosets,
     excludedSingleClosets,
     excludedDoubleClosets,
+    excludedDoorlessClosets,
     includedClosetWallArea: Math.max(0, safeNumber(includedClosetWallArea)),
     includedClosetCeilingArea: Math.max(0, safeNumber(includedClosetCeilingArea)),
     includedClosetBaseboardLF: Math.max(0, safeNumber(includedClosetBaseboardLF)),
@@ -1308,20 +1372,24 @@ export function calculateFilteredRoomMetrics(
     const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
     const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
-    const closetDeduction = singleClosetDeduction + doubleClosetDeduction;
+    const doorlessClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * height;
+    const doorlessClosetDeduction = doorlessClosets * doorlessClosetOpeningArea;
+
+    const closetDeduction = singleClosetDeduction + doubleClosetDeduction + doorlessClosetDeduction;
 
     wallSqFt = Math.max(0, safeNumber(wallSqFt - windowDeduction - doorDeduction - closetDeduction));
 
     // Add closet interior walls ONLY if includeClosets is true
     if (true) {
       const closetMetrics = getClosetInteriorMetrics(room, height);
-      const { includeSingle, includeDouble } = resolveClosetInteriorIncludes(
+      const { includeSingle, includeDouble, includeDoorless } = resolveClosetInteriorIncludes(
         room,
         projectIncludeClosetInteriorInQuote
       );
       const includedClosetWallArea =
         (includeSingle ? closetMetrics.singleClosetWallArea : 0) +
-        (includeDouble ? closetMetrics.doubleClosetWallArea : 0);
+        (includeDouble ? closetMetrics.doubleClosetWallArea : 0) +
+        (includeDoorless ? closetMetrics.doorlessClosetWallArea : 0);
       if (includedClosetWallArea > 0) {
         wallSqFt += includedClosetWallArea;
       }
@@ -1348,13 +1416,14 @@ export function calculateFilteredRoomMetrics(
     // Add closet interior ceilings ONLY if includeClosets is true
     if (true) {
       const closetMetrics = getClosetInteriorMetrics(room, height);
-      const { includeSingle, includeDouble } = resolveClosetInteriorIncludes(
+      const { includeSingle, includeDouble, includeDoorless } = resolveClosetInteriorIncludes(
         room,
         projectIncludeClosetInteriorInQuote
       );
       const includedClosetCeilingArea =
         (includeSingle ? closetMetrics.singleClosetCeilingArea : 0) +
-        (includeDouble ? closetMetrics.doubleClosetCeilingArea : 0);
+        (includeDouble ? closetMetrics.doubleClosetCeilingArea : 0) +
+        (includeDoorless ? closetMetrics.doorlessClosetCeilingArea : 0);
       if (includedClosetCeilingArea > 0) {
         ceilingSqFt += includedClosetCeilingArea;
       }
@@ -1368,24 +1437,40 @@ export function calculateFilteredRoomMetrics(
     const doorOpeningWidthForBaseboard = calcSettings.doorWidth + (calcSettings.doorTrimWidth * 2 / 12);
     const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12);
     const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
+    const doorlessClosetOpeningWidth = calcSettings.singleClosetWidth / 12;
 
     if (hasLengthWidth) {
-      baseboardLF = Math.max(0, perimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
+      baseboardLF = Math.max(
+        0,
+        perimeter
+          - (doorCount * doorOpeningWidthForBaseboard)
+          - (singleClosets * singleClosetOpeningWidth)
+          - (doubleClosets * doubleClosetOpeningWidth)
+          - (doorlessClosets * doorlessClosetOpeningWidth)
+      );
     } else if (useManualArea) {
       const estimatedPerimeter = 4 * Math.sqrt(manualArea);
-      baseboardLF = Math.max(0, estimatedPerimeter - (doorCount * doorOpeningWidthForBaseboard) - (singleClosets * singleClosetOpeningWidth) - (doubleClosets * doubleClosetOpeningWidth));
+      baseboardLF = Math.max(
+        0,
+        estimatedPerimeter
+          - (doorCount * doorOpeningWidthForBaseboard)
+          - (singleClosets * singleClosetOpeningWidth)
+          - (doubleClosets * doubleClosetOpeningWidth)
+          - (doorlessClosets * doorlessClosetOpeningWidth)
+      );
     }
 
     // Add closet interior baseboard ONLY if includeClosets is true
     if (true) {
       const closetMetrics = getClosetInteriorMetrics(room, height);
-      const { includeSingle, includeDouble } = resolveClosetInteriorIncludes(
+      const { includeSingle, includeDouble, includeDoorless } = resolveClosetInteriorIncludes(
         room,
         projectIncludeClosetInteriorInQuote
       );
       const includedClosetBaseboardLF =
         (includeSingle ? closetMetrics.singleClosetBaseboardLF : 0) +
-        (includeDouble ? closetMetrics.doubleClosetBaseboardLF : 0);
+        (includeDouble ? closetMetrics.doubleClosetBaseboardLF : 0) +
+        (includeDoorless ? closetMetrics.doorlessClosetBaseboardLF : 0);
       if (includedClosetBaseboardLF > 0) {
         baseboardLF += includedClosetBaseboardLF;
       }
@@ -1919,6 +2004,7 @@ export function calculateFilteredProjectSummary(
         height: safeNumber(project.floorHeights?.[0], 8),
         singleDoorClosets: singleClosets,
         doubleDoorClosets: doubleClosets,
+        doorlessClosets: safeNumber(irregularRoom.doorlessClosets, 0),
       } as Room,
       safeNumber(project.floorHeights?.[0], 8)
     );
@@ -1933,7 +2019,9 @@ export function calculateFilteredProjectSummary(
     const closetBaseboardMaterialsCost = Math.ceil(closetBaseboardGallons) * trimPaintRate;
 
     const closetInteriorEnabled =
-      irregularRoom.includeSingleClosetInteriorInQuote || irregularRoom.includeDoubleClosetInteriorInQuote;
+      irregularRoom.includeSingleClosetInteriorInQuote ||
+      irregularRoom.includeDoubleClosetInteriorInQuote ||
+      irregularRoom.includeDoorlessClosetInteriorInQuote;
 
     const totalLabor =
       (irregularRoom.paintWalls ? wallLaborCost : 0) +

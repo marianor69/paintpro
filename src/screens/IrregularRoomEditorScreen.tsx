@@ -95,6 +95,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [doorCount, setDoorCount] = useState(!isNew && irregularRoom?.doorCount ? irregularRoom.doorCount.toString() : "");
   const [singleDoorClosets, setSingleDoorClosets] = useState(!isNew && irregularRoom?.singleDoorClosets ? irregularRoom.singleDoorClosets.toString() : "");
   const [doubleDoorClosets, setDoubleDoorClosets] = useState(!isNew && irregularRoom?.doubleDoorClosets ? irregularRoom.doubleDoorClosets.toString() : "");
+  const [doorlessClosets, setDoorlessClosets] = useState(!isNew && irregularRoom?.doorlessClosets ? irregularRoom.doorlessClosets.toString() : "");
   const [includeSingleClosetInteriorInQuote, setIncludeSingleClosetInteriorInQuote] = useState(
     !isNew && irregularRoom?.includeSingleClosetInteriorInQuote !== undefined
       ? irregularRoom.includeSingleClosetInteriorInQuote
@@ -103,6 +104,11 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const [includeDoubleClosetInteriorInQuote, setIncludeDoubleClosetInteriorInQuote] = useState(
     !isNew && irregularRoom?.includeDoubleClosetInteriorInQuote !== undefined
       ? irregularRoom.includeDoubleClosetInteriorInQuote
+      : irregularRoom?.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
+  );
+  const [includeDoorlessClosetInteriorInQuote, setIncludeDoorlessClosetInteriorInQuote] = useState(
+    !isNew && irregularRoom?.includeDoorlessClosetInteriorInQuote !== undefined
+      ? irregularRoom.includeDoorlessClosetInteriorInQuote
       : irregularRoom?.includeClosetInteriorInQuote ?? project?.projectIncludeClosetInteriorInQuote ?? true
   );
 
@@ -155,16 +161,20 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
         doorCount,
         singleDoorClosets,
         doubleDoorClosets,
+        doorlessClosets,
         includeSingleClosetInteriorInQuote,
         includeDoubleClosetInteriorInQuote,
+        includeDoorlessClosetInteriorInQuote,
       }),
     [
       windowCount,
       doorCount,
       singleDoorClosets,
       doubleDoorClosets,
+      doorlessClosets,
       includeSingleClosetInteriorInQuote,
       includeDoubleClosetInteriorInQuote,
+      includeDoorlessClosetInteriorInQuote,
     ]
   );
   const paintOptionsSnapshot = useMemo(
@@ -281,7 +291,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const doorCountValue = parseInt(doorCount) || 0;
   const singleClosetCount = parseInt(singleDoorClosets) || 0;
   const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
-  const hasCloset = singleClosetCount > 0 || doubleClosetCount > 0;
+  const doorlessClosetCount = parseInt(doorlessClosets) || 0;
+  const hasCloset = singleClosetCount > 0 || doubleClosetCount > 0 || doorlessClosetCount > 0;
   const coatsWalls = safeNumber(
     !isNew ? irregularRoom?.coatsWalls : project?.globalPaintDefaults?.defaultWallCoats,
     2
@@ -340,7 +351,9 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const doorCountForSummary = doorCountValue + closetDoorCount;
   const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
   const closetInteriorEnabled =
-    includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
+    includeSingleClosetInteriorInQuote ||
+    includeDoubleClosetInteriorInQuote ||
+    includeDoorlessClosetInteriorInQuote;
 
   const doorTrimWidthFt = safeNumber(calcSettings?.doorTrimWidth, 2.5) / 12;
   const doorTrimPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + safeNumber(calcSettings?.doorWidth, 3);
@@ -436,8 +449,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
         doorCount !== "" ||
         singleDoorClosets !== "" ||
         doubleDoorClosets !== "" ||
+        doorlessClosets !== "" ||
         includeSingleClosetInteriorInQuote !== (project?.projectIncludeClosetInteriorInQuote ?? true) ||
         includeDoubleClosetInteriorInQuote !== (project?.projectIncludeClosetInteriorInQuote ?? true) ||
+        includeDoorlessClosetInteriorInQuote !== (project?.projectIncludeClosetInteriorInQuote ?? true) ||
         notes !== "" ||
         photos.length > 0;
       setHasUnsavedChanges(hasChanges);
@@ -455,6 +470,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
         isCathedral !== (irregularRoom.ceilingType === "cathedral") ||
         (irregularRoom.singleDoorClosets || 0).toString() !== (singleDoorClosets || "0") ||
         (irregularRoom.doubleDoorClosets || 0).toString() !== (doubleDoorClosets || "0") ||
+        (irregularRoom.doorlessClosets || 0).toString() !== (doorlessClosets || "0") ||
         (irregularRoom.includeSingleClosetInteriorInQuote ??
           irregularRoom.includeClosetInteriorInQuote ??
           project?.projectIncludeClosetInteriorInQuote ??
@@ -463,6 +479,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
           irregularRoom.includeClosetInteriorInQuote ??
           project?.projectIncludeClosetInteriorInQuote ??
           true) !== includeDoubleClosetInteriorInQuote ||
+        (irregularRoom.includeDoorlessClosetInteriorInQuote ??
+          irregularRoom.includeClosetInteriorInQuote ??
+          project?.projectIncludeClosetInteriorInQuote ??
+          true) !== includeDoorlessClosetInteriorInQuote ||
         notes !== (irregularRoom.notes || "") ||
         photos.length !== (irregularRoom.photos?.length || 0);
       setHasUnsavedChanges(hasChanges);
@@ -478,8 +498,10 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
     doorCount,
     singleDoorClosets,
     doubleDoorClosets,
+    doorlessClosets,
     includeSingleClosetInteriorInQuote,
     includeDoubleClosetInteriorInQuote,
+    includeDoorlessClosetInteriorInQuote,
     notes,
     photos,
     unitSystem,
@@ -708,10 +730,14 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       hasCloset,
       singleDoorClosets: parseInt(singleDoorClosets) || 0,
       doubleDoorClosets: parseInt(doubleDoorClosets) || 0,
+      doorlessClosets: parseInt(doorlessClosets) || 0,
       includeClosetInteriorInQuote:
-        includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
+        includeSingleClosetInteriorInQuote ||
+        includeDoubleClosetInteriorInQuote ||
+        includeDoorlessClosetInteriorInQuote,
       includeSingleClosetInteriorInQuote,
       includeDoubleClosetInteriorInQuote,
+      includeDoorlessClosetInteriorInQuote,
       paintWalls,
       paintCeilings,
       paintWindowFrames,
@@ -1691,6 +1717,106 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                     <Switch
                       value={includeDoubleClosetInteriorInQuote}
                       onValueChange={setIncludeDoubleClosetInteriorInQuote}
+                      trackColor={{
+                        false: Colors.neutralGray,
+                        true: Colors.primaryBlue,
+                      }}
+                      thumbColor={Colors.white}
+                      ios_backgroundColor={Colors.neutralGray}
+                    />
+                  </View>
+                )}
+
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.sm }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
+                    Doorless Closet
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: Colors.primaryBlueLight,
+                      borderRadius: 8,
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      borderWidth: 1,
+                      borderColor: Colors.neutralGray,
+                      gap: 4,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(doorlessClosets) || 0;
+                        setDoorlessClosets(Math.max(0, current - 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Decrease doorless closet count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                    </Pressable>
+                    <View
+                      style={{
+                        minWidth: 32,
+                        paddingHorizontal: 8,
+                        paddingVertical: 6,
+                        backgroundColor: Colors.white,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: Colors.neutralGray,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                        {doorlessClosets || "0"}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        const current = parseInt(doorlessClosets) || 0;
+                        setDoorlessClosets((current + 1).toString());
+                      }}
+                      accessibilityRole="button"
+                      accessibilityLabel="Increase doorless closet count"
+                      style={{
+                        width: 28,
+                        height: 28,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                    </Pressable>
+                  </View>
+                </View>
+
+                {doorlessClosetCount > 0 && (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
+                    <View style={{ flex: 1, marginRight: Spacing.md }}>
+                      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                          Include Closet Interior
+                        </Text>
+                        <Pressable
+                          onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                          hitSlop={8}
+                          style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                        >
+                          <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
+                        </Pressable>
+                      </View>
+                    </View>
+                    <Switch
+                      value={includeDoorlessClosetInteriorInQuote}
+                      onValueChange={setIncludeDoorlessClosetInteriorInQuote}
                       trackColor={{
                         false: Colors.neutralGray,
                         true: Colors.primaryBlue,

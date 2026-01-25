@@ -36,6 +36,7 @@ export interface ResolvedInclusions {
   closetInteriors: boolean;
   closetInteriorsSingle: boolean;
   closetInteriorsDouble: boolean;
+  closetInteriorsDoorless: boolean;
   crownMoulding: boolean;
   jambs: boolean;
 }
@@ -90,6 +91,7 @@ export function computeResolvedInclusions(
       closetInteriors: false,
       closetInteriorsSingle: false,
       closetInteriorsDouble: false,
+      closetInteriorsDoorless: false,
       crownMoulding: false,
       jambs: false,
     };
@@ -116,7 +118,11 @@ export function computeResolvedInclusions(
   const closetInteriorsDouble =
     (room.includeDoubleClosetInteriorInQuote ?? fallbackClosetInterior) &&
     quoteBuilder.includeClosets;
-  const closetInteriors = closetInteriorsSingle || closetInteriorsDouble;
+  const closetInteriorsDoorless =
+    (room.includeDoorlessClosetInteriorInQuote ?? fallbackClosetInterior) &&
+    quoteBuilder.includeClosets;
+  const closetInteriors =
+    closetInteriorsSingle || closetInteriorsDouble || closetInteriorsDoorless;
 
   return {
     walls,
@@ -129,6 +135,7 @@ export function computeResolvedInclusions(
     closetInteriors,
     closetInteriorsSingle,
     closetInteriorsDouble,
+    closetInteriorsDoorless,
     crownMoulding,
     jambs,
   };

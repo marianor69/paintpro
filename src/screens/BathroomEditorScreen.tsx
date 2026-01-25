@@ -58,6 +58,7 @@ function serializeBathroomState(
   hasCloset: boolean,
   singleDoorClosets: string,
   doubleDoorClosets: string,
+  doorlessClosets: string,
   paintWalls: boolean,
   paintCeilings: boolean,
   paintTrim: boolean,
@@ -71,7 +72,8 @@ function serializeBathroomState(
   hasCrownMoulding: boolean,
   hasAccentWall: boolean,
   includeSingleClosetInteriorInQuote: boolean,
-  includeDoubleClosetInteriorInQuote: boolean
+  includeDoubleClosetInteriorInQuote: boolean,
+  includeDoorlessClosetInteriorInQuote: boolean
 ): string {
   return JSON.stringify({
     name,
@@ -87,6 +89,8 @@ function serializeBathroomState(
     hasCloset,
     singleDoorClosets,
     doubleDoorClosets,
+    doorlessClosets,
+    doorlessClosets,
     paintWalls,
     paintCeilings,
     paintTrim,
@@ -101,6 +105,7 @@ function serializeBathroomState(
     hasAccentWall,
     includeSingleClosetInteriorInQuote,
     includeDoubleClosetInteriorInQuote,
+    includeDoorlessClosetInteriorInQuote,
   });
 }
 
@@ -151,6 +156,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const [doubleDoorClosets, setDoubleDoorClosets] = useState(
     bathroom?.doubleDoorClosets && bathroom.doubleDoorClosets > 0 ? bathroom.doubleDoorClosets.toString() : ""
   );
+  const [doorlessClosets, setDoorlessClosets] = useState(
+    bathroom?.doorlessClosets && bathroom.doorlessClosets > 0 ? bathroom.doorlessClosets.toString() : ""
+  );
   const [includeSingleClosetInteriorInQuote, setIncludeSingleClosetInteriorInQuote] = useState(
     bathroom?.includeSingleClosetInteriorInQuote ??
     bathroom?.includeClosetInteriorInQuote ??
@@ -159,6 +167,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   );
   const [includeDoubleClosetInteriorInQuote, setIncludeDoubleClosetInteriorInQuote] = useState(
     bathroom?.includeDoubleClosetInteriorInQuote ??
+    bathroom?.includeClosetInteriorInQuote ??
+    project?.projectIncludeClosetInteriorInQuote ??
+    true
+  );
+  const [includeDoorlessClosetInteriorInQuote, setIncludeDoorlessClosetInteriorInQuote] = useState(
+    bathroom?.includeDoorlessClosetInteriorInQuote ??
     bathroom?.includeClosetInteriorInQuote ??
     project?.projectIncludeClosetInteriorInQuote ??
     true
@@ -241,8 +255,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         hasCloset,
         singleDoorClosets,
         doubleDoorClosets,
+        doorlessClosets,
         includeSingleClosetInteriorInQuote,
         includeDoubleClosetInteriorInQuote,
+        includeDoorlessClosetInteriorInQuote,
       }),
     [
       openings,
@@ -252,8 +268,11 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       hasCloset,
       singleDoorClosets,
       doubleDoorClosets,
+      doorlessClosets,
+      doorlessClosets,
       includeSingleClosetInteriorInQuote,
       includeDoubleClosetInteriorInQuote,
+      includeDoorlessClosetInteriorInQuote,
     ]
   );
   const paintOptionsSnapshot = useMemo(
@@ -346,6 +365,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
   const notesAccessoryID = useRef(`notes-${Math.random().toString(36).slice(2)}`).current;
   const singleClosetCount = parseInt(singleDoorClosets) || 0;
   const doubleClosetCount = parseInt(doubleDoorClosets) || 0;
+  const doorlessClosetCount = parseInt(doorlessClosets) || 0;
 
   const getOpeningRefs = (index: number) => {
     if (!openingRefs.current[index]) {
@@ -443,6 +463,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         false,
         "",
         "",
+        "",
         project?.globalPaintDefaults?.paintWalls ?? true,
         project?.globalPaintDefaults?.paintCeilings ?? true,
         project?.globalPaintDefaults?.paintTrim ?? true,
@@ -455,6 +476,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         project?.globalPaintDefaults?.paintBaseboards ?? project?.paintBaseboard ?? true,
         project?.globalPaintDefaults?.paintCrownMoulding ?? true,
         false,
+        project?.projectIncludeClosetInteriorInQuote ?? true,
         project?.projectIncludeClosetInteriorInQuote ?? true,
         project?.projectIncludeClosetInteriorInQuote ?? true
       );
@@ -478,6 +500,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       bathroom.hasCloset || false,
       bathroom.singleDoorClosets && bathroom.singleDoorClosets > 0 ? bathroom.singleDoorClosets.toString() : "",
       bathroom.doubleDoorClosets && bathroom.doubleDoorClosets > 0 ? bathroom.doubleDoorClosets.toString() : "",
+      bathroom.doorlessClosets && bathroom.doorlessClosets > 0 ? bathroom.doorlessClosets.toString() : "",
       bathroom.paintWalls ?? project?.globalPaintDefaults?.paintWalls ?? true,
       bathroom.paintCeilings ?? project?.globalPaintDefaults?.paintCeilings ?? true,
       bathroom.paintTrim ?? project?.globalPaintDefaults?.paintTrim ?? true,
@@ -495,6 +518,10 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
         project?.projectIncludeClosetInteriorInQuote ??
         true,
       bathroom.includeDoubleClosetInteriorInQuote ??
+        bathroom.includeClosetInteriorInQuote ??
+        project?.projectIncludeClosetInteriorInQuote ??
+        true,
+      bathroom.includeDoorlessClosetInteriorInQuote ??
         bathroom.includeClosetInteriorInQuote ??
         project?.projectIncludeClosetInteriorInQuote ??
         true
@@ -532,7 +559,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       hasCrownMoulding,
       hasAccentWall,
       includeSingleClosetInteriorInQuote,
-      includeDoubleClosetInteriorInQuote
+      includeDoubleClosetInteriorInQuote,
+      includeDoorlessClosetInteriorInQuote
     );
 
     const hasChanges = currentState !== initialStateRef.current;
@@ -565,6 +593,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
     hasAccentWall,
     includeSingleClosetInteriorInQuote,
     includeDoubleClosetInteriorInQuote,
+    includeDoorlessClosetInteriorInQuote,
   ]);
 
   usePreventRemove(hasUnsavedChanges, ({ data }) => {
@@ -730,6 +759,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       hasCloset,
       singleDoorClosets: parseInt(singleDoorClosets) || 0,
       doubleDoorClosets: parseInt(doubleDoorClosets) || 0,
+      doorlessClosets: parseInt(doorlessClosets) || 0,
+      doorlessClosets: parseInt(doorlessClosets) || 0,
       paintWalls,
       paintCeilings,
       paintTrim,
@@ -750,9 +781,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       includeDoors: true,
       includeTrim: true,
       includeClosetInteriorInQuote:
-        includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
+        includeSingleClosetInteriorInQuote ||
+        includeDoubleClosetInteriorInQuote ||
+        includeDoorlessClosetInteriorInQuote,
       includeSingleClosetInteriorInQuote,
       includeDoubleClosetInteriorInQuote,
+      includeDoorlessClosetInteriorInQuote,
       // Openings
       openings: openings.map(o => ({
         id: o.id,
@@ -943,9 +977,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
       includeDoors: true,
       includeTrim: true,
       includeClosetInteriorInQuote:
-        includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote,
+        includeSingleClosetInteriorInQuote ||
+        includeDoubleClosetInteriorInQuote ||
+        includeDoorlessClosetInteriorInQuote,
       includeSingleClosetInteriorInQuote,
       includeDoubleClosetInteriorInQuote,
+      includeDoorlessClosetInteriorInQuote,
       openings: openings.map(o => ({
         id: o.id,
         width: parseInt(o.width) || 0,
@@ -1596,7 +1633,11 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     const current = parseInt(singleDoorClosets) || 0;
                     if (current > 0) {
                       setSingleDoorClosets((current - 1).toString());
-                      if (current === 1 && (parseInt(doubleDoorClosets) || 0) === 0) {
+                      if (
+                        current === 1 &&
+                        (parseInt(doubleDoorClosets) || 0) === 0 &&
+                        (parseInt(doorlessClosets) || 0) === 0
+                      ) {
                         setHasCloset(false);
                       }
                     }
@@ -1704,7 +1745,11 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     const current = parseInt(doubleDoorClosets) || 0;
                     if (current > 0) {
                       setDoubleDoorClosets((current - 1).toString());
-                      if (current === 1 && (parseInt(singleDoorClosets) || 0) === 0) {
+                      if (
+                        current === 1 &&
+                        (parseInt(singleDoorClosets) || 0) === 0 &&
+                        (parseInt(doorlessClosets) || 0) === 0
+                      ) {
                         setHasCloset(false);
                       }
                     }
@@ -1760,12 +1805,12 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-              {doubleClosetCount > 0 && (
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
-                  <View style={{ flex: 1, marginRight: Spacing.md }}>
-                    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                      <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
-                        Include Closet Interior
+          {doubleClosetCount > 0 && (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
+              <View style={{ flex: 1, marginRight: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Include Closet Interior
                       </Text>
                       <Pressable
                         onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
@@ -1785,9 +1830,123 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
                     }}
                     thumbColor={Colors.white}
                     ios_backgroundColor={Colors.neutralGray}
-                  />
+              />
+            </View>
+          )}
+
+          <View style={{ marginBottom: Spacing.sm, marginTop: Spacing.sm }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
+              <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                Doorless Closet
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: Colors.primaryBlueLight,
+                  borderRadius: 8,
+                  paddingHorizontal: 4,
+                  paddingVertical: 2,
+                  borderWidth: 1,
+                  borderColor: Colors.neutralGray,
+                  gap: Spacing.xs,
+                }}
+              >
+                <Pressable
+                  onPress={() => {
+                    const current = parseInt(doorlessClosets) || 0;
+                    if (current > 0) {
+                      setDoorlessClosets((current - 1).toString());
+                      if (
+                        current === 1 &&
+                        (parseInt(singleDoorClosets) || 0) === 0 &&
+                        (parseInt(doubleDoorClosets) || 0) === 0
+                      ) {
+                        setHasCloset(false);
+                      }
+                    }
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease doorless closet count"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>−</Text>
+                </Pressable>
+                <View
+                  style={{
+                    minWidth: 32,
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    backgroundColor: Colors.white,
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: Colors.neutralGray,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.primaryBlue }}>
+                    {doorlessClosets || "0"}
+                  </Text>
                 </View>
-              )}
+                <Pressable
+                  onPress={() => {
+                    const current = parseInt(doorlessClosets) || 0;
+                    setDoorlessClosets((current + 1).toString());
+                    setHasCloset(true);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Increase doorless closet count"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text style={{ fontSize: 22, color: Colors.primaryBlue, fontWeight: "600" as any }}>+</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+
+          {doorlessClosetCount > 0 && (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: Spacing.xs }}>
+              <View style={{ flex: 1, marginRight: Spacing.md }}>
+                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
+                    Include Closet Interior
+                  </Text>
+                  <Pressable
+                    onPress={() => openInfoModal("Closet Interior Calculation", "Closets are treated as 2 ft deep cavities with interior walls, ceiling, and baseboard.")}
+                    hitSlop={8}
+                    style={{ marginLeft: Spacing.xs, transform: [{ translateY: -2 }] }}
+                  >
+                    <Ionicons name="help-circle-outline" size={13} color={Colors.mediumGray} accessibilityLabel="Closet interior help" />
+                  </Pressable>
+                </View>
+              </View>
+              <Switch
+                value={includeDoorlessClosetInteriorInQuote}
+                onValueChange={(value) => {
+                  setIncludeDoorlessClosetInteriorInQuote(value);
+                }}
+                trackColor={{
+                  false: Colors.neutralGray,
+                  true: Colors.primaryBlue,
+                }}
+                thumbColor={Colors.white}
+                ios_backgroundColor={Colors.neutralGray}
+              />
+            </View>
+          )}
               <View style={{ alignItems: "flex-end", marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
                 <Pressable
                   onPress={() => {
@@ -1854,12 +2013,14 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doorCountValue = parseInt(doorCount) || 0;
           const vanityDoorCountValue = parseInt(vanityDoorCount) || 0;
           const openingsCount = openings.length;
-          const closetCount = singleClosetCount + doubleClosetCount;
+          const closetCount = singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
           const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
           const closetInteriorEnabled =
-            includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
+            includeSingleClosetInteriorInQuote ||
+            includeDoubleClosetInteriorInQuote ||
+            includeDoorlessClosetInteriorInQuote;
 
           const openingTrimWidthFt = calcSettings.openingTrimWidth / 12;
           const openingTrimLF = openings.reduce((total, opening) => {
@@ -2549,7 +2710,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             ? Math.ceil(openingTrimGallons) * safeNumber(pricing.trimPaintPerGallon, 0)
             : 0;
           const closetInteriorEnabled =
-            includeSingleClosetInteriorInQuote || includeDoubleClosetInteriorInQuote;
+            includeSingleClosetInteriorInQuote ||
+            includeDoubleClosetInteriorInQuote ||
+            includeDoorlessClosetInteriorInQuote;
           const closetWallLaborTotal = closetInteriorEnabled
             ? pricingSummary.closetWallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls)
             : 0;
