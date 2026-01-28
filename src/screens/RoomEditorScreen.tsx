@@ -2125,7 +2125,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const closetCount = singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
-          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
+          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetInteriorEnabled =
             includeSingleClosetInteriorInQuote ||
             includeDoubleClosetInteriorInQuote ||
@@ -2172,8 +2172,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
           const doubleClosetTrimLF = doubleClosetCount * doubleClosetPerimeter;
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
-          const doorFrameTrimLF = doorTrimLF + singleClosetTrimLF + doubleClosetTrimLF;
-          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+          const doorlessClosetTrimLF = doorlessClosetCount * doubleClosetPerimeter;
+          const doorlessClosetTrimSqFt = doorlessClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimLF = doorTrimLF + singleClosetTrimLF + doubleClosetTrimLF + doorlessClosetTrimLF;
+          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt + doorlessClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
 
@@ -2689,7 +2691,7 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const closetCount = singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
-          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
+          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetInteriorEnabled =
             includeSingleClosetInteriorInQuote ||
             includeDoubleClosetInteriorInQuote ||
@@ -2749,8 +2751,10 @@ export default function RoomEditorScreen({ route, navigation }: Props) {
           const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
           const doubleClosetTrimLF = doubleClosetCount * doubleClosetPerimeter;
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
-          const doorFrameTrimLF = doorTrimLF + singleClosetTrimLF + doubleClosetTrimLF;
-          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+          const doorlessClosetTrimLF = doorlessClosetCount * doubleClosetPerimeter;
+          const doorlessClosetTrimSqFt = doorlessClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimLF = doorTrimLF + singleClosetTrimLF + doubleClosetTrimLF + doorlessClosetTrimLF;
+          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt + doorlessClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
 

@@ -2016,7 +2016,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const closetCount = singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
-          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
+          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const closetInteriorEnabled =
             includeSingleClosetInteriorInQuote ||
             includeDoubleClosetInteriorInQuote ||
@@ -2059,7 +2059,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
           const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
-          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+          const doorlessClosetTrimSqFt = doorlessClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt + doorlessClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * safeNumber(pricing.trimPaintPerGallon, 0);
 
@@ -2612,7 +2613,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const openingsCount = openings.length;
           const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
           const doorCountForSummary = doorCountValue + closetDoorCount;
-          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
+          const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount + doorlessClosetCount;
           const wallLaborTotal = paintWalls
             ? pricingSummary.wallArea * safeNumber(pricing.wallLaborPerSqFt, 0) * getCoatLaborMultiplier(pricingSummary.coatsWalls)
             : 0;
@@ -2656,7 +2657,8 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           const doubleClosetTrimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
           const doubleClosetPerimeter = (2 * calcSettings.doorHeight) + (calcSettings.doubleClosetWidth / 12);
           const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
-          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+          const doorlessClosetTrimSqFt = doorlessClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+          const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt + doorlessClosetTrimSqFt;
           const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * pricingSummary.coatsTrim;
           const openingTrimWidthFt = calcSettings.openingTrimWidth / 12;
           const openingTrimLF = openings.reduce((total, opening) => {

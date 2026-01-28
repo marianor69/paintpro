@@ -306,8 +306,10 @@ export function computeRoomPricingSummary(
   const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
   const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
-  const doorlessClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * height;
-  const doorlessClosetDeduction = doorlessClosets * doorlessClosetOpeningArea;
+  const doorlessClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * height;
+  const doorlessClosetPerimeterForWall = (2 * height) + (calcSettings.doubleClosetWidth / 12);
+  const doorlessClosetTrimArea = doorlessClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
+  const doorlessClosetDeduction = doorlessClosets * (doorlessClosetOpeningArea + doorlessClosetTrimArea);
 
   const closetDeduction = singleClosetDeduction + doubleClosetDeduction + doorlessClosetDeduction;
 
@@ -362,7 +364,7 @@ export function computeRoomPricingSummary(
     const doorOpeningWidthForBaseboard = calcSettings.doorWidth + (calcSettings.doorTrimWidth * 2 / 12); // feet
     const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12); // feet
     const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12); // feet
-    const doorlessClosetOpeningWidth = calcSettings.singleClosetWidth / 12; // feet
+    const doorlessClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12); // feet
 
     if (hasLengthWidth) {
       // Use perimeter (in feet) minus opening widths (in feet) = result in feet
@@ -429,6 +431,13 @@ export function computeRoomPricingSummary(
       const doubleClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
       const trimAreaPerCloset = doubleClosetPerimeter * trimWidthFt;
       doorTrimSqFt += doubleClosets * trimAreaPerCloset;
+    }
+
+    if (doorlessClosets > 0) {
+      const trimWidthFt = calcSettings.doubleClosetTrimWidth / 12;
+      const doorlessClosetPerimeter = (2 * height) + (calcSettings.doubleClosetWidth / 12);
+      const trimAreaPerCloset = doorlessClosetPerimeter * trimWidthFt;
+      doorTrimSqFt += doorlessClosets * trimAreaPerCloset;
     }
   }
 
@@ -577,7 +586,7 @@ export function computeRoomPricingSummary(
   }
 
   if (includeDoorFrames && room.includeDoors !== false) {
-    const doorFrameCount = doorCount + singleClosets + doubleClosets;
+    const doorFrameCount = doorCount + singleClosets + doubleClosets + doorlessClosets;
     const doorFrameLaborMultiplier = getCoatLaborMultiplier(coatsTrim);
     laborCost += doorFrameCount * safeNumber(pricing.doorLabor, 0) * doorFrameLaborMultiplier;
   }

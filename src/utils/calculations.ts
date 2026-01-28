@@ -208,17 +208,17 @@ export function getClosetInteriorMetrics(room: Room, defaultHeight: number): {
 
   const singleClosetWallArea = singleCount * singleWallAreaPer;
   const doubleClosetWallArea = doubleCount * doubleWallAreaPer;
-  const doorlessClosetWallArea = doorlessCount * singleWallAreaPer;
+  const doorlessClosetWallArea = doorlessCount * doubleWallAreaPer;
   const totalClosetWallArea = singleClosetWallArea + doubleClosetWallArea + doorlessClosetWallArea;
 
   const singleClosetCeilingArea = singleCount * singleCeilingPer;
   const doubleClosetCeilingArea = doubleCount * doubleCeilingPer;
-  const doorlessClosetCeilingArea = doorlessCount * singleCeilingPer;
+  const doorlessClosetCeilingArea = doorlessCount * doubleCeilingPer;
   const totalClosetCeilingArea = singleClosetCeilingArea + doubleClosetCeilingArea + doorlessClosetCeilingArea;
 
   const singleClosetBaseboardLF = singleCount * singleBaseboardLFPer;
   const doubleClosetBaseboardLF = doubleCount * doubleBaseboardLFPer;
-  const doorlessClosetBaseboardLF = doorlessCount * singleBaseboardLFPer;
+  const doorlessClosetBaseboardLF = doorlessCount * doubleBaseboardLFPer;
   const totalClosetBaseboardLF = singleClosetBaseboardLF + doubleClosetBaseboardLF + doorlessClosetBaseboardLF;
 
   return {
@@ -364,8 +364,10 @@ export function calculateRoomMetrics(
   const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
   const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
-  const doorlessClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * closetHeightFt;
-  const doorlessClosetDeduction = doorlessClosets * doorlessClosetOpeningArea;
+  const doorlessClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * closetHeightFt;
+  const doorlessClosetPerimeterForWall = (2 * closetHeightFt) + (calcSettings.doubleClosetWidth / 12);
+  const doorlessClosetTrimArea = doorlessClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
+  const doorlessClosetDeduction = doorlessClosets * (doorlessClosetOpeningArea + doorlessClosetTrimArea);
 
   const closetDeduction = singleClosetDeduction + doubleClosetDeduction + doorlessClosetDeduction;
 
@@ -424,7 +426,7 @@ export function calculateRoomMetrics(
     // Closet opening widths for baseboard
     const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12);
     const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
-    const doorlessClosetOpeningWidth = calcSettings.singleClosetWidth / 12;
+    const doorlessClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
 
     if (hasLengthWidth) {
       baseboardLF = Math.max(
@@ -1371,8 +1373,10 @@ export function calculateFilteredRoomMetrics(
     const doubleClosetTrimArea = doubleClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
     const doubleClosetDeduction = doubleClosets * (doubleClosetOpeningArea + doubleClosetTrimArea);
 
-    const doorlessClosetOpeningArea = (calcSettings.singleClosetWidth / 12) * height;
-    const doorlessClosetDeduction = doorlessClosets * doorlessClosetOpeningArea;
+    const doorlessClosetOpeningArea = (calcSettings.doubleClosetWidth / 12) * height;
+    const doorlessClosetPerimeterForWall = (2 * height) + (calcSettings.doubleClosetWidth / 12);
+    const doorlessClosetTrimArea = doorlessClosetPerimeterForWall * (calcSettings.doubleClosetTrimWidth / 12);
+    const doorlessClosetDeduction = doorlessClosets * (doorlessClosetOpeningArea + doorlessClosetTrimArea);
 
     const closetDeduction = singleClosetDeduction + doubleClosetDeduction + doorlessClosetDeduction;
 
@@ -1436,7 +1440,7 @@ export function calculateFilteredRoomMetrics(
     const doorOpeningWidthForBaseboard = calcSettings.doorWidth + (calcSettings.doorTrimWidth * 2 / 12);
     const singleClosetOpeningWidth = (calcSettings.singleClosetWidth / 12) + (calcSettings.singleClosetTrimWidth * 2 / 12);
     const doubleClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
-    const doorlessClosetOpeningWidth = calcSettings.singleClosetWidth / 12;
+    const doorlessClosetOpeningWidth = (calcSettings.doubleClosetWidth / 12) + (calcSettings.doubleClosetTrimWidth * 2 / 12);
 
     if (hasLengthWidth) {
       baseboardLF = Math.max(

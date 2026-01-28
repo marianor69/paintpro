@@ -349,7 +349,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
 
   const closetDoorCount = singleClosetCount + (doubleClosetCount * 2);
   const doorCountForSummary = doorCountValue + closetDoorCount;
-  const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount;
+  const doorFrameCount = doorCountValue + singleClosetCount + doubleClosetCount + doorlessClosetCount;
   const closetInteriorEnabled =
     includeSingleClosetInteriorInQuote ||
     includeDoubleClosetInteriorInQuote ||
@@ -364,7 +364,8 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
   const doubleClosetTrimWidthFt = safeNumber(calcSettings?.doubleClosetTrimWidth, 2.5) / 12;
   const doubleClosetPerimeter = (2 * safeNumber(calcSettings?.doorHeight, 7)) + (safeNumber(calcSettings?.doubleClosetWidth, 60) / 12);
   const doubleClosetTrimSqFt = doubleClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
-  const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+  const doorlessClosetTrimSqFt = doorlessClosetCount * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+  const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt + doorlessClosetTrimSqFt;
   const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * coatsTrim;
   const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(coatsTrim);
   const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
