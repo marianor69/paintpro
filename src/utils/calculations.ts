@@ -332,7 +332,6 @@ export function calculateRoomMetrics(
   const singleClosets = safeNumber(room.singleDoorClosets, 0);
   const doubleClosets = safeNumber(room.doubleDoorClosets, 0);
   const doorlessClosets = safeNumber(room.doorlessClosets, 0);
-  const doorlessClosets = safeNumber(room.doorlessClosets, 0);
 
   // Window opening deduction: opening area + trim area (only if windows are included)
   let windowDeduction = 0;
