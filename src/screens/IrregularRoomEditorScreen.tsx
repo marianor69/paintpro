@@ -379,6 +379,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
       height: defaultHeight,
       singleDoorClosets: singleClosetCount,
       doubleDoorClosets: doubleClosetCount,
+      doorlessClosets: doorlessClosetCount,
     } as any,
     defaultHeight
   );
