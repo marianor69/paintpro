@@ -761,9 +761,9 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
       headerBackTitleStyle: { color: "transparent" },
       headerLeft: () => (
         <Pressable
-          onPress={() => navigation.navigate("ProjectSetup", { projectId: project.id })}
+          onPress={() => navigation.navigate("ProjectsList")}
           accessibilityRole="button"
-          accessibilityLabel="Go back to project setup"
+          accessibilityLabel="Go back to projects list"
           style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
         >
           <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
