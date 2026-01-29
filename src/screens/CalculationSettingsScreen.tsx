@@ -468,6 +468,9 @@ export default function CalculationSettingsScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerBackTitleVisible: false,
+      headerBackTitle: "",
+      headerBackTitleStyle: { color: "transparent" },
       headerRight: () => (
         <View style={{ flexDirection: "row", gap: Spacing.sm }}>
           <Pressable

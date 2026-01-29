@@ -92,7 +92,7 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen 2
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v5.12.31 - Deploy trigger
+              GPT - v5.12.32 - Deploy trigger
             </Text>
             <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 4, textAlign: "center" }}>
               Build {Constants.nativeBuildVersion ?? "unknown"} (v{Constants.nativeAppVersion ?? "unknown"})
