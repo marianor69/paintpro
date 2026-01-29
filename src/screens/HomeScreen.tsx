@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // Force rebuild trigger - Sync Vibecode v1.0.19
 import { View, Text, Pressable, FlatList, Alert, Modal, TextInput, KeyboardAvoidingView, Platform, Share, ScrollView, Image } from "react-native";
+import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
@@ -91,7 +92,10 @@ export default function HomeScreen({ navigation }: Props) {
               Main Screen 2
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v5.12.29 - Deploy trigger
+              GPT - v5.12.30 - Deploy trigger
+            </Text>
+            <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 4, textAlign: "center" }}>
+              Build {Constants.nativeBuildVersion ?? "unknown"} (v{Constants.nativeAppVersion ?? "unknown"})
             </Text>
             <Text style={{ ...Typography.body, color: Colors.mediumGray, marginTop: Spacing.xs, textAlign: "center" }}>
               Fast, Accurate, Professional Paint Estimates
