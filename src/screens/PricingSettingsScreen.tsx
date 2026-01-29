@@ -488,6 +488,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
       headerBackTitleVisible: false,
       headerBackTitle: "",
       headerBackTitleStyle: { color: "transparent" },
+      headerLeftContainerStyle: { marginLeft: -8 },
       headerRight: () => (
         <View style={{ flexDirection: "row", gap: Spacing.sm }}>
           <Pressable

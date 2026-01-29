@@ -476,6 +476,7 @@ export default function CalculationSettingsScreen() {
       headerBackTitleVisible: false,
       headerBackTitle: "",
       headerBackTitleStyle: { color: "transparent" },
+      headerLeftContainerStyle: { marginLeft: -8 },
       headerRight: () => (
         <View style={{ flexDirection: "row", gap: Spacing.sm }}>
           <Pressable
