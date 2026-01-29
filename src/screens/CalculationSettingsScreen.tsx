@@ -288,7 +288,12 @@ export default function CalculationSettingsScreen() {
     updateSettings(newSettings);
     Keyboard.dismiss();
     setHasUnsavedChanges(false);
-    Alert.alert("Success", "Calculation settings updated successfully");
+    if (preventedNavigationActionRef.current) {
+      navigation.dispatch(preventedNavigationActionRef.current);
+      preventedNavigationActionRef.current = null;
+      return;
+    }
+    navigation.goBack();
   };
 
   const handleDiscard = () => {
