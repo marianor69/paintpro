@@ -485,10 +485,20 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerBackVisible: false,
       headerBackTitleVisible: false,
       headerBackTitle: "",
       headerBackTitleStyle: { color: "transparent" },
-      headerLeftContainerStyle: { marginLeft: -8 },
+      headerLeft: () => (
+        <Pressable
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+        >
+          <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
+        </Pressable>
+      ),
       headerRight: () => (
         <View style={{ flexDirection: "row", gap: Spacing.sm }}>
           <Pressable
