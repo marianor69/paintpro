@@ -1031,8 +1031,9 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
           <Pressable
             onPress={handleDiscardAndLeave}
             style={{
-              paddingHorizontal: Spacing.lg,
-              paddingVertical: Spacing.sm,
+              minWidth: 60,
+              height: 36,
+              paddingHorizontal: Spacing.sm,
               borderRadius: 8,
               backgroundColor: Colors.primaryBlueLight,
               borderWidth: 1,
