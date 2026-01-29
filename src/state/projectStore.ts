@@ -22,24 +22,24 @@ import { getDefaultQuoteBuilder, getDefaultPaintOptions } from "../utils/calcula
 // Helper function to get default global paint defaults
 function getDefaultGlobalPaintDefaults(): GlobalPaintDefaults {
   return {
-    paintWalls: true,
-    paintCeilings: true,
-    paintTrim: true,
-    paintWindowFrames: true,
-    paintDoorFrames: true,
-    paintBaseboards: true,
-    paintDoors: true,
-    paintDoorJambs: true,
+    paintWalls: false,
+    paintCeilings: false,
+    paintTrim: false,
+    paintWindowFrames: false,
+    paintDoorFrames: false,
+    paintBaseboards: false,
+    paintDoors: false,
+    paintDoorJambs: false,
     paintWindows: false,
-    paintCrownMoulding: true,
-    paintClosetInteriors: true,
-    includeStaircases: true,
-    includeFireplaces: true,
+    paintCrownMoulding: false,
+    paintClosetInteriors: false,
+    includeStaircases: false,
+    includeFireplaces: false,
     // Default coats for new rooms
-    defaultWallCoats: 2,
-    defaultCeilingCoats: 2,
-    defaultTrimCoats: 2,
-    defaultDoorCoats: 2,
+    defaultWallCoats: 1,
+    defaultCeilingCoats: 1,
+    defaultTrimCoats: 1,
+    defaultDoorCoats: 1,
   };
 }
 

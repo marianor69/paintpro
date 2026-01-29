@@ -151,18 +151,18 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
   // Paint Defaults State (for new projects)
   const [localPaintDefaults, setLocalPaintDefaults] = useState({
-    paintWalls: project?.globalPaintDefaults?.paintWalls ?? true,
-    paintCeilings: project?.globalPaintDefaults?.paintCeilings ?? true,
-    paintTrim: project?.globalPaintDefaults?.paintTrim ?? true,
-    paintBaseboards: project?.globalPaintDefaults?.paintBaseboards ?? true,
-    paintDoors: project?.globalPaintDefaults?.paintDoors ?? true,
-    paintDoorJambs: project?.globalPaintDefaults?.paintDoorJambs ?? true,
-    paintCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? true,
-    paintClosetInteriors: project?.globalPaintDefaults?.paintClosetInteriors ?? true,
-    defaultWallCoats: project?.globalPaintDefaults?.defaultWallCoats ?? 2,
-    defaultCeilingCoats: project?.globalPaintDefaults?.defaultCeilingCoats ?? 2,
-    defaultTrimCoats: project?.globalPaintDefaults?.defaultTrimCoats ?? 2,
-    defaultDoorCoats: project?.globalPaintDefaults?.defaultDoorCoats ?? 2,
+    paintWalls: project?.globalPaintDefaults?.paintWalls ?? false,
+    paintCeilings: project?.globalPaintDefaults?.paintCeilings ?? false,
+    paintTrim: project?.globalPaintDefaults?.paintTrim ?? false,
+    paintBaseboards: project?.globalPaintDefaults?.paintBaseboards ?? false,
+    paintDoors: project?.globalPaintDefaults?.paintDoors ?? false,
+    paintDoorJambs: project?.globalPaintDefaults?.paintDoorJambs ?? false,
+    paintCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? false,
+    paintClosetInteriors: project?.globalPaintDefaults?.paintClosetInteriors ?? false,
+    defaultWallCoats: project?.globalPaintDefaults?.defaultWallCoats ?? 1,
+    defaultCeilingCoats: project?.globalPaintDefaults?.defaultCeilingCoats ?? 1,
+    defaultTrimCoats: project?.globalPaintDefaults?.defaultTrimCoats ?? 1,
+    defaultDoorCoats: project?.globalPaintDefaults?.defaultDoorCoats ?? 1,
   });
 
   // Furniture Moving State
