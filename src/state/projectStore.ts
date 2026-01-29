@@ -36,10 +36,10 @@ function getDefaultGlobalPaintDefaults(): GlobalPaintDefaults {
     includeStaircases: false,
     includeFireplaces: false,
     // Default coats for new rooms
-    defaultWallCoats: 1,
-    defaultCeilingCoats: 1,
-    defaultTrimCoats: 1,
-    defaultDoorCoats: 1,
+    defaultWallCoats: 2,
+    defaultCeilingCoats: 2,
+    defaultTrimCoats: 2,
+    defaultDoorCoats: 2,
   };
 }
 

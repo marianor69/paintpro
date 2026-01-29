@@ -159,10 +159,10 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     paintDoorJambs: project?.globalPaintDefaults?.paintDoorJambs ?? false,
     paintCrownMoulding: project?.globalPaintDefaults?.paintCrownMoulding ?? false,
     paintClosetInteriors: project?.globalPaintDefaults?.paintClosetInteriors ?? false,
-    defaultWallCoats: project?.globalPaintDefaults?.defaultWallCoats ?? 1,
-    defaultCeilingCoats: project?.globalPaintDefaults?.defaultCeilingCoats ?? 1,
-    defaultTrimCoats: project?.globalPaintDefaults?.defaultTrimCoats ?? 1,
-    defaultDoorCoats: project?.globalPaintDefaults?.defaultDoorCoats ?? 1,
+    defaultWallCoats: project?.globalPaintDefaults?.defaultWallCoats ?? 2,
+    defaultCeilingCoats: project?.globalPaintDefaults?.defaultCeilingCoats ?? 2,
+    defaultTrimCoats: project?.globalPaintDefaults?.defaultTrimCoats ?? 2,
+    defaultDoorCoats: project?.globalPaintDefaults?.defaultDoorCoats ?? 2,
   });
 
   // Furniture Moving State
