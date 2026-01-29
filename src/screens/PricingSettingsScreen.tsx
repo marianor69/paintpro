@@ -485,6 +485,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerBackTitleVisible: false,
       headerRight: () => (
         <View style={{ flexDirection: "row", gap: Spacing.sm }}>
           <Pressable
