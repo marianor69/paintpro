@@ -28,6 +28,8 @@
         "NSCalendarsUsageDescription": "This app uses calendar access to help schedule your painting projects.",
         "NSContactsUsageDescription": "This app uses contacts to help you share estimates with clients.",
         "NSCameraUsageDescription": "This app uses the camera to take photos of rooms and projects.",
+        "NSPhotoLibraryUsageDescription": "This app uses your photo library to select and attach photos of rooms and projects.",
+        "NSPhotoLibraryAddUsageDescription": "This app saves project photos to your photo library when you choose to export or save them.",
         "NSLocationWhenInUseUsageDescription": "This app uses your location to provide local pricing and find nearby paint suppliers.",
         "ITSAppUsesNonExemptEncryption": false
       },
