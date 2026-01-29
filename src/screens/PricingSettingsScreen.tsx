@@ -519,7 +519,7 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const labelStyle = { fontSize: Typography.body.fontSize, fontWeight: "500", color: Colors.darkCharcoal, flex: 1 };
   const inputWidth = 68;
   const inputContainerStyle = { ...TextInputStyles.container, width: inputWidth };
-  const inputTextStyle = { textAlign: "right" as const };
+  const inputTextStyle = { ...TextInputStyles.base, textAlign: "right" as const };
   const modeToggleWidth = inputWidth * 2 + Spacing.sm;
   const modeToggleContainerStyle = {
     ...TextInputStyles.container,
