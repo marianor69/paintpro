@@ -1729,7 +1729,7 @@ export default function IrregularRoomEditorScreen({ route, navigation }: Props) 
                   </View>
                 )}
 
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: Spacing.sm }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
                     Doorless Closet
                   </Text>

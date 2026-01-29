@@ -1834,7 +1834,7 @@ export default function BathroomEditorScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          <View style={{ marginBottom: Spacing.sm, marginTop: Spacing.sm }}>
+          <View style={{ marginBottom: Spacing.sm }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Spacing.sm }}>
               <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "500" as any, color: Colors.darkCharcoal }}>
                 Doorless Closet
