@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useId, useEffect } from "react";
+import React, { useState, useMemo, useRef, useId, useEffect, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -180,6 +180,25 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     floors: true,
     paintDefaults: true,
   });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackVisible: false,
+      headerBackTitleVisible: false,
+      headerBackTitle: "",
+      headerBackTitleStyle: { color: "transparent" },
+      headerLeft: () => (
+        <Pressable
+          onPress={() => navigation.navigate("ProjectsList")}
+          accessibilityRole="button"
+          accessibilityLabel="Go back to projects list"
+          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+        >
+          <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   // Step tracking
   const currentStep = useMemo(() => calculateCurrentStep(project), [project]);

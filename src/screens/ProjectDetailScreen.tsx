@@ -755,11 +755,20 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
   // Set navigation header content for Project Detail
   useEffect(() => {
     navigation.setOptions({
-      headerBackTitle: "Back",
-      headerBackTitleStyle: {
-        fontSize: 14,
-        color: Colors.primaryBlue,
-      },
+      headerBackVisible: false,
+      headerBackTitleVisible: false,
+      headerBackTitle: "",
+      headerBackTitleStyle: { color: "transparent" },
+      headerLeft: () => (
+        <Pressable
+          onPress={() => navigation.navigate("ProjectSetup", { projectId: project.id })}
+          accessibilityRole="button"
+          accessibilityLabel="Go back to project setup"
+          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+        >
+          <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
+        </Pressable>
+      ),
       headerTitle: () => (
         <StepProgressIndicator
           currentStep={currentStep}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { View, Text, Pressable, FlatList, Alert, Image, Share, SectionList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -29,6 +29,24 @@ function getProjectStatus(project: Project): { label: string; color: string; bgC
 type Props = NativeStackScreenProps<RootStackParamList, "ProjectsList">;
 
 export default function ProjectsListScreen({ navigation }: Props) {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackVisible: false,
+      headerBackTitleVisible: false,
+      headerBackTitle: "",
+      headerBackTitleStyle: { color: "transparent" },
+      headerLeft: () => (
+        <Pressable
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
+        >
+          <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
   const projects = useProjectStore((s) => s.projects);
   const setCurrentProject = useProjectStore((s) => s.setCurrentProject);
   const deleteProject = useProjectStore((s) => s.deleteProject);
