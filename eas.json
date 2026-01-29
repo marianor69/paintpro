@@ -9,21 +9,24 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "EXPO_USE_NPM": "1"
+        "EXPO_USE_NPM": "1",
+        "EXPO_PUBLIC_GOOGLE_PLACES_API_KEY": "AIzaSyBfBwRwxc3LM-jW761AKLuCooVRYKwu-1s"
       }
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "EXPO_USE_NPM": "1"
+        "EXPO_USE_NPM": "1",
+        "EXPO_PUBLIC_GOOGLE_PLACES_API_KEY": "AIzaSyBfBwRwxc3LM-jW761AKLuCooVRYKwu-1s"
       }
     },
     "production": {
       "autoIncrement": true,
       "channel": "production",
       "env": {
-        "EXPO_USE_NPM": "1"
+        "EXPO_USE_NPM": "1",
+        "EXPO_PUBLIC_GOOGLE_PLACES_API_KEY": "AIzaSyBfBwRwxc3LM-jW761AKLuCooVRYKwu-1s"
       }
     }
   },
