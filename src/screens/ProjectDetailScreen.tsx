@@ -794,6 +794,11 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
     // Don't navigate - let user review on this screen first
   };
 
+  const handleCompleteEstimate = () => {
+    setEstimateBuildComplete(project.id, true);
+    navigation.navigate("ProjectActions", { projectId: project.id });
+  };
+
   // Reopen estimate for editing (if user wants to add more items)
   const handleReopenEstimate = () => {
     setEstimateBuildComplete(project.id, false);
@@ -861,7 +866,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
               <View style={{ flexDirection: "row", alignItems: "center", gap: Spacing.sm }}>
                 {canMarkStep2Complete && (
                   <Pressable
-                    onPress={project.estimateBuildComplete ? handleReopenEstimate : handleDoneBuilding}
+                    onPress={project.estimateBuildComplete ? handleReopenEstimate : handleCompleteEstimate}
                     style={{
                       backgroundColor: project.estimateBuildComplete ? Colors.success : Colors.primaryBlue,
                       borderRadius: BorderRadius.default,
@@ -1832,31 +1837,7 @@ export default function ProjectDetailScreen({ route, navigation }: Props) {
           )}
 
           {/* Project Actions - Only show when NOT in complete state (avoid redundancy) */}
-          {!project.estimateBuildComplete && (
-            <Card>
-              <Pressable
-                onPress={() => navigation.navigate("ProjectActions", { projectId })}
-                style={{
-                  backgroundColor: Colors.primaryBlue,
-                  borderRadius: BorderRadius.default,
-                  padding: Spacing.md,
-                  ...Shadows.card,
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Open project actions"
-              >
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: Spacing.xs }}>
-                  <Ionicons name="settings-outline" size={20} color={Colors.white} style={{ marginRight: Spacing.xs }} />
-                  <Text style={{ fontSize: Typography.body.fontSize, fontWeight: "600" as any, color: Colors.white }}>
-                    Project Actions
-                  </Text>
-                </View>
-                <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.white, lineHeight: 18, opacity: 0.9 }}>
-                  Customize quote, view materials
-                </Text>
-              </Pressable>
-            </Card>
-          )}
+          {!project.estimateBuildComplete && null}
         </ScrollView>
       </KeyboardAvoidingView>
 

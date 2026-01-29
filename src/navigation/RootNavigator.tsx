@@ -228,7 +228,7 @@ export default function RootNavigator({ navigationRef }: RootNavigatorProps) {
         <Stack.Screen
           name="ProjectActions"
           component={ProjectActionsScreen}
-          options={{ title: "Project Actions" }}
+          options={{ title: "Project Actions", presentation: "modal" }}
         />
         <Stack.Screen
           name="RoomEditor"
