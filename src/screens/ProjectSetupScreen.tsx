@@ -12,7 +12,7 @@ import {
   InputAccessoryView,
   Modal,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProjectStore } from "../state/projectStore";
@@ -109,7 +109,6 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
   const [coverPhotoUri, setCoverPhotoUri] = useState(project?.coverPhotoUri);
 
   // Refs for form field navigation
-  const stepIndicatorRef = useRef<View>(null);
   const stepIndicatorBottomRef = useRef(0);
   const scrollYRef = useRef(0);
   const keyboardVisibleRef = useRef(false);
@@ -180,6 +179,12 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
     floors: true,
     paintDefaults: true,
   });
+  const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    // Approximate header+step indicator bottom for scroll positioning
+    stepIndicatorBottomRef.current = insets.top + 56;
+  }, [insets.top]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -197,8 +202,24 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
         </Pressable>
       ),
+      headerTitle: () => (
+        <StepProgressIndicator
+          currentStep={1}
+          completedSteps={completedSteps}
+          disabledSteps={disabledSteps}
+          onStepPress={handleStepPress}
+          showConnectors={false}
+          style={{
+            backgroundColor: Colors.white,
+            borderBottomWidth: 0,
+            paddingTop: Spacing.xs,
+            paddingBottom: Spacing.xs,
+            paddingHorizontal: 0,
+          }}
+        />
+      ),
     });
-  }, [navigation]);
+  }, [navigation, completedSteps, disabledSteps, handleStepPress]);
 
   // Step tracking
   const currentStep = useMemo(() => calculateCurrentStep(project), [project]);
@@ -471,24 +492,7 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
 
   return (
     <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: Colors.backgroundWarmGray }}>
-      {/* Step Progress Indicator */}
-      <View>
-      <View
-        ref={stepIndicatorRef}
-        onLayout={() => {
-          stepIndicatorRef.current?.measureInWindow((x, y, width, height) => {
-            stepIndicatorBottomRef.current = y + height;
-          });
-        }}
-      >
-        <StepProgressIndicator
-          currentStep={1}
-          completedSteps={completedSteps}
-          disabledSteps={disabledSteps}
-          onStepPress={handleStepPress}
-        />
-      </View>
-      </View>
+      {/* Step Progress Indicator now lives in the header */}
 
       <ScrollView
         ref={scrollViewRef}
