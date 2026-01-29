@@ -9,6 +9,7 @@ import {
   Platform,
   Keyboard,
   useWindowDimensions,
+  Modal,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Typography, Spacing, BorderRadius, TextInputStyles } from "../utils/designSystem";
@@ -65,6 +66,7 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
     const [loading, setLoading] = useState(false);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const [inputBottomY, setInputBottomY] = useState(0);
+    const [inputLayout, setInputLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
     const containerRef = useRef<View>(null);
     const { height: windowHeight } = useWindowDimensions();
@@ -72,6 +74,7 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
     const measureInputBottom = () => {
       containerRef.current?.measureInWindow((x, y, width, height) => {
         setInputBottomY(y + height);
+        setInputLayout({ x, y, width, height });
       });
     };
 
@@ -194,6 +197,62 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
 
     const availableHeight = windowHeight - keyboardHeight - inputBottomY - Spacing.md;
     const suggestionsMaxHeight = Math.max(60, availableHeight);
+    const suggestionsTop = inputLayout.y + inputLayout.height;
+    const suggestionsLeft = inputLayout.x;
+    const suggestionsWidth = inputLayout.width;
+
+    const renderSuggestionsList = () => (
+      <View
+        style={{
+          backgroundColor: Colors.white,
+          borderRadius: BorderRadius.default,
+          borderWidth: 1,
+          borderColor: Colors.neutralGray,
+          maxHeight: suggestionsMaxHeight,
+          shadowColor: Colors.darkCharcoal,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 6,
+        }}
+      >
+        <ScrollView scrollEnabled={suggestions.length > 4} keyboardShouldPersistTaps="always">
+          {suggestions.map((suggestion, index) => (
+            <Pressable
+              key={suggestion.place_id}
+              onPress={() => handleSelectSuggestion(suggestion.place_id, suggestion.description)}
+              style={{
+                paddingVertical: Spacing.md,
+                paddingHorizontal: Spacing.md,
+                borderBottomWidth: index < suggestions.length - 1 ? 1 : 0,
+                borderBottomColor: Colors.neutralGray,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
+                <Ionicons
+                  name="location"
+                  size={16}
+                  color={Colors.mediumGray}
+                  style={{ marginTop: 2 }}
+                />
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontSize: Typography.body.fontSize,
+                      fontWeight: "500" as any,
+                      color: Colors.darkCharcoal,
+                    }}
+                    numberOfLines={2}
+                  >
+                    {suggestion.description}
+                  </Text>
+                </View>
+              </View>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+    );
 
     return (
       <View
@@ -238,64 +297,39 @@ export const AddressAutocomplete = React.forwardRef<TextInput, AddressAutocomple
         </View>
 
         {/* Suggestions Dropdown */}
-        {showSuggestions && suggestions.length > 0 && (
+        {showSuggestions && suggestions.length > 0 && Platform.OS !== "ios" && (
           <View
             style={{
               position: "absolute",
               top: 52,
               left: 0,
               right: 0,
-              backgroundColor: Colors.white,
-              borderRadius: BorderRadius.default,
-              borderWidth: 1,
-              borderColor: Colors.neutralGray,
               zIndex: 1000,
-              maxHeight: suggestionsMaxHeight,
-              shadowColor: Colors.darkCharcoal,
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
             }}
           >
-            <ScrollView scrollEnabled={suggestions.length > 4} keyboardShouldPersistTaps="always">
-              {suggestions.map((suggestion, index) => (
-                <Pressable
-                  key={suggestion.place_id}
-                  onPress={() =>
-                    handleSelectSuggestion(suggestion.place_id, suggestion.description)
-                  }
-                  style={{
-                    paddingVertical: Spacing.md,
-                    paddingHorizontal: Spacing.md,
-                    borderBottomWidth: index < suggestions.length - 1 ? 1 : 0,
-                    borderBottomColor: Colors.neutralGray,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "flex-start", gap: Spacing.sm }}>
-                    <Ionicons
-                      name="location"
-                      size={16}
-                      color={Colors.mediumGray}
-                      style={{ marginTop: 2 }}
-                    />
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={{
-                          fontSize: Typography.body.fontSize,
-                          fontWeight: "500" as any,
-                          color: Colors.darkCharcoal,
-                        }}
-                        numberOfLines={2}
-                      >
-                        {suggestion.description}
-                      </Text>
-                    </View>
-                  </View>
-                </Pressable>
-              ))}
-            </ScrollView>
+            {renderSuggestionsList()}
           </View>
+        )}
+
+        {showSuggestions && suggestions.length > 0 && Platform.OS === "ios" && (
+          <Modal transparent visible animationType="none" onRequestClose={() => setShowSuggestions(false)}>
+            <Pressable
+              style={{ flex: 1 }}
+              onPress={() => setShowSuggestions(false)}
+            >
+              <View
+                style={{
+                  position: "absolute",
+                  top: suggestionsTop + Spacing.xs,
+                  left: suggestionsLeft,
+                  width: suggestionsWidth,
+                  zIndex: 1000,
+                }}
+              >
+                {renderSuggestionsList()}
+              </View>
+            </Pressable>
+          </Modal>
         )}
 
         {/* Empty state */}
