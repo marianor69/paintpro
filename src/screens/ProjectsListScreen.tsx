@@ -37,9 +37,9 @@ export default function ProjectsListScreen({ navigation }: Props) {
       headerBackTitleStyle: { color: "transparent" },
       headerLeft: () => (
         <Pressable
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel="Go back to home"
           style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
         >
           <Ionicons name="chevron-back" size={24} color={Colors.darkCharcoal} />
