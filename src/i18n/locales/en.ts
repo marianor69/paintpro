@@ -569,7 +569,7 @@ export default {
       title: 'Save Changes?',
       message: 'You have unsaved changes. Would you like to save them?',
       save: 'Save',
-      discard: 'Discard',
+      discard: 'Cancel',
       cancel: 'Cancel',
     },
 

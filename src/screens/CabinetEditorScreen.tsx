@@ -480,7 +480,7 @@ export default function CabinetEditorScreen({ route, navigation }: Props) {
               }}
             >
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.error, fontWeight: "600" as any }}>
-                Discard
+                Cancel
               </Text>
             </Pressable>
 

@@ -491,9 +491,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             onPress={handleDiscard}
             style={{ paddingHorizontal: Spacing.sm, paddingVertical: Spacing.xs }}
             accessibilityRole="button"
-            accessibilityLabel="Discard changes"
+            accessibilityLabel="Cancel changes"
           >
-            <Text style={{ color: Colors.mediumGray, fontWeight: "600" as any }}>Discard</Text>
+            <Text style={{ color: Colors.mediumGray, fontWeight: "600" as any }}>Cancel</Text>
           </Pressable>
           <Pressable
             onPress={handleSave}
