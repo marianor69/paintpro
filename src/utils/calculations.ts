@@ -1940,17 +1940,40 @@ export function calculateFilteredProjectSummary(
 
   // Calculate irregular room totals
   (project.irregularRooms || []).forEach((irregularRoom, index) => {
-    const wallAreas = (irregularRoom.walls || []).map((wall) => safeNumber(wall.width) * safeNumber(wall.height));
+    const wallAreas = (irregularRoom.walls || []).map((wall) => {
+      const widthVal = safeNumber((wall as any).width);
+      const heightVal = safeNumber((wall as any).height);
+      const areaVal = safeNumber((wall as any).area);
+      return areaVal > 0 ? areaVal : widthVal * heightVal;
+    });
     const totalArea = wallAreas.reduce((sum, area) => sum + area, 0);
     if (totalArea <= 0) {
       return;
     }
 
+    const wallHeights = (irregularRoom.walls || []).map((wall) => {
+      const heightVal = safeNumber((wall as any).height);
+      return heightVal > 0 ? heightVal : safeNumber(project.floorHeights?.[0], 8);
+    });
+    const avgWallHeight =
+      wallHeights.length > 0
+        ? wallHeights.reduce((sum, h) => sum + h, 0) / wallHeights.length
+        : safeNumber(project.floorHeights?.[0], 8);
+    const perimeterEstimate = (irregularRoom.walls || []).reduce((sum, wall) => {
+      const widthVal = safeNumber((wall as any).width);
+      const heightVal = safeNumber((wall as any).height) || avgWallHeight;
+      const areaVal = safeNumber((wall as any).area);
+      const widthFromArea = heightVal > 0 ? areaVal / heightVal : 0;
+      return sum + (widthVal > 0 ? widthVal : widthFromArea);
+    }, 0);
+    const ceilingAreaEstimate = perimeterEstimate > 0 ? Math.pow(perimeterEstimate / 4, 2) : 0;
+
     const windowCount = safeNumber(irregularRoom.windowCount, 0);
     const doorCount = safeNumber(irregularRoom.doorCount, 0);
     const singleClosets = safeNumber(irregularRoom.singleDoorClosets, 0);
     const doubleClosets = safeNumber(irregularRoom.doubleDoorClosets, 0);
-    const doorFrameCount = doorCount + singleClosets + doubleClosets;
+    const doorlessClosets = safeNumber(irregularRoom.doorlessClosets, 0);
+    const doorFrameCount = doorCount + singleClosets + doubleClosets + doorlessClosets;
     const closetDoorCount = singleClosets + (doubleClosets * 2);
     const doorCountForSummary = doorCount + closetDoorCount;
 
@@ -1962,9 +1985,12 @@ export function calculateFilteredProjectSummary(
       coats <= 1 ? 1.0 : safeNumber(pricing.secondCoatLaborMultiplier, 2.0);
 
     const wallCoverage = Math.max(1, safeNumber(pricing.wallCoverageSqFtPerGallon, 350));
+    const ceilingCoverage = Math.max(1, safeNumber(pricing.ceilingCoverageSqFtPerGallon, 350));
     const trimCoverage = Math.max(1, safeNumber(pricing.trimCoverageSqFtPerGallon, 400));
     const wallLaborRate = safeNumber(pricing.wallLaborPerSqFt, 0);
+    const ceilingLaborRate = safeNumber(pricing.ceilingLaborPerSqFt, 0);
     const wallPaintRate = safeNumber(pricing.wallPaintPerGallon, 0);
+    const ceilingPaintRate = safeNumber(pricing.ceilingPaintPerGallon, 0);
     const windowLaborRate = safeNumber(pricing.windowLabor, 0);
     const doorLaborRate = safeNumber(pricing.doorLabor, 0);
     const trimPaintRate = safeNumber(pricing.trimPaintPerGallon, 0);
@@ -1975,6 +2001,12 @@ export function calculateFilteredProjectSummary(
       : 0;
     const wallGallons = irregularRoom.paintWalls ? (totalArea / wallCoverage) * coatsWalls : 0;
     const wallMaterialsCost = irregularRoom.paintWalls ? Math.ceil(wallGallons) * wallPaintRate : 0;
+
+    const ceilingLaborCost = irregularRoom.paintCeilings
+      ? ceilingAreaEstimate * ceilingLaborRate * getCoatLaborMultiplier(coatsCeiling)
+      : 0;
+    const ceilingGallons = irregularRoom.paintCeilings ? (ceilingAreaEstimate / ceilingCoverage) * coatsCeiling : 0;
+    const ceilingMaterialsCost = irregularRoom.paintCeilings ? Math.ceil(ceilingGallons) * ceilingPaintRate : 0;
 
     const windowTrimWidthFt = safeNumber(calcSettings.windowTrimWidth, 3.5) / 12;
     const windowPerimeter = 2 * (safeNumber(calcSettings.windowWidth, 3) + safeNumber(calcSettings.windowHeight, 5));
@@ -1992,7 +2024,8 @@ export function calculateFilteredProjectSummary(
     const doubleClosetTrimWidthFt = safeNumber(calcSettings.doubleClosetTrimWidth, 2.5) / 12;
     const doubleClosetPerimeter = (2 * safeNumber(calcSettings.doorHeight, 7)) + (safeNumber(calcSettings.doubleClosetWidth, 60) / 12);
     const doubleClosetTrimSqFt = doubleClosets * doubleClosetPerimeter * doubleClosetTrimWidthFt;
-    const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt;
+    const doorlessClosetTrimSqFt = doorlessClosets * doubleClosetPerimeter * doubleClosetTrimWidthFt;
+    const doorFrameTrimSqFt = doorTrimSqFt + singleClosetTrimSqFt + doubleClosetTrimSqFt + doorlessClosetTrimSqFt;
     const doorFrameGallons = (doorFrameTrimSqFt / trimCoverage) * coatsTrim;
     const doorFrameLaborCost = doorFrameCount * doorLaborRate * getCoatLaborMultiplier(coatsTrim);
     const doorFrameMaterialsCost = Math.ceil(doorFrameGallons) * trimPaintRate;
@@ -2007,7 +2040,7 @@ export function calculateFilteredProjectSummary(
         height: safeNumber(project.floorHeights?.[0], 8),
         singleDoorClosets: singleClosets,
         doubleDoorClosets: doubleClosets,
-        doorlessClosets: safeNumber(irregularRoom.doorlessClosets, 0),
+        doorlessClosets: doorlessClosets,
       } as Room,
       safeNumber(project.floorHeights?.[0], 8)
     );
@@ -2026,28 +2059,54 @@ export function calculateFilteredProjectSummary(
       irregularRoom.includeDoubleClosetInteriorInQuote ||
       irregularRoom.includeDoorlessClosetInteriorInQuote;
 
+    const doorOpeningWidthForBaseboard = safeNumber(calcSettings.doorWidth, 3) + (safeNumber(calcSettings.doorTrimWidth, 2.5) * 2 / 12);
+    const singleClosetOpeningWidth = (safeNumber(calcSettings.singleClosetWidth, 30) / 12) + (safeNumber(calcSettings.singleClosetTrimWidth, 2.5) * 2 / 12);
+    const doubleClosetOpeningWidth = (safeNumber(calcSettings.doubleClosetWidth, 60) / 12) + (safeNumber(calcSettings.doubleClosetTrimWidth, 2.5) * 2 / 12);
+    const doorlessClosetOpeningWidth = (safeNumber(calcSettings.doubleClosetWidth, 60) / 12) + (safeNumber(calcSettings.doubleClosetTrimWidth, 2.5) * 2 / 12);
+    const baseboardLF = Math.max(
+      0,
+      perimeterEstimate -
+        (doorCount * doorOpeningWidthForBaseboard) -
+        (singleClosets * singleClosetOpeningWidth) -
+        (doubleClosets * doubleClosetOpeningWidth) -
+        (doorlessClosets * doorlessClosetOpeningWidth)
+    );
+    const baseboardWidthFt = safeNumber(calcSettings.baseboardWidth, 3.5) / 12;
+    const baseboardTrimSqFt = baseboardLF * baseboardWidthFt;
+    const baseboardGallons = (baseboardTrimSqFt / trimCoverage) * coatsTrim;
+    const baseboardLaborCost = irregularRoom.paintBaseboard
+      ? baseboardLF * baseboardLaborRate * getCoatLaborMultiplier(coatsTrim)
+      : 0;
+    const baseboardMaterialsCost = irregularRoom.paintBaseboard ? Math.ceil(baseboardGallons) * trimPaintRate : 0;
+
     const totalLabor =
       (irregularRoom.paintWalls ? wallLaborCost : 0) +
+      (irregularRoom.paintCeilings ? ceilingLaborCost : 0) +
       (irregularRoom.paintWindows ? windowLaborCost : 0) +
       (irregularRoom.paintDoorFrames ? doorFrameLaborCost : 0) +
       (irregularRoom.paintDoors ? doorLaborCost : 0) +
+      (irregularRoom.paintBaseboard ? baseboardLaborCost : 0) +
       (closetInteriorEnabled ? closetWallLaborCost + closetCeilingLaborCost + closetBaseboardLaborCost : 0);
 
     const totalMaterials =
       (irregularRoom.paintWalls ? wallMaterialsCost : 0) +
+      (irregularRoom.paintCeilings ? ceilingMaterialsCost : 0) +
       (irregularRoom.paintWindows ? windowMaterialsCost : 0) +
       (irregularRoom.paintDoorFrames ? doorFrameMaterialsCost : 0) +
       (irregularRoom.paintDoors ? doorMaterialsCost : 0) +
+      (irregularRoom.paintBaseboard ? baseboardMaterialsCost : 0) +
       (closetInteriorEnabled ? closetWallMaterialsCost + closetCeilingMaterialsCost + closetBaseboardMaterialsCost : 0);
 
     totalLaborCost += totalLabor;
     totalMaterialCost += totalMaterials;
     totalWallGallons += safeNumber(wallGallons);
-    totalTrimGallons += safeNumber(windowGallons + doorFrameGallons);
+    totalTrimGallons += safeNumber(windowGallons + doorFrameGallons + baseboardGallons + closetBaseboardGallons);
     totalDoorGallons += safeNumber(doorGallons);
     totalDoors += doorCountForSummary;
     totalWindows += windowCount;
     totalWallSqFt += safeNumber(totalArea);
+    totalCeilingSqFt += safeNumber(ceilingAreaEstimate);
+    totalCeilingGallons += safeNumber(ceilingGallons);
 
     itemizedPrices.push({
       id: irregularRoom.id,
