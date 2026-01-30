@@ -2481,7 +2481,21 @@ export function calculatePaintCost(
     return Math.max(0, safeNumber(Math.ceil(safeGallons) * safePerGallon));
   }
 
-  const purchase = calculatePaintPurchase(safeGallons);
-  const cost = (purchase.fiveGallonBuckets * safePer5Gallon) + (purchase.singleGallons * safePerGallon);
-  return Math.max(0, safeNumber(cost));
+  const totalNeeded = Math.ceil(safeGallons);
+  if (totalNeeded <= 0) {
+    return 0;
+  }
+
+  let bestCost = Number.POSITIVE_INFINITY;
+  const maxBuckets = Math.ceil(totalNeeded / 5);
+  for (let buckets = 0; buckets <= maxBuckets; buckets += 1) {
+    const remaining = Math.max(0, totalNeeded - (buckets * 5));
+    const singles = remaining;
+    const cost = (buckets * safePer5Gallon) + (singles * safePerGallon);
+    if (cost < bestCost) {
+      bestCost = cost;
+    }
+  }
+
+  return Math.max(0, safeNumber(bestCost));
 }
