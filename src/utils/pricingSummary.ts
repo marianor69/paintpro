@@ -272,6 +272,8 @@ export function computeRoomPricingSummary(
   const singleClosets = safeNumber(room.singleDoorClosets, 0);
   const doubleClosets = safeNumber(room.doubleDoorClosets, 0);
   const doorlessClosets = safeNumber(room.doorlessClosets, 0);
+  const closetDoorCount = singleClosets + doubleClosets * 2;
+  const doorCountForPaint = doorCount + closetDoorCount;
   const cabinetPaintCoverageSqFtPerGallon = Math.max(
     1,
     safeNumber(useAppSettings.getState().cabinetPaintCoverageSqFtPerGallon, 350)
@@ -510,13 +512,13 @@ export function computeRoomPricingSummary(
   // Door and jamb paint - uses TRIM paint (same paint type as baseboards, trim, etc.)
   // doorPaintGallons tracks the gallons needed for doors/jambs, but material cost uses trimPaintPerGallon
   if (includedDoors && room.includeDoors !== false) {
-    const doorFacesSqFt = doorCount * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
+    const doorFacesSqFt = doorCountForPaint * (calcSettings.doorHeight * calcSettings.doorWidth) * 2;
     doorPaintGallons = (doorFacesSqFt * coatsDoors) / trimCoverage;
 
     // Add jamb area if painting jambs
     if (room.paintDoorFrames || room.paintJambs) {
       const jambWidthFt = safeNumber(calcSettings.doorJambWidth, 4.5) / 12;
-      const jambsSqFt = doorCount * (
+      const jambsSqFt = doorCountForPaint * (
         (jambWidthFt * calcSettings.doorHeight * 2) +
         (jambWidthFt * calcSettings.doorWidth)
       );
@@ -560,7 +562,7 @@ export function computeRoomPricingSummary(
 
   if (includedDoors && room.includeDoors !== false) {
     const doorLaborMultiplier = getCoatLaborMultiplier(coatsDoors);
-    laborCost += doorCount * safeNumber(pricing.doorLabor, 0) * doorLaborMultiplier;
+    laborCost += doorCountForPaint * safeNumber(pricing.doorLabor, 0) * doorLaborMultiplier;
   }
   if (paintVanities && vanityDoorCount > 0) {
     laborCost += vanityDoorCount * safeNumber(pricing.vanityDoorLabor, 0);
@@ -689,7 +691,7 @@ export function computeRoomPricingSummary(
     closetCeilingArea: includedClosets ? Math.max(0, safeNumber(closetCeilingArea)) : 0,
     closetBaseboardLF: includedClosets ? Math.max(0, safeNumber(closetBaseboardLF)) : 0,
     windowsCount: windowCount,
-    doorsCount: doorCount,
+    doorsCount: doorCountForPaint,
     singleDoorClosets: singleClosets,
     doubleDoorClosets: doubleClosets,
     doorlessClosets: doorlessClosets,
