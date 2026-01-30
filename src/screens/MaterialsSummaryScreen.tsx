@@ -444,8 +444,8 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
     text += `COST BREAKDOWN\n`;
     text += `========================================\n`;
     text += `\n`;
-    text += `Total Labor: ${formatCurrency(summary.totalLaborCost)}\n`;
-    text += `Total Materials: ${formatCurrency(summary.totalMaterialCost)}\n`;
+    text += `Total Labor: ${formatCurrency(Math.round(summary.totalLaborCost))}\n`;
+    text += `Total Materials: ${formatCurrency(Math.round(summary.totalMaterialCost))}\n`;
     text += `GRAND TOTAL: ${formatCurrency(summary.grandTotal)}\n`;
     text += `\n`;
 
@@ -583,7 +583,7 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
                 Total Labor:
               </Text>
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                {formatCurrency(summary.totalLaborCost)}
+                {formatCurrency(Math.round(summary.totalLaborCost))}
               </Text>
             </View>
             <View
@@ -597,7 +597,7 @@ export default function ContractorViewScreen({ route, navigation }: Props) {
                 Total Materials:
               </Text>
               <Text style={{ fontSize: Typography.body.fontSize, color: Colors.darkCharcoal }}>
-                {formatCurrency(summary.totalMaterialCost)}
+                {formatCurrency(Math.round(summary.totalMaterialCost))}
               </Text>
             </View>
             <View
