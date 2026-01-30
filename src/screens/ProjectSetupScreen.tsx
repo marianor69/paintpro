@@ -192,6 +192,10 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
       headerBackTitleVisible: false,
       headerBackTitle: "",
       headerBackTitleStyle: { color: "transparent" },
+      headerStyle: {
+        backgroundColor: Colors.white,
+        height: 96,
+      },
       headerLeft: () => (
         <Pressable
           onPress={() => navigation.navigate("ProjectsList")}
