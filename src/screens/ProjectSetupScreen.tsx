@@ -212,8 +212,8 @@ export default function ProjectSetupScreen({ route, navigation }: Props) {
           style={{
             backgroundColor: Colors.white,
             borderBottomWidth: 0,
-            paddingTop: Spacing.xs,
-            paddingBottom: Spacing.xs,
+            paddingTop: Spacing.sm,
+            paddingBottom: Spacing.sm,
             paddingHorizontal: 0,
           }}
         />
