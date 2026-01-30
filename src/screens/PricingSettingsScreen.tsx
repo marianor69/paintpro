@@ -156,6 +156,12 @@ export default function PricingSettingsScreen({ navigation }: Props) {
     (pricing.primerPer5Gallon || 150).toString()
   );
 
+  const [touchedFields, setTouchedFields] = React.useState<Record<string, boolean>>({});
+  const handleFieldChange = (key: string, setter: (value: string) => void) => (value: string) => {
+    setTouchedFields((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+    setter(value);
+  };
+
   // KB-004: Refs for keyboard navigation
   const wallLaborRef = useRef<TextInput>(null);
   const ceilingLaborRef = useRef<TextInput>(null);
@@ -551,9 +557,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const columnLabelStyle = { textAlign: "center" as const, fontSize: Typography.caption.fontSize, color: Colors.mediumGray, width: "100%" as const, marginBottom: Spacing.xs };
   const bubbleHeaderWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const bubbleHeaderTextStyle = { fontSize: Typography.caption.fontSize, color: Colors.mediumGray, textAlign: "right" as const, paddingRight: Spacing.md, marginBottom: Spacing.xs };
-  const bubbleStyleFor = (value: string, originalValue: number) => [
+  const bubbleStyleFor = (value: string, originalValue: number, fieldKey?: string) => [
     inputContainerStyle,
-    parseOrDefault(value, originalValue) !== originalValue && { borderColor: Colors.success, borderWidth: 3 },
+    (fieldKey && touchedFields[fieldKey]) || parseOrDefault(value, originalValue) !== originalValue
+      ? { borderColor: Colors.success, borderWidth: 3 }
+      : null,
   ];
   const rightAlignedLabelWrapperStyle = { width: inputWidth, alignItems: "flex-end" as const };
   const labelAlignWithBubbleValueStyle = { paddingTop: Typography.caption.fontSize + Spacing.xs };
@@ -572,6 +580,231 @@ export default function PricingSettingsScreen({ navigation }: Props) {
   const rowLabelBaselineStyle = { flexDirection: "row", alignItems: "center" as const };
   const rowLabelWithBubbleBaselineStyle = { ...leftAlignedLabelWrapperStyle, ...labelAlignWithBubbleValueStyle };
   const labelWithIconRowStyle = { flexDirection: "row", alignItems: "center", gap: Spacing.xs, marginTop: Typography.caption.fontSize + Spacing.xs };
+
+  const renderMaterialCostsCard = (title: string) => (
+    <Card style={{ marginBottom: Spacing.md }}>
+      <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
+        {title}
+      </Text>
+
+      <View style={materialHeaderRowStyle}>
+        <View style={{ flex: 1 }} />
+        <View style={columnLabelWrapperStyle}>
+          <Text style={columnLabelStyle}>$/1gal</Text>
+        </View>
+        <View style={columnLabelWrapperStyle}>
+          <Text style={columnLabelStyle}>$/5gal</Text>
+        </View>
+      </View>
+
+      <View style={materialRowStyle}>
+        <View style={leftAlignedLabelWrapperStyle}>
+          <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Wall Paint</Text>
+        </View>
+        <View style={bubbleStyleFor(wallPaintPerGallon, defaultPricing.wallPaintPerGallon || 45, "wallPaintPerGallon")}>
+          <TextInput
+            ref={wallPaintGallonRef}
+            value={wallPaintPerGallon}
+            onChangeText={handleFieldChange("wallPaintPerGallon", setWallPaintPerGallon)}
+            placeholder="45"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => wallPaint5GallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaintGallon-${wallPaintGallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+        <View style={bubbleStyleFor(wallPaintPer5Gallon, defaultPricing.wallPaintPer5Gallon || 200, "wallPaintPer5Gallon")}>
+          <TextInput
+            ref={wallPaint5GallonRef}
+            value={wallPaintPer5Gallon}
+            onChangeText={handleFieldChange("wallPaintPer5Gallon", setWallPaintPer5Gallon)}
+            placeholder="200"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => ceilingPaintGallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaint5Gallon-${wallPaint5GallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+      </View>
+
+      <View style={materialRowStyle}>
+        <View style={leftAlignedLabelWrapperStyle}>
+          <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Ceiling Paint</Text>
+        </View>
+        <View style={bubbleStyleFor(ceilingPaintPerGallon, defaultPricing.ceilingPaintPerGallon || 40, "ceilingPaintPerGallon")}>
+          <TextInput
+            ref={ceilingPaintGallonRef}
+            value={ceilingPaintPerGallon}
+            onChangeText={handleFieldChange("ceilingPaintPerGallon", setCeilingPaintPerGallon)}
+            placeholder="40"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => ceilingPaint5GallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaintGallon-${ceilingPaintGallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+        <View style={bubbleStyleFor(ceilingPaintPer5Gallon, defaultPricing.ceilingPaintPer5Gallon || 175, "ceilingPaintPer5Gallon")}>
+          <TextInput
+            ref={ceilingPaint5GallonRef}
+            value={ceilingPaintPer5Gallon}
+            onChangeText={handleFieldChange("ceilingPaintPer5Gallon", setCeilingPaintPer5Gallon)}
+            placeholder="175"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => trimPaintGallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaint5Gallon-${ceilingPaint5GallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+      </View>
+
+      <View style={materialRowStyle}>
+        <View style={leftAlignedLabelWrapperStyle}>
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text
+              style={{
+                ...leftAlignedLabelTextStyle,
+                ...materialLabelStyle,
+                flex: 0,
+                width: "auto",
+              }}
+            >
+              Trim Paint
+            </Text>
+            <Pressable
+              onPress={() => openInfoModal("Trim Paint", "Explain what this setting controls")}
+              hitSlop={8}
+              style={{ marginLeft: Spacing.xs, marginTop: 2 }}
+            >
+              <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Trim Paint help" />
+            </Pressable>
+          </View>
+        </View>
+        <View style={bubbleStyleFor(trimPaintPerGallon, defaultPricing.trimPaintPerGallon || 50, "trimPaintPerGallon")}>
+          <TextInput
+            ref={trimPaintGallonRef}
+            value={trimPaintPerGallon}
+            onChangeText={handleFieldChange("trimPaintPerGallon", setTrimPaintPerGallon)}
+            placeholder="50"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+        <View style={bubbleStyleFor(trimPaintPer5Gallon, defaultPricing.trimPaintPer5Gallon || 225, "trimPaintPer5Gallon")}>
+          <TextInput
+            ref={trimPaint5GallonRef}
+            value={trimPaintPer5Gallon}
+            onChangeText={handleFieldChange("trimPaintPer5Gallon", setTrimPaintPer5Gallon)}
+            placeholder="225"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => cabinetPaintGallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+      </View>
+
+      <View style={materialRowStyle}>
+        <View style={leftAlignedLabelWrapperStyle}>
+          <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Cabinet Paint</Text>
+        </View>
+        <View style={bubbleStyleFor(cabinetPaintPerGallon, defaultPricing.cabinetPaintPerGallon || 60, "cabinetPaintPerGallon")}>
+          <TextInput
+            ref={cabinetPaintGallonRef}
+            value={cabinetPaintPerGallon}
+            onChangeText={handleFieldChange("cabinetPaintPerGallon", setCabinetPaintPerGallon)}
+            placeholder="60"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => cabinetPaint5GallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetPaintGallon-${cabinetPaintGallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+        <View style={bubbleStyleFor(cabinetPaintPer5Gallon, defaultPricing.cabinetPaintPer5Gallon || 450, "cabinetPaintPer5Gallon")}>
+          <TextInput
+            ref={cabinetPaint5GallonRef}
+            value={cabinetPaintPer5Gallon}
+            onChangeText={handleFieldChange("cabinetPaintPer5Gallon", setCabinetPaintPer5Gallon)}
+            placeholder="450"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => primerGallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetPaint5Gallon-${cabinetPaint5GallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+      </View>
+
+      <View style={materialRowStyle}>
+        <View style={leftAlignedLabelWrapperStyle}>
+          <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Primer</Text>
+        </View>
+        <View style={bubbleStyleFor(primerPerGallon, defaultPricing.primerPerGallon || 35, "primerPerGallon")}>
+          <TextInput
+            ref={primerGallonRef}
+            value={primerPerGallon}
+            onChangeText={handleFieldChange("primerPerGallon", setPrimerPerGallon)}
+            placeholder="35"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => primer5GallonRef.current?.focus()}
+            onFocus={handleFieldFocus}
+            blurOnSubmit={false}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimerGallon-${primerGallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+        <View style={bubbleStyleFor(primerPer5Gallon, defaultPricing.primerPer5Gallon || 150, "primerPer5Gallon")}>
+          <TextInput
+            ref={primer5GallonRef}
+            value={primerPer5Gallon}
+            onChangeText={handleFieldChange("primerPer5Gallon", setPrimerPer5Gallon)}
+            placeholder="150"
+            placeholderTextColor={Colors.mediumGray}
+            keyboardType="numeric"
+            returnKeyType="done"
+            onSubmitEditing={() => Keyboard.dismiss()}
+            onFocus={handleFieldFocus}
+            inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimer5Gallon-${primer5GallonID}` : undefined}
+            style={inputTextStyle}
+          />
+        </View>
+      </View>
+    </Card>
+  );
 
   return (
     <SafeAreaView
@@ -606,11 +839,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
-                  <View style={bubbleStyleFor(wallLaborPerSqFt, defaultPricing.wallLaborPerSqFt || 1.5)}>
+                  <View style={bubbleStyleFor(wallLaborPerSqFt, defaultPricing.wallLaborPerSqFt || 1.5, "wallLaborPerSqFt")}>
                     <TextInput
                       ref={wallLaborRef}
                       value={wallLaborPerSqFt}
-                      onChangeText={setWallLaborPerSqFt}
+                      onChangeText={handleFieldChange("wallLaborPerSqFt", setWallLaborPerSqFt)}
                       placeholder="1.50"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -630,11 +863,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
-                  <View style={bubbleStyleFor(ceilingLaborPerSqFt, defaultPricing.ceilingLaborPerSqFt || 1.75)}>
+                  <View style={bubbleStyleFor(ceilingLaborPerSqFt, defaultPricing.ceilingLaborPerSqFt || 1.75, "ceilingLaborPerSqFt")}>
                     <TextInput
                       ref={ceilingLaborRef}
                       value={ceilingLaborPerSqFt}
-                      onChangeText={setCeilingLaborPerSqFt}
+                      onChangeText={handleFieldChange("ceilingLaborPerSqFt", setCeilingLaborPerSqFt)}
                       placeholder="1.75"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -657,11 +890,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(doorLabor, defaultPricing.doorLabor || 50)}>
+                  <View style={bubbleStyleFor(doorLabor, defaultPricing.doorLabor || 50, "doorLabor")}>
                     <TextInput
                       ref={doorLaborRef}
                       value={doorLabor}
-                      onChangeText={setDoorLabor}
+                      onChangeText={handleFieldChange("doorLabor", setDoorLabor)}
                       placeholder="50"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -681,11 +914,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(windowLabor, defaultPricing.windowLabor || 35)}>
+                  <View style={bubbleStyleFor(windowLabor, defaultPricing.windowLabor || 35, "windowLabor")}>
                     <TextInput
                       ref={windowLaborRef}
                       value={windowLabor}
-                      onChangeText={setWindowLabor}
+                      onChangeText={handleFieldChange("windowLabor", setWindowLabor)}
                       placeholder="35"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -708,11 +941,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/lf</Text>
-                  <View style={bubbleStyleFor(baseboardLaborPerLF, defaultPricing.baseboardLaborPerLF || 1.25)}>
+                  <View style={bubbleStyleFor(baseboardLaborPerLF, defaultPricing.baseboardLaborPerLF || 1.25, "baseboardLaborPerLF")}>
                     <TextInput
                       ref={baseboardLaborRef}
                       value={baseboardLaborPerLF}
-                      onChangeText={setBaseboardLaborPerLF}
+                      onChangeText={handleFieldChange("baseboardLaborPerLF", setBaseboardLaborPerLF)}
                       placeholder="1.25"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -732,11 +965,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/lf</Text>
-                  <View style={bubbleStyleFor(crownMouldingLaborPerLF, defaultPricing.crownMouldingLaborPerLF || 1.5)}>
+                  <View style={bubbleStyleFor(crownMouldingLaborPerLF, defaultPricing.crownMouldingLaborPerLF || 1.5, "crownMouldingLaborPerLF")}>
                     <TextInput
                       ref={crownMouldingRef}
                       value={crownMouldingLaborPerLF}
-                      onChangeText={setCrownMouldingLaborPerLF}
+                      onChangeText={handleFieldChange("crownMouldingLaborPerLF", setCrownMouldingLaborPerLF)}
                       placeholder="1.50"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -759,11 +992,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(closetLabor, defaultPricing.closetLabor || 75)}>
+                  <View style={bubbleStyleFor(closetLabor, defaultPricing.closetLabor || 75, "closetLabor")}>
                     <TextInput
                       ref={closetLaborRef}
                       value={closetLabor}
-                      onChangeText={setClosetLabor}
+                      onChangeText={handleFieldChange("closetLabor", setClosetLabor)}
                       placeholder="75"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -793,11 +1026,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(riserLabor, defaultPricing.riserLabor || 15)}>
+                  <View style={bubbleStyleFor(riserLabor, defaultPricing.riserLabor || 15, "riserLabor")}>
                     <TextInput
                       ref={riserLaborRef}
                       value={riserLabor}
-                      onChangeText={setRiserLabor}
+                      onChangeText={handleFieldChange("riserLabor", setRiserLabor)}
                       placeholder="15"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -817,11 +1050,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(spindleLabor, defaultPricing.spindleLabor || 8)}>
+                  <View style={bubbleStyleFor(spindleLabor, defaultPricing.spindleLabor || 8, "spindleLabor")}>
                     <TextInput
                       ref={spindleLaborRef}
                       value={spindleLabor}
-                      onChangeText={setSpindleLabor}
+                      onChangeText={handleFieldChange("spindleLabor", setSpindleLabor)}
                       placeholder="8"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -844,11 +1077,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>$/lf</Text>
-                  <View style={bubbleStyleFor(handrailLaborPerLF, defaultPricing.handrailLaborPerLF || 10)}>
+                  <View style={bubbleStyleFor(handrailLaborPerLF, defaultPricing.handrailLaborPerLF || 10, "handrailLaborPerLF")}>
                     <TextInput
                       ref={handrailLaborRef}
                       value={handrailLaborPerLF}
-                      onChangeText={setHandrailLaborPerLF}
+                      onChangeText={handleFieldChange("handrailLaborPerLF", setHandrailLaborPerLF)}
                       placeholder="10"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -878,11 +1111,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(mantelLabor, defaultPricing.mantelLabor || 100)}>
+                  <View style={bubbleStyleFor(mantelLabor, defaultPricing.mantelLabor || 100, "mantelLabor")}>
                     <TextInput
                       ref={mantelLaborRef}
                       value={mantelLabor}
-                      onChangeText={setMantelLabor}
+                      onChangeText={handleFieldChange("mantelLabor", setMantelLabor)}
                       placeholder="100"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -902,11 +1135,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(legsLabor, defaultPricing.legsLabor || 100)}>
+                  <View style={bubbleStyleFor(legsLabor, defaultPricing.legsLabor || 100, "legsLabor")}>
                     <TextInput
                       ref={legsLaborRef}
                       value={legsLabor}
-                      onChangeText={setLegsLabor}
+                      onChangeText={handleFieldChange("legsLabor", setLegsLabor)}
                       placeholder="100"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -936,11 +1169,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={bubbleStyleFor(secondCoatLaborMultiplier, defaultPricing.secondCoatLaborMultiplier || 2.0)}>
+                  <View style={bubbleStyleFor(secondCoatLaborMultiplier, defaultPricing.secondCoatLaborMultiplier || 2.0, "secondCoatLaborMultiplier")}>
                     <TextInput
                       ref={secondCoatMultiplierRef}
                       value={secondCoatLaborMultiplier}
-                      onChangeText={setSecondCoatLaborMultiplier}
+                      onChangeText={handleFieldChange("secondCoatLaborMultiplier", setSecondCoatLaborMultiplier)}
                       placeholder="2.0"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -960,11 +1193,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={bubbleStyleFor(accentWallLaborMultiplier, defaultPricing.accentWallLaborMultiplier || 1.25)}>
+                  <View style={bubbleStyleFor(accentWallLaborMultiplier, defaultPricing.accentWallLaborMultiplier || 1.25, "accentWallLaborMultiplier")}>
                     <TextInput
                       ref={accentWallMultiplierRef}
                       value={accentWallLaborMultiplier}
-                      onChangeText={setAccentWallLaborMultiplier}
+                      onChangeText={handleFieldChange("accentWallLaborMultiplier", setAccentWallLaborMultiplier)}
                       placeholder="1.25"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -987,11 +1220,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <View style={{ height: Typography.caption.fontSize + Spacing.xs, opacity: 0 }} />
-                  <View style={bubbleStyleFor(closetLaborMultiplier, defaultPricing.closetLaborMultiplier || 1.0)}>
+                  <View style={bubbleStyleFor(closetLaborMultiplier, defaultPricing.closetLaborMultiplier || 1.0, "closetLaborMultiplier")}>
                     <TextInput
                       ref={closetMultiplierRef}
                       value={closetLaborMultiplier}
-                      onChangeText={setClosetLaborMultiplier}
+                      onChangeText={handleFieldChange("closetLaborMultiplier", setClosetLaborMultiplier)}
                       placeholder="1.0"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1072,11 +1305,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>x</Text>
-                    <View style={bubbleStyleFor(bathroomLaborMultiplier, defaultPricing.bathroomLaborMultiplier || 2.5)}>
+                    <View style={bubbleStyleFor(bathroomLaborMultiplier, defaultPricing.bathroomLaborMultiplier || 2.5, "bathroomLaborMultiplier")}>
                       <TextInput
                         ref={bathroomMultiplierRef}
                         value={bathroomLaborMultiplier}
-                        onChangeText={setBathroomLaborMultiplier}
+                        onChangeText={handleFieldChange("bathroomLaborMultiplier", setBathroomLaborMultiplier)}
                         placeholder="2.5"
                         placeholderTextColor={Colors.mediumGray}
                         keyboardType="numeric"
@@ -1101,11 +1334,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                    <View style={bubbleStyleFor(bathroomTierSmallLabor, defaultPricing.bathroomTierSmallLabor || 350)}>
+                    <View style={bubbleStyleFor(bathroomTierSmallLabor, defaultPricing.bathroomTierSmallLabor || 350, "bathroomTierSmallLabor")}>
                       <TextInput
                         ref={bathroomTierSmallRef}
                         value={bathroomTierSmallLabor}
-                        onChangeText={setBathroomTierSmallLabor}
+                        onChangeText={handleFieldChange("bathroomTierSmallLabor", setBathroomTierSmallLabor)}
                         placeholder="350"
                         placeholderTextColor={Colors.mediumGray}
                         keyboardType="numeric"
@@ -1126,11 +1359,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                    <View style={bubbleStyleFor(bathroomTierMediumLabor, defaultPricing.bathroomTierMediumLabor || 400)}>
+                    <View style={bubbleStyleFor(bathroomTierMediumLabor, defaultPricing.bathroomTierMediumLabor || 400, "bathroomTierMediumLabor")}>
                       <TextInput
                         ref={bathroomTierMediumRef}
                         value={bathroomTierMediumLabor}
-                        onChangeText={setBathroomTierMediumLabor}
+                        onChangeText={handleFieldChange("bathroomTierMediumLabor", setBathroomTierMediumLabor)}
                         placeholder="400"
                         placeholderTextColor={Colors.mediumGray}
                         keyboardType="numeric"
@@ -1151,11 +1384,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                    <View style={bubbleStyleFor(bathroomTierLargeBaseLabor, defaultPricing.bathroomTierLargeBaseLabor || 450)}>
+                    <View style={bubbleStyleFor(bathroomTierLargeBaseLabor, defaultPricing.bathroomTierLargeBaseLabor || 450, "bathroomTierLargeBaseLabor")}>
                       <TextInput
                         ref={bathroomTierLargeBaseRef}
                         value={bathroomTierLargeBaseLabor}
-                        onChangeText={setBathroomTierLargeBaseLabor}
+                        onChangeText={handleFieldChange("bathroomTierLargeBaseLabor", setBathroomTierLargeBaseLabor)}
                         placeholder="450"
                         placeholderTextColor={Colors.mediumGray}
                         keyboardType="numeric"
@@ -1176,11 +1409,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                   </View>
                   <View style={bubbleHeaderWrapperStyle}>
                     <Text style={bubbleHeaderTextStyle}>$/sqft</Text>
-                    <View style={bubbleStyleFor(bathroomTierLargeExtraPerSqFt, defaultPricing.bathroomTierLargeExtraPerSqFt || 5)}>
+                    <View style={bubbleStyleFor(bathroomTierLargeExtraPerSqFt, defaultPricing.bathroomTierLargeExtraPerSqFt || 5, "bathroomTierLargeExtraPerSqFt")}>
                       <TextInput
                         ref={bathroomTierLargeExtraRef}
                         value={bathroomTierLargeExtraPerSqFt}
-                        onChangeText={setBathroomTierLargeExtraPerSqFt}
+                        onChangeText={handleFieldChange("bathroomTierLargeExtraPerSqFt", setBathroomTierLargeExtraPerSqFt)}
                         placeholder="5"
                         placeholderTextColor={Colors.mediumGray}
                         keyboardType="numeric"
@@ -1212,11 +1445,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
               </View>
               <View style={bubbleHeaderWrapperStyle}>
                 <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                <View style={bubbleStyleFor(bathroomEnclosedToiletAddOn, defaultPricing.bathroomEnclosedToiletAddOn || 50)}>
+                <View style={bubbleStyleFor(bathroomEnclosedToiletAddOn, defaultPricing.bathroomEnclosedToiletAddOn || 50, "bathroomEnclosedToiletAddOn")}>
                   <TextInput
                     ref={bathroomEnclosedToiletRef}
                     value={bathroomEnclosedToiletAddOn}
-                    onChangeText={setBathroomEnclosedToiletAddOn}
+                    onChangeText={handleFieldChange("bathroomEnclosedToiletAddOn", setBathroomEnclosedToiletAddOn)}
                     placeholder="50"
                     placeholderTextColor={Colors.mediumGray}
                     keyboardType="numeric"
@@ -1238,11 +1471,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(vanityDoorLabor, defaultPricing.vanityDoorLabor || 150)}>
+                  <View style={bubbleStyleFor(vanityDoorLabor, defaultPricing.vanityDoorLabor || 150, "vanityDoorLabor")}>
                     <TextInput
                       ref={vanityDoorLaborRef}
                       value={vanityDoorLabor}
-                      onChangeText={setVanityDoorLabor}
+                      onChangeText={handleFieldChange("vanityDoorLabor", setVanityDoorLabor)}
                       placeholder="150"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1272,11 +1505,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(cabinetDoorLabor, defaultPricing.cabinetDoorLabor || 150)}>
+                  <View style={bubbleStyleFor(cabinetDoorLabor, defaultPricing.cabinetDoorLabor || 150, "cabinetDoorLabor")}>
                     <TextInput
                       ref={cabinetDoorLaborRef}
                       value={cabinetDoorLabor}
-                      onChangeText={setCabinetDoorLabor}
+                      onChangeText={handleFieldChange("cabinetDoorLabor", setCabinetDoorLabor)}
                       placeholder="150"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1299,11 +1532,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(cabinetDrawerLabor, defaultPricing.cabinetDrawerLabor || 30)}>
+                  <View style={bubbleStyleFor(cabinetDrawerLabor, defaultPricing.cabinetDrawerLabor || 30, "cabinetDrawerLabor")}>
                     <TextInput
                       ref={cabinetDrawerLaborRef}
                       value={cabinetDrawerLabor}
-                      onChangeText={setCabinetDrawerLabor}
+                      onChangeText={handleFieldChange("cabinetDrawerLabor", setCabinetDrawerLabor)}
                       placeholder="30"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1326,11 +1559,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(wallCabinetLabor, defaultPricing.wallCabinetLabor || 165)}>
+                  <View style={bubbleStyleFor(wallCabinetLabor, defaultPricing.wallCabinetLabor || 165, "wallCabinetLabor")}>
                     <TextInput
                       ref={wallCabinetLaborRef}
                       value={wallCabinetLabor}
-                      onChangeText={setWallCabinetLabor}
+                      onChangeText={handleFieldChange("wallCabinetLabor", setWallCabinetLabor)}
                       placeholder="165"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1360,11 +1593,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(builtInShelfLabor, defaultPricing.builtInShelfLabor || 25)}>
+                  <View style={bubbleStyleFor(builtInShelfLabor, defaultPricing.builtInShelfLabor || 25, "builtInShelfLabor")}>
                     <TextInput
                       ref={builtInShelfLaborRef}
                       value={builtInShelfLabor}
-                      onChangeText={setBuiltInShelfLabor}
+                      onChangeText={handleFieldChange("builtInShelfLabor", setBuiltInShelfLabor)}
                       placeholder="25"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1394,11 +1627,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(furnitureMovingFee, defaultPricing.furnitureMovingFee || 100)}>
+                  <View style={bubbleStyleFor(furnitureMovingFee, defaultPricing.furnitureMovingFee || 100, "furnitureMovingFee")}>
                     <TextInput
                       ref={furnitureMovingFeeRef}
                       value={furnitureMovingFee}
-                      onChangeText={setFurnitureMovingFee}
+                      onChangeText={handleFieldChange("furnitureMovingFee", setFurnitureMovingFee)}
                       placeholder="100"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1421,11 +1654,11 @@ export default function PricingSettingsScreen({ navigation }: Props) {
                 </View>
                 <View style={bubbleHeaderWrapperStyle}>
                   <Text style={bubbleHeaderTextStyle}>Each/$</Text>
-                  <View style={bubbleStyleFor(nailsRemovalFee, defaultPricing.nailsRemovalFee || 75)}>
+                  <View style={bubbleStyleFor(nailsRemovalFee, defaultPricing.nailsRemovalFee || 75, "nailsRemovalFee")}>
                     <TextInput
                       ref={nailsRemovalFeeRef}
                       value={nailsRemovalFee}
-                      onChangeText={setNailsRemovalFee}
+                      onChangeText={handleFieldChange("nailsRemovalFee", setNailsRemovalFee)}
                       placeholder="75"
                       placeholderTextColor={Colors.mediumGray}
                       keyboardType="numeric"
@@ -1442,229 +1675,9 @@ export default function PricingSettingsScreen({ navigation }: Props) {
             </View>
           </Card>
 
-          {/* Material Costs */}
-          <Card style={{ marginBottom: Spacing.md }}>
-            <Text style={{ ...Typography.h2, marginBottom: Spacing.md }}>
-              Material Costs
-            </Text>
+          {renderMaterialCostsCard("Material Cost Good")}
 
-            <View style={materialHeaderRowStyle}>
-              <View style={{ flex: 1 }} />
-              <View style={columnLabelWrapperStyle}>
-                <Text style={columnLabelStyle}>$/1gal</Text>
-              </View>
-              <View style={columnLabelWrapperStyle}>
-                <Text style={columnLabelStyle}>$/5gal</Text>
-              </View>
-            </View>
-
-            <View style={materialRowStyle}>
-              <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Wall Paint</Text>
-              </View>
-              <View style={bubbleStyleFor(wallPaintPerGallon, defaultPricing.wallPaintPerGallon || 45)}>
-                <TextInput
-                  ref={wallPaintGallonRef}
-                  value={wallPaintPerGallon}
-                  onChangeText={setWallPaintPerGallon}
-                  placeholder="45"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => wallPaint5GallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaintGallon-${wallPaintGallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-              <View style={bubbleStyleFor(wallPaintPer5Gallon, defaultPricing.wallPaintPer5Gallon || 200)}>
-                <TextInput
-                  ref={wallPaint5GallonRef}
-                  value={wallPaintPer5Gallon}
-                  onChangeText={setWallPaintPer5Gallon}
-                  placeholder="200"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => ceilingPaintGallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingWallPaint5Gallon-${wallPaint5GallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-            </View>
-
-            <View style={materialRowStyle}>
-              <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Ceiling Paint</Text>
-              </View>
-              <View style={bubbleStyleFor(ceilingPaintPerGallon, defaultPricing.ceilingPaintPerGallon || 40)}>
-                <TextInput
-                  ref={ceilingPaintGallonRef}
-                  value={ceilingPaintPerGallon}
-                  onChangeText={setCeilingPaintPerGallon}
-                  placeholder="40"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => ceilingPaint5GallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaintGallon-${ceilingPaintGallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-              <View style={bubbleStyleFor(ceilingPaintPer5Gallon, defaultPricing.ceilingPaintPer5Gallon || 175)}>
-                <TextInput
-                  ref={ceilingPaint5GallonRef}
-                  value={ceilingPaintPer5Gallon}
-                  onChangeText={setCeilingPaintPer5Gallon}
-                  placeholder="175"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => trimPaintGallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCeilingPaint5Gallon-${ceilingPaint5GallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-            </View>
-
-            <View style={materialRowStyle}>
-              <View style={leftAlignedLabelWrapperStyle}>
-                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                  <Text
-                    style={{
-                      ...leftAlignedLabelTextStyle,
-                      ...materialLabelStyle,
-                      flex: 0,
-                      width: "auto",
-                    }}
-                  >
-                    Trim Paint
-                  </Text>
-                  <Pressable
-                    onPress={() => openInfoModal("Trim Paint", "Explain what this setting controls")}
-                    hitSlop={8}
-                    style={{ marginLeft: Spacing.xs, marginTop: 2 }}
-                  >
-                    <Ionicons name="help-circle-outline" size={14} color={Colors.mediumGray} accessibilityLabel="Trim Paint help" />
-                  </Pressable>
-                </View>
-              </View>
-              <View style={bubbleStyleFor(trimPaintPerGallon, defaultPricing.trimPaintPerGallon || 50)}>
-                <TextInput
-                  ref={trimPaintGallonRef}
-                  value={trimPaintPerGallon}
-                  onChangeText={setTrimPaintPerGallon}
-                  placeholder="50"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => trimPaint5GallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaintGallon-${trimPaintGallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-              <View style={bubbleStyleFor(trimPaintPer5Gallon, defaultPricing.trimPaintPer5Gallon || 225)}>
-                <TextInput
-                  ref={trimPaint5GallonRef}
-                  value={trimPaintPer5Gallon}
-                  onChangeText={setTrimPaintPer5Gallon}
-                  placeholder="225"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => cabinetPaintGallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingTrimPaint5Gallon-${trimPaint5GallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-            </View>
-
-            <View style={materialRowStyle}>
-              <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Cabinet Paint</Text>
-              </View>
-              <View style={bubbleStyleFor(cabinetPaintPerGallon, defaultPricing.cabinetPaintPerGallon || 60)}>
-                <TextInput
-                  ref={cabinetPaintGallonRef}
-                  value={cabinetPaintPerGallon}
-                  onChangeText={setCabinetPaintPerGallon}
-                  placeholder="60"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => cabinetPaint5GallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetPaintGallon-${cabinetPaintGallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-              <View style={bubbleStyleFor(cabinetPaintPer5Gallon, defaultPricing.cabinetPaintPer5Gallon || 450)}>
-                <TextInput
-                  ref={cabinetPaint5GallonRef}
-                  value={cabinetPaintPer5Gallon}
-                  onChangeText={setCabinetPaintPer5Gallon}
-                  placeholder="450"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => primerGallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingCabinetPaint5Gallon-${cabinetPaint5GallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-            </View>
-
-            <View style={materialRowStyle}>
-              <View style={leftAlignedLabelWrapperStyle}>
-                <Text style={{ ...leftAlignedLabelTextStyle, ...materialLabelStyle }}>Primer</Text>
-              </View>
-              <View style={bubbleStyleFor(primerPerGallon, defaultPricing.primerPerGallon || 35)}>
-                <TextInput
-                  ref={primerGallonRef}
-                  value={primerPerGallon}
-                  onChangeText={setPrimerPerGallon}
-                  placeholder="35"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="next"
-                  onSubmitEditing={() => primer5GallonRef.current?.focus()}
-                  onFocus={handleFieldFocus}
-                  blurOnSubmit={false}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimerGallon-${primerGallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-              <View style={bubbleStyleFor(primerPer5Gallon, defaultPricing.primerPer5Gallon || 150)}>
-                <TextInput
-                  ref={primer5GallonRef}
-                  value={primerPer5Gallon}
-                  onChangeText={setPrimerPer5Gallon}
-                  placeholder="150"
-                  placeholderTextColor={Colors.mediumGray}
-                  keyboardType="numeric"
-                  returnKeyType="done"
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  onFocus={handleFieldFocus}
-                  inputAccessoryViewID={Platform.OS === "ios" ? `pricingPrimer5Gallon-${primer5GallonID}` : undefined}
-                  style={inputTextStyle}
-                />
-              </View>
-            </View>
-          </Card>
+          {renderMaterialCostsCard("Material Cost Best")}
 
           {/* Action Buttons */}
           <View style={{ gap: Spacing.sm, marginBottom: Spacing.xl }}>
