@@ -89,10 +89,10 @@ export default function HomeScreen({ navigation }: Props) {
           <View style={{ alignItems: "center", marginBottom: Spacing.lg }}>
             <Ionicons name="color-palette" size={56} color={Colors.primaryBlue} />
             <Text style={{ fontSize: 28, fontWeight: "700", color: Colors.darkCharcoal, marginTop: Spacing.md, textAlign: "center" }}>
-              Main Screen 2
+              Main Screen 3
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500", color: Colors.mediumGray, marginTop: 4, textAlign: "center", fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace" }}>
-              GPT - v5.12.47 - Deploy trigger
+              GPT - v5.12.48 - Deploy trigger
             </Text>
             <Text style={{ fontSize: Typography.caption.fontSize, color: Colors.mediumGray, marginTop: 4, textAlign: "center" }}>
               Build {Constants.nativeBuildVersion ?? "unknown"} (v{Constants.nativeAppVersion ?? "unknown"})
